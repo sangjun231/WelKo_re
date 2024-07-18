@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.44.4",
     "@tanstack/react-query": "^5.51.3",
+    "@tanstack/react-query-devtools": "^5.51.9",
     "axios": "^1.7.2",
     "next": "14.2.5",
     "react": "^18",
@@ -19,6 +21,7 @@
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/phoenix": "^1.6.5",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18",
     "eslint": "^8",
