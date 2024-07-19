@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 type Review = {
   id: string;
@@ -13,41 +14,39 @@ type Review = {
 };
 
 const MyPage = () => {
-  const [data, setData] = useState<Review[]>([]);
-  const [error, setError] = useState<Error | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('/api/mypage');
-        setData(response.data);
-      } catch (error: any) {
-        setError(error);
-      }
+    const fetchReviews = async () => {
+      const response = await axios.get('/api/mypage');
+      setReviews(response.data);
     };
 
-    fetchData();
+    fetchReviews();
   }, []);
 
-  console.log(data);
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-
-  if (data.length === 0) {
-    return <div>Loading...</div>;
-  }
+  const handleDelete = async (id: string) => {
+    await axios.delete('/api/mypage', { data: { id } });
+    setReviews(reviews.filter((review) => review.id !== id));
+  };
 
   return (
     <div>
       <h1>My Page</h1>
-      {data.map((item) => (
-        <div key={item.id}>
-          <h2>{item.content}</h2>
-          <p>Rating: {item.rating}</p>
-        </div>
-      ))}
+      {reviews.length === 0 ? (
+        <div>Loading...</div>
+      ) : (
+        reviews.map((item) => (
+          <div key={item.id}>
+            <h2>{item.content}</h2>
+            <p>Rating: {item.rating}</p>
+            <button onClick={() => handleDelete(item.id)}>Delete</button>
+            <Link href={`/review-page?id=${item.id}`}>
+              <button>Edit</button>
+            </Link>
+          </div>
+        ))
+      )}
     </div>
   );
 };
