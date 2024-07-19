@@ -15,6 +15,7 @@
 <img src="https://img.shields.io/badge/Next.js-%23000000.svg?style=for-the-badge&logo=Next.js&logoColor=white" />
 </div>
 
+## DB 설계
 |컬럼명|타입|용도|입력방법|외래키|예시|
 | :-----: |:-----: |:-----: |:-----: |:-----: |:-----: |
 |id|uuid|||auth.users.id||
