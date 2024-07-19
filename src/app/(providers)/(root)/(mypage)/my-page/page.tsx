@@ -1,18 +1,28 @@
-"use client";
+'use client';
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import supabase from '@/supabase/client';
+
+type Review = {
+  id: string;
+  created_at: string;
+  post_id: string;
+  user_id: string;
+  content: string;
+  rating: number;
+};
 
 const MyPage = () => {
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
+  const [data, setData] = useState<Review[]>([]);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('@/app/api/mypage/route');
+        const response = await axios.get('/api/mypage');
         setData(response.data);
-      } catch (error) {
+      } catch (error: any) {
         setError(error);
       }
     };
@@ -20,20 +30,24 @@ const MyPage = () => {
     fetchData();
   }, []);
 
+  console.log(data);
+
   if (error) {
     return <div>Error: {error.message}</div>;
   }
 
-  if (!data) {
+  if (data.length === 0) {
     return <div>Loading...</div>;
   }
 
   return (
     <div>
       <h1>My Page</h1>
-      {/* 데이터를 적절히 렌더링 */}
-      {data.map((item: any) => (
-        <div key={item.id}>{item.name}</div>
+      {data.map((item) => (
+        <div key={item.id}>
+          <h2>{item.content}</h2>
+          <p>Rating: {item.rating}</p>
+        </div>
       ))}
     </div>
   );

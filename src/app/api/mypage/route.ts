@@ -1,14 +1,14 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { supabase } from '@/supabase/supabaseClient';
+import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@/supabase/server';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { data, error } = await supabase
-    .from('users')
-    .select('*');
+export async function GET(req: NextRequest) {
+  const supabase = createClient();
+  const { data, error } = await supabase.from('reviews').select('*');
 
   if (error) {
-    return res.status(500).json({ error: error.message });
+    console.error('Error fetching reviews:', error.message); // 에러 로그 추가
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  res.status(200).json(data);
+  return NextResponse.json(data, { status: 200 });
 }
