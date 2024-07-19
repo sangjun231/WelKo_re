@@ -1,5 +1,12 @@
-import React from "react";
+import React from 'react';
+import QueryProvider from './_providers/QueryProvider';
+
 function ProvidersLayout({ children }: { children: React.ReactNode }) {
-  return <div>{children}</div>;
+  return (
+    <QueryProvider>
+      {children}
+    </QueryProvider>
+  );
 }
+
 export default ProvidersLayout;
