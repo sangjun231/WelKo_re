@@ -33,6 +33,9 @@ const MyPage = () => {
   return (
     <div>
       <h1>My Page</h1>
+      <Link href={`/review-page`}>
+        <button>Create New Review</button>
+      </Link>
       {reviews.length === 0 ? (
         <div>Loading...</div>
       ) : (

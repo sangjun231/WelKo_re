@@ -3,6 +3,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { v4 as uuidv4 } from 'uuid';
 
 type Review = {
   id: string;
@@ -23,41 +24,45 @@ const ReviewPage = () => {
 
   useEffect(() => {
     const fetchReview = async () => {
-      const response = await axios.get(`/api/mypage?id=${id}`);
-      const reviewData = response.data[0];
-      setReview(reviewData);
-      setContent(reviewData.content);
-      setRating(reviewData.rating);
+      if (id) {
+        const response = await axios.get(`/api/mypage?id=${id}`);
+        const reviewData = response.data[0];
+        setReview(reviewData);
+        setContent(reviewData.content);
+        setRating(reviewData.rating);
+      }
     };
 
-    if (id) {
-      fetchReview();
-    }
+    fetchReview();
   }, [id]);
 
-  const handleUpdate = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    await axios.put('/api/mypage', { id, content, rating });
+    if (id) {
+      await axios.put('/api/mypage', { id, content, rating });
+    } else {
+      const postId = uuidv4();
+      const userId = uuidv4();
+      await axios.post('/api/mypage', { content, rating, post_id: postId, user_id: userId });
+    }
     router.back();
   };
 
   const handleDelete = async () => {
-    await axios.delete('/api/mypage', { data: { id } });
-    router.back();
+    if (id) {
+      await axios.delete('/api/mypage', { data: { id } });
+      router.back();
+    }
   };
 
   const handleBack = () => {
     router.back();
   };
 
-  if (!review) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div>
-      <h1>Edit Review</h1>
-      <form onSubmit={handleUpdate}>
+      <h1>{id ? 'Edit Review' : 'New Review'}</h1>
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
           value={content}
@@ -72,9 +77,9 @@ const ReviewPage = () => {
           placeholder="Rating"
           className="text-black"
         />
-        <button type="submit">Update Review</button>
+        <button type="submit">{id ? 'Update Review' : 'Add Review'}</button>
       </form>
-      <button onClick={handleDelete}>Delete Review</button>
+      {id && <button onClick={handleDelete}>Delete Review</button>}
       <button onClick={handleBack}>Back</button>
     </div>
   );

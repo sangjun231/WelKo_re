@@ -34,6 +34,7 @@ export async function PUT(req: NextRequest) {
   const { data, error } = await supabase.from('reviews').update({ content, rating }).eq('id', id);
 
   if (error) {
+    console.error('Error fetching reviews:', error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
