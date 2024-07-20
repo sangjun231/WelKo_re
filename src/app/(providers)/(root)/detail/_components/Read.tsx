@@ -12,10 +12,10 @@ export interface Post {
   title: string;
   image: string;
   content: string;
-  tag: Record<string, any>;
+  tag: Record<string, string>;
   area: string;
   price: number;
-  period: Record<string, any>;
+  period: Record<string, { date: string; events: string[] }>;
   updated_at?: string;
 }
 
@@ -38,6 +38,11 @@ export default function Read() {
     }
   };
 
+  // 가격을 포맷하는 함수
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('ko-KR').format(price);
+  };
+
   // react-query를 사용하여 데이터 가져오기
   const { data, isLoading, error } = useQuery<Post[]>({
     queryKey: ['post', id],
@@ -56,24 +61,44 @@ export default function Read() {
   }
 
   return (
-    <div>
-      <div className="w-full max-w-[1024px] rounded-lg p-[15px] lg:p-[40px]">
+    <div className="w-full max-w-[400px]">
+      <div className="w-full p-[40px]">
         {data.map((post) => (
           <div key={post.id}>
-            <img src={post.image} alt={post.title} className="mb-[20px] h-[300px] w-[300px]" />
+            <div className="w-full">
+              <img src={post.image} alt={post.title} className="mb-[20px] h-[300px] w-[300px]" />
+            </div>
             <div>
               <h1 className="text-2xl font-bold">{post.title}</h1>
             </div>
             <div className="text-md">
               <p>
-                <strong>{post.price}</strong>
+                <strong>{formatPrice(post.price)}원</strong>
               </p>
               <p>{post.content}</p>
+              <div>
+                <ul>
+                  {Object.entries(post.tag).map(([key, value]) => (
+                    <li key={key}>
+                      {value}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                {Object.entries(post.period).map(([day, details]) => (
+                  <div key={day}>
+                    <h2 className="text-xl font-semibold">{day}</h2>
+                    <ul>
+                      {details.events.map((event, eventIndex) => (
+                        <li key={eventIndex}>{event}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
               {/* 일단 게시물 작성 시간을 넣긴 했는데, 이거 UI에서도 보여줘야되는걸까요?? */}
-              <p>
-                <strong>Created At:</strong>
-                {new Date(post.created_at).toLocaleString()}
-              </p>
+              <p>{new Date(post.created_at).toLocaleString()}</p>
             </div>
           </div>
         ))}
