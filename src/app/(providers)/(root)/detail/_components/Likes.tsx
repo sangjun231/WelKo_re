@@ -5,7 +5,8 @@ export interface Heart {
 }
 
 const Likes = () => {
-  return <div><FaRegHeart /></div>;
+  return <div>
+    <button><FaRegHeart /></button></div>;
 };
 
 export default Likes;
