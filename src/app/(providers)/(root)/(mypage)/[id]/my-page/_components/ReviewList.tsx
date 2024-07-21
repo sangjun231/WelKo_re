@@ -14,17 +14,17 @@ type Review = {
   rating: number;
 };
 
-const ReviewList = () => {
+const ReviewList = ({ userId }: { userId: string }) => {
   const [reviews, setReviews] = useState<Review[]>([]);
 
   useEffect(() => {
     const fetchReviews = async () => {
-      const response = await axios.get(API_MYPAGE_REVIEWS);
+      const response = await axios.get(`${API_MYPAGE_REVIEWS}?user_id=${userId}`);
       setReviews(response.data);
     };
 
     fetchReviews();
-  }, []);
+  }, [userId]);
 
   const handleDelete = async (id: string) => {
     await axios.delete(API_MYPAGE_REVIEWS, { data: { id } });
@@ -33,7 +33,7 @@ const ReviewList = () => {
 
   return (
     <div>
-      <Link href={`/review-page`}>
+      <Link href={`/mypage/${userId}/review-page`}>
         <button>Create New Review</button>
       </Link>
       {reviews.length === 0 ? (
@@ -44,7 +44,7 @@ const ReviewList = () => {
             <h2>{item.content}</h2>
             <p>Rating: {item.rating}</p>
             <button onClick={() => handleDelete(item.id)}>Delete</button>
-            <Link href={`/review-page?id=${item.id}`}>
+            <Link href={`/mypage/${userId}/review-page?id=${item.id}`}>
               <button>Edit</button>
             </Link>
           </div>
