@@ -3,12 +3,13 @@ import React from 'react';
 export const Guide = () => {
   return (
     <div>
-      <h3>가이드 소개</h3>
+      <h3>투어 가이드</h3>
       <div>
         <img />
-        <h5>이름</h5>
+        <h4>가이드 이름</h4>
+        <h5>그 외 디테일한 가이드 정보?</h5>
       </div>
-      <button>메시지 보내기</button>
+      <button className="mb-6 border">메시지 보내기</button>
     </div>
   );
 };
