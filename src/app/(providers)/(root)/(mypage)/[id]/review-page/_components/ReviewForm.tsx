@@ -15,7 +15,7 @@ type Review = {
   rating: number;
 };
 
-const ReviewForm = () => {
+const ReviewForm = ({ userId }: { userId: string }) => {
   const [review, setReview] = useState<Review | null>(null);
   const [content, setContent] = useState('');
   const [rating, setRating] = useState(0);
@@ -43,7 +43,6 @@ const ReviewForm = () => {
       await axios.put(API_MYPAGE_REVIEWS, { id, content, rating });
     } else {
       const postId = uuidv4();
-      const userId = uuidv4();
       await axios.post(API_MYPAGE_REVIEWS, { content, rating, post_id: postId, user_id: userId });
     }
     router.back();

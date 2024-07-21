@@ -33,7 +33,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
 
   return (
     <div>
-      <Link href={`/mypage/${userId}/review-page`}>
+      <Link href={`/${userId}/review-page`}>
         <button>Create New Review</button>
       </Link>
       {reviews.length === 0 ? (
@@ -44,7 +44,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
             <h2>{item.content}</h2>
             <p>Rating: {item.rating}</p>
             <button onClick={() => handleDelete(item.id)}>Delete</button>
-            <Link href={`/mypage/${userId}/review-page?id=${item.id}`}>
+            <Link href={`/${userId}/review-page?id=${item.id}`}>
               <button>Edit</button>
             </Link>
           </div>
