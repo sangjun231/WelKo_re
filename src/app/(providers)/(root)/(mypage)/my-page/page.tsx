@@ -3,6 +3,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { API_MYPAGE_REVIEWS } from '@/utils/apiConstants';
 
 type Review = {
   id: string;
@@ -18,7 +19,7 @@ const MyPage = () => {
 
   useEffect(() => {
     const fetchReviews = async () => {
-      const response = await axios.get('/api/mypage');
+      const response = await axios.get(API_MYPAGE_REVIEWS);
       setReviews(response.data);
     };
 
@@ -26,7 +27,7 @@ const MyPage = () => {
   }, []);
 
   const handleDelete = async (id: string) => {
-    await axios.delete('/api/mypage', { data: { id } });
+    await axios.delete(API_MYPAGE_REVIEWS, { data: { id } });
     setReviews(reviews.filter((review) => review.id !== id));
   };
 
