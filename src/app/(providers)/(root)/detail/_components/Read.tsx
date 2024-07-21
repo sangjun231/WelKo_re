@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'next/navigation';
 
 export interface Post {
@@ -21,6 +21,7 @@ export interface Post {
 
 export default function Read() {
   const { id } = useParams();
+  const [selectedDay, setSelectedDay] = useState<string>('1일차');
 
   // API 요청 함수
   const getPostsData = async () => {
@@ -79,23 +80,33 @@ export default function Read() {
               <div>
                 <ul>
                   {Object.entries(post.tag).map(([key, value]) => (
-                    <li key={key}>
-                      {value}
-                    </li>
+                    <li key={key}>{value}</li>
                   ))}
                 </ul>
               </div>
               <div>
-                {Object.entries(post.period).map(([day, details]) => (
-                  <div key={day}>
-                    <h2 className="text-xl font-semibold">{day}</h2>
-                    <ul>
-                      {details.events.map((event, eventIndex) => (
-                        <li key={eventIndex}>{event}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                <div className="flex space-x-2">
+                  {Object.keys(post.period).map((day) => (
+                    <button
+                      key={day}
+                      className={`rounded px-4 py-2 ${selectedDay === day ? 'bg-blue-500 text-white' : 'bg-gray-400'}`}
+                      onClick={() => setSelectedDay(day)}
+                    >
+                      {day}
+                    </button>
+                  ))}
+                </div>
+                <div className="mt-4">
+                  {Object.entries(post.period).map(([day, details]) => (
+                    <div key={day} className={`${selectedDay === day ? 'block' : 'hidden'}`}>
+                      <ul>
+                        {details.events.map((event, eventIndex) => (
+                          <li key={eventIndex}>{event}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
               </div>
               {/* 일단 게시물 작성 시간을 넣긴 했는데, 이거 UI에서도 보여줘야되는걸까요?? */}
               <p>{new Date(post.created_at).toLocaleString()}</p>
