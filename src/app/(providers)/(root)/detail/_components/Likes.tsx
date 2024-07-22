@@ -8,7 +8,7 @@ const Likes = () => {
   return (
     <div>
       <button>
-        <FaRegHeart />
+        <FaRegHeart size={30} />
       </button>
     </div>
   );
