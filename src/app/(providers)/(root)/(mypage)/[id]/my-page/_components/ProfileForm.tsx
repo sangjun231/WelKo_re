@@ -22,7 +22,7 @@ const ProfileForm = ({ userId }: { userId: string }) => {
       const response = await axios.get(`${API_MYPAGE_PROFILE}?user_id=${userId}`);
       const profileData = response.data;
       setProfile(profileData);
-      setNickname(profileData.nickname);
+      setNickname(profileData.name);
       setEmail(profileData.email);
     };
 
@@ -32,7 +32,7 @@ const ProfileForm = ({ userId }: { userId: string }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (profile) {
-      await axios.put(API_MYPAGE_PROFILE, { id: profile.id, nickname, email });
+      await axios.put(API_MYPAGE_PROFILE, { id: profile.id, name: nickname, email });
       router.back();
     }
   };
