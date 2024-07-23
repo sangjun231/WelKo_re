@@ -24,7 +24,8 @@ export default function Home() {
         }
 
         if (user) {
-          const response = await axios.get(`${API_MYPAGE_PROFILE}?user_id=${user.id}`);
+          const userId = user.id;
+          const response = await axios.get(API_MYPAGE_PROFILE(userId));
           const profile = response.data;
           if (profile && profile.id) {
             setUserId(profile.id);

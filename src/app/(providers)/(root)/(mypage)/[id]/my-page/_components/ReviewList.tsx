@@ -19,7 +19,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
 
   useEffect(() => {
     const fetchReviews = async () => {
-      const response = await axios.get(`${API_MYPAGE_REVIEWS}?user_id=${userId}`);
+      const response = await axios.get(API_MYPAGE_REVIEWS(userId));
       setReviews(response.data);
     };
 
@@ -27,7 +27,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
   }, [userId]);
 
   const handleDelete = async (id: string) => {
-    await axios.delete(API_MYPAGE_REVIEWS, { data: { id } });
+    await axios.delete(API_MYPAGE_REVIEWS(userId), { data: { id } });
     setReviews(reviews.filter((review) => review.id !== id));
   };
 

@@ -19,7 +19,7 @@ const ProfileForm = ({ userId }: { userId: string }) => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const response = await axios.get(`${API_MYPAGE_PROFILE}?user_id=${userId}`);
+      const response = await axios.get(API_MYPAGE_PROFILE(userId));
       const profileData = response.data;
       setProfile(profileData);
       setNickname(profileData.name);
@@ -32,7 +32,7 @@ const ProfileForm = ({ userId }: { userId: string }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (profile) {
-      await axios.put(API_MYPAGE_PROFILE, { id: profile.id, name: nickname, email });
+      await axios.put(API_MYPAGE_PROFILE(userId), { id: profile.id, name: nickname, email });
       router.back();
     }
   };
