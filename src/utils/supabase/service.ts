@@ -1,4 +1,3 @@
-// utils/authService.ts
 import { createClient } from '@/utils/supabase/client';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
