@@ -1,10 +1,10 @@
 'use client';
 
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import { createClient } from '@/utils/supabase/client';
+import axios from 'axios';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
   const [userId, setUserId] = useState<string | null>(null);
@@ -42,6 +42,56 @@ export default function Home() {
     <div>
       <h1>Welcome to Home Page</h1>
       {userId ? <Link href={`/${userId}/my-page`}>Go to My Page</Link> : <p>Loading...</p>}
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
+      <h1>Home Page</h1>
     </div>
   );
 }

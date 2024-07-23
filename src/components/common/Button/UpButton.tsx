@@ -25,10 +25,7 @@ function UpButton() {
       <button onClick={goToTop} className="fixed bottom-16 right-4 rounded-full bg-blue-500 p-2 text-white shadow-lg">
         UP
       </button>
-      <button className="fixed bottom-4 right-4 rounded-full bg-black p-2 text-white shadow-lg">post</button>
     </div>
-  ) : (
-    <button className="fixed bottom-4 right-4 rounded-full bg-black p-2 text-white shadow-lg">post</button>
-  );
+  ) : null;
 }
 export default UpButton;
