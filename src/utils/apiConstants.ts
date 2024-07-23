@@ -1,2 +1,2 @@
-export const API_MYPAGE_REVIEWS = '/api/mypage/reviews';
-export const API_MYPAGE_PROFILE = '/api/mypage/profile';
+export const API_MYPAGE_REVIEWS = (userId: string) => `/api/mypage/${userId}/reviews`;
+export const API_MYPAGE_PROFILE = (userId: string) => `/api/mypage/${userId}/profile`;
