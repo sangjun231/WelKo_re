@@ -17,6 +17,11 @@ type Review = {
 const ReviewList = ({ userId }: { userId: string }) => {
   const [reviews, setReviews] = useState<Review[]>([]);
 
+  const handleDelete = async (id: string) => {
+    await axios.delete(API_MYPAGE_REVIEWS(userId), { data: { id } });
+    setReviews(reviews.filter((review) => review.id !== id));
+  };
+
   useEffect(() => {
     const fetchReviews = async () => {
       const response = await axios.get(API_MYPAGE_REVIEWS(userId));
@@ -25,11 +30,6 @@ const ReviewList = ({ userId }: { userId: string }) => {
 
     fetchReviews();
   }, [userId]);
-
-  const handleDelete = async (id: string) => {
-    await axios.delete(API_MYPAGE_REVIEWS(userId), { data: { id } });
-    setReviews(reviews.filter((review) => review.id !== id));
-  };
 
   return (
     <div>

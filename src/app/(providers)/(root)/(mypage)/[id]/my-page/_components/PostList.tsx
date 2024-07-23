@@ -19,9 +19,7 @@ type Post = {
 export default function PostList() {
   const params = useParams();
   const userId = Array.isArray(params.id) ? params.id[0] : params.id;
-  const [selectedDay, setSelectedDay] = useState<string>('1일차');
 
-  // API 요청 함수
   const getPostsData = async () => {
     try {
       const response = await axios.get(API_MYPAGE_POST(userId));
@@ -37,7 +35,6 @@ export default function PostList() {
     }
   };
 
-  // react-query를 사용하여 데이터 가져오기
   const { data, isLoading, error } = useQuery<Post[]>({
     queryKey: ['post', userId],
     queryFn: getPostsData,

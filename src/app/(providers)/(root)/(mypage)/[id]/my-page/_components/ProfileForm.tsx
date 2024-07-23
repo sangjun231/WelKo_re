@@ -3,19 +3,58 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { createClient } from '@/utils/supabase/client';
 import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 
 type Profile = {
   id: string;
-  nickname: string;
+  name: string;
   email: string;
+  avatar: string;
 };
 
 const ProfileForm = ({ userId }: { userId: string }) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [nickname, setNickname] = useState('');
   const [email, setEmail] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const router = useRouter();
+  const supabase = createClient();
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (profile) {
+      await axios.put(API_MYPAGE_PROFILE(userId), { id: profile.id, name: nickname, email, avatar: imageUrl });
+      router.back();
+    }
+  };
+
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${userId}.${fileExt}`;
+      const filePath = `profile_images/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage.from('users').upload(filePath, file, {
+        upsert: true
+      });
+
+      if (uploadError) {
+        console.error('Failed to upload image:', uploadError.message);
+        return;
+      }
+
+      const { data: publicUrlData } = supabase.storage.from('users').getPublicUrl(filePath);
+      if (publicUrlData) {
+        setImageUrl(publicUrlData.publicUrl);
+
+        await axios.put(API_MYPAGE_PROFILE(userId), { id: userId, avatar: publicUrlData.publicUrl });
+      } else {
+        console.error('Failed to get public URL');
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -24,29 +63,26 @@ const ProfileForm = ({ userId }: { userId: string }) => {
       setProfile(profileData);
       setNickname(profileData.name);
       setEmail(profileData.email);
+      setImageUrl(profileData.avatar);
     };
 
     fetchProfile();
   }, [userId]);
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    if (profile) {
-      await axios.put(API_MYPAGE_PROFILE(userId), { id: profile.id, name: nickname, email });
-      router.back();
-    }
-  };
 
   return (
     <div>
       <h1>Edit Profile</h1>
       {profile ? (
         <form onSubmit={handleSubmit}>
+          <div>
+            <img src={imageUrl} alt="Profile" className="h-[76px] w-[76px] rounded-full" />
+            <input type="file" onChange={handleImageChange} />
+          </div>
           <input
             type="text"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
-            placeholder="nickName"
+            placeholder="Nickname"
             className="text-black"
           />
           <input

@@ -23,20 +23,6 @@ const ReviewForm = ({ userId }: { userId: string }) => {
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
 
-  useEffect(() => {
-    const fetchReview = async () => {
-      if (id) {
-        const response = await axios.get(`${API_MYPAGE_REVIEWS(userId)}?id=${id}`);
-        const reviewData = response.data[0];
-        setReview(reviewData);
-        setContent(reviewData.content);
-        setRating(reviewData.rating);
-      }
-    };
-
-    fetchReview();
-  }, [id]);
-
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (id) {
@@ -58,6 +44,20 @@ const ReviewForm = ({ userId }: { userId: string }) => {
   const handleBack = () => {
     router.back();
   };
+  
+  useEffect(() => {
+    const fetchReview = async () => {
+      if (id) {
+        const response = await axios.get(`${API_MYPAGE_REVIEWS(userId)}?id=${id}`);
+        const reviewData = response.data[0];
+        setReview(reviewData);
+        setContent(reviewData.content);
+        setRating(reviewData.rating);
+      }
+    };
+
+    fetchReview();
+  }, [id]);
 
   return (
     <div>
