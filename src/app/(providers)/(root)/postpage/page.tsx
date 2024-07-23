@@ -11,7 +11,6 @@ export default function PostPage() {
   const [endDate, setEndDate] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState('');
-  // const [mapLoaded, setMapLoaded] = useState(false);
 
   useKakaoLoader()
 
@@ -39,34 +38,7 @@ export default function PostPage() {
     setTags(tags.filter((_, index) => index !== indexToRemove));
   };
 
-  const pharmacies = [
-    { id: 1, 'place-name': '약국1', lat: 37.5665, lng: 126.978 },
-    { id: 2, 'place-name': '약국2', lat: 37.5675, lng: 126.979 },
-  ];
 
-  const locations = pharmacies.map((pharmacy) => ({
-    id: pharmacy.id,
-    placeName: pharmacy['place-name'],
-    latlng: { lat: pharmacy.lat, lng: pharmacy.lng },
-  }));
-
-  const averageLatLng = () => {
-    let totalLat = 0;
-    let totalLng = 0;
-
-    locations.forEach((location) => {
-      totalLat += location.latlng.lat;
-      totalLng += location.latlng.lng;
-    });
-
-    const averageLat = totalLat / locations.length;
-    const averageLng = totalLng / locations.length;
-
-    return { lat: averageLat, lng: averageLng - 0.04 };
-  };
-
-  const centerLatLng = averageLatLng();
-  console.log(centerLatLng);
 
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
@@ -148,7 +120,6 @@ export default function PostPage() {
         </div>
       </div>
       <div style={{ flex: 1 }}>
-        {/* {mapLoaded ? ( */}
         <Map // 지도를 표시할 Container
       id="map"
       center={{
@@ -163,9 +134,6 @@ export default function PostPage() {
       }}
       level={3} // 지도의 확대 레벨
     />
-        {/* ) : (
-          <div>Loading map...</div>
-        )} */}
       </div>
     </div>
   );
