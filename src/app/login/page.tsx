@@ -1,5 +1,5 @@
 'use client';
-import { handleLogin, handleSignUp } from '@/utils/supabase/service';
+import { googleLogin, handleLogin, handleSignUp } from '@/utils/supabase/service';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -8,7 +8,7 @@ const AuthForm = () => {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [nickname, setNickname] = useState('');
+  const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   const toggleForm = () => {
@@ -22,7 +22,16 @@ const AuthForm = () => {
 
   const onSignUp = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    handleSignUp(email, password, nickname, router, setError);
+    handleSignUp(email, password, name, router, setError);
+  };
+
+  const goToFindPassword = () => {
+    router.push('/findPassword');
+  };
+
+  const onGoogleLogin = async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    e.preventDefault();
+    await googleLogin();
   };
 
   return (
@@ -30,8 +39,8 @@ const AuthForm = () => {
       <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
         <h1 className="text-center text-2xl font-bold">{isSignUp ? 'Create Account' : 'Sign In'}</h1>
         <div className="social-container my-4 flex justify-center">
-          <a href="#" className="mx-1 rounded-full border border-gray-300 p-2">
-            <i className="fab fa-facebook-f"></i>
+          <a href="#" onClick={onGoogleLogin} className="mx-1 rounded-full border border-gray-300 p-2">
+            <img src="https://supabase.com/dashboard/img/icons/google-icon.svg" alt="Google logo" className="h-6 w-6" />
           </a>
           <a href="#" className="mx-1 rounded-full border border-gray-300 p-2">
             <i className="fab fa-google-plus-g"></i>
@@ -44,10 +53,10 @@ const AuthForm = () => {
         {isSignUp && (
           <input
             type="text"
-            placeholder="Nickname"
+            placeholder="name"
             className="mb-2 w-full rounded border border-gray-300 p-2"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
         )}
         <input
@@ -74,6 +83,11 @@ const AuthForm = () => {
           {isSignUp ? 'Already have an account?' : 'Don’t have an account?'}{' '}
           <button onClick={toggleForm} className="text-red-500 underline">
             {isSignUp ? 'Sign In' : 'Sign Up'}
+          </button>
+        </p>
+        <p className="mt-4 text-center">
+          <button onClick={goToFindPassword} className="text-red-500 underline">
+            Forgot Password?
           </button>
         </p>
       </div>
