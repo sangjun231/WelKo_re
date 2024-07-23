@@ -72,51 +72,45 @@ const ProfileForm = ({ userId }: { userId: string }) => {
     }
   };
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const response = await axios.get(API_MYPAGE_PROFILE(userId));
-      const profileData = response.data;
-      setProfile(profileData);
-      setNickname(profileData.name);
-      setEmail(profileData.email);
-      setImageUrl(profileData.avatar);
-    };
+  const fetchProfile = async () => {
+    const response = await axios.get(API_MYPAGE_PROFILE(userId));
+    const profileData = response.data;
+    setProfile(profileData);
+    setNickname(profileData.name);
+    setEmail(profileData.email);
+    setImageUrl(profileData.avatar);
+  };
 
+  useEffect(() => {
     fetchProfile();
   }, [userId]);
 
   return (
     <div>
-      <h1>Edit Profile</h1>
       {profile ? (
         <form onSubmit={handleSubmit}>
+          <button type="submit">Update Profile</button>
           <div>
             {imageUrl && (
               <Image
+                className="rounded-full"
                 src={`${imageUrl}?${new Date().getTime()}`}
                 alt="Profile"
                 width={70}
                 height={70}
-                className="rounded-full"
               />
             )}
+            <p>{email}</p>
             <input type="file" onChange={handleImageChange} />
           </div>
+          <p>닉네임</p>
           <input
+            className="text-black"
             type="text"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
             placeholder="Nickname"
-            className="text-black"
           />
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            className="text-black"
-          />
-          <button type="submit">Update Profile</button>
         </form>
       ) : (
         <div>Loading...</div>

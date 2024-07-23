@@ -22,12 +22,12 @@ const ReviewList = ({ userId }: { userId: string }) => {
     setReviews(reviews.filter((review) => review.id !== id));
   };
 
-  useEffect(() => {
-    const fetchReviews = async () => {
-      const response = await axios.get(API_MYPAGE_REVIEWS(userId));
-      setReviews(response.data);
-    };
+  const fetchReviews = async () => {
+    const response = await axios.get(API_MYPAGE_REVIEWS(userId));
+    setReviews(response.data);
+  };
 
+  useEffect(() => {
     fetchReviews();
   }, [userId]);
 
