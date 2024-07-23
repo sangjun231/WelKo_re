@@ -4,6 +4,7 @@ import React from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
+import { averageRatings } from '@/utils/averageRating';
 
 interface Review {
   id: string;
@@ -11,6 +12,7 @@ interface Review {
   user_id: string;
   post_id: string;
   content: string;
+  rating: number;
 }
 
 const AllReviewsPage = () => {
@@ -44,8 +46,12 @@ const AllReviewsPage = () => {
     return <div className="flex h-screen items-center justify-center">No reviews found</div>;
   }
 
+  // 평균 평점 계산
+  const averageRating = averageRatings(reviews || []);
+
   return (
     <div>
+      <h2>평균 점수: {averageRating} / 5.0</h2>
       <h2>후기: {reviews.length}개</h2>
       <div>
         {reviews.map((review) => (

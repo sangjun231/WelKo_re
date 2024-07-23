@@ -4,13 +4,16 @@ import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
+import { averageRatings } from '@/utils/averageRating'; // 유틸리티 함수 가져오기
 
 interface Review {
   id: string;
   created_at: string;
   user_id: string;
+  userName: string; // 작성자 이름
   post_id: string;
   content: string;
+  rating: number; // 평점
 }
 
 const Reviews = () => {
@@ -31,8 +34,11 @@ const Reviews = () => {
   } = useQuery<Review[]>({
     queryKey: ['reviews', postId],
     queryFn: fetchReviews,
-    enabled: !!postId // postId가 있을 때만 쿼리 실행
+    enabled: !!postId
   });
+
+  // 평균 평점 계산
+  const averageRating = averageRatings(reviews || []);
 
   if (isLoading) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
@@ -46,16 +52,18 @@ const Reviews = () => {
 
   return (
     <div>
+      <h2>평균 점수: {averageRating} / 5.0</h2>
       <h2>후기: {reviews.length}개</h2>
       <div>
         {reviews.slice(0, 1).map((review) => (
           <div key={review.id} className="mb-4 border-b p-2">
+            <p>평점: {review.rating} / 5.0</p>
             <p>{review.content}</p>
             <p>{new Date(review.created_at).toLocaleString()}</p>
           </div>
         ))}
       </div>
-      <button className="mb-6 border" onClick={() => router.push(`/detail/movenew/allreviews/${postId}`)}>
+      <button className="mb-6 border" onClick={() => router.push(`/detail/allreviews/${postId}`)}>
         후기 {reviews.length}개 모두 보기
       </button>
     </div>
