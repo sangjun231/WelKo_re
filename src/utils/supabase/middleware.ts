@@ -34,7 +34,12 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // 현재 로그인 상태이면서 경로가 /login, /signup 인 경우 홈화면으로 리다이렉트
-  if (user && (request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/signup'))) {
+  if (
+    user &&
+    (request.nextUrl.pathname.startsWith('/login') ||
+      request.nextUrl.pathname.startsWith('/findPassword') ||
+      request.nextUrl.pathname.startsWith('/resetPassword'))
+  ) {
     return NextResponse.redirect(request.nextUrl.origin);
   }
 

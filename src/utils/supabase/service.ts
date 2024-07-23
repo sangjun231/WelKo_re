@@ -15,6 +15,7 @@ const validatePassword = (password: string): boolean => {
   return regex.test(password);
 };
 
+// 로그인
 export const handleLogin = async (
   email: string,
   password: string,
@@ -37,6 +38,7 @@ export const handleLogin = async (
   });
 
   if (signInError) {
+    console.error('Sign-in error:', signInError); // 에러 로깅
     // 에러 메시지에 따라 처리
     if (signInError.message.toLowerCase().includes('invalid login credentials')) {
       toast.error('잘못된 로그인 자격 증명입니다.');
@@ -49,16 +51,17 @@ export const handleLogin = async (
   }
 };
 
+// 회원가입
 export const handleSignUp = async (
   email: string,
   password: string,
-  nickname: string,
+  name: string,
   router: any,
   setError: (message: string) => void
 ) => {
   const supabase = createClient();
 
-  if (!email || !password || !nickname) {
+  if (!email || !password || !name) {
     return toast.error('빈칸을 모두 채워주세요!');
   }
 
@@ -77,13 +80,9 @@ export const handleSignUp = async (
     return toast.error('이미 사용 중인 이메일입니다!');
   }
 
-  const { data: nicknameExist, error: nicknameError } = await supabase
-    .from('users')
-    .select('id')
-    .eq('nickname', nickname)
-    .single();
+  const { data: nameExist, error: nameError } = await supabase.from('users').select('id').eq('name', name).single();
 
-  if (nicknameExist) {
+  if (nameExist) {
     return toast.error('이미 사용 중인 닉네임입니다!');
   }
 
@@ -92,7 +91,7 @@ export const handleSignUp = async (
     password: password,
     options: {
       data: {
-        nickname: nickname
+        name: name
       }
     }
   });
@@ -102,5 +101,32 @@ export const handleSignUp = async (
   } else {
     toast.success('회원가입 성공!');
     router.push('/');
+  }
+};
+
+// 로그아웃
+export const handleLogout = async (router: any) => {
+  const supabase = createClient();
+  await supabase.auth.signOut();
+  toast.success('로그아웃 되었습니다.');
+  router.push('/');
+};
+
+// 구글로그인
+export const googleLogin = async () => {
+  const supabase = createClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: 'http://localhost:3000/auth/callback',
+      queryParams: {
+        access_type: 'offline',
+        prompt: 'consent'
+      }
+    }
+  });
+  if (error) {
+    console.error('Error during Google login:', error);
+    return;
   }
 };
