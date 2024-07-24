@@ -44,7 +44,7 @@ const ProfileView = ({ userId }: { userId: string }) => {
               <p className="text-[20px] font-bold">{profile.name}</p>
               <p className="ml-2 text-[13px]">Please set the region</p>
             </div>
-            <Link href={`/${userId}/profile-page`}>
+            <Link href={`/${userId}/profilepage`}>
               <button className="mt-2">Edit Profile</button>
             </Link>
           </div>
