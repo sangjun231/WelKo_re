@@ -35,13 +35,13 @@ export default function PostList() {
     }
   };
 
-  const { data, isLoading, error } = useQuery<Post[]>({
+  const { data, isPending, error } = useQuery<Post[]>({
     queryKey: ['post', userId],
     queryFn: getPostsData,
     enabled: !!userId
   });
 
-  if (isLoading) return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  if (isPending) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
   if (error) {
     return <div className="flex h-screen items-center justify-center">Error: {error.message}</div>;
