@@ -44,7 +44,7 @@ const ReviewForm = ({ userId }: { userId: string }) => {
   const handleBack = () => {
     router.back();
   };
-  
+
   useEffect(() => {
     const fetchReview = async () => {
       if (id) {
@@ -63,13 +63,8 @@ const ReviewForm = ({ userId }: { userId: string }) => {
     <div>
       <h1>{id ? 'Edit Review' : 'New Review'}</h1>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Content"
-          className="text-black"
-        />
+        <button type="submit">{id ? 'Update Review' : 'Add Review'}</button>
+        <p>별점</p>
         <input
           type="number"
           value={rating}
@@ -77,10 +72,19 @@ const ReviewForm = ({ userId }: { userId: string }) => {
           placeholder="Rating"
           className="text-black"
         />
-        <button type="submit">{id ? 'Update Review' : 'Add Review'}</button>
+        <p>내용</p>
+        <input
+          type="text"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="Content"
+          className="text-black"
+        />
       </form>
-      {id && <button onClick={handleDelete}>Delete Review</button>}
-      <button onClick={handleBack}>Back</button>
+      <div className="flex justify-around">
+        <button onClick={handleBack}>Go Back</button>
+        {id && <button onClick={handleDelete}>Delete Review</button>}
+      </div>
     </div>
   );
 };

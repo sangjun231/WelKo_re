@@ -43,10 +43,12 @@ const ReviewList = ({ userId }: { userId: string }) => {
           <div key={item.id}>
             <h2>{item.content}</h2>
             <p>Rating: {item.rating}</p>
-            <button onClick={() => handleDelete(item.id)}>Delete</button>
-            <Link href={`/${userId}/review-page?id=${item.id}`}>
-              <button>Edit</button>
-            </Link>
+            <div className="mt-2 flex justify-around">
+              <Link href={`/${userId}/review-page?id=${item.id}`}>
+                <button>Edit</button>
+              </Link>
+              <button onClick={() => handleDelete(item.id)}>Delete</button>
+            </div>
           </div>
         ))
       )}

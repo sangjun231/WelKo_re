@@ -28,9 +28,8 @@ const ProfileView = ({ userId }: { userId: string }) => {
 
   return (
     <div>
-      <h1>My Profile</h1>
       {profile ? (
-        <div>
+        <div className="flex">
           {profile.avatar && (
             <Image
               src={`${profile.avatar}?${new Date().getTime()}`}
@@ -40,11 +39,15 @@ const ProfileView = ({ userId }: { userId: string }) => {
               className="rounded-full"
             />
           )}
-          <p>Nickname: {profile.name}</p>
-          <p>Email: {profile.email}</p>
-          <Link href={`/${userId}/profile-page`}>
-            <button>Edit Profile</button>
-          </Link>
+          <div className="ml-4">
+            <div className="flex">
+              <p className="font-bold">{profile.name}</p>
+              <p className="ml-2">지역을 설정해주세요</p>
+            </div>
+            <Link href={`/${userId}/profile-page`}>
+              <button className="mt-2">Edit Profile</button>
+            </Link>
+          </div>
         </div>
       ) : (
         <div>Loading...</div>

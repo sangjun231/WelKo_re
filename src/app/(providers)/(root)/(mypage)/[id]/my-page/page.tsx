@@ -17,15 +17,13 @@ const MyPage = () => {
 
   return (
     <div>
-      <h1>My Page</h1>
+      <h1 className="mb-4">My Page</h1>
       <button onClick={handleBack}>Go Back</button>
       <ProfileView userId={id} />
-
-      <div className="flex justify-around">
+      <div className="mb-2 mt-4 flex justify-around">
         <button onClick={() => setSelectedComponent('reviews')}>Reviews</button>
         <button onClick={() => setSelectedComponent('posts')}>Posts</button>
       </div>
-
       {selectedComponent === 'reviews' && <ReviewList userId={id} />}
       {selectedComponent === 'posts' && <PostList />}
     </div>
