@@ -23,10 +23,10 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   const supabase = createClient();
   const { id: user_id } = params;
-  const { nickname, email } = await req.json();
+  const { name, email, avatar } = await req.json();
 
   try {
-    const { data, error } = await supabase.from('users').update({ nickname, email }).eq('id', user_id);
+    const { data, error } = await supabase.from('users').update({ name, email, avatar }).eq('id', user_id);
 
     if (error) {
       console.error('PUT error:', error);

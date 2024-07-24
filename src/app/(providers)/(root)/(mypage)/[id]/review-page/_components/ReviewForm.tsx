@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
+import Rating from 'react-rating-stars-component';
 import { API_MYPAGE_REVIEWS } from '@/utils/apiConstants';
 
 type Review = {
@@ -23,20 +24,6 @@ const ReviewForm = ({ userId }: { userId: string }) => {
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
 
-  useEffect(() => {
-    const fetchReview = async () => {
-      if (id) {
-        const response = await axios.get(`${API_MYPAGE_REVIEWS(userId)}?id=${id}`);
-        const reviewData = response.data[0];
-        setReview(reviewData);
-        setContent(reviewData.content);
-        setRating(reviewData.rating);
-      }
-    };
-
-    fetchReview();
-  }, [id]);
-
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (id) {
@@ -48,39 +35,49 @@ const ReviewForm = ({ userId }: { userId: string }) => {
     router.back();
   };
 
-  const handleDelete = async () => {
-    if (id) {
-      await axios.delete(API_MYPAGE_REVIEWS(userId), { data: { id } });
-      router.back();
-    }
-  };
-
   const handleBack = () => {
     router.back();
   };
+
+  const fetchReview = async () => {
+    if (id) {
+      const response = await axios.get(`${API_MYPAGE_REVIEWS(userId)}?id=${id}`);
+      const reviewData = response.data[0];
+      setReview(reviewData);
+      setContent(reviewData.content);
+      setRating(reviewData.rating);
+    }
+  };
+
+  const ratingChanged = (newRating: number) => {
+    setRating(newRating);
+  };
+
+  useEffect(() => {
+    fetchReview();
+  }, [id]);
 
   return (
     <div>
       <h1>{id ? 'Edit Review' : 'New Review'}</h1>
       <form onSubmit={handleSubmit}>
+        <button className="mt-4" onClick={handleBack}>
+          Go Back
+        </button>
+        <p className="mt-4">별점</p>
+        <Rating count={5} value={rating} onChange={ratingChanged} size={24} activeColor="#ffd700" />
+        <p className="mt-4">내용</p>
         <input
+          className="text-black"
           type="text"
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="Content"
-          className="text-black"
         />
-        <input
-          type="number"
-          value={rating}
-          onChange={(e) => setRating(parseInt(e.target.value))}
-          placeholder="Rating"
-          className="text-black"
-        />
-        <button type="submit">{id ? 'Update Review' : 'Add Review'}</button>
+        <div className="mt-10 flex max-w-full items-center justify-center">
+          <button type="submit">{id ? 'Update Review' : 'Add Review'}</button>
+        </div>
       </form>
-      {id && <button onClick={handleDelete}>Delete Review</button>}
-      <button onClick={handleBack}>Back</button>
     </div>
   );
 };
