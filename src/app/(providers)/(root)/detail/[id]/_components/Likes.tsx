@@ -5,64 +5,70 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import useAuthStore from '@/zustand/bearsStore';
 import { useParams } from 'next/navigation';
 
-interface LikeResponse {
-  liked: boolean;
+interface Like {
+  user_id: string;
+  post_id: string;
+  created_at: string;
 }
 
-const Likes = () => {
+const Like = () => {
   const { id: postId } = useParams<{ id: string }>();
   const user = useAuthStore((state) => state.user);
   const [liked, setLiked] = useState(false);
 
   // 좋아요 상태를 가져오는 함수
-  const fetchLikeStatus = async (postId: string, userId: string): Promise<LikeResponse> => {
-    const response = await axios.get<LikeResponse>(`/api/detail/likes/${postId}`, {
-      headers: { 'user-id': userId }
+  const fetchLikeStatus = async (): Promise<boolean> => {
+    const response = await axios.get<{ exists: boolean }>(`/api/detail/likes/${postId}`, {
+      headers: { 'user-id': user.id }
     });
-    return response.data || { liked: false }; // 데이터가 없을 경우 기본값 반환
+    return response.data.exists;
   };
 
   // 좋아요 상태를 업데이트하는 함수
-  const toggleLikeStatus = async (postId: string, userId: string, liked: boolean): Promise<boolean> => {
+  const toggleLikeStatus = async (): Promise<void> => {
     if (liked) {
-      const response = await axios.delete(`/api/detail/likes/${postId}`, { data: { userId } });
-      if (response.status !== 200) throw new Error('Failed to toggle like status');
-      return false;
+      await axios.delete(`/api/detail/likes/${postId}`, { data: { userId: user.id } });
     } else {
-      const response = await axios.post(`/api/detail/likes/${postId}`, { userId });
-      if (response.status !== 201) throw new Error('Failed to toggle like status');
-      return true;
+      await axios.post(`/api/detail/likes/${postId}`, { userId: user.id });
     }
   };
 
-  const { data, isError, isLoading, refetch } = useQuery<LikeResponse>({
+  const { data, isError, isLoading, refetch } = useQuery<boolean>({
     queryKey: ['likeStatus', postId, user?.id],
-    queryFn: () => fetchLikeStatus(postId, user?.id!),
+    queryFn: fetchLikeStatus,
     enabled: !!postId && !!user?.id
   });
 
   useEffect(() => {
-    if (data) {
-      setLiked(data.liked);
+    if (data !== undefined) {
+      setLiked(data);
     }
   }, [data]);
 
-  const likeMutation = useMutation<boolean, Error, { postId: string; userId: string; liked: boolean }>({
-    mutationFn: ({ postId, userId, liked }) => toggleLikeStatus(postId, userId, liked),
+  const likeMutation = useMutation<void, Error>({
+    mutationFn: toggleLikeStatus,
     onSuccess: () => {
       refetch();
     }
   });
 
   const handleLike = () => {
+    if (!user) {
+      alert('좋아요를 누르기 위해서는 로그인이 필요합니다.');
+      return;
+    }
     if (isLoading) return;
-    likeMutation.mutate({ postId, userId: user.id, liked: !liked });
+    likeMutation.mutate();
   };
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error fetching like status</div>;
 
-  return <button onClick={handleLike}>{liked ? <FaHeart size={30} color="red" /> : <FaRegHeart size={30} />}</button>;
+  return (
+    <button onClick={handleLike}>
+      {liked ? <FaHeart size={30} color="red" /> : <FaRegHeart size={30} />}
+    </button>
+  );
 };
 
-export default Likes;
+export default Like;
