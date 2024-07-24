@@ -19,6 +19,7 @@ const ProfileForm = ({ userId }: { userId: string }) => {
   const [nickname, setNickname] = useState('');
   const [email, setEmail] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const router = useRouter();
   const supabase = createClient();
 
@@ -33,6 +34,7 @@ const ProfileForm = ({ userId }: { userId: string }) => {
   const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      setSelectedFile(file.name);
       const fileExt = file.name.split('.').pop();
       const fileName = `${userId}.${fileExt}`;
       const filePath = `profile_images/${fileName}`;
@@ -90,9 +92,17 @@ const ProfileForm = ({ userId }: { userId: string }) => {
               />
             )}
             <p>{email}</p>
-            <input type="file" onChange={handleImageChange} />
+            <div className="mt-2">
+              <div className="mt-1 flex items-center">
+                <label className="cursor-pointer rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700">
+                  <span>Select File</span>
+                  <input type="file" className="hidden" onChange={handleImageChange} />
+                </label>
+                {selectedFile && <span className="ml-2">{selectedFile}</span>}
+              </div>
+            </div>
           </div>
-          <p>닉네임</p>
+          <p>nickname</p>
           <input
             className="text-black"
             type="text"
