@@ -12,11 +12,12 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       data: { session },
       error: signInError
     } = await supabase.auth.signInWithPassword({
-      email: req.headers.get('x-email') || '', // 헤더에서 이메일 가져오기, 프론트엔드에서 제공
+      email: req.headers.get('email') || '', // 헤더에서 이메일 가져오기, 프론트엔드에서 제공
       password: currentPassword
     });
 
     if (signInError || !session) {
+      // 현재 비밀번호가 일치하지 않으면 오류 반환
       return NextResponse.json({ error: 'Current password is incorrect' }, { status: 401 });
     }
 

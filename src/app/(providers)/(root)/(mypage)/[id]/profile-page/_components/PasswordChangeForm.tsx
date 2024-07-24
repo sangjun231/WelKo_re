@@ -21,7 +21,7 @@ const PasswordChangeForm = ({ userId, email }: PasswordChangeFormProps) => {
         { currentPassword, newPassword },
         {
           headers: {
-            'x-email': email
+            email: email
           }
         }
       );
