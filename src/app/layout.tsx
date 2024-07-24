@@ -4,7 +4,9 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import LogoutButton from '@/components/logoutButton';
+import { AuthSubscriber } from '@/components/common/AuthSubscriber';
+import LogoutButton from '@/components/common/logoutButton';
+
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -22,6 +24,7 @@ export default function HTMLLayout({
 }>) {
   return (
     <html lang="ko">
+      <AuthSubscriber />
       <body className={inter.className}>
         <header>
           <LogoutButton />
