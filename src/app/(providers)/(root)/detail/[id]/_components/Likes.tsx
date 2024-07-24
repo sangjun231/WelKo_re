@@ -1,4 +1,5 @@
 import { FaRegHeart } from 'react-icons/fa';
+import { TbPencil, TbTrash } from 'react-icons/tb';
 
 export interface Heart {
   liked: boolean;
@@ -7,6 +8,10 @@ export interface Heart {
 const Likes = () => {
   return (
     <div>
+      <TbPencil />
+      <button>
+        <TbTrash />
+      </button>
       <button>
         <FaRegHeart size={30} />
       </button>
