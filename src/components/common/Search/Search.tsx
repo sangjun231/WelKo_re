@@ -21,7 +21,7 @@ export default function Search({ initialQuery = '' }: { initialQuery?: string })
   };
 
   const handleInputClick = () => {
-    router.push('/citySearch');
+    router.push('/TravelPlanner');
   };
 
   return (
