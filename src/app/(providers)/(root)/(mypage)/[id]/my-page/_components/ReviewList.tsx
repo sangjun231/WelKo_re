@@ -3,6 +3,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Rating from 'react-rating-stars-component';
 import { API_MYPAGE_REVIEWS } from '@/utils/apiConstants';
 
 type Review = {
@@ -17,19 +18,19 @@ type Review = {
 const ReviewList = ({ userId }: { userId: string }) => {
   const [reviews, setReviews] = useState<Review[]>([]);
 
-  useEffect(() => {
-    const fetchReviews = async () => {
-      const response = await axios.get(API_MYPAGE_REVIEWS(userId));
-      setReviews(response.data);
-    };
-
-    fetchReviews();
-  }, [userId]);
-
   const handleDelete = async (id: string) => {
     await axios.delete(API_MYPAGE_REVIEWS(userId), { data: { id } });
     setReviews(reviews.filter((review) => review.id !== id));
   };
+
+  const fetchReviews = async () => {
+    const response = await axios.get(API_MYPAGE_REVIEWS(userId));
+    setReviews(response.data);
+  };
+
+  useEffect(() => {
+    fetchReviews();
+  }, [userId]);
 
   return (
     <div>
@@ -41,12 +42,14 @@ const ReviewList = ({ userId }: { userId: string }) => {
       ) : (
         reviews.map((item) => (
           <div key={item.id}>
-            <h2>{item.content}</h2>
-            <p>Rating: {item.rating}</p>
-            <button onClick={() => handleDelete(item.id)}>Delete</button>
-            <Link href={`/${userId}/review-page?id=${item.id}`}>
-              <button>Edit</button>
-            </Link>
+            <Rating count={5} value={item.rating} size={24} edit={false} activeColor="#ffd700" />
+            <p>{item.content}</p>
+            <div className="mt-2 flex justify-around">
+              <Link href={`/${userId}/review-page?id=${item.id}`}>
+                <button>Edit</button>
+              </Link>
+              <button onClick={() => handleDelete(item.id)}>Delete</button>
+            </div>
           </div>
         ))
       )}
