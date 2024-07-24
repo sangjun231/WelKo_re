@@ -1,5 +1,7 @@
 'use client';
 import { googleLogin, handleLogin, handleSignUp } from '@/utils/supabase/service';
+import useAuthStore from '@/zustand/bearsStore';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -10,14 +12,15 @@ const AuthForm = () => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const { login } = useAuthStore();
 
   const toggleForm = () => {
     setIsSignUp(!isSignUp);
   };
 
-  const onLogin = (e: React.FormEvent<HTMLButtonElement>) => {
+  const onLogin = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    handleLogin(email, password, router, setError);
+    await login(email, password, router);
   };
 
   const onSignUp = (e: React.FormEvent<HTMLButtonElement>) => {
@@ -40,7 +43,13 @@ const AuthForm = () => {
         <h1 className="text-center text-2xl font-bold">{isSignUp ? 'Create Account' : 'Sign In'}</h1>
         <div className="social-container my-4 flex justify-center">
           <a href="#" onClick={onGoogleLogin} className="mx-1 rounded-full border border-gray-300 p-2">
-            <img src="https://supabase.com/dashboard/img/icons/google-icon.svg" alt="Google logo" className="h-6 w-6" />
+            <Image
+              src="https://supabase.com/dashboard/img/icons/google-icon.svg"
+              alt="Google logo"
+              width={24} // 이미지의 실제 너비
+              height={24} // 이미지의 실제 높이
+              className="h-6 w-6"
+            />
           </a>
           <a href="#" className="mx-1 rounded-full border border-gray-300 p-2">
             <i className="fab fa-google-plus-g"></i>

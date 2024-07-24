@@ -1,4 +1,5 @@
 import { createClient } from '@/utils/supabase/client';
+import useAuthStore from '@/zustand/bearsStore';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -22,34 +23,44 @@ export const handleLogin = async (
   router: any,
   setError: (message: string) => void
 ) => {
-  const supabase = createClient();
-
-  // 클라이언트 사이드 유효성 검사
-  if (!email) {
-    return toast.error('이메일을 입력하세요!');
-  }
-  if (!password) {
-    return toast.error('비밀번호를 입력하세요!');
-  }
-
-  const { data, error: signInError } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  if (signInError) {
-    console.error('Sign-in error:', signInError); // 에러 로깅
-    // 에러 메시지에 따라 처리
-    if (signInError.message.toLowerCase().includes('invalid login credentials')) {
-      toast.error('잘못된 로그인 자격 증명입니다.');
-    } else {
-      setError(signInError.message);
-    }
-  } else {
-    toast.success('로그인 되었습니다.');
-    router.push('/');
-  }
+  const { login } = useAuthStore.getState();
+  await login(email, password, router);
 };
+
+// export const handleLogin = async (
+//   email: string,
+//   password: string,
+//   router: any,
+//   setError: (message: string) => void
+// ) => {
+//   const supabase = createClient();
+
+//   // 클라이언트 사이드 유효성 검사
+//   if (!email) {
+//     return toast.error('이메일을 입력하세요!');
+//   }
+//   if (!password) {
+//     return toast.error('비밀번호를 입력하세요!');
+//   }
+
+//   const { data, error: signInError } = await supabase.auth.signInWithPassword({
+//     email,
+//     password
+//   });
+
+//   if (signInError) {
+//     console.error('Sign-in error:', signInError); // 에러 로깅
+//     // 에러 메시지에 따라 처리
+//     if (signInError.message.toLowerCase().includes('invalid login credentials')) {
+//       toast.error('잘못된 로그인 자격 증명입니다.');
+//     } else {
+//       setError(signInError.message);
+//     }
+//   } else {
+//     toast.success('로그인 되었습니다.');
+//     router.push('/');
+//   }
+// };
 
 // 회원가입
 export const handleSignUp = async (
