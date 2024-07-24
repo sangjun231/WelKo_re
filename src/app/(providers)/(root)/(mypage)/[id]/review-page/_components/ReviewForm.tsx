@@ -39,23 +39,23 @@ const ReviewForm = ({ userId }: { userId: string }) => {
     router.back();
   };
 
-  useEffect(() => {
-    const fetchReview = async () => {
-      if (id) {
-        const response = await axios.get(`${API_MYPAGE_REVIEWS(userId)}?id=${id}`);
-        const reviewData = response.data[0];
-        setReview(reviewData);
-        setContent(reviewData.content);
-        setRating(reviewData.rating);
-      }
-    };
-
-    fetchReview();
-  }, [id]);
+  const fetchReview = async () => {
+    if (id) {
+      const response = await axios.get(`${API_MYPAGE_REVIEWS(userId)}?id=${id}`);
+      const reviewData = response.data[0];
+      setReview(reviewData);
+      setContent(reviewData.content);
+      setRating(reviewData.rating);
+    }
+  };
 
   const ratingChanged = (newRating: number) => {
     setRating(newRating);
   };
+
+  useEffect(() => {
+    fetchReview();
+  }, [id]);
 
   return (
     <div>
