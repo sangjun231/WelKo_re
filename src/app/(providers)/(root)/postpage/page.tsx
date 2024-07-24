@@ -1,7 +1,8 @@
 'use client';
 import { useState } from 'react';
 import Calendar from './_components/Calendar';
-import Step2 from './_components/Step2';
+import NaverMap from './_components/NaverMap';
+import Write from './_components/Write';
 
 export interface CalendarProps {
   next: () => void;
@@ -16,7 +17,8 @@ function PostPage() {
   return (
     <div>
       {step === 1 && <Calendar next={nextStep} />}
-      {step === 2 && <Step2 />}
+      {step === 2 && <NaverMap next={nextStep} />}
+      {step === 3 && <Write />}
     </div>
   );
 }

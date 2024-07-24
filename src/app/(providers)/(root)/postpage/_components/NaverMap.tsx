@@ -1,7 +1,9 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { CalendarProps } from '../page';
+import MapSelect from './MapSelect';
 
-function NaverMap() {
+const NaverMap: React.FC<CalendarProps> = ({ next }) => {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
 
   useEffect(() => {
@@ -41,7 +43,15 @@ function NaverMap() {
     }
   }, [isScriptLoaded]);
 
-  return <div id="map" style={{ width: '100%', height: '400px' }}></div>;
-}
+  return (
+    <>
+      <div id="map" style={{ width: '100%', height: '400px' }}></div>
+      <MapSelect />
+      <button onClick={next} className="my-4 rounded bg-black p-2 text-white">
+        저장하기
+      </button>
+    </>
+  );
+};
 
 export default NaverMap;
