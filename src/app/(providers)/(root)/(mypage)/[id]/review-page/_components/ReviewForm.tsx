@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
+import Rating from 'react-rating-stars-component';
 import { API_MYPAGE_REVIEWS } from '@/utils/apiConstants';
 
 type Review = {
@@ -34,13 +35,6 @@ const ReviewForm = ({ userId }: { userId: string }) => {
     router.back();
   };
 
-  const handleDelete = async () => {
-    if (id) {
-      await axios.delete(API_MYPAGE_REVIEWS(userId), { data: { id } });
-      router.back();
-    }
-  };
-
   const handleBack = () => {
     router.back();
   };
@@ -59,32 +53,31 @@ const ReviewForm = ({ userId }: { userId: string }) => {
     fetchReview();
   }, [id]);
 
+  const ratingChanged = (newRating: number) => {
+    setRating(newRating);
+  };
+
   return (
     <div>
       <h1>{id ? 'Edit Review' : 'New Review'}</h1>
       <form onSubmit={handleSubmit}>
-        <button type="submit">{id ? 'Update Review' : 'Add Review'}</button>
-        <p>별점</p>
+        <button className="mt-4" onClick={handleBack}>
+          Go Back
+        </button>
+        <p className="mt-4">별점</p>
+        <Rating count={5} value={rating} onChange={ratingChanged} size={24} activeColor="#ffd700" />
+        <p className="mt-4">내용</p>
         <input
-          type="number"
-          value={rating}
-          onChange={(e) => setRating(parseInt(e.target.value))}
-          placeholder="Rating"
           className="text-black"
-        />
-        <p>내용</p>
-        <input
           type="text"
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="Content"
-          className="text-black"
         />
+        <div className="mt-10 flex max-w-full items-center justify-center">
+          <button type="submit">{id ? 'Update Review' : 'Add Review'}</button>
+        </div>
       </form>
-      <div className="flex justify-around">
-        <button onClick={handleBack}>Go Back</button>
-        {id && <button onClick={handleDelete}>Delete Review</button>}
-      </div>
     </div>
   );
 };

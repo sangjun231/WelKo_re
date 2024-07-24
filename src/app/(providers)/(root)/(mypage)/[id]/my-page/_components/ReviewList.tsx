@@ -3,6 +3,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Rating from 'react-rating-stars-component';
 import { API_MYPAGE_REVIEWS } from '@/utils/apiConstants';
 
 type Review = {
@@ -41,8 +42,8 @@ const ReviewList = ({ userId }: { userId: string }) => {
       ) : (
         reviews.map((item) => (
           <div key={item.id}>
-            <h2>{item.content}</h2>
-            <p>Rating: {item.rating}</p>
+            <Rating count={5} value={item.rating} size={24} edit={false} activeColor="#ffd700" />
+            <p>{item.content}</p>
             <div className="mt-2 flex justify-around">
               <Link href={`/${userId}/review-page?id=${item.id}`}>
                 <button>Edit</button>
