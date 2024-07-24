@@ -33,7 +33,7 @@ export async function updateSession(request: NextRequest) {
     data: { user }
   } = await supabase.auth.getUser();
 
-  // 현재 로그인 상태이면서 경로가 /login, /signup 인 경우 홈화면으로 리다이렉트
+  // 현재 로그인 상태이면서 경로가 /login, /findPassword, /resetPassword 인 경우 홈화면으로 리다이렉트
   if (
     user &&
     (request.nextUrl.pathname.startsWith('/login') ||
@@ -41,6 +41,28 @@ export async function updateSession(request: NextRequest) {
       request.nextUrl.pathname.startsWith('/resetPassword'))
   ) {
     return NextResponse.redirect(request.nextUrl.origin);
+  }
+
+  // is_admin 값을 확인하여 backOffice 페이지 접근 제어
+  if (request.nextUrl.pathname.startsWith('/backOffice')) {
+    if (user) {
+      const { data: userData, error: adminCheckError } = await supabase
+        .from('users')
+        .select('is_admin')
+        .eq('id', user.id)
+        .single();
+
+      if (adminCheckError) {
+        console.error('Error fetching admin data:', adminCheckError);
+        return NextResponse.redirect(request.nextUrl.origin);
+      }
+
+      if (!userData.is_admin) {
+        return NextResponse.redirect(request.nextUrl.origin);
+      }
+    } else {
+      return NextResponse.redirect(request.nextUrl.origin);
+    }
   }
 
   // if (
