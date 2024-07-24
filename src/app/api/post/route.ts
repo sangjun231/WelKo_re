@@ -5,7 +5,6 @@ export async function GET(request: NextRequest) {
   const supabase = createClient();
   const { data, error } = await supabase.from('posts').select('*');
   if (error) {
-    console.error('Error fetching reviews:', error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 

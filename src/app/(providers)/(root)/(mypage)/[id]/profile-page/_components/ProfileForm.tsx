@@ -3,9 +3,10 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClient } from '@/utils/supabase/client';
 import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
-import Image from 'next/image';
+import ProfileImageUpload from './ProfileImageUpload';
+import PasswordChangeForm from './PasswordChangeForm';
+import ProfileDetailsForm from './ProfileDetailsForm';
 
 type Profile = {
   id: string;
@@ -16,60 +17,31 @@ type Profile = {
 
 const ProfileForm = ({ userId }: { userId: string }) => {
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [nickname, setNickname] = useState('');
-  const [email, setEmail] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
-  const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const router = useRouter();
-  const supabase = createClient();
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    if (profile) {
-      await axios.put(API_MYPAGE_PROFILE(userId), { id: profile.id, name: nickname, email, avatar: imageUrl });
-      router.back();
-    }
-  };
-
-  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file.name);
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${userId}.${fileExt}`;
-      const filePath = `profile_images/${fileName}`;
-
-      // 기존 이미지 삭제
-      const existingImagePath = profile?.avatar?.split('/').pop();
-      if (existingImagePath && existingImagePath !== fileName) {
-        await supabase.storage.from('users').remove([`profile_images/${existingImagePath}`]);
-      }
-
-      // 새로운 이미지 업로드
-      const { error: uploadError } = await supabase.storage.from('users').upload(filePath, file, {
-        upsert: true
-      });
-
-      if (uploadError) return;
-
-      const { data: publicUrlData } = supabase.storage.from('users').getPublicUrl(filePath);
-
-      if (!publicUrlData) return;
-
-      setImageUrl(publicUrlData.publicUrl);
-      await axios.put(API_MYPAGE_PROFILE(userId), { id: userId, avatar: publicUrlData.publicUrl });
-      // 프로필 이미지를 다시 가져와서 상태를 업데이트
-      setImageUrl(publicUrlData.publicUrl);
-    }
-  };
 
   const fetchProfile = async () => {
     const response = await axios.get(API_MYPAGE_PROFILE(userId));
     const profileData = response.data;
     setProfile(profileData);
-    setNickname(profileData.name);
-    setEmail(profileData.email);
-    setImageUrl(profileData.avatar);
+  };
+
+  const handleImageChange = (newImageUrl: string) => {
+    if (profile) {
+      setProfile({ ...profile, avatar: newImageUrl });
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    const confirmDelete = confirm('Are you sure you want to delete your account? This action cannot be undone.');
+    if (confirmDelete) {
+      try {
+        await axios.delete(API_MYPAGE_PROFILE(userId));
+        alert('Account deleted successfully');
+        router.push('/login');
+      } catch (error) {
+        alert('Error deleting account');
+      }
+    }
   };
 
   useEffect(() => {
@@ -79,38 +51,12 @@ const ProfileForm = ({ userId }: { userId: string }) => {
   return (
     <div>
       {profile ? (
-        <form onSubmit={handleSubmit}>
-          <button type="submit">Update Profile</button>
-          <div>
-            {imageUrl && (
-              <Image
-                className="rounded-full"
-                src={`${imageUrl}?${new Date().getTime()}`}
-                alt="Profile"
-                width={70}
-                height={70}
-              />
-            )}
-            <p>{email}</p>
-            <div className="mt-2">
-              <div className="mt-1 flex items-center">
-                <label className="cursor-pointer rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700">
-                  <span>Select File</span>
-                  <input type="file" className="hidden" onChange={handleImageChange} />
-                </label>
-                {selectedFile && <span className="ml-2">{selectedFile}</span>}
-              </div>
-            </div>
-          </div>
-          <p>nickname</p>
-          <input
-            className="text-black"
-            type="text"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            placeholder="Nickname"
-          />
-        </form>
+        <>
+          <ProfileDetailsForm userId={userId} profile={profile} onProfileUpdate={fetchProfile} />
+          <ProfileImageUpload userId={userId} imageUrl={profile.avatar} onImageChange={handleImageChange} />
+          <PasswordChangeForm userId={userId} email={profile.email} />
+          <button onClick={handleDeleteAccount}>Delete Account</button>
+        </>
       ) : (
         <div>Loading...</div>
       )}
