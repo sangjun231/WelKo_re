@@ -1,6 +1,7 @@
 import UpButton from '@/components/common/Button/UpButton';
 import Footer from '@/components/common/Footer/Footer';
 import Header from '@/components/common/Header/Header';
+import PostsList from '@/components/PostsList';
 import { PropsWithChildren } from 'react';
 
 function RootLayout({ children }: PropsWithChildren) {
@@ -10,6 +11,7 @@ function RootLayout({ children }: PropsWithChildren) {
         <main className="flex-1 p-6">
           <Header />
           {children}
+          <PostsList />
           <UpButton />
           <Footer />
         </main>
