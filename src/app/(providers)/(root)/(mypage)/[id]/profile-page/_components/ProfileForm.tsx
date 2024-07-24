@@ -37,38 +37,27 @@ const ProfileForm = ({ userId }: { userId: string }) => {
       const fileName = `${userId}.${fileExt}`;
       const filePath = `profile_images/${fileName}`;
 
-      // 기존 파일 삭제
+      // 기존 이미지 삭제
       const existingImagePath = profile?.avatar?.split('/').pop();
       if (existingImagePath && existingImagePath !== fileName) {
         await supabase.storage.from('users').remove([`profile_images/${existingImagePath}`]);
       }
 
-      // 새로운 파일 업로드
+      // 새로운 이미지 업로드
       const { error: uploadError } = await supabase.storage.from('users').upload(filePath, file, {
         upsert: true
       });
 
-      if (uploadError) {
-        console.error('Failed to upload image:', uploadError.message);
-        return;
-      }
+      if (uploadError) return;
 
       const { data: publicUrlData } = supabase.storage.from('users').getPublicUrl(filePath);
-      if (publicUrlData) {
-        setImageUrl(publicUrlData.publicUrl);
 
-        await axios.put(API_MYPAGE_PROFILE(userId), { id: userId, avatar: publicUrlData.publicUrl });
+      if (!publicUrlData) return;
 
-        // 프로필 데이터를 다시 가져와서 상태를 업데이트
-        const response = await axios.get(API_MYPAGE_PROFILE(userId));
-        const profileData = response.data;
-        setProfile(profileData);
-        setNickname(profileData.name);
-        setEmail(profileData.email);
-        setImageUrl(publicUrlData.publicUrl);
-      } else {
-        console.error('Failed to get public URL');
-      }
+      setImageUrl(publicUrlData.publicUrl);
+      await axios.put(API_MYPAGE_PROFILE(userId), { id: userId, avatar: publicUrlData.publicUrl });
+      // 프로필 이미지를 다시 가져와서 상태를 업데이트
+      setImageUrl(publicUrlData.publicUrl);
     }
   };
 

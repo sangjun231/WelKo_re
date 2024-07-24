@@ -40,9 +40,9 @@ const ProfileView = ({ userId }: { userId: string }) => {
             />
           )}
           <div className="ml-4">
-            <div className="flex">
-              <p className="font-bold">{profile.name}</p>
-              <p className="ml-2">지역을 설정해주세요</p>
+            <div className="flex items-center">
+              <p className="text-[20px] font-bold">{profile.name}</p>
+              <p className="ml-2 text-[13px]">지역을 설정해주세요</p>
             </div>
             <Link href={`/${userId}/profile-page`}>
               <button className="mt-2">Edit Profile</button>
