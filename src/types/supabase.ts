@@ -3,119 +3,196 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type Database = {
   public: {
     Tables: {
-      comments: {
-        Row: {
-          content: string;
-          createdAt: string;
-          id: string;
-          trackId: string;
-          userId: string;
-        };
-        Insert: {
-          content: string;
-          createdAt?: string;
-          id?: string;
-          trackId: string;
-          userId: string;
-        };
-        Update: {
-          content?: string;
-          createdAt?: string;
-          id?: string;
-          trackId?: string;
-          userId?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'comments_userId_fkey';
-            columns: ['userId'];
-            isOneToOne: false;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
-          }
-        ];
-      };
       likes: {
         Row: {
-          created_at: string | null;
-          trackId: string;
-          userId: string;
+          created_at: string;
+          id: string;
+          post_id: string | null;
+          user_id: string | null;
         };
         Insert: {
-          created_at?: string | null;
-          trackId: string;
-          userId: string;
+          created_at?: string;
+          id: string;
+          post_id?: string | null;
+          user_id?: string | null;
         };
         Update: {
-          created_at?: string | null;
-          trackId?: string;
-          userId?: string;
+          created_at?: string;
+          id?: string;
+          post_id?: string | null;
+          user_id?: string | null;
         };
         Relationships: [
           {
-            foreignKeyName: 'likes_userId_fkey';
-            columns: ['userId'];
+            foreignKeyName: 'likes_post_id_fkey';
+            columns: ['post_id'];
+            isOneToOne: false;
+            referencedRelation: 'posts';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'likes_user_id_fkey';
+            columns: ['user_id'];
             isOneToOne: false;
             referencedRelation: 'users';
             referencedColumns: ['id'];
           }
         ];
       };
-      tracks: {
+      posts: {
         Row: {
-          duration: string | null;
-          genre: string | null;
+          content: string | null;
+          created_at: string;
           id: string;
-          imageUrl: string | null;
-          like: boolean | null;
-          singer: string | null;
+          image: string | null;
+          period: Json | null;
+          price: number | null;
+          tag: Json | null;
           title: string | null;
+          updated_at: string | null;
+          user_id: string | null;
         };
         Insert: {
-          duration?: string | null;
-          genre?: string | null;
-          id: string;
-          imageUrl?: string | null;
-          like?: boolean | null;
-          singer?: string | null;
+          content?: string | null;
+          created_at?: string;
+          id?: string;
+          image?: string | null;
+          period?: Json | null;
+          price?: number | null;
+          tag?: Json | null;
           title?: string | null;
+          updated_at?: string | null;
+          user_id?: string | null;
         };
         Update: {
-          duration?: string | null;
-          genre?: string | null;
+          content?: string | null;
+          created_at?: string;
           id?: string;
-          imageUrl?: string | null;
-          like?: boolean | null;
-          singer?: string | null;
+          image?: string | null;
+          period?: Json | null;
+          price?: number | null;
+          tag?: Json | null;
           title?: string | null;
+          updated_at?: string | null;
+          user_id?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: 'posts_user_id_fkey1';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      reviews: {
+        Row: {
+          content: string | null;
+          created_at: string;
+          id: string;
+          post_id: string | null;
+          rating: number | null;
+          updated_at: string | null;
+          user_id: string | null;
+        };
+        Insert: {
+          content?: string | null;
+          created_at?: string;
+          id?: string;
+          post_id?: string | null;
+          rating?: number | null;
+          updated_at?: string | null;
+          user_id?: string | null;
+        };
+        Update: {
+          content?: string | null;
+          created_at?: string;
+          id?: string;
+          post_id?: string | null;
+          rating?: number | null;
+          updated_at?: string | null;
+          user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'reviews_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      schedule: {
+        Row: {
+          area: string | null;
+          created_at: string;
+          id: string;
+          lat: Json | null;
+          long: Json | null;
+          places: Json | null;
+          post_id: string | null;
+        };
+        Insert: {
+          area?: string | null;
+          created_at?: string;
+          id: string;
+          lat?: Json | null;
+          long?: Json | null;
+          places?: Json | null;
+          post_id?: string | null;
+        };
+        Update: {
+          area?: string | null;
+          created_at?: string;
+          id?: string;
+          lat?: Json | null;
+          long?: Json | null;
+          places?: Json | null;
+          post_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'schedule_post_id_fkey';
+            columns: ['post_id'];
+            isOneToOne: false;
+            referencedRelation: 'posts';
+            referencedColumns: ['id'];
+          }
+        ];
       };
       users: {
         Row: {
-          createdAt: string | null;
-          email: string | null;
+          avatar: string;
+          created_at: string;
+          email: string;
           id: string;
-          name: string | null;
-          profileImg: string | null;
+          is_admin: boolean | null;
+          name: string;
+          updated_at: string;
         };
         Insert: {
-          createdAt?: string | null;
-          email?: string | null;
+          avatar?: string;
+          created_at: string;
+          email: string;
           id: string;
-          name?: string | null;
-          profileImg?: string | null;
+          is_admin?: boolean | null;
+          name?: string;
+          updated_at?: string;
         };
         Update: {
-          createdAt?: string | null;
-          email?: string | null;
+          avatar?: string;
+          created_at?: string;
+          email?: string;
           id?: string;
-          name?: string | null;
-          profileImg?: string | null;
+          is_admin?: boolean | null;
+          name?: string;
+          updated_at?: string;
         };
         Relationships: [
           {
-            foreignKeyName: 'user_id_fkey';
+            foreignKeyName: 'users_id_fkey';
             columns: ['id'];
             isOneToOne: true;
             referencedRelation: 'users';
@@ -128,7 +205,12 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      is_admin: {
+        Args: {
+          user_id: string;
+        };
+        Returns: boolean;
+      };
     };
     Enums: {
       [_ in never]: never;
