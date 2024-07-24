@@ -32,27 +32,28 @@ const PasswordChangeForm = ({ userId, email }: PasswordChangeFormProps) => {
   };
 
   return (
-    <form onSubmit={handlePasswordChange}>
-      <h2>Change Password</h2>
+    <form onSubmit={handlePasswordChange} className="mt-4">
       <div>
         <input
-          className="text-black"
+          className="w-full rounded border px-3 py-2 text-black"
           type="password"
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
           placeholder="Current Password"
         />
       </div>
-      <div>
+      <div className="mt-4">
         <input
-          className="text-black"
+          className="w-full rounded border px-3 py-2 text-black"
           type="password"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           placeholder="New Password"
         />
       </div>
-      <button type="submit">Change Password</button>
+      <button type="submit" className="mt-4 rounded bg-black px-4 py-2 text-white">
+        Change Password
+      </button>
     </form>
   );
 };

@@ -1,44 +1,34 @@
 'use client';
 
-import axios from 'axios';
-import { useState } from 'react';
-import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
-
 type ProfileDetailsFormProps = {
-  userId: string;
-  profile: { id: string; name: string; email: string; avatar: string };
-  onProfileUpdate: () => void;
+  nickname: string;
+  setNickname: (nickname: string) => void;
+  location: string;
+  setLocation: (location: string) => void;
 };
 
-const ProfileDetailsForm = ({ userId, profile, onProfileUpdate }: ProfileDetailsFormProps) => {
-  const [nickname, setNickname] = useState(profile.name);
-  const [email, setEmail] = useState(profile.email);
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    try {
-      await axios.put(API_MYPAGE_PROFILE(userId), { id: profile.id, name: nickname, email, avatar: profile.avatar });
-      onProfileUpdate();
-    } catch (error) {
-      alert('Error updating profile');
-    }
-  };
-
+const ProfileDetailsForm = ({ nickname, setNickname, location, setLocation }: ProfileDetailsFormProps) => {
   return (
-    <form onSubmit={handleSubmit}>
-      <button type="submit">Update Profile</button>
+    <div className="mt-4">
       <div>
-        <p>{email}</p>
+        <label className="block">nickname</label>
+        <input
+          className="w-full rounded border px-3 py-2 text-black"
+          type="text"
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
+        />
       </div>
-      <p>Nickname</p>
-      <input
-        className="text-black"
-        type="text"
-        value={nickname}
-        onChange={(e) => setNickname(e.target.value)}
-        placeholder="Nickname"
-      />
-    </form>
+      <div className="mt-4">
+        <label className="block">my region</label>
+        <input
+          className="w-full rounded border px-3 py-2 text-black"
+          type="text"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        />
+      </div>
+    </div>
   );
 };
 

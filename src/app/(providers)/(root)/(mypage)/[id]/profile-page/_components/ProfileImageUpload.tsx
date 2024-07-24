@@ -41,24 +41,22 @@ const ProfileImageUpload = ({ userId, imageUrl, onImageChange }: ProfileImageUpl
   };
 
   return (
-    <div>
+    <div className="flex justify-center">
       {imageUrl && (
         <Image
           className="rounded-full"
           src={`${imageUrl}?${new Date().getTime()}`}
           alt="Profile"
-          width={70}
-          height={70}
+          width={100}
+          height={100}
         />
       )}
       <div className="mt-2">
-        <div className="mt-1 flex items-center">
-          <label className="cursor-pointer rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700">
-            <span>Select File</span>
-            <input type="file" className="hidden" onChange={handleImageChange} />
-          </label>
-          {selectedFile && <span className="ml-2">{selectedFile}</span>}
-        </div>
+        <label className="cursor-pointer rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700">
+          <span>Select File</span>
+          <input type="file" className="hidden" onChange={handleImageChange} />
+        </label>
+        {selectedFile && <span className="ml-2">{selectedFile}</span>}
       </div>
     </div>
   );
