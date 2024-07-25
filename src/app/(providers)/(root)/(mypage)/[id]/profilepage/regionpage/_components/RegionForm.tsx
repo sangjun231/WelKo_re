@@ -1,9 +1,9 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { CalendarProps } from '../page';
 
-const NaverMap = () => {
+const RegionForm = () => {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
+  const [position, setPosition] = useState<{ latitude: number; longitude: number } | null>(null);
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -29,26 +29,42 @@ const NaverMap = () => {
   }, []);
 
   useEffect(() => {
-    if (isScriptLoaded) {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords;
+          setPosition({ latitude, longitude });
+        },
+        (error) => {
+          console.error('Error occurred while retrieving location:', error);
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by this browser.');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isScriptLoaded && position) {
       const map = new window.naver.maps.Map('map', {
-        center: new window.naver.maps.LatLng(37.5112, 127.0981), // 잠실 롯데월드를 중심으로 하는 지도
+        center: new window.naver.maps.LatLng(position.latitude, position.longitude),
         zoom: 15
       });
 
       new window.naver.maps.Marker({
-        position: new window.naver.maps.LatLng(37.5112, 127.0981),
+        position: new window.naver.maps.LatLng(position.latitude, position.longitude),
         map: map
       });
     }
-  }, [isScriptLoaded]);
+  }, [isScriptLoaded, position]);
 
   return (
     <>
-      <div id="map" style={{ width: '100%', height: '400px' }}></div>
+      <div className="mt-4" id="map" style={{ width: '100%', height: '400px' }}></div>
 
       <button className="my-4 rounded bg-black p-2 text-white">저장하기</button>
     </>
   );
 };
 
-export default NaverMap;
+export default RegionForm;
