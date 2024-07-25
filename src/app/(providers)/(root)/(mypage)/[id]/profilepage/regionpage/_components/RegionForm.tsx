@@ -1,11 +1,17 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import { toast } from 'react-toastify';
 
 const RegionForm = () => {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [position, setPosition] = useState<{ latitude: number; longitude: number } | null>(null);
-  const [locationName, setLocationName] = useState<string | null>(null);
+  const [region, setRegion] = useState<string | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // URL 경로에서 userId 추출
+  const userId = pathname.split('/')[1];
 
   const loadNaverMapScript = () => {
     const script = document.createElement('script');
@@ -43,7 +49,7 @@ const RegionForm = () => {
     }
   };
 
-  const getLocationName = (latitude: number, longitude: number) => {
+  const getRegionName = (latitude: number, longitude: number) => {
     if (!window.naver) return;
 
     const coord = new window.naver.maps.LatLng(latitude, longitude);
@@ -58,7 +64,7 @@ const RegionForm = () => {
         if (status === 200) {
           if (response.result.items && response.result.items.length > 0) {
             const address = response.result.items[0].address;
-            setLocationName(address);
+            setRegion(address);
           } else {
             toast.error('주소를 찾을 수 없습니다.');
           }
@@ -81,7 +87,13 @@ const RegionForm = () => {
         map: map
       });
 
-      getLocationName(position.latitude, position.longitude);
+      getRegionName(position.latitude, position.longitude); // Rename getLocationName to getRegionName
+    }
+  };
+
+  const handleSave = () => {
+    if (region && userId) {
+      router.push(`/${userId}/profilepage?region=${encodeURIComponent(region)}`);
     }
   };
 
@@ -104,8 +116,10 @@ const RegionForm = () => {
   return (
     <>
       <div className="mt-4" id="map" style={{ width: '100%', height: '400px' }}></div>
-      {locationName && <p>현재 위치: {locationName}</p>}
-      <button className="my-4 rounded bg-black p-2 text-white">저장하기</button>
+      {region && <p>현재 위치: {region}</p>}
+      <button className="my-4 rounded bg-black p-2 text-white" onClick={handleSave}>
+        저장하기
+      </button>
     </>
   );
 };

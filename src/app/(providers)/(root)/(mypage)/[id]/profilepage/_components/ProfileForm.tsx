@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import ProfileImageUpload from './ProfileImageUpload';
 import PasswordChangeForm from './PasswordChangeForm';
@@ -13,24 +13,26 @@ type Profile = {
   name: string;
   email: string;
   avatar: string;
-  location: string;
+  region: string;
 };
 
 const ProfileForm = ({ userId }: { userId: string }) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [nickname, setNickname] = useState('');
-  const [location, setLocation] = useState('');
+  const [region, setRegion] = useState('');
   const [email, setEmail] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [showPasswordChange, setShowPasswordChange] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const newRegion = searchParams.get('region');
 
   const fetchProfile = async () => {
     const response = await axios.get(API_MYPAGE_PROFILE(userId));
     const profileData = response.data;
     setProfile(profileData);
     setNickname(profileData.name);
-    setLocation(profileData.location);
+    setRegion(newRegion || profileData.region);
     setEmail(profileData.email);
     setImageUrl(profileData.avatar);
   };
@@ -42,10 +44,11 @@ const ProfileForm = ({ userId }: { userId: string }) => {
         name: nickname,
         email,
         avatar: imageUrl,
-        location
+        region
       });
       alert('Profile updated successfully');
       fetchProfile();
+      router.push(`/${userId}/mypage`);
     }
   };
 
@@ -68,7 +71,7 @@ const ProfileForm = ({ userId }: { userId: string }) => {
 
   useEffect(() => {
     fetchProfile();
-  }, [userId]);
+  }, [userId, newRegion]);
 
   return (
     <div>
@@ -84,8 +87,9 @@ const ProfileForm = ({ userId }: { userId: string }) => {
           <ProfileDetailsForm
             nickname={nickname}
             setNickname={setNickname}
-            location={location}
-            setLocation={setLocation}
+            region={region}
+            setRegion={setRegion}
+            userId={userId}
           />
           {showPasswordChange && <PasswordChangeForm userId={userId} email={profile.email} />}
           <div className="flex justify-around">

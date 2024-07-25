@@ -1,13 +1,22 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 type ProfileDetailsFormProps = {
   nickname: string;
   setNickname: (nickname: string) => void;
-  location: string;
-  setLocation: (location: string) => void;
+  region: string;
+  setRegion: (region: string) => void;
+  userId: string;
 };
 
-const ProfileDetailsForm = ({ nickname, setNickname, location, setLocation }: ProfileDetailsFormProps) => {
+const ProfileDetailsForm = ({ nickname, setNickname, region, setRegion, userId }: ProfileDetailsFormProps) => {
+  const router = useRouter();
+
+  const handleRegionClick = () => {
+    router.push(`/${userId}/profilepage/regionpage`);
+  };
+
   return (
     <div className="mt-4">
       <div>
@@ -21,12 +30,9 @@ const ProfileDetailsForm = ({ nickname, setNickname, location, setLocation }: Pr
       </div>
       <div className="mt-4">
         <label className="block">my region</label>
-        <input
-          className="w-full rounded border px-3 py-2 text-black"
-          type="text"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-        />
+        <button className="w-full rounded border bg-gray-200 px-3 py-2 text-black" onClick={handleRegionClick}>
+          {region || 'Set your region'}
+        </button>
       </div>
     </div>
   );

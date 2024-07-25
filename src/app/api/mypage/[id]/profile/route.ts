@@ -21,10 +21,10 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   const supabase = createClient();
   const { id: user_id } = params;
-  const { name, email, avatar } = await req.json();
+  const { name, email, avatar, region } = await req.json();
 
   try {
-    const { data, error } = await supabase.from('users').update({ name, email, avatar }).eq('id', user_id);
+    const { data, error } = await supabase.from('users').update({ name, email, avatar, region }).eq('id', user_id);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
