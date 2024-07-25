@@ -5,7 +5,7 @@ import ThemeSelector from '../_components/planner/ThemeSelector';
 import CitySelector from '../_components/planner/CitySelector';
 import PeriodSelector from '../_components/planner/PeriodSelector';
 
-const themes = ['테마1', '테마2', '테마3', '테마4', '테마5'];
+const themes = ['체험과 액티비티', '유명 핫플레이스', '자연과 함께', '관광지도 갈래요', '쇼핑할래요', '현젹하고 여유롭게', '맛집은 필수', '문화 예술 탐방'];
 const cities = ['서울', '부산', '속초', '강릉', '전주', '대구', '경주', '여수', '제주'];
 
 export default function TravelPlanner() {
