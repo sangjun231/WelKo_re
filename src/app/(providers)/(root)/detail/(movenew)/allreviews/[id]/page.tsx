@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import { averageRatings } from '@/utils/averageRating';
+import ReactStars from 'react-rating-stars-component';
 
 interface Review {
   id: string;
@@ -47,16 +48,18 @@ const AllReviewsPage = () => {
   }
 
   // 평균 평점 계산
-  const averageRating = averageRatings(reviews || []);
+  const averageRating: number = averageRatings(reviews || []);
 
   return (
     <div>
       <h2>평균 점수: {averageRating} / 5.0</h2>
+      <ReactStars count={5} value={averageRating} size={24} isHalf={true} edit={false} activeColor="#ffd700" />
       <h2>후기: {reviews.length}개</h2>
       <div>
         {reviews.map((review) => (
           <div key={review.id} className="mb-4 border-b p-2">
             <p>{review.content}</p>
+            <ReactStars count={5} value={review.rating} size={24} isHalf={true} edit={false} activeColor="#ffd700" />
             <small>{new Date(review.created_at).toLocaleString()}</small>
           </div>
         ))}
