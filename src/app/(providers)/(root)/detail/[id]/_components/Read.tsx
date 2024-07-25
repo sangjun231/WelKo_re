@@ -1,43 +1,14 @@
 'use client';
 
-import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { useParams } from 'next/navigation';
-
-export interface Post {
-  id: string;
-  created_at: string;
-  user_id: string;
-  title: string;
-  image: string;
-  content: string;
-  tag: Record<string, string>;
-  area: string;
-  price: number;
-  period: Record<string, { date: string; events: string[] }>;
-  updated_at?: string;
-}
+import { useQuery } from '@tanstack/react-query';
+import { fetchPost, Post } from '@/utils/api/detail/post';
 
 export default function Read() {
   const { id } = useParams();
+  const postId = Array.isArray(id) ? id[0] : id;
   const [selectedDay, setSelectedDay] = useState<string>('1일차');
-
-  // API 요청 함수
-  const getPostsData = async () => {
-    try {
-      const response = await axios.get('/api/post');
-      // 필터링 로직을 클라이언트에서 처리
-      const data: Post[] = response.data;
-      return data.filter((post) => post.id === id);
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new Error(`HTTP error! status: ${error.response?.status}`);
-      } else {
-        throw new Error('An unknown error occurred');
-      }
-    }
-  };
 
   // 가격을 포맷하는 함수
   const formatPrice = (price: number) => {
@@ -45,13 +16,13 @@ export default function Read() {
   };
 
   // react-query를 사용하여 데이터 가져오기
-  const { data, isPending, error } = useQuery<Post[]>({
-    queryKey: ['post', id],
-    queryFn: getPostsData,
-    enabled: !!id // id가 있을 때만 쿼리 실행
+  const { data, isLoading, error } = useQuery<Post[]>({
+    queryKey: ['post', postId],
+    queryFn: () => fetchPost(postId),
+    enabled: !!postId // postId가 있을 때만 쿼리 실행
   });
 
-  if (isPending) return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  if (isLoading) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
   if (error) {
     return <div className="flex h-screen items-center justify-center">Error: {error.message}</div>;
@@ -108,7 +79,6 @@ export default function Read() {
                   ))}
                 </div>
               </div>
-              {/* 일단 게시물 작성 시간을 넣긴 했는데, 이거 UI에서도 보여줘야되는걸까요?? */}
               <p>{new Date(post.created_at).toLocaleString()}</p>
             </div>
           </div>

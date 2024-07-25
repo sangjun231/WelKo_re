@@ -2,46 +2,31 @@
 
 import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
+import { fetchReviews, Review } from '@/utils/api/detail/reviews';
 import { averageRatings } from '@/utils/averageRating';
 import ReactStars from 'react-rating-stars-component';
 
-interface Review {
-  id: string;
-  created_at: string;
-  user_id: string;
-  userName: string;
-  post_id: string;
-  content: string;
-  rating: number;
-}
-
 const Reviews = () => {
-  const { id: postId } = useParams();
+  const params = useParams();
+  const postId = Array.isArray(params.id) ? params.id[0] : params.id;
   const router = useRouter();
-
-  // 리뷰 데이터를 가져오는 함수
-  const fetchReviews = async (): Promise<Review[]> => {
-    const response = await axios.get(`/api/detail/reviews/${postId}`);
-    return response.data;
-  };
 
   // React Query를 사용하여 리뷰 데이터 가져오기
   const {
     data: reviews,
-    isPending,
+    isLoading,
     error
   } = useQuery<Review[]>({
     queryKey: ['reviews', postId],
-    queryFn: fetchReviews,
+    queryFn: () => fetchReviews(postId),
     enabled: !!postId
   });
 
   // 평균 평점 계산
   const averageRating = averageRatings(reviews || []);
 
-  if (isPending) return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  if (isLoading) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
   if (error) {
     return <div className="flex h-screen items-center justify-center">Error: {error.message}</div>;
