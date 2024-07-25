@@ -3,7 +3,7 @@
 import React from 'react';
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { fetchPost, Post } from '@/utils/api/detail/post';
+import { fetchPost, Post } from '@/utils/supabase/api/detail/post';
 
 const SelectPost = () => {
   const { id } = useParams();
@@ -40,7 +40,7 @@ const SelectPost = () => {
       </button>
       <div className="flex items-center space-x-4">
         <div className="flex">
-          <img src={post.image} alt={post.title} className="w-24 mr-2" />
+          <img src={post.image} alt={post.title} className="mr-2 w-24" />
           <div className="">
             <h2 className="text-xl font-bold">{post.title}</h2>
             <p className="text-gray-500">24.8.19~8.22</p> {/* 날짜는 하드코딩 대신 추후 실제 데이터로 대체 */}
