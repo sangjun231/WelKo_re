@@ -34,7 +34,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
 
   return (
     <div>
-      <Link href={`/${userId}/review-page`}>
+      <Link href={`/${userId}/reviewpage`}>
         <button>Create New Review</button>
       </Link>
       {reviews.length === 0 ? (
@@ -45,7 +45,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
             <Rating count={5} value={item.rating} size={24} edit={false} activeColor="#ffd700" />
             <p>{item.content}</p>
             <div className="mt-2 flex justify-around">
-              <Link href={`/${userId}/review-page?id=${item.id}`}>
+              <Link href={`/${userId}/reviewpage?id=${item.id}`}>
                 <button>Edit</button>
               </Link>
               <button onClick={() => handleDelete(item.id)}>Delete</button>

@@ -11,6 +11,7 @@ type Profile = {
   name: string;
   email: string;
   avatar: string;
+  region: string | null;
 };
 
 const ProfileView = ({ userId }: { userId: string }) => {
@@ -42,9 +43,13 @@ const ProfileView = ({ userId }: { userId: string }) => {
           <div className="ml-4">
             <div className="flex items-center">
               <p className="text-[20px] font-bold">{profile.name}</p>
-              <p className="ml-2 text-[13px]">Please set the region</p>
+              {profile.region ? (
+                <p className="ml-2 text-[13px]">{profile.region}</p>
+              ) : (
+                <p className="ml-2 text-[13px]">Please set the region</p>
+              )}
             </div>
-            <Link href={`/${userId}/profile-page`}>
+            <Link href={`/${userId}/profilepage`}>
               <button className="mt-2">Edit Profile</button>
             </Link>
           </div>
