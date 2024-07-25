@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import Chat from '@/components/Chat';
 import PostList from './_components/PostList';
 import ProfileView from './_components/ProfileView';
 import ReviewList from './_components/ReviewList';
-import { useParams, useRouter } from 'next/navigation';
-import Chat from '@/components/Chat';
+import LikeList from './_components/LikeList';
 
 const MyPage = () => {
   const { id } = useParams() as { id: string };
@@ -26,11 +27,13 @@ const MyPage = () => {
       <button onClick={handleBack}>Go Back</button>
       <ProfileView userId={id} />
       <div className="mb-2 mt-4 flex justify-around">
-        <button onClick={() => setSelectedComponent('reviews')}>Reviews</button>
+        <button onClick={() => setSelectedComponent('likes')}>likes</button>
         <button onClick={() => setSelectedComponent('posts')}>Posts</button>
+        <button onClick={() => setSelectedComponent('reviews')}>Reviews</button>
       </div>
-      {selectedComponent === 'reviews' && <ReviewList userId={id} />}
+      {selectedComponent === 'likes' && <LikeList />}
       {selectedComponent === 'posts' && <PostList />}
+      {selectedComponent === 'reviews' && <ReviewList userId={id} />}
     </div>
   );
 };
