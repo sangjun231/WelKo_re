@@ -59,11 +59,11 @@ const ReviewForm = ({ userId }: { userId: string }) => {
 
   return (
     <div>
-      <h1>{id ? 'Edit Review' : 'New Review'}</h1>
+      <h1>{id ? 'Edit Review' : 'New Review'}</h1>{' '}
+      <button className="mt-4" onClick={handleBack}>
+        Go Back
+      </button>
       <form onSubmit={handleSubmit}>
-        <button className="mt-4" onClick={handleBack}>
-          Go Back
-        </button>
         <p className="mt-4">별점</p>
         <Rating count={5} value={rating} onChange={ratingChanged} size={24} activeColor="#ffd700" />
         <p className="mt-4">내용</p>
