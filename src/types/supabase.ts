@@ -12,21 +12,18 @@ export type Database = {
       likes: {
         Row: {
           created_at: string
-          id: string
-          post_id: string | null
-          user_id: string | null
+          post_id: string
+          user_id: string
         }
         Insert: {
           created_at?: string
-          id: string
-          post_id?: string | null
-          user_id?: string | null
+          post_id: string
+          user_id: string
         }
         Update: {
           created_at?: string
-          id?: string
-          post_id?: string | null
-          user_id?: string | null
+          post_id?: string
+          user_id?: string
         }
         Relationships: [
           {
@@ -83,7 +80,7 @@ export type Database = {
           tag: Json | null
           title: string | null
           updated_at: string | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           content?: string | null
@@ -98,7 +95,7 @@ export type Database = {
           tag?: Json | null
           title?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           content?: string | null
@@ -113,7 +110,7 @@ export type Database = {
           tag?: Json | null
           title?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
@@ -211,6 +208,7 @@ export type Database = {
           email: string
           id: string
           is_admin: boolean | null
+          location: string | null
           name: string
           updated_at: string
         }
@@ -220,6 +218,7 @@ export type Database = {
           email: string
           id: string
           is_admin?: boolean | null
+          location?: string | null
           name?: string
           updated_at?: string
         }
@@ -229,6 +228,7 @@ export type Database = {
           email?: string
           id?: string
           is_admin?: boolean | null
+          location?: string | null
           name?: string
           updated_at?: string
         }

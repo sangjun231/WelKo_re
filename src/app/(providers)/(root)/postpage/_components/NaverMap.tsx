@@ -1,9 +1,15 @@
 'use client';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { CalendarProps } from '../page';
+import { FaArrowLeft } from 'react-icons/fa';
 import MapSelect from './MapSelect';
 
-const NaverMap: React.FC<CalendarProps> = ({ next }) => {
+type MapProps = {
+  next: () => void;
+  prev: () => void;
+};
+
+const NaverMap: React.FC<MapProps> = ({ next, prev }) => {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
 
   useEffect(() => {
@@ -45,9 +51,26 @@ const NaverMap: React.FC<CalendarProps> = ({ next }) => {
 
   return (
     <>
+      <div className="flex">
+        <button onClick={prev}>
+          <FaArrowLeft className="m-1" />
+        </button>
+        <div className="flex-grow text-center">
+          <h1 className="text-lg font-bold">장소 추가</h1>
+          <p>날짜가져오기</p>
+        </div>
+      </div>
+      {/* 수정 필요 */}
+      <div className="flex justify-between">
+        <p>현재 위치</p>
+        <Link href="/" className="underline">
+          지역 변경하기
+        </Link>
+      </div>
+
       <div id="map" style={{ width: '100%', height: '400px' }}></div>
       <MapSelect />
-      <button onClick={next} className="my-4 rounded bg-black p-2 text-white">
+      <button onClick={next} className="my-4 w-full rounded bg-black p-2 text-white">
         저장하기
       </button>
     </>

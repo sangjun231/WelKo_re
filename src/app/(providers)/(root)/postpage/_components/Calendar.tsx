@@ -1,10 +1,9 @@
 'use client';
 import { addMonths, format } from 'date-fns';
-import React, { useState } from 'react';
-import { CalendarProps } from '../page';
+import { useState } from 'react';
 import DaySelect from './DaySelect';
 
-const Calendar: React.FC<CalendarProps> = ({ next }) => {
+const Calendar = ({ next }: { next: () => void }) => {
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);

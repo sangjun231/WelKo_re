@@ -1,7 +1,15 @@
+'use client';
+import { insertPostData } from '@/utils/post/postData';
+import { createClient } from '@/utils/supabase/client';
+import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { FaArrowLeft } from 'react-icons/fa';
 
-const Write = () => {
+const Write = ({ prev }: { prev: () => void }) => {
+  const router = useRouter();
+  const supabase = createClient();
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [image, setImage] = useState<string>('');
@@ -47,7 +55,8 @@ const Write = () => {
     }
   };
   //태그 선택하는 핸들러
-  const toggleTag = (item: string) => {
+  const toggleTag = (item: string, event: React.MouseEvent) => {
+    event.preventDefault();
     if (tag.includes(item)) {
       setTag(tag.filter((i) => i !== item));
     } else {
@@ -63,15 +72,46 @@ const Write = () => {
     }
   };
 
-  useEffect(() => {
-    console.log('선택한 태그:', tag);
-    console.log('비용 체크:', selectedPrices);
-  }, [tag, selectedPrices]);
+  const addMutation = useMutation({
+    mutationFn: insertPostData
+  });
+
+  const handleSavePost = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const {
+      data: { user },
+      error
+    } = await supabase.auth.getUser();
+    if (error) {
+      console.error('Error getting user:', error);
+      return;
+    }
+    const user_id = user?.id as string;
+    addMutation.mutate({
+      user_id,
+      title,
+      content,
+      image,
+      maxPeople,
+      tag,
+      price,
+      selectedPrices
+    });
+    router.replace('/');
+  };
 
   return (
-    <div>
+    <form onSubmit={handleSavePost}>
+      <div className="my-4 flex">
+        <button onClick={prev}>
+          <FaArrowLeft className="m-1" />
+        </button>
+        <div className="flex-grow text-center">
+          <h1 className="text-lg font-semibold">지역 가져와서- 투어</h1>
+        </div>
+      </div>
       {/* 제목, 내용 입력 폼 */}
-      <form className="flex flex-col">
+      <div className="flex flex-col">
         <label>제목</label>
         <input
           className="border"
@@ -87,7 +127,7 @@ const Write = () => {
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
-      </form>
+      </div>
       {/* 이미지 등록 */}
       <div>
         <div className="flex items-center">
@@ -118,7 +158,8 @@ const Write = () => {
             <button
               key={item}
               className={`rounded-full border px-4 py-2 ${tag.includes(item) ? 'bg-gray-200' : 'bg-white'}`}
-              onClick={() => toggleTag(item)}
+              onClick={(e) => toggleTag(item, e)}
+              type="button"
             >
               {item}
             </button>
@@ -146,8 +187,8 @@ const Write = () => {
         </div>
       </div>
 
-      <button className="my-4 rounded bg-black p-2 text-white">저장하기</button>
-    </div>
+      <button className="my-4 w-full rounded bg-black p-2 text-white">저장하기</button>
+    </form>
   );
 };
 

@@ -43,56 +43,15 @@ export default function Home() {
     <div>
       <h1>Welcome to Home Page</h1>
       {userId ? <Link href={`/${userId}/my-page`}>Go to My Page</Link> : <p>Loading...</p>}
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
-      <h1>Home Page</h1>
+      <div>
+        {userId ? (
+          <Link href="/postpage" className="border border-black">
+            Go to Post Page
+          </Link>
+        ) : (
+          <p>Loading...</p>
+        )}
+      </div>
     </div>
   );
 }
