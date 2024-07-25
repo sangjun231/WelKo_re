@@ -1,10 +1,10 @@
 'use client';
 
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import { createClient } from '@/utils/supabase/client';
+import axios from 'axios';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
   const [userId, setUserId] = useState<string | null>(null);
