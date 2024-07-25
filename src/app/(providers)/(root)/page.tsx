@@ -42,7 +42,7 @@ export default function Home() {
   return (
     <div>
       <h1>Welcome to Home Page</h1>
-      {userId ? <Link href={`/${userId}/my-page`}>Go to My Page</Link> : <p>Loading...</p>}
+      {userId ? <Link href={`/${userId}/mypage`}>Go to My Page</Link> : <p>Loading...</p>}
       <h1>Home Page</h1>
       <h1>Home Page</h1>
       <h1>Home Page</h1>
