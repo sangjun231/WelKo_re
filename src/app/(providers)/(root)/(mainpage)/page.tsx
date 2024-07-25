@@ -5,6 +5,9 @@ import { createClient } from '@/utils/supabase/client';
 import axios from 'axios';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import PostsList from './_components/PostsList';
+import Footer from '@/components/common/Footer/Footer';
+import Header from '@/components/common/Header/Header';
 
 export default function Home() {
   const [userId, setUserId] = useState<string | null>(null);
@@ -38,12 +41,16 @@ export default function Home() {
 
   return (
     <div>
+      <Header />
       <h1>Welcome to Home Page</h1>
       {userId ? (
         <Link href={`/${userId}/my-page`}>Go to My Page</Link>
       ) : (
         <p>Loading...</p>
       )}
+      <PostsList />
+      <Footer />
     </div>
   );
 }
+          
