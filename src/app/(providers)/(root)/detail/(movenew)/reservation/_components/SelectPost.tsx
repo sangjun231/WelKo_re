@@ -1,13 +1,16 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { fetchPost, Post } from '@/utils/supabase/api/detail/post';
+import usePostStore from '@/zustand/postStore';
 
 const SelectPost = () => {
   const { id } = useParams();
   const postId = Array.isArray(id) ? id[0] : id;
+  const setPostId = usePostStore((state) => state.setPostId);
+  const setPost = usePostStore((state) => state.setPost);
 
   // react-query를 사용하여 데이터 가져오기
   const { data, isLoading, error } = useQuery<Post[]>({
@@ -15,6 +18,18 @@ const SelectPost = () => {
     queryFn: () => fetchPost(postId),
     enabled: !!postId // postId가 있을 때만 쿼리 실행
   });
+
+  useEffect(() => {
+    if (postId) {
+      setPostId(postId);
+    }
+  }, [postId, setPostId]);
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      setPost(data[0]);
+    }
+  }, [data, setPost]);
 
   if (isLoading) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
