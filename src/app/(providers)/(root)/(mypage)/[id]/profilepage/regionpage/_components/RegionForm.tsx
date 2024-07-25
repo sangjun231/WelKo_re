@@ -9,13 +9,15 @@ const RegionForm = () => {
 
   const loadNaverMapScript = () => {
     const script = document.createElement('script');
-
     script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NEXT_PUBLIC_NCP_CLIENT_ID}&submodules=geocoder`;
     script.async = true;
 
     script.onload = () => {
-      if (!window.naver) return;
-      setIsScriptLoaded(true);
+      if (window.naver && window.naver.maps) {
+        setIsScriptLoaded(true);
+      } else {
+        toast.error('네이버 맵 스크립트 로드 실패');
+      }
     };
 
     script.onerror = () => {
@@ -23,10 +25,6 @@ const RegionForm = () => {
     };
 
     document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
   };
 
   const getCurrentPosition = () => {
@@ -37,7 +35,7 @@ const RegionForm = () => {
           setPosition({ latitude, longitude });
         },
         (error) => {
-          toast.error(`Error occurred while retrieving location: ${error}`);
+          toast.error(`Error occurred while retrieving location: ${error.message}`);
         }
       );
     } else {
@@ -55,10 +53,15 @@ const RegionForm = () => {
         location: coord,
         coordType: window.naver.maps.Service.CoordType.LatLng
       },
-      (status: string, response: any) => {
-        if (status === window.naver.maps.Service.Status.OK) {
-          const address = response.result.items[0].address;
-          setLocationName(address);
+      (status: any, response: any) => {
+        console.log('Reverse Geocode Response:', response);
+        if (status === 200) {
+          if (response.result.items && response.result.items.length > 0) {
+            const address = response.result.items[0].address;
+            setLocationName(address);
+          } else {
+            toast.error('주소를 찾을 수 없습니다.');
+          }
         } else {
           toast.error('Failed to get the location name.');
         }
@@ -83,17 +86,20 @@ const RegionForm = () => {
   };
 
   useEffect(() => {
-    const removeScript = loadNaverMapScript();
-    getCurrentPosition();
-
-    return removeScript;
+    loadNaverMapScript();
   }, []);
 
   useEffect(() => {
-    if (isScriptLoaded && position) {
+    if (isScriptLoaded) {
+      getCurrentPosition();
+    }
+  }, [isScriptLoaded]);
+
+  useEffect(() => {
+    if (position) {
       initializeMap();
     }
-  }, [isScriptLoaded, position]);
+  }, [position]);
 
   return (
     <>
