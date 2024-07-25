@@ -12,13 +12,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       .eq('user_id', userId);
 
     if (error) {
-      console.error('Supabase query error:', error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     return NextResponse.json({ posts: data.map((like) => like.posts) }, { status: 200 });
   } catch (error) {
-    console.error('Unexpected server error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
@@ -33,7 +31,6 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 
   try {
-    // 좋아요 상태 확인
     const { data: existingLike, error: likeError } = await supabase
       .from('likes')
       .select('*')
@@ -42,7 +39,6 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       .single();
 
     if (likeError && likeError.code !== 'PGRST116') {
-      console.error('Supabase query error:', likeError);
       return NextResponse.json({ error: likeError.message }, { status: 500 });
     }
 
@@ -50,7 +46,6 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       const { error: deleteError } = await supabase.from('likes').delete().eq('user_id', userId).eq('post_id', postId);
 
       if (deleteError) {
-        console.error('Supabase delete error:', deleteError);
         return NextResponse.json({ error: deleteError.message }, { status: 500 });
       }
 
@@ -59,14 +54,12 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       const { error: insertError } = await supabase.from('likes').insert([{ user_id: userId, post_id: postId }]);
 
       if (insertError) {
-        console.error('Supabase insert error:', insertError);
         return NextResponse.json({ error: insertError.message }, { status: 500 });
       }
 
       return NextResponse.json({ success: true, liked: true }, { status: 201 });
     }
   } catch (error) {
-    console.error('Unexpected server error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
