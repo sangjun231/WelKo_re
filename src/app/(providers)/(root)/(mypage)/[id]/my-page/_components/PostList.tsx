@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { API_MYPAGE_POST } from '@/utils/apiConstants';
 import Link from 'next/link';
+import Image from 'next/image';
 
 type Post = {
   id: string;
@@ -58,7 +59,14 @@ export default function PostList() {
           <p>{new Date(post.created_at).toLocaleString()}</p>
           <Link href={`/detail/${post.id}`}>
             <div className="flex">
-              <img className="mb-[20px] mr-2 h-[76px] w-[76px]" src={post.image} alt={post.title} />
+              <Image
+                className="mb-[20px] mr-2"
+                src={post.image}
+                alt={post.title}
+                width={76} // 실제 이미지의 폭
+                height={76} // 실제 이미지의 높이
+                layout="fixed" // 이미지의 크기를 고정
+              />
               <p className="overflow-hidden text-ellipsis whitespace-nowrap text-[14px] font-bold">{post.title}</p>
             </div>
           </Link>
