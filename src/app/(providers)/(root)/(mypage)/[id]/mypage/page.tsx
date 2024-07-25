@@ -13,7 +13,7 @@ const MyPage = () => {
   const [selectedComponent, setSelectedComponent] = useState<string | null>(null);
 
   const handleBack = () => {
-    router.back();
+    router.push(`/`);
   };
 
   const senderId = id;

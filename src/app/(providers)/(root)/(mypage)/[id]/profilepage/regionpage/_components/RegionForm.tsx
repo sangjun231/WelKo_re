@@ -60,7 +60,6 @@ const RegionForm = () => {
         coordType: window.naver.maps.Service.CoordType.LatLng
       },
       (status: any, response: any) => {
-        console.log('Reverse Geocode Response:', response);
         if (status === 200) {
           if (response.result.items && response.result.items.length > 0) {
             const address = response.result.items[0].address;
@@ -93,8 +92,11 @@ const RegionForm = () => {
 
   const handleSave = () => {
     if (region && userId) {
-      router.push(`/${userId}/profilepage?region=${encodeURIComponent(region)}`);
+      router.push(`/${userId}/profilepage`);
     }
+  };
+  const handleBack = () => {
+    router.push(`/${userId}/profilepage`);
   };
 
   useEffect(() => {
@@ -115,6 +117,7 @@ const RegionForm = () => {
 
   return (
     <>
+      <button onClick={handleBack}>Go Back</button>
       <div className="mt-4" id="map" style={{ width: '100%', height: '400px' }}></div>
       {region && <p>현재 위치: {region}</p>}
       <button className="my-4 rounded bg-black p-2 text-white" onClick={handleSave}>
