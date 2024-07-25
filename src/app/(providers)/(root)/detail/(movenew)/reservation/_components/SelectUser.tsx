@@ -23,6 +23,7 @@ const SelectUser = () => {
           수 있습니다. 판매자에게 먼저 문의 후 결제 바랍니다.
         </h5>
       </div>
+      <button className="border">예약하기</button>
     </div>
   );
 };
