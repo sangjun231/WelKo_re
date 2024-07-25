@@ -7,17 +7,10 @@ import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import ProfileImageUpload from './ProfileImageUpload';
 import PasswordChangeForm from './PasswordChangeForm';
 import ProfileDetailsForm from './ProfileDetailsForm';
-
-type Profile = {
-  id: string;
-  name: string;
-  email: string;
-  avatar: string;
-  region: string;
-};
+import { Tables } from '@/types/supabase';
 
 const ProfileForm = ({ userId }: { userId: string }) => {
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<Tables<'users'>>();
   const [nickname, setNickname] = useState('');
   const [region, setRegion] = useState('');
   const [email, setEmail] = useState('');
@@ -48,7 +41,7 @@ const ProfileForm = ({ userId }: { userId: string }) => {
       });
       alert('Profile updated successfully');
       fetchProfile();
-      router.push(`/${userId}/mypage`);
+      router.replace(`/${userId}/mypage`);
     }
   };
 
@@ -84,13 +77,7 @@ const ProfileForm = ({ userId }: { userId: string }) => {
           </div>
           <ProfileImageUpload userId={userId} imageUrl={imageUrl} onImageChange={handleImageChange} />
           <p className="text-center text-gray-500">{email}</p>
-          <ProfileDetailsForm
-            nickname={nickname}
-            setNickname={setNickname}
-            region={region}
-            setRegion={setRegion}
-            userId={userId}
-          />
+          <ProfileDetailsForm nickname={nickname} setNickname={setNickname} region={region} userId={userId} />
           {showPasswordChange && <PasswordChangeForm userId={userId} email={profile.email} />}
           <div className="flex justify-around">
             <button onClick={() => setShowPasswordChange(!showPasswordChange)} className="mt-4">
