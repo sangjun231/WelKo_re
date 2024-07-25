@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { fetchPost, Post } from '@/utils/api/detail/post';
+import { fetchPost, Post } from '@/utils/supabase/api/detail/post';
 
 export default function Read() {
   const { id } = useParams();

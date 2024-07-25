@@ -3,7 +3,7 @@
 import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { fetchReviews, Review } from '@/utils/api/detail/reviews';
+import { fetchReviews, Review } from '@/utils/supabase/api/detail/reviews';
 import { averageRatings } from '@/utils/averageRating';
 import ReactStars from 'react-rating-stars-component';
 
