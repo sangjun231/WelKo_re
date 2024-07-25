@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { fetchPost, Post } from '@/utils/supabase/api/detail/post';
+import Image from 'next/image';
 
 export default function Read() {
   const { id } = useParams();
@@ -38,7 +39,13 @@ export default function Read() {
         {data.map((post) => (
           <div key={post.id}>
             <div className="w-full">
-              <img src={post.image} alt={post.title} className="mb-[20px] h-[300px] w-[300px]" />
+              <Image
+                src={post.image}
+                alt={post.title}
+                width={300}
+                height={300}
+                className="mb-[20px] h-[300px] w-[300px]"
+              />
             </div>
             <div>
               <h1 className="text-2xl font-bold">{post.title}</h1>

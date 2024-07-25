@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { fetchPost, Post } from '@/utils/supabase/api/detail/post';
+import Image from 'next/image';
 import usePostStore from '@/zustand/postStore';
 
 const SelectPost = () => {
@@ -55,11 +56,11 @@ const SelectPost = () => {
       </button>
       <div className="flex items-center space-x-4">
         <div className="flex">
-          <img src={post.image} alt={post.title} className="mr-2 w-24" />
+          <Image src={post.image} alt={post.title} width={96} height={96} className="mr-2 w-24" />
           <div className="">
             <h2 className="text-xl font-bold">{post.title}</h2>
             <p className="text-gray-500">24.8.19~8.22</p> {/* 날짜는 하드코딩 대신 추후 실제 데이터로 대체 */}
-            <div className="text-sm font-bold">{formatPrice(post.price)}원</div>
+            <div className="text-sm font-bold">{formatPrice(post.price)}$</div>
           </div>
         </div>
       </div>
