@@ -45,13 +45,13 @@ export default function Read() {
   };
 
   // react-query를 사용하여 데이터 가져오기
-  const { data, isLoading, error } = useQuery<Post[]>({
+  const { data, isPending, error } = useQuery<Post[]>({
     queryKey: ['post', id],
     queryFn: getPostsData,
     enabled: !!id // id가 있을 때만 쿼리 실행
   });
 
-  if (isLoading) return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  if (isPending) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
   if (error) {
     return <div className="flex h-screen items-center justify-center">Error: {error.message}</div>;

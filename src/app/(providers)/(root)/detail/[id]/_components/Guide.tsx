@@ -21,7 +21,7 @@ export const Guide = () => {
 
   const {
     data: user,
-    isLoading,
+    isPending,
     error
   } = useQuery<User>({
     queryKey: ['user', postId],
@@ -29,7 +29,7 @@ export const Guide = () => {
     enabled: !!postId
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isPending) return <div>Loading...</div>;
   if (error) return <div>Error fetching user data</div>;
 
   return (

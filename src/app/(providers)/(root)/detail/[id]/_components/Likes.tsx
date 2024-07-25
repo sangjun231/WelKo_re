@@ -34,7 +34,7 @@ const Like = () => {
     }
   };
 
-  const { data, isError, isLoading, refetch } = useQuery<boolean>({
+  const { data, isError, isPending, refetch } = useQuery<boolean>({
     queryKey: ['likeStatus', postId, user?.id],
     queryFn: fetchLikeStatus,
     enabled: !!postId && !!user?.id
@@ -58,11 +58,11 @@ const Like = () => {
       alert('좋아요를 누르기 위해서는 로그인이 필요합니다.');
       return;
     }
-    if (isLoading) return;
+    if (isPending) return;
     likeMutation.mutate();
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isPending) return <div>Loading...</div>;
   if (isError) return <div>Error fetching like status</div>;
 
   return (

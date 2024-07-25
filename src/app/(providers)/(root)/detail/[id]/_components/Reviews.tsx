@@ -30,7 +30,7 @@ const Reviews = () => {
   // React Query를 사용하여 리뷰 데이터 가져오기
   const {
     data: reviews,
-    isLoading,
+    isPending,
     error
   } = useQuery<Review[]>({
     queryKey: ['reviews', postId],
@@ -41,7 +41,7 @@ const Reviews = () => {
   // 평균 평점 계산
   const averageRating = averageRatings(reviews || []);
 
-  if (isLoading) return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  if (isPending) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
   if (error) {
     return <div className="flex h-screen items-center justify-center">Error: {error.message}</div>;
@@ -54,27 +54,13 @@ const Reviews = () => {
   return (
     <div>
       <h2>평균 점수: {averageRating} / 5.0</h2>
-      <ReactStars
-        count={5}
-        value={averageRating}
-        size={24}
-        isHalf={true}
-        edit={false}
-        activeColor="#ffd700"
-      />
+      <ReactStars count={5} value={averageRating} size={24} isHalf={true} edit={false} activeColor="#ffd700" />
       <h2>후기: {reviews.length}개</h2>
       <div>
         {reviews.slice(0, 1).map((review) => (
           <div key={review.id} className="mb-4 border-b p-2">
             <p>평점: {review.rating} / 5.0</p>
-            <ReactStars
-              count={5}
-              value={review.rating}
-              size={24}
-              isHalf={true}
-              edit={false}
-              activeColor="#ffd700"
-            />
+            <ReactStars count={5} value={review.rating} size={24} isHalf={true} edit={false} activeColor="#ffd700" />
             <p>{review.content}</p>
             <p>{new Date(review.created_at).toLocaleString()}</p>
           </div>
