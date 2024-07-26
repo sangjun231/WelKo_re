@@ -57,7 +57,7 @@ export default function PostList() {
             <div className="flex">
               <Image
                 className="mb-[20px] mr-2"
-                src={post.image ?? '/icons/menu.png'}
+                src={post.image ?? '/icons/upload.png'}
                 alt={post.title ?? 'Default title'}
                 width={76}
                 height={76}

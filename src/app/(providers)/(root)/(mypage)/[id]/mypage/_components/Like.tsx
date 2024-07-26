@@ -6,10 +6,10 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { API_MYPAGE_LIKES } from '@/utils/apiConstants';
 
-interface LikeProps {
+type LikeProps = {
   postId: string;
   userId: string;
-}
+};
 
 const Like: React.FC<LikeProps> = ({ postId, userId }) => {
   const [liked, setLiked] = useState(false);

@@ -4,23 +4,21 @@ import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import React, { useEffect } from 'react';
 import { useParams } from 'next/navigation';
+import { API_MYPAGE_POST } from '@/utils/apiConstants';
 import Link from 'next/link';
 import Image from 'next/image';
-import useAuthStore from '@/zustand/bearsStore';
 import { Tables } from '@/types/supabase';
-import { API_MYPAGE_LIKES } from '@/utils/apiConstants';
-import Like from './Like';
 
-export default function LikeList() {
+export default function ReservationList() {
   const params = useParams();
   const userId = Array.isArray(params.id) ? params.id[0] : params.id;
-  const user = useAuthStore((state) => state.user);
 
-  const getLikedPostsData = async () => {
+  const getPostsData = async () => {
     try {
-      const response = await axios.get(API_MYPAGE_LIKES(userId));
-      const data: Tables<'posts'>[] = response.data.posts;
-      return data;
+      const response = await axios.get(API_MYPAGE_POST(userId));
+      // 필터링 로직을 클라이언트에서 처리
+      const data: Tables<'posts'>[] = response.data;
+      return data.filter((post) => post.user_id === userId);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(`HTTP error! status: ${error.response?.status}`);
@@ -31,8 +29,8 @@ export default function LikeList() {
   };
 
   const { data, isPending, error, refetch } = useQuery<Tables<'posts'>[]>({
-    queryKey: ['likedPosts', userId],
-    queryFn: getLikedPostsData,
+    queryKey: ['post', userId],
+    queryFn: getPostsData,
     enabled: !!userId
   });
 
@@ -53,7 +51,7 @@ export default function LikeList() {
   return (
     <div className="max-w-[360px]">
       {data.map((post) => (
-        <div key={post.id} className="relative">
+        <div key={post.id}>
           <p>{new Date(post.created_at).toLocaleString()}</p>
           <Link href={`/detail/${post.id}`}>
             <div className="flex">
@@ -67,7 +65,6 @@ export default function LikeList() {
               <p className="overflow-hidden text-ellipsis whitespace-nowrap text-[14px] font-bold">{post.title}</p>
             </div>
           </Link>
-          <Like postId={post.id} userId={user.id} />
         </div>
       ))}
     </div>
