@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import ThemeSelector from '../_components/planner/ThemeSelector';
 import CitySelector from '../_components/planner/CitySelector';
 import PeriodSelector from '../_components/planner/PeriodSelector';
-import { createClient } from '@/utils/supabase/client'; // Supabase 클라이언트 임포트
+import { createClient } from '@/utils/supabase/client';
 
 const supabase = createClient();
 
@@ -88,9 +88,6 @@ export default function TravelPlanner() {
     }
 
     fetchPosts();
-
-    // Optional: Navigate to results page if desired
-    // router.push(`/results?${query.toString()}`);
   };
 
   const toggleStep = (step: number) => {
@@ -197,7 +194,6 @@ const AccordionStep: React.FC<AccordionStepProps> = ({
 }) => {
   return (
     <div className="mt-4">
-      {/* Button will be hidden when its step is active */}
       {activeStep !== step && (
         <button
           onClick={() => toggleStep(step)}
