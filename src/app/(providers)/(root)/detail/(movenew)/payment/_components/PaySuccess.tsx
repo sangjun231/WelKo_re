@@ -55,7 +55,7 @@ export default function PaymentSuccess() {
               <div className="">
                 <h2 className="text-xl font-bold">{post.title}</h2>
                 <p className="text-gray-500">24.8.19~8.22</p> {/* 날짜는 하드코딩 대신 추후 실제 데이터로 대체 */}
-                <div className="text-sm font-bold">{post.price}</div>
+                <div className="text-sm font-bold">${post.price.toFixed(2)}</div>
               </div>
             </div>
           </div>
@@ -72,6 +72,7 @@ export default function PaymentSuccess() {
         </Link>
         <Link href={`/mypage/`} className="border">
           {/* 추후 경로에 따라 수정 예정*/}
+          마이페이지로 이동
         </Link>
       </div>
     </div>
