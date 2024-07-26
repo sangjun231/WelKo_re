@@ -1,13 +1,13 @@
 import React from 'react';
 
 interface ThemeSelectorProps {
-  selectedTheme: string | null;
+  selectedThemes: string[];
   handleThemeClick: (theme: string) => void;
   themes: string[];
   goToNextStep: () => void;
 }
 
-const ThemeSelector: React.FC<ThemeSelectorProps> = ({ selectedTheme, handleThemeClick, themes, goToNextStep }) => {
+const ThemeSelector: React.FC<ThemeSelectorProps> = ({ selectedThemes, handleThemeClick, themes, goToNextStep }) => {
   return (
     <div>
       <div className="p-4 bg-gray-100 border rounded-md mt-2">
@@ -16,7 +16,7 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ selectedTheme, handleThem
             <div
               key={theme}
               className={`cursor-pointer p-2 mb-2 border rounded-full flex-1 min-w-[30%] mx-1 text-center ${
-                theme === selectedTheme ? 'bg-blue-100 border-blue-500' : 'bg-white border-gray-300'
+                selectedThemes.includes(theme) ? 'bg-blue-100 border-blue-500' : 'bg-white border-gray-300'
               }`}
               onClick={() => handleThemeClick(theme)}
             >
@@ -26,7 +26,7 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ selectedTheme, handleThem
         </div>
         <div className="flex justify-between">
           <button onClick={goToNextStep} className="px-4 py-2 bg-blue-500 text-white rounded-md">
-            다음
+            Next
           </button>
         </div>
       </div>

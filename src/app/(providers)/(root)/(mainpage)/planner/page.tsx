@@ -1,22 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import ThemeSelector from '../_components/planner/ThemeSelector';
 import CitySelector from '../_components/planner/CitySelector';
 import PeriodSelector from '../_components/planner/PeriodSelector';
+import { createClient } from '@/utils/supabase/client'; // Supabase 클라이언트 임포트
 
-const themes = ['체험과 액티비티', '유명 핫플레이스', '자연과 함께', '관광지도 갈래요', '쇼핑할래요', '현젹하고 여유롭게', '맛집은 필수', '문화 예술 탐방'];
-const cities = ['서울', '부산', '속초', '강릉', '전주', '대구', '경주', '여수', '제주'];
+const supabase = createClient();
+
+const themes = ['Activities', 'Famous', 'With Nature', 'Tourist Attraction', 'Shopping', 'Peaceful', 'Mukbang', 'Cultural and Arts', 'K-Drama Location'];
+const cities = ['Seoul', 'Busan', 'Sokcho', 'Gangneung', 'Jeonju', 'Daegu', 'Gyeongju', 'Yeosu', 'Jeju'];
 
 export default function TravelPlanner() {
+  const router = useRouter();
   const [activeStep, setActiveStep] = useState<number | null>(1);
-  const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
+  const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [posts, setPosts] = useState<any[]>([]);
 
   const handleThemeClick = (theme: string) => {
-    setSelectedTheme(theme);
+    setSelectedThemes((prevThemes) =>
+      prevThemes.includes(theme) ? prevThemes.filter((t) => t !== theme) : [...prevThemes, theme]
+    );
   };
 
   const handleCityClick = (city: string) => {
@@ -27,11 +35,41 @@ export default function TravelPlanner() {
     return date ? new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())).toISOString() : null;
   };
 
+  const formatDateToShortString = (date: Date | null): string => {
+    return date ? `${date.getFullYear().toString().slice(-2)}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')}` : 'Anything';
+  };
+
+  const fetchPosts = async () => {
+    if (!selectedCity) return;
+
+    let query = supabase.from('posts').select('*');
+
+    if (selectedCity) {
+      query = query.ilike('title', `%${selectedCity}%`);
+    }
+
+    if (selectedThemes.length > 0) {
+      query = query.in('theme', selectedThemes);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error('Error fetching posts:', error);
+    } else {
+      setPosts(data || []);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, [selectedCity, selectedThemes]);
+
   const handleDateSelection = () => {
     const query = new URLSearchParams();
 
-    if (selectedTheme) {
-      query.append('theme', selectedTheme);
+    if (selectedThemes.length > 0) {
+      query.append('theme', selectedThemes.join(','));
     }
 
     if (selectedCity) {
@@ -49,10 +87,7 @@ export default function TravelPlanner() {
       query.append('endDate', formattedEndDate);
     }
 
-    alert(`선택된 테마: ${selectedTheme || '없음'}
-선택된 도시: ${selectedCity || '없음'}
-여행 시작 날짜: ${formattedStartDate || '없음'}
-여행 종료 날짜: ${formattedEndDate || '없음'}`);
+    fetchPosts();
 
     // Optional: Navigate to results page if desired
     // router.push(`/results?${query.toString()}`);
@@ -64,17 +99,21 @@ export default function TravelPlanner() {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">여행 계획 세우기</h1>
+      <button onClick={() => router.back()}>
+        X
+      </button>
 
       <div className="mt-4">
         <AccordionStep
           step={1}
           activeStep={activeStep}
           toggleStep={toggleStep}
-          title="1. 인기 테마 선택"
+          title="What tour do you like?"
+          shortTitle="What"
+          selection={selectedThemes.join(', ') || 'Anything'}
         >
           <ThemeSelector
-            selectedTheme={selectedTheme}
+            selectedThemes={selectedThemes}
             handleThemeClick={handleThemeClick}
             themes={themes}
             goToNextStep={() => toggleStep(2)}
@@ -85,7 +124,9 @@ export default function TravelPlanner() {
           step={2}
           activeStep={activeStep}
           toggleStep={toggleStep}
-          title="2. 특정 도시 선택"
+          title="Where to?"
+          shortTitle="Where"
+          selection={selectedCity}
         >
           <CitySelector
             selectedCity={selectedCity}
@@ -100,7 +141,13 @@ export default function TravelPlanner() {
           step={3}
           activeStep={activeStep}
           toggleStep={toggleStep}
-          title="3. 여행 기간 선택"
+          title="When is your trip?"
+          shortTitle="When"
+          selection={
+            startDate && endDate
+              ? `${formatDateToShortString(startDate)}~${formatDateToShortString(endDate)}`
+              : 'Anything'
+          }
         >
           <PeriodSelector
             next={handleDateSelection}
@@ -111,6 +158,20 @@ export default function TravelPlanner() {
           />
         </AccordionStep>
       </div>
+
+      {posts.length > 0 && (
+        <div className="mt-4">
+          <h2 className="text-xl font-bold">Related Posts</h2>
+          <ul>
+            {posts.map((post, index) => (
+              <li key={`${post.id}-${index}`} className="mb-4 border p-2 rounded-md">
+                <h3 className="font-bold">{post.title}</h3>
+                <p>{post.content}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
@@ -120,6 +181,8 @@ interface AccordionStepProps {
   activeStep: number | null;
   toggleStep: (step: number) => void;
   title: string;
+  shortTitle: string;
+  selection: string | null;
   children: React.ReactNode;
 }
 
@@ -128,19 +191,28 @@ const AccordionStep: React.FC<AccordionStepProps> = ({
   activeStep,
   toggleStep,
   title,
+  shortTitle,
+  selection,
   children,
-}) => (
-  <div className="mt-4">
-    <button
-      onClick={() => toggleStep(step)}
-      className={`w-full text-left px-4 py-2 font-bold ${activeStep === step ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} rounded-md`}
-    >
-      {title}
-    </button>
-    {activeStep === step && (
-      <div className="p-4 bg-gray-100 border rounded-md mt-2">
-        {children}
-      </div>
-    )}
-  </div>
-);
+}) => {
+  return (
+    <div className="mt-4">
+      {/* Button will be hidden when its step is active */}
+      {activeStep !== step && (
+        <button
+          onClick={() => toggleStep(step)}
+          className={`w-full text-left px-4 py-2 font-bold ${activeStep === step ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} rounded-md flex justify-between items-center`}
+        >
+          <span>{shortTitle}</span>
+          <span>{selection || 'Anything'}</span>
+        </button>
+      )}
+      {activeStep === step && (
+        <div className="p-4 bg-gray-100 border rounded-md mt-2">
+          <div className="font-bold text-gray-700">{title}</div>
+          {children}
+        </div>
+      )}
+    </div>
+  );
+};
