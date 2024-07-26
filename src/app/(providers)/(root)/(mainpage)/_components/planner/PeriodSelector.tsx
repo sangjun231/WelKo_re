@@ -19,10 +19,6 @@ const PeriodSelector: React.FC<PeriodSelectorProps> = ({ next, startDate, endDat
 
   const handleDateSave = () => {
     next();
-    console.log({
-      startDate: startDate ? format(startOfDay(startDate), 'yyyy-MM-dd') : '없음',
-      endDate: endDate ? format(startOfDay(endDate), 'yyyy-MM-dd') : '없음',
-    });
   };
 
   return (
