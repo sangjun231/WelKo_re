@@ -2,6 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import React from 'react';
 
@@ -21,7 +22,7 @@ export const Guide = () => {
 
   const {
     data: user,
-    isLoading,
+    isPending,
     error
   } = useQuery<User>({
     queryKey: ['user', postId],
@@ -29,7 +30,7 @@ export const Guide = () => {
     enabled: !!postId
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isPending) return <div>Loading...</div>;
   if (error) return <div>Error fetching user data</div>;
 
   return (
@@ -38,10 +39,12 @@ export const Guide = () => {
       <div>
         {user && (
           <>
-            <img
+            <Image
               src={user.avatar}
               alt={`${user.name}의 아바타`}
-              style={{ width: '100px', height: '100px', borderRadius: '50%' }}
+              width={96}
+              height={96}
+              className="mr-2 h-24 w-24 rounded-full object-cover"
             />
             <h4>{user.name}</h4>
             <h5>투어 지역은 보류</h5>
