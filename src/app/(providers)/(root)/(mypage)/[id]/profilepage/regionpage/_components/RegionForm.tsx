@@ -86,17 +86,17 @@ const RegionForm = () => {
         map: map
       });
 
-      getRegionName(position.latitude, position.longitude); // Rename getLocationName to getRegionName
+      getRegionName(position.latitude, position.longitude);
     }
   };
 
   const handleSave = () => {
     if (region && userId) {
-      router.push(`/${userId}/profilepage`);
+      router.replace(`/${userId}/profilepage`);
     }
   };
   const handleBack = () => {
-    router.push(`/${userId}/profilepage`);
+    router.replace(`/${userId}/profilepage`);
   };
 
   useEffect(() => {

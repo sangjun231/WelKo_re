@@ -6,15 +6,14 @@ type ProfileDetailsFormProps = {
   nickname: string;
   setNickname: (nickname: string) => void;
   region: string;
-  setRegion: (region: string) => void;
   userId: string;
 };
 
-const ProfileDetailsForm = ({ nickname, setNickname, region, setRegion, userId }: ProfileDetailsFormProps) => {
+const ProfileDetailsForm = ({ nickname, setNickname, region, userId }: ProfileDetailsFormProps) => {
   const router = useRouter();
 
   const handleRegionClick = () => {
-    router.push(`/${userId}/profilepage/regionpage`);
+    router.replace(`/${userId}/profilepage/regionpage`);
   };
 
   return (
