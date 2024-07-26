@@ -9,7 +9,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Tables } from '@/types/supabase';
 
-export default function PostList() {
+export default function ReservationList() {
   const params = useParams();
   const userId = Array.isArray(params.id) ? params.id[0] : params.id;
 

@@ -6,18 +6,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import Rating from 'react-rating-stars-component';
 import { API_MYPAGE_REVIEWS } from '@/utils/apiConstants';
-
-type Review = {
-  id: string;
-  created_at: string;
-  post_id: string;
-  user_id: string;
-  content: string;
-  rating: number;
-};
+import { Tables } from '@/types/supabase';
 
 const ReviewForm = ({ userId }: { userId: string }) => {
-  const [review, setReview] = useState<Review | null>(null);
+  const [review, setReview] = useState<Tables<'reviews'>>();
   const [content, setContent] = useState('');
   const [rating, setRating] = useState(0);
   const router = useRouter();

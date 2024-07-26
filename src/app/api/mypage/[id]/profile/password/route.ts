@@ -12,7 +12,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       data: { session },
       error: signInError
     } = await supabase.auth.signInWithPassword({
-      email: req.headers.get('email') || '', // 헤더에서 이메일 가져오기, 프론트엔드에서 제공
+      email: req.headers.get('email') || '',
       password: currentPassword
     });
 

@@ -2,25 +2,23 @@
 
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import Image from 'next/image';
-
-type Profile = {
-  id: string;
-  name: string;
-  email: string;
-  avatar: string;
-  region: string | null;
-};
+import { Tables } from '@/types/supabase';
 
 const ProfileView = ({ userId }: { userId: string }) => {
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<Tables<'users'>>();
+  const router = useRouter();
 
   const fetchProfile = async () => {
     const response = await axios.get(API_MYPAGE_PROFILE(userId));
     const profileData = response.data;
     setProfile(profileData);
+  };
+
+  const goToProfilePage = () => {
+    router.replace(`/${userId}/profilepage`);
   };
 
   useEffect(() => {
@@ -49,9 +47,9 @@ const ProfileView = ({ userId }: { userId: string }) => {
                 <p className="ml-2 text-[13px]">Please set the region</p>
               )}
             </div>
-            <Link href={`/${userId}/profilepage`}>
-              <button className="mt-2">Edit Profile</button>
-            </Link>
+            <button onClick={goToProfilePage} className="mt-2">
+              Edit Profile
+            </button>
           </div>
         </div>
       ) : (
