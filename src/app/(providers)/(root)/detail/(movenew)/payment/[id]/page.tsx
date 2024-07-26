@@ -1,11 +1,13 @@
-import React from 'react'
+'use client';
 
-const PayMentPage = () => {
+import React from 'react';
+import PaymentSuccess from '../_components/PaySuccess';
+
+
+export default function ReservationPage() {
   return (
-    <div>
-      <div>결제 로직 구현</div>
-    </div>
-  )
+    <>
+      <PaymentSuccess/>
+    </>
+  );
 }
-
-export default PayMentPage

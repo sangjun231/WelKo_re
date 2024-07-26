@@ -17,13 +17,16 @@ interface RequestData {
   currency: 'CURRENCY_USD';
   payMethod: 'paypal';
   windowType: { type: 'UI' };
+  buyer: {
+    email: string;
+  };
 }
 
 const SelectUser = () => {
-  const user = useAuthStore((state) => state.user);
+  const { user } = useAuthStore();
   const post = usePostStore((state) => state.post);
   const router = useRouter();
-  const [result, _] = useState<any>(null);
+  const [result, setResult] = useState<any>(null);
   const [numPersons, setNumPersons] = useState(1);
   const [totalAmount, setTotalAmount] = useState(post ? post.price : 0);
 
@@ -37,22 +40,20 @@ const SelectUser = () => {
     if (post) {
       const handlePaymentSuccess = async (response: any) => {
         try {
-          const paymentData = {
+          // 결제 정보를 Supabase에 저장
+          const saveResponse = await axios.post('/api/detail/payment', {
             id: response.txId, // 고유 트랜잭션 ID
             user_id: user?.id, // 로그인한 사용자 ID
             post_id: post.id, // 결제한 게시물 ID
             pay_state: response.paymentId, // 결제 서비스 제공자에서 생성한 고유 결제 ID
             total_price: totalAmount // 총 결제 금액
-          };
-
-          console.log('Payment data to save:', paymentData); // 저장할 데이터 로그 출력
-
-          const saveResponse = await axios.post('/api/detail/payment', paymentData);
+          });
           console.log('Payment saved:', saveResponse.data);
 
+          // 결제 성공 페이지로 이동
           router.push(`/payment/success/${response.paymentId}`);
         } catch (error) {
-          console.error('Error saving payment data:', error); // 클라이언트 에러 로그 출력
+          console.error('Error saving payment data:', error);
         }
       };
 
@@ -62,10 +63,13 @@ const SelectUser = () => {
         channelKey: process.env.NEXT_PUBLIC_POSTONE_CHANNEL_KEY || '',
         paymentId: `payment-${crypto.randomUUID()}`,
         orderName: post.title,
-        totalAmount: totalAmount * 100, // 금액을 센트 단위로 변환
+        totalAmount: totalAmount,
         currency: 'CURRENCY_USD',
         payMethod: 'paypal',
-        windowType: { type: 'UI' }
+        windowType: { type: 'UI' },
+        buyer: {
+          email: user ? user.email : 'test@example.com'
+        }
       };
 
       PortOne.loadPaymentUI(requestData, {
