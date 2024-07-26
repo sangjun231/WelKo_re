@@ -12,21 +12,18 @@ export type Database = {
       likes: {
         Row: {
           created_at: string
-          id: string
-          post_id: string | null
-          user_id: string | null
+          post_id: string
+          user_id: string
         }
         Insert: {
           created_at?: string
-          id: string
-          post_id?: string | null
-          user_id?: string | null
+          post_id: string
+          user_id: string
         }
         Update: {
           created_at?: string
-          id?: string
-          post_id?: string | null
-          user_id?: string | null
+          post_id?: string
+          user_id?: string
         }
         Relationships: [
           {
@@ -83,7 +80,7 @@ export type Database = {
           tag: Json | null
           title: string | null
           updated_at: string | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           content?: string | null
@@ -98,7 +95,7 @@ export type Database = {
           tag?: Json | null
           title?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           content?: string | null
@@ -113,7 +110,7 @@ export type Database = {
           tag?: Json | null
           title?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
@@ -212,15 +209,17 @@ export type Database = {
           id: string
           is_admin: boolean | null
           name: string
+          region: string | null
           updated_at: string
         }
         Insert: {
-          avatar?: string
+          avatar: string
           created_at?: string
           email: string
           id: string
           is_admin?: boolean | null
           name?: string
+          region?: string | null
           updated_at?: string
         }
         Update: {
@@ -230,6 +229,7 @@ export type Database = {
           id?: string
           is_admin?: boolean | null
           name?: string
+          region?: string | null
           updated_at?: string
         }
         Relationships: [

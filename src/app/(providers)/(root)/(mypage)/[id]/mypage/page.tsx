@@ -13,11 +13,11 @@ const MyPage = () => {
   const [selectedComponent, setSelectedComponent] = useState<string | null>(null);
 
   const handleBack = () => {
-    router.back();
+    router.push(`/`);
   };
 
   const senderId = id;
-  const receiverId = '105c1498-4dd0-421c-ad1b-d698f2217c67';
+  const receiverId = 'b83f8bba-9072-44a2-9dd8-122cbc06fff8';
 
   return (
     <div>
