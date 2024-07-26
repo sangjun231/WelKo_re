@@ -1,6 +1,6 @@
 'use client';
 
-const MapSelect = () => {
+const MapSelect = ({ next }: { next: () => void }) => {
   return (
     <div>
       <div>
@@ -9,7 +9,7 @@ const MapSelect = () => {
         <button>3일차</button>
       </div>
 
-      <button>장소 추가하기</button>
+      <button onClick={next}>장소 추가하기</button>
     </div>
   );
 };

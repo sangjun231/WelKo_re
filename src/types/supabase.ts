@@ -208,18 +208,18 @@ export type Database = {
           email: string
           id: string
           is_admin: boolean | null
-          location: string | null
           name: string
+          region: string | null
           updated_at: string
         }
         Insert: {
-          avatar?: string
+          avatar: string
           created_at?: string
           email: string
           id: string
           is_admin?: boolean | null
-          location?: string | null
           name?: string
+          region?: string | null
           updated_at?: string
         }
         Update: {
@@ -228,8 +228,8 @@ export type Database = {
           email?: string
           id?: string
           is_admin?: boolean | null
-          location?: string | null
           name?: string
+          region?: string | null
           updated_at?: string
         }
         Relationships: [
