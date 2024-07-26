@@ -45,12 +45,9 @@ const SelectUser = () => {
             total_price: totalAmount // 총 결제 금액
           };
 
-          console.log('Payment data to save:', paymentData); // 저장할 데이터 로그 출력
+          await axios.post('/api/detail/payment', paymentData);
 
-          const saveResponse = await axios.post('/api/detail/payment', paymentData);
-          console.log('Payment saved:', saveResponse.data);
-
-          router.push(`/payment/success/${response.paymentId}`);
+          router.push(`/detail/payment/${response.txId}`);
         } catch (error) {
           console.error('Error saving payment data:', error); // 클라이언트 에러 로그 출력
         }
