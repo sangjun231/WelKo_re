@@ -32,7 +32,7 @@ export const initiatePayment = (user: any, post: any, totalAmount: number, route
     orderName: post.title, // 주문명
     channelKey: process.env.NEXT_PUBLIC_POSTONE_KG_CHANNEL_KEY || '', // 채널 키
     totalAmount: totalAmount, // 결제 금액
-    currency: 'CURRENCY_KRW', // 결제 통화
+    currency: 'CURRENCY_USD', // 결제 통화 -> 달러 기준으로 결제 ex) 1 달러 -> 환율 반영한 한국 돈(1400원 정도?)
     payMethod: 'CARD', // 결제수단 구분코드
     customer: {
       fullName: user?.name || 'Unknown', // 구매자 전체 이름

@@ -28,7 +28,8 @@ const SelectUser = () => {
   };
 
   const handlePaymentClick = () => {
-    initiatePayment(user, post, totalAmount, router);
+    const totalAmountInCents = totalAmount * 100;
+    initiatePayment(user, post, totalAmountInCents, router);
   };
 
   return (
