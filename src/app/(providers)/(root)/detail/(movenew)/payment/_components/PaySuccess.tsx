@@ -45,6 +45,11 @@ export default function PaymentSuccess() {
     return <div>No payment data found.</div>;
   }
 
+  const handleGoToMyPage = () => {
+    const userId = paymentData.user_id;
+    window.location.href = `/${userId}/mypage`;
+  };
+
   return (
     <div>
       {post && (
@@ -70,10 +75,9 @@ export default function PaymentSuccess() {
         <Link href="/" className="border">
           홈 화면 바로가기
         </Link>
-        <Link href={`/mypage/`} className="border">
-          {/* 추후 경로에 따라 수정 예정*/}
-          마이페이지로 이동
-        </Link>
+        <button onClick={handleGoToMyPage} className="mt-4 bg-blue-500 p-2 text-white">
+          마이페이지 바로가기
+        </button>
       </div>
     </div>
   );
