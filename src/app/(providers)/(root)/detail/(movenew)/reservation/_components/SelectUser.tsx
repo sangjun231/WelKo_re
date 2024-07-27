@@ -1,23 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import useAuthStore from '@/zustand/bearsStore';
 import usePostStore from '@/zustand/postStore';
-import * as PortOne from '@portone/browser-sdk/v2';
-
-interface RequestData {
-  uiType: 'PAYPAL_SPB';
-  storeId: string;
-  channelKey: string;
-  paymentId: string;
-  orderName: string;
-  totalAmount: number;
-  currency: 'CURRENCY_USD';
-  payMethod: 'paypal';
-  windowType: { type: 'UI' };
-}
+import { initiatePayment } from '../paymentHandler';
 
 const SelectUser = () => {
   const user = useAuthStore((state) => state.user);
@@ -33,52 +20,15 @@ const SelectUser = () => {
     }
   }, [numPersons, post]);
 
-  useEffect(() => {
-    if (post) {
-      const handlePaymentSuccess = async (response: any) => {
-        try {
-          const paymentData = {
-            id: response.txId, // 고유 트랜잭션 ID
-            user_id: user?.id, // 로그인한 사용자 ID
-            post_id: post.id, // 결제한 게시물 ID
-            pay_state: response.paymentId, // 결제 서비스 제공자에서 생성한 고유 결제 ID
-            total_price: totalAmount // 총 결제 금액
-          };
-
-          await axios.post('/api/detail/payment', paymentData);
-
-          router.push(`/detail/payment/${response.txId}`);
-        } catch (error) {
-          console.error('Error saving payment data:', error); // 클라이언트 에러 로그 출력
-        }
-      };
-
-      const requestData: RequestData = {
-        uiType: 'PAYPAL_SPB',
-        storeId: process.env.NEXT_PUBLIC_POSTONE_STORE_ID || '',
-        channelKey: process.env.NEXT_PUBLIC_POSTONE_CHANNEL_KEY || '',
-        paymentId: `payment-${crypto.randomUUID()}`,
-        orderName: post.title,
-        totalAmount: totalAmount * 100, // 금액을 센트 단위로 변환
-        currency: 'CURRENCY_USD',
-        payMethod: 'paypal',
-        windowType: { type: 'UI' }
-      };
-
-      PortOne.loadPaymentUI(requestData, {
-        onPaymentSuccess: handlePaymentSuccess,
-        onPaymentFail: (error) => {
-          console.error('Payment Failed:', error);
-        }
-      });
-    }
-  }, [post, totalAmount, user, router]);
-
   if (!post) return <div>Loading...</div>;
 
   const handleNumPersonsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value, 10);
     setNumPersons(value > 0 ? value : 1); // 최소값을 1로 설정
+  };
+
+  const handlePaymentClick = () => {
+    initiatePayment(user, post, totalAmount, router);
   };
 
   return (
@@ -110,8 +60,10 @@ const SelectUser = () => {
         <h3 className="font-bold">전체 금액</h3>
         <p className="font-bold">${totalAmount.toFixed(2)}</p>
       </div>
-      <div className="portone-ui-container" style={{ minHeight: '100px' }}>
-        {/* 이곳에 페이팔 버튼이 렌더링됩니다. */}
+      <div>
+        <button className="border" onClick={handlePaymentClick}>
+          결제하기
+        </button>
       </div>
       {result && <div>결제 결과: {JSON.stringify(result)}</div>}
     </div>
