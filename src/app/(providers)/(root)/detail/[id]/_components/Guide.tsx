@@ -88,7 +88,6 @@ export const Guide = () => {
     const receiverId = user.id;
 
     const query = new URLSearchParams({
-      postId,
       postTitle: post.title,
       postImage: post.image
     }).toString();
