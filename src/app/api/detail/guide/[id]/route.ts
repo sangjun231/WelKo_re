@@ -17,7 +17,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     // user_id를 통해 작성자 정보를 가져옴
     const { data: user, error: userError } = await supabase
       .from('users')
-      .select('name, avatar')
+      .select('id, name, avatar, region')
       .eq('id', post.user_id)
       .single();
 
