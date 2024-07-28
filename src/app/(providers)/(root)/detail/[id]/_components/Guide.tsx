@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
-import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
+import { API_MYPAGE_PROFILE, API_POST_DETAILS } from '@/utils/apiConstants';
 
 interface User {
   name: string;
@@ -14,6 +14,12 @@ interface User {
   id: string;
   region: string;
 }
+
+type Post = {
+  id: string;
+  title: string;
+  image: string;
+};
 
 export const Guide = () => {
   const { id: postId } = useParams() as { id: string };
@@ -34,6 +40,21 @@ export const Guide = () => {
   } = useQuery<User>({
     queryKey: ['user', postId],
     queryFn: fetchUser,
+    enabled: !!postId
+  });
+
+  const fetchPostDetails = async (): Promise<Post> => {
+    const response = await axios.get(API_POST_DETAILS(postId));
+    return response.data;
+  };
+
+  const {
+    data: post,
+    isPending: isPostPending,
+    error: postError
+  } = useQuery<Post>({
+    queryKey: ['post', postId],
+    queryFn: fetchPostDetails,
     enabled: !!postId
   });
 
@@ -59,14 +80,20 @@ export const Guide = () => {
   };
 
   const handleChat = () => {
-    if (!customerUser && !user) throw new Error('Customer user or guide user is missing.');
-
-    if (customerUser && user) {
-      const senderId = customerUser.id;
-      const receiverId = user.id;
-
-      router.push(`/${senderId}/${receiverId}/chatpage`);
+    if (!customerUser || !user || !post) {
+      throw new Error('Customer user, guide user, or post details are missing.');
     }
+
+    const senderId = customerUser.id;
+    const receiverId = user.id;
+
+    const query = new URLSearchParams({
+      postId,
+      postTitle: post.title,
+      postImage: post.image
+    }).toString();
+
+    router.push(`/${senderId}/${receiverId}/chatpage?${query}`);
   };
 
   useEffect(() => {

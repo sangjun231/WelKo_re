@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import { createClient } from '@/utils/supabase/client';
 import Chat from '@/components/Chat';
 
 const ChatPage = () => {
   const { id: senderId, receiverid } = useParams() as { id: string; receiverid: string };
+  const searchParams = useSearchParams();
   const router = useRouter();
   const supabase = createClient();
 
@@ -29,11 +31,24 @@ const ChatPage = () => {
     checkAccess();
   }, [senderId, receiverid, router, supabase]);
 
+  const postTitle = searchParams.get('postTitle') || '제목 없음';
+  const postImage = searchParams.get('postImage') || '';
+
   return (
     <div>
       <div className="mb-4 flex justify-around">
         <button onClick={handleBack}>Go Back</button>
         <p className="font-bold">message</p>
+      </div>
+      <div className="flex">
+        <Image
+          className="mb-[20px] mr-2"
+          src={postImage ?? '/icons/upload.png'}
+          alt={postTitle ?? 'Default title'}
+          width={40}
+          height={40}
+        />
+        <p className="text-[14px] font-bold">Title: {postTitle}</p>
       </div>
       <Chat senderId={senderId} receiverId={receiverid} />
     </div>
