@@ -50,6 +50,19 @@ export default function PaymentSuccess() {
     window.location.href = `/${userId}/mypage`;
   };
 
+  const handleCancelRequest = async () => {
+    try {
+      const response = await axios.post(`/api/detail/payment/${id}`, {
+        reason: 'User requested cancel',
+        requester: 'CUSTOMER'
+      });
+      alert(response.data.message);
+    } catch (error) {
+      console.error('Error requesting cancel:', error);
+      alert('Cancel request failed.');
+    }
+  };
+
   return (
     <div>
       {post && (
@@ -71,13 +84,14 @@ export default function PaymentSuccess() {
         <p>결제가 완료되었습니다!</p>
         <p>Total Price: ${paymentData.total_price.toFixed(2)}</p>
       </div>
-      <div>
-        <Link href="/" className="border">
-          홈 화면 바로가기
-        </Link>
-        <button onClick={handleGoToMyPage} className="mt-4 bg-blue-500 p-2 text-white">
+      <div className="flex flex-col">
+        <button className="border">
+          <Link href="/">홈 화면 바로가기</Link>
+        </button>
+        <button onClick={handleGoToMyPage} className="border">
           마이페이지 바로가기
         </button>
+        <button onClick={handleCancelRequest} className="border">환불 요청하기</button>
       </div>
     </div>
   );

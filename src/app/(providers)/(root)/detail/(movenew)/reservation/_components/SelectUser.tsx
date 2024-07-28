@@ -56,8 +56,8 @@ const SelectUser = () => {
 
     const totalAmountInCents = totalAmount * 100;
     PortOne.requestPayment({
-      storeId: process.env.NEXT_PUBLIC_POSTONE_STORE_ID || '', // 고객사 storeId로 변경해주세요.
-      channelKey: process.env.NEXT_PUBLIC_POSTONE_KG_CHANNEL_KEY || '', // 콘솔 결제 연동 화면에서 채널 연동 시 생성된 채널 키를 입력해주세요.
+      storeId: process.env.NEXT_PUBLIC_POSTONE_STORE_ID || '',
+      channelKey: process.env.NEXT_PUBLIC_POSTONE_KG_CHANNEL_KEY || '',
       paymentId: `payment${crypto.randomUUID().split('-')[0]}`, // 고객사 주문 고유 번호
       orderName: post.title, // 주문명
       totalAmount: totalAmountInCents, // 결제 금액 (센트 단위)
