@@ -8,6 +8,7 @@ import ProfileView from './_components/ProfileView';
 import ReviewList from './_components/ReviewList';
 import LikeList from './_components/LikeList';
 import ReservationList from './_components/ReservationList';
+import ChatList from './_components/ChatList';
 
 const MyPage = () => {
   const { id } = useParams() as { id: string };
@@ -33,6 +34,9 @@ const MyPage = () => {
       {selectedComponent === 'posts' && <PostList />}
       {selectedComponent === 'Reservations' && <ReservationList />}
       {selectedComponent === 'reviews' && <ReviewList userId={id} />}
+      <div>
+        <ChatList userId={id} />
+      </div>
     </div>
   );
 };

@@ -46,12 +46,12 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId }) => {
           >
             {msg.sender_id !== senderId && <p className="mr-2 text-sm font-bold">{msg.sender_id}</p>}
             <div
-              className={`w-[240px] break-all rounded p-2 ${msg.sender_id === senderId ? 'bg-green-200' : 'bg-gray-200'}`}
+              className={`max-w-[240px] break-all rounded p-2 ${msg.sender_id === senderId ? 'bg-green-200' : 'bg-gray-200'}`}
             >
               <p>{msg.content}</p>
             </div>
             <p className={` ${msg.sender_id === senderId ? 'right-0' : 'left-0'} mt-2 text-[10px] text-gray-500`}>
-              {msg.created_at}
+              {new Date(msg.created_at).toLocaleString()}
             </p>
           </div>
         ))}
