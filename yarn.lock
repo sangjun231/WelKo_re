@@ -245,6 +245,11 @@
   resolved "https://registry.yarnpkg.com/@pkgr/core/-/core-0.1.1.tgz#1ec17e2edbec25c8306d424ecfbf13c7de1aaa31"
   integrity sha512-cq8o4cWH0ibXh9VGi5P20Tu9XF/0fFXl9EUinr9QfTM7a7p0oTA4iJRCQWppXR1Pg8dSM0UCItCkPwsk9qWWYA==
 
+"@portone/browser-sdk@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@portone/browser-sdk/-/browser-sdk-0.0.1.tgz#252bd05ac47176dd09ad4e5ad0d4363bc0619c0a"
+  integrity sha512-33K4PB5gdzMCv1sgfgxls2reg3O/znWxELb22zlh4Df/vhhmn64UWyvXB7Zx+mLsihQZCwS9+LVo7AW6UkactA==
+
 "@portone/browser-sdk@^0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@portone/browser-sdk/-/browser-sdk-0.0.8.tgz#660692320ab4a517c4fb4f37a39b58ef186be836"
