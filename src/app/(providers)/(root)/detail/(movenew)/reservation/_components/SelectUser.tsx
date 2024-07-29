@@ -14,18 +14,15 @@ const SelectUser = () => {
   const [numPersons, setNumPersons] = useState(1);
   const [totalAmount, setTotalAmount] = useState(post ? post.price : 0);
 
-  // 예약 인원이 변경될 때마다 전체 금액을 재계산
   useEffect(() => {
     if (post) {
       setTotalAmount(post.price * numPersons);
     }
   }, [numPersons, post]);
 
-  // 결제 성공 시 호출되는 함수
-  const handlePaymentSuccess = async (response: any) => {
-    try {
+  const handlePaymentSuccess = useCallback(
+    async (response: any) => {
       if (response.txId && response.paymentId) {
-        // 결제 성공 여부를 확인
         const paymentData = {
           id: response.txId, // 고유 트랜잭션 ID
           user_id: user?.id, // 로그인한 사용자 ID
@@ -33,31 +30,46 @@ const SelectUser = () => {
           pay_state: response.paymentId, // 결제 서비스 제공자에서 생성한 고유 결제 ID
           total_price: totalAmount // 총 결제 금액
         };
+        try {
+          // // 실제로 데이터 저장 요청에 실패시키기 위해 존재하지 않는 URL로 요청을 보냄
+          // await axios.post('/api/non-existent-url', paymentData);
 
-        // 결제 내역을 서버에 저장
-        await axios.post('/api/detail/payment', paymentData);
-
-        // 결제 완료 페이지로 이동
-        router.push(`/detail/payment/${response.txId}`);
+          // 결제 내역을 서버에 저장
+          await axios.post('/api/detail/payment', paymentData);
+          // 결제 완료 페이지로 이동
+          router.push(`/detail/payment/${response.txId}`);
+        } catch (error) {
+          // 결제 실패 처리
+          try {
+            console.log(`Requesting refund for payment ID: ${response.paymentId}`); // 결제 ID 확인을 위한 로그
+            await axios.post(`/api/detail/autocancel`, {
+              paymentId: response.paymentId,
+              reason: 'Data save failed',
+              requester: 'CUSTOMER'
+            });
+            alert('결제 데이터 저장에 실패하여 자동으로 환불 처리되었습니다.');
+          } catch (cancelError) {
+            console.error('Error processing cancel:', cancelError);
+            alert('결제 데이터 저장에 실패했으며, 환불 처리에도 실패했습니다. 관리자에게 문의하세요.');
+          }
+          router.back();
+        }
       } else {
-        // 결제 실패 처리
         console.error('Invalid payment response:', response);
-        alert('결제가 실패했습니다.');
         router.back();
       }
-    } catch (error) {
-      console.error('Error saving payment data:', error);
-      alert('결제 데이터를 저장하는 도중 오류가 발생했습니다.');
-      router.back();
-    }
-  };
+    },
+    [router, user?.id, post?.id, totalAmount]
+  );
 
   // 결제 실패 시 호출되는 함수
-  const handlePaymentFailure = (error: any) => {
-    console.error('Payment failed:', error);
-    alert('결제가 실패했습니다.');
-    router.back();
-  };
+  const handlePaymentFailure = useCallback(
+    async (error: any) => {
+      console.error('Payment failed:', error);
+      router.push(`/reservation/${post?.id}`);
+    },
+    [router, post?.id]
+  );
 
   // 결제 요청을 실행하는 함수
   const requestPayment = useCallback(async () => {
@@ -94,19 +106,16 @@ const SelectUser = () => {
       });
 
       if (response?.code != null) {
-        alert('결제 요청을 취소하셨습니다!');
-        router.push(`/detail/${post?.id}`);
+        await handlePaymentFailure(response);
       } else {
-        // 결제 성공 처리
         await handlePaymentSuccess(response);
       }
     } catch (error) {
-      // 결제 요청 에러 처리
       console.error('Payment request error:', error);
       alert('결제 요청 중 오류가 발생했습니다.');
       router.back();
     }
-  }, [post, user, totalAmount, handlePaymentSuccess, router]);
+  }, [post, user, totalAmount, router, handlePaymentFailure, handlePaymentSuccess]);
 
   if (!post) return <div>Loading...</div>;
 
