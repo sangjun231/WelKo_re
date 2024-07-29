@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { API_MYPAGE_CHATS, API_POST_DETAILS } from '@/utils/apiConstants';
+import axios from 'axios';
 
 type ChatListProps = {
   userId: string;
@@ -27,9 +28,9 @@ const ChatList = ({ userId }: ChatListProps) => {
   const router = useRouter();
 
   const fetchPostDetails = async (postId: string): Promise<Post> => {
-    const response = await fetch(API_POST_DETAILS(postId));
-    if (!response.ok) throw new Error('Failed to fetch post details');
-    return response.json();
+    const response = await axios.get(API_POST_DETAILS(postId));
+
+    return response.data;
   };
 
   const {
@@ -39,9 +40,9 @@ const ChatList = ({ userId }: ChatListProps) => {
   } = useQuery<Chat[]>({
     queryKey: ['chatList', userId],
     queryFn: async () => {
-      const response = await fetch(API_MYPAGE_CHATS(userId));
-      if (!response.ok) throw new Error('Failed to fetch chat list');
-      return response.json();
+      const response = await axios.get(API_MYPAGE_CHATS(userId));
+
+      return response.data;
     }
   });
 
