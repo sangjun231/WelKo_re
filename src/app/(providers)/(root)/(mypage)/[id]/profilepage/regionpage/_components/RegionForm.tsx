@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { toast } from 'react-toastify';
+import axios from 'axios';
+import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 
 const RegionForm = () => {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
@@ -90,8 +92,11 @@ const RegionForm = () => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (region && userId) {
+      await axios.put(API_MYPAGE_PROFILE(userId), {
+        region
+      });
       router.replace(`/${userId}/profilepage`);
     }
   };
