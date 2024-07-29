@@ -7,7 +7,7 @@ import { createClient } from '@/utils/supabase/client';
 import Chat from '@/components/Chat';
 
 const ChatPage = () => {
-  const { id: senderId, receiverid } = useParams() as { id: string; receiverid: string };
+  const { id: senderId, receiverid: receiverId } = useParams() as { id: string; receiverid: string };
   const searchParams = useSearchParams();
   const router = useRouter();
   const supabase = createClient();
@@ -21,7 +21,7 @@ const ChatPage = () => {
 
     if (error) throw new Error(error.message);
 
-    if (data.user.id !== senderId && data.user.id !== receiverid) {
+    if (data.user.id !== senderId && data.user.id !== receiverId) {
       alert('접근 권한이 없습니다.');
       router.push('/');
     }
@@ -29,10 +29,11 @@ const ChatPage = () => {
 
   useEffect(() => {
     checkAccess();
-  }, [senderId, receiverid, router, supabase]);
+  }, [senderId, receiverId, router, supabase]);
 
-  const postTitle = searchParams.get('postTitle') || '제목 없음';
-  const postImage = searchParams.get('postImage') || '';
+  const postId = searchParams.get('postId');
+  const postTitle = searchParams.get('postTitle');
+  const postImage = searchParams.get('postImage');
 
   return (
     <div>
@@ -50,7 +51,7 @@ const ChatPage = () => {
         />
         <p className="text-[14px] font-bold">Title: {postTitle}</p>
       </div>
-      <Chat senderId={senderId} receiverId={receiverid} />
+      <Chat postId={postId || ''} senderId={senderId} receiverId={receiverId} />
     </div>
   );
 };

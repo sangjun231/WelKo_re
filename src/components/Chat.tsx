@@ -7,14 +7,16 @@ type Message = {
   receiver_id: string;
   content: string;
   created_at: string;
+  post_id: string;
 };
 
 type ChatProps = {
   senderId: string;
   receiverId: string;
+  postId: string;
 };
 
-const Chat: React.FC<ChatProps> = ({ senderId, receiverId }) => {
+const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState<string>('');
 
@@ -29,7 +31,7 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId }) => {
 
   const handleSend = async () => {
     if (newMessage.trim()) {
-      await sendMessage(senderId, receiverId, newMessage);
+      await sendMessage(senderId, receiverId, newMessage, postId);
       setNewMessage('');
       const fetchedMessages = await fetchMessages(senderId, receiverId);
       setMessages(fetchedMessages);

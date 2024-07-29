@@ -19,10 +19,10 @@ export const fetchMessages = async (senderId: string, receiverId: string) => {
   return data;
 };
 
-export const sendMessage = async (senderId: string, receiverId: string, content: string) => {
+export const sendMessage = async (senderId: string, receiverId: string, content: string, postId: string) => {
   const { data, error } = await supabase
     .from('messages')
-    .insert([{ sender_id: senderId, receiver_id: receiverId, content }]);
+    .insert([{ sender_id: senderId, receiver_id: receiverId, content, post_id: postId }]);
 
   if (error) {
     console.error(error);
