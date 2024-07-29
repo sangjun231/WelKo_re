@@ -1,5 +1,5 @@
 'use client';
-import { upsertPostData } from '@/utils/post/postData';
+import { upsertDate } from '@/utils/post/postData';
 import { createClient } from '@/utils/supabase/client';
 import { addMonths, format, startOfDay } from 'date-fns';
 import { useState } from 'react';
@@ -30,11 +30,15 @@ const Calendar = ({ next }: { next: () => void }) => {
     };
 
     try {
-      await upsertPostData({
+      // 날짜 저장
+      const datePostData = {
         user_id,
         startDate: formatDateForDB(startDate),
         endDate: formatDateForDB(endDate)
-      });
+      };
+      const dateResponse = await upsertDate(datePostData);
+      const postId = dateResponse.data.id;
+      sessionStorage.setItem('postId', postId);
       next();
     } catch (error) {
       console.error('Error saving dates:', error);

@@ -1,5 +1,5 @@
 'use client';
-import { upsertPostData } from '@/utils/post/postData';
+import { updatePostDetails } from '@/utils/post/postData';
 import { createClient } from '@/utils/supabase/client';
 import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
@@ -73,22 +73,28 @@ const Write = ({ prev }: { prev: () => void }) => {
   };
 
   const addMutation = useMutation({
-    mutationFn: upsertPostData
+    mutationFn: updatePostDetails
   });
 
   const handleSavePost = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const {
-      data: { user },
-      error
-    } = await supabase.auth.getUser();
-    if (error) {
-      console.error('Error getting user:', error);
+    const postId = sessionStorage.getItem('postId');
+
+    if (!postId) {
+      console.error('Post ID not found');
       return;
     }
-    const user_id = user?.id as string;
+    // const {
+    //   data: { user },
+    //   error
+    // } = await supabase.auth.getUser();
+    // if (error) {
+    //   console.error('Error getting user:', error);
+    //   return;
+    // }
+    // const user_id = user?.id as string;
     addMutation.mutate({
-      user_id,
+      id: postId,
       title,
       content,
       image,
@@ -98,6 +104,7 @@ const Write = ({ prev }: { prev: () => void }) => {
       selectedPrices
     });
     router.replace('/');
+    sessionStorage.removeItem('postId');
   };
 
   return (

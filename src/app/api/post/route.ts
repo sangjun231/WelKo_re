@@ -15,74 +15,79 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const supabase = createClient();
   const data = await request.json();
-  const {
-    id,
-    user_id,
-    title,
-    content,
-    image,
-    maxPeople,
-    tag,
-    price,
-    selectedPrices,
-    startDate,
-    endDate
-  }: Partial<Tables<'posts'>> = data;
+  const { user_id, startDate, endDate }: Partial<Tables<'posts'>> = data;
 
   if (!user_id) {
     return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
   }
+
   try {
-    // 트랜잭션 시작
-    const { data: transaction, error: transactionError } = await supabase.rpc('start_transaction');
-    if (transactionError) {
-      throw new Error('Transaction start failed');
+    // 날짜 삽입
+    const { error: insertError } = await supabase.from('posts').insert({
+      user_id,
+      startDate,
+      endDate
+    });
+
+    if (insertError) {
+      console.error('Error inserting dates:', insertError.message);
+      return NextResponse.json({ error: insertError.message }, { status: 500 });
     }
 
-    // 날짜 등록
-    const { error: dateError } = await supabase.from('posts').insert({ user_id, startDate, endDate });
-    if (dateError) {
-      throw new Error(`Date insertion failed: ${dateError.message}`);
+    // 삽입된 데이터의 ID 가져오기
+    const { data: insertedData, error: selectError } = await supabase
+      .from('posts')
+      .select('id')
+      .eq('user_id', user_id)
+      .eq('startDate', startDate)
+      .eq('endDate', endDate)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (selectError) {
+      console.error('Error fetching inserted ID:', selectError.message);
+      return NextResponse.json({ error: selectError.message }, { status: 500 });
     }
 
-    // 기존 게시물 확인
-    const { data: existingPost, error: fetchError } = await supabase.from('posts').select().eq('id', id).single();
-    if (fetchError && fetchError.code !== 'PGRST116') {
-      throw new Error(`Fetching existing post failed: ${fetchError.message}`);
-    }
-
-    // 게시물 업데이트
-    let result;
-    if (existingPost) {
-      const { error: updateError } = await supabase
-        .from('posts')
-        .update({ title, content, image, maxPeople, tag, price, selectedPrices })
-        .eq('id', id);
-      if (updateError) {
-        throw new Error(`Post update failed: ${updateError.message}`);
-      }
-      result = { message: 'Post updated successfully', operation: 'update' };
-    } else {
-      const { error: insertError } = await supabase
-        .from('posts')
-        .insert({ user_id, title, content, image, maxPeople, tag, price, selectedPrices, startDate, endDate });
-      if (insertError) {
-        throw new Error(`Post insertion failed: ${insertError.message}`);
-      }
-      result = { message: 'Post inserted successfully', operation: 'insert' };
-    }
-
-    // 트랜잭션 커밋
-    const { error: commitError } = await supabase.rpc('commit_transaction');
-    if (commitError) {
-      throw new Error('Transaction commit failed');
-    }
-
-    return NextResponse.json(result, { status: 200 });
+    return NextResponse.json(insertedData, { status: 200 });
   } catch (error) {
-    // 트랜잭션 롤백
-    await supabase.rpc('rollback_transaction');
     console.error('Unexpected error:', error);
-    return NextResponse.json({ error }, { status: 500 });
+    return NextResponse.json({ error: 'Unexpected error occurred' }, { status: 500 });
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  const supabase = createClient();
+  const data = await request.json();
+  const { id, title, content, image, maxPeople, tag, price, selectedPrices }: Partial<Tables<'posts'>> = data;
+
+  if (!id) {
+    return NextResponse.json({ error: 'Post ID is required' }, { status: 400 });
+  }
+
+  try {
+    const { error: updateError } = await supabase
+      .from('posts')
+      .update({
+        title,
+        content,
+        image,
+        maxPeople,
+        tag,
+        price,
+        selectedPrices
+      })
+      .eq('id', id);
+
+    if (updateError) {
+      console.error('Error updating post:', updateError.message);
+      return NextResponse.json({ error: updateError.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ message: 'Post updated successfully', operation: 'update' }, { status: 200 });
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return NextResponse.json({ error: 'Unexpected error occurred' }, { status: 500 });
   }
 }
