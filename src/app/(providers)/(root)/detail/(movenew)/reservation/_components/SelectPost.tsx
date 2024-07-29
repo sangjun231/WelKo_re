@@ -1,26 +1,13 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import React from 'react';
 import Image from 'next/image';
 import usePostStore from '@/zustand/postStore';
 
 const SelectPost = () => {
-  const { id } = useParams();
-  const postId = Array.isArray(id) ? id[0] : id;
-  const { setPostId, post, fetchPost } = usePostStore((state) => ({
-    setPostId: state.setPostId,
-    setPost: state.setPost,
+  const { post } = usePostStore((state) => ({
     post: state.post,
-    fetchPost: state.fetchPost
   }));
-
-  useEffect(() => {
-    if (postId) {
-      setPostId(postId);
-      fetchPost(postId);
-    }
-  }, [postId, setPostId, fetchPost]);
 
   if (!post) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
