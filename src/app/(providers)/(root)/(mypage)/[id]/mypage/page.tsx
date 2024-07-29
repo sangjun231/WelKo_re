@@ -8,6 +8,7 @@ import ProfileView from './_components/ProfileView';
 import ReviewList from './_components/ReviewList';
 import LikeList from './_components/LikeList';
 import ReservationList from './_components/ReservationList';
+import ChatList from './_components/ChatList';
 
 const MyPage = () => {
   const { id } = useParams() as { id: string };
@@ -18,13 +19,9 @@ const MyPage = () => {
     router.back();
   };
 
-  const senderId = id;
-  const receiverId = 'b83f8bba-9072-44a2-9dd8-122cbc06fff8';
-
   return (
     <div>
       <h1 className="mb-4">My Page</h1>
-      <Chat senderId={senderId} receiverId={receiverId} />
       <button onClick={handleBack}>Go Back</button>
       <ProfileView userId={id} />
       <div className="mb-2 mt-4 flex justify-around">
@@ -37,6 +34,9 @@ const MyPage = () => {
       {selectedComponent === 'posts' && <PostList />}
       {selectedComponent === 'Reservations' && <ReservationList />}
       {selectedComponent === 'reviews' && <ReviewList userId={id} />}
+      <div>
+        <ChatList userId={id} />
+      </div>
     </div>
   );
 };

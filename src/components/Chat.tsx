@@ -7,14 +7,16 @@ type Message = {
   receiver_id: string;
   content: string;
   created_at: string;
+  post_id: string;
 };
 
 type ChatProps = {
   senderId: string;
   receiverId: string;
+  postId: string;
 };
 
-const Chat: React.FC<ChatProps> = ({ senderId, receiverId }) => {
+const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState<string>('');
 
@@ -22,14 +24,14 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId }) => {
     const interval = setInterval(async () => {
       const fetchedMessages = await fetchMessages(senderId, receiverId);
       setMessages(fetchedMessages);
-    }, 3000);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, [senderId, receiverId]);
 
   const handleSend = async () => {
     if (newMessage.trim()) {
-      await sendMessage(senderId, receiverId, newMessage);
+      await sendMessage(senderId, receiverId, newMessage, postId);
       setNewMessage('');
       const fetchedMessages = await fetchMessages(senderId, receiverId);
       setMessages(fetchedMessages);
@@ -37,16 +39,22 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId }) => {
   };
 
   return (
-    <div className="flex h-screen flex-col border border-gray-300">
-      <div className="flex-1 overflow-y-auto p-4">
+    <div className="flex h-screen max-w-[360px] flex-col border border-gray-300 text-[14px]">
+      <div className="overflow-y-auto p-4">
         {messages.map((msg) => (
           <div
             key={msg.id}
-            className={`mb-2 rounded p-2 ${
-              msg.sender_id === senderId ? 'self-end bg-green-200' : 'self-start bg-white'
-            }`}
+            className={`mb-10 flex flex-col ${msg.sender_id === senderId ? 'items-end' : 'items-start'}`}
           >
-            {msg.content}
+            {msg.sender_id !== senderId && <p className="mr-2 text-sm font-bold">{msg.sender_id}</p>}
+            <div
+              className={`max-w-[240px] break-all rounded p-2 ${msg.sender_id === senderId ? 'bg-green-200' : 'bg-gray-200'}`}
+            >
+              <p>{msg.content}</p>
+            </div>
+            <p className={` ${msg.sender_id === senderId ? 'right-0' : 'left-0'} mt-2 text-[10px] text-gray-500`}>
+              {new Date(msg.created_at).toLocaleString()}
+            </p>
           </div>
         ))}
       </div>
