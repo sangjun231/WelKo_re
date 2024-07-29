@@ -47,29 +47,84 @@ export type Database = {
           content: string
           created_at: string | null
           id: number
+          last_message: string | null
+          post_id: string | null
           receiver_id: string
+          receiver_name: string | null
           sender_id: string
         }
         Insert: {
           content: string
           created_at?: string | null
           id?: number
+          last_message?: string | null
+          post_id?: string | null
           receiver_id: string
+          receiver_name?: string | null
           sender_id: string
         }
         Update: {
           content?: string
           created_at?: string | null
           id?: number
+          last_message?: string | null
+          post_id?: string | null
           receiver_id?: string
+          receiver_name?: string | null
           sender_id?: string
         }
         Relationships: []
+      }
+      payments: {
+        Row: {
+          created_at: string
+          id: string
+          pay_state: string | null
+          post_id: string | null
+          total_price: number | null
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          pay_state?: string | null
+          post_id?: string | null
+          total_price?: number | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          pay_state?: string | null
+          post_id?: string | null
+          total_price?: number | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       posts: {
         Row: {
           content: string | null
           created_at: string
+          endDate: string | null
           id: string
           image: string | null
           maxPeople: number | null
@@ -77,6 +132,7 @@ export type Database = {
           period: Json | null
           price: number | null
           selectedPrices: Json | null
+          startDate: string | null
           tag: Json | null
           title: string | null
           updated_at: string | null
@@ -85,6 +141,7 @@ export type Database = {
         Insert: {
           content?: string | null
           created_at?: string
+          endDate?: string | null
           id?: string
           image?: string | null
           maxPeople?: number | null
@@ -92,6 +149,7 @@ export type Database = {
           period?: Json | null
           price?: number | null
           selectedPrices?: Json | null
+          startDate?: string | null
           tag?: Json | null
           title?: string | null
           updated_at?: string | null
@@ -100,6 +158,7 @@ export type Database = {
         Update: {
           content?: string | null
           created_at?: string
+          endDate?: string | null
           id?: string
           image?: string | null
           maxPeople?: number | null
@@ -107,6 +166,7 @@ export type Database = {
           period?: Json | null
           price?: number | null
           selectedPrices?: Json | null
+          startDate?: string | null
           tag?: Json | null
           title?: string | null
           updated_at?: string | null

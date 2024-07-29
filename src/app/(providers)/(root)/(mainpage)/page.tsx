@@ -5,6 +5,9 @@ import { createClient } from '@/utils/supabase/client';
 import axios from 'axios';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import PostsList from './_components/PostsList';
+import Footer from '@/components/common/Footer/Footer';
+import Header from '@/components/common/Header/Header';
 
 export default function Home() {
   const [userId, setUserId] = useState<string | null>(null);
@@ -13,10 +16,7 @@ export default function Home() {
   useEffect(() => {
     const fetchUserId = async () => {
       try {
-        const {
-          data: { user },
-          error
-        } = await supabase.auth.getUser();
+        const { data: { user }, error } = await supabase.auth.getUser();
 
         if (error) {
           console.error('Error fetching user:', error);
@@ -41,17 +41,16 @@ export default function Home() {
 
   return (
     <div>
+      <Header />
       <h1>Welcome to Home Page</h1>
-      {userId ? <Link href={`/${userId}/my-page`}>Go to My Page</Link> : <p>Loading...</p>}
-      <div>
-        {userId ? (
-          <Link href="/postpage" className="border border-black">
-            Go to Post Page
-          </Link>
-        ) : (
-          <p>Loading...</p>
-        )}
-      </div>
+      {userId ? (
+        <Link href={`/${userId}/mypage`}>Go to My Page</Link>
+      ) : (
+        <p>Loading...</p>
+      )}
+      <PostsList />
+      <Footer />
     </div>
   );
 }
+          

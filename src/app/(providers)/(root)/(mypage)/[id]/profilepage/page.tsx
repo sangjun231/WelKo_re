@@ -8,16 +8,18 @@ const ProfilePage = () => {
   const router = useRouter();
 
   const handleBack = () => {
-    router.back();
+    router.replace(`/${id}/mypage`);
   };
 
   return (
     <div>
-      <div className="flex items-start justify-between">
-        <button onClick={handleBack}>Go Back</button>
-        <h1>Edit Profile</h1>
-        <ProfileForm userId={id} />
+      <button onClick={handleBack}>Go Back</button>
+      <div className="flex items-center justify-center">
+        <div>
+          <h1>Edit Profile</h1>
+        </div>
       </div>
+      <ProfileForm userId={id} />
     </div>
   );
 };

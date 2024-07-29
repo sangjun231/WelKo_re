@@ -1,5 +1,5 @@
 // 어떤 방식인지???
-export const Posts = Tables<'posts'>;
+//export const Posts = Tables<'posts'>;
 
 //postpage
 export type PostType = {
@@ -11,4 +11,12 @@ export type PostType = {
   tag: string[];
   price: number;
   selectedPrices: string[];
+  startDate: string;
+  endDate: string;
+};
+
+export type DateType = {
+  user_id: string;
+  startDate?: string;
+  endDate?: string;
 };

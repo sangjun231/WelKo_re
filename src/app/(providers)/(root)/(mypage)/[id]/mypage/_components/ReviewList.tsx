@@ -5,18 +5,10 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Rating from 'react-rating-stars-component';
 import { API_MYPAGE_REVIEWS } from '@/utils/apiConstants';
-
-type Review = {
-  id: string;
-  created_at: string;
-  post_id: string;
-  user_id: string;
-  content: string;
-  rating: number;
-};
+import { Tables } from '@/types/supabase';
 
 const ReviewList = ({ userId }: { userId: string }) => {
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviews, setReviews] = useState<Tables<'reviews'>[]>([]);
 
   const handleDelete = async (id: string) => {
     await axios.delete(API_MYPAGE_REVIEWS(userId), { data: { id } });
@@ -34,7 +26,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
 
   return (
     <div>
-      <Link href={`/${userId}/review-page`}>
+      <Link href={`/${userId}/reviewpage`}>
         <button>Create New Review</button>
       </Link>
       {reviews.length === 0 ? (
@@ -42,10 +34,10 @@ const ReviewList = ({ userId }: { userId: string }) => {
       ) : (
         reviews.map((item) => (
           <div key={item.id}>
-            <Rating count={5} value={item.rating} size={24} edit={false} activeColor="#ffd700" />
+            <Rating count={5} value={item.rating ?? 0} size={24} edit={false} activeColor="#ffd700" />
             <p>{item.content}</p>
             <div className="mt-2 flex justify-around">
-              <Link href={`/${userId}/review-page?id=${item.id}`}>
+              <Link href={`/${userId}/reviewpage?id=${item.id}`}>
                 <button>Edit</button>
               </Link>
               <button onClick={() => handleDelete(item.id)}>Delete</button>

@@ -2,29 +2,15 @@
 
 import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
-import { averageRatings } from '@/utils/averageRating'; // 유틸리티 함수 가져오기
-
-interface Review {
-  id: string;
-  created_at: string;
-  user_id: string;
-  userName: string; // 작성자 이름
-  post_id: string;
-  content: string;
-  rating: number; // 평점
-}
+import { fetchReviews, Review } from '@/utils/supabase/api/detail/reviews';
+import { averageRatings } from '@/utils/averageRating';
+import ReactStars from 'react-rating-stars-component';
 
 const Reviews = () => {
-  const { id: postId } = useParams();
+  const params = useParams();
+  const postId = Array.isArray(params.id) ? params.id[0] : params.id;
   const router = useRouter();
-
-  // 리뷰 데이터를 가져오는 함수
-  const fetchReviews = async (): Promise<Review[]> => {
-    const response = await axios.get(`/api/detail/reviews/${postId}`);
-    return response.data;
-  };
 
   // React Query를 사용하여 리뷰 데이터 가져오기
   const {
@@ -33,7 +19,7 @@ const Reviews = () => {
     error
   } = useQuery<Review[]>({
     queryKey: ['reviews', postId],
-    queryFn: fetchReviews,
+    queryFn: () => fetchReviews(postId),
     enabled: !!postId
   });
 
@@ -53,11 +39,13 @@ const Reviews = () => {
   return (
     <div>
       <h2>평균 점수: {averageRating} / 5.0</h2>
+      <ReactStars count={5} value={averageRating} size={24} isHalf={true} edit={false} activeColor="#ffd700" />
       <h2>후기: {reviews.length}개</h2>
       <div>
         {reviews.slice(0, 1).map((review) => (
           <div key={review.id} className="mb-4 border-b p-2">
             <p>평점: {review.rating} / 5.0</p>
+            <ReactStars count={5} value={review.rating} size={24} isHalf={true} edit={false} activeColor="#ffd700" />
             <p>{review.content}</p>
             <p>{new Date(review.created_at).toLocaleString()}</p>
           </div>

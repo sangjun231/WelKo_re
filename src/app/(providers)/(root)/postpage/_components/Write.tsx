@@ -1,5 +1,5 @@
 'use client';
-import { insertPostData } from '@/utils/post/postData';
+import { upsertPostData } from '@/utils/post/postData';
 import { createClient } from '@/utils/supabase/client';
 import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
@@ -73,7 +73,7 @@ const Write = ({ prev }: { prev: () => void }) => {
   };
 
   const addMutation = useMutation({
-    mutationFn: insertPostData
+    mutationFn: upsertPostData
   });
 
   const handleSavePost = async (e: FormEvent<HTMLFormElement>) => {
