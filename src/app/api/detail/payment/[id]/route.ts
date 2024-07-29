@@ -53,7 +53,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       return NextResponse.json({ message: 'Cancel failed', error: responseData.reason }, { status: 400 });
     } else {
       // 환불 성공 시 처리
-      const { error: cancelError } = await supabase.from('payments').delete().eq('id', id);
+      const { error: cancelError } = await supabase.from('payments').update({ pay_state: 'cancel' }).eq('id', id);
 
       if (cancelError) {
         console.error('Error saving cancel data:', cancelError);
