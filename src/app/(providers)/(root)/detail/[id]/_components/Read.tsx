@@ -22,11 +22,6 @@ export default function Read() {
     }
   }, [postId, setPostId, fetchPost]);
 
-  // 가격을 포맷하는 함수
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('ko-KR').format(price);
-  };
-
   if (!post) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
   return (
@@ -47,7 +42,7 @@ export default function Read() {
           </div>
           <div className="text-md">
             <p>
-              <strong>{formatPrice(post.price)}원</strong>
+              <strong>{post.price}$</strong>
             </p>
             <p>{post.content}</p>
             <div>
