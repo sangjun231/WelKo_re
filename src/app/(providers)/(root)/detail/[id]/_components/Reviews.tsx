@@ -15,7 +15,7 @@ const Reviews = () => {
   // React Query를 사용하여 리뷰 데이터 가져오기
   const {
     data: reviews,
-    isLoading,
+    isPending,
     error
   } = useQuery<Review[]>({
     queryKey: ['reviews', postId],
@@ -26,7 +26,7 @@ const Reviews = () => {
   // 평균 평점 계산
   const averageRating = averageRatings(reviews || []);
 
-  if (isLoading) return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  if (isPending) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
   if (error) {
     return <div className="flex h-screen items-center justify-center">Error: {error.message}</div>;
