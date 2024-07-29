@@ -25,29 +25,33 @@ const SelectUser = () => {
   const handlePaymentSuccess = useCallback(
     async (response: any) => {
       try {
-        const paymentData = {
-          id: response.txId, // 고유 트랜잭션 ID
-          user_id: user?.id, // 로그인한 사용자 ID
-          post_id: post?.id, // 결제한 게시물 ID
-          pay_state: response.paymentId, // 결제 서비스 제공자에서 생성한 고유 결제 ID
-          total_price: totalAmount // 총 결제 금액
-        };
+        if (response.txId && response.paymentId) {
+          // 결제 성공 여부를 확인
+          const paymentData = {
+            id: response.txId, // 고유 트랜잭션 ID
+            user_id: user?.id, // 로그인한 사용자 ID
+            post_id: post?.id, // 결제한 게시물 ID
+            pay_state: response.paymentId, // 결제 서비스 제공자에서 생성한 고유 결제 ID
+            total_price: totalAmount // 총 결제 금액
+          };
 
-        // 결제 내역을 서버에 저장
-        await axios.post('/api/detail/payment', paymentData);
+          // 결제 내역을 서버에 저장
+          await axios.post('/api/detail/payment', paymentData);
 
-        // 결제 완료 페이지로 이동
-        router.push(`/detail/payment/${response.txId}`);
+          // 결제 완료 페이지로 이동
+          router.push(`/detail/payment/${response.txId}`);
+        }
       } catch (error) {
         console.error('Error saving payment data:', error);
       }
     },
-    [user, post, totalAmount]
+    [user, post, totalAmount, router]
   );
 
   // 결제 실패 시 호출되는 함수
   const handlePaymentFailure = (error: any) => {
     console.error('Payment failed:', error);
+    router.back();
   };
 
   // 결제 요청을 실행하는 함수
@@ -84,7 +88,7 @@ const SelectUser = () => {
     })
       .then(handlePaymentSuccess) // 결제 성공 시 호출되는 함수
       .catch(handlePaymentFailure); // 결제 실패 시 호출되는 함수
-  }, [post, user, totalAmount, handlePaymentSuccess]);
+  }, [post, user, totalAmount, handlePaymentSuccess, handlePaymentFailure]);
 
   if (!post) return <div>Loading...</div>;
 
