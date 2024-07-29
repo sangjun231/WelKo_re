@@ -59,6 +59,7 @@ const ChatList = ({ userId }: ChatListProps) => {
 
   const postIds = chatData?.map((chat) => chat.post_id) || [];
   const userIds = chatData ? Array.from(new Set(chatData.flatMap((chat) => [chat.sender_id, chat.receiver_id]))) : [];
+
   const {
     data: postData,
     error: postError,
@@ -97,6 +98,7 @@ const ChatList = ({ userId }: ChatListProps) => {
 
         return (
           <div
+            className="mb-4"
             key={index}
             onClick={() =>
               router.push(
@@ -105,7 +107,7 @@ const ChatList = ({ userId }: ChatListProps) => {
             }
           >
             {senderDetails && (
-              <div className="mb-4 flex items-center">
+              <div className="flex items-center">
                 <Image
                   className="mr-4"
                   src={senderDetails.avatar || '/icons/upload.png'}
