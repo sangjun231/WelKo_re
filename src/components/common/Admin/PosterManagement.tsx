@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { toast } from 'react-toastify';
 import Modal from 'react-modal';
-import 'tailwindcss/tailwind.css';
 
 // 게시글 데이터 타입 정의
 interface Post {
