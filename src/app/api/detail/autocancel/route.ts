@@ -4,8 +4,6 @@ import axios, { AxiosError } from 'axios';
 export async function POST(request: NextRequest) {
   const { paymentId, reason, requester } = await request.json();
 
-  console.log(`Cancelling payment with ID: ${paymentId}`);
-
   try {
     // PortOne 결제 취소 요청 API 호출
     const cancelResponse = await axios.post(
