@@ -24,7 +24,7 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
     const interval = setInterval(async () => {
       const fetchedMessages = await fetchMessages(senderId, receiverId);
       setMessages(fetchedMessages);
-    }, 3000);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, [senderId, receiverId]);
