@@ -78,14 +78,15 @@ const ChatList = ({ userId }: ChatListProps) => {
             }
           >
             {postDetails && (
-              <div>
-                <p>{postDetails.title}</p>
+              <div className="flex">
                 <Image
+                  className="mr-4"
                   src={postDetails.image ?? '/icons/upload.png'}
                   alt={postDetails.title ?? 'Default title'}
                   width={40}
                   height={40}
                 />
+                <p>{postDetails.title}</p>
               </div>
             )}
             <p>{chat.content}</p>
