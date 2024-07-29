@@ -13,6 +13,7 @@ type ChatListProps = {
 
 type Chat = {
   post_id: string;
+  sender_id: string;
   receiver_id: string;
   content: string;
   created_at: string;
@@ -68,13 +69,14 @@ const ChatList = ({ userId }: ChatListProps) => {
     <div>
       {chatData?.map((chat: Chat, index: number) => {
         const postDetails = postData?.find((post) => post.id === chat.post_id);
+        const receiverId = userId === chat.receiver_id ? chat.sender_id : chat.receiver_id;
 
         return (
           <div
             key={index}
             onClick={() =>
               router.push(
-                `/${userId}/${chat.receiver_id}/chatpage?postId=${chat.post_id}&postTitle=${postDetails?.title}&postImage=${postDetails?.image}`
+                `/${userId}/${receiverId}/chatpage?postId=${chat.post_id}&postTitle=${postDetails?.title}&postImage=${postDetails?.image}`
               )
             }
           >
