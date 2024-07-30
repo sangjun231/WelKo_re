@@ -103,7 +103,7 @@ export default function ReservationList() {
   };
 
   const handleChat = (post: Tables<'posts'>) => {
-    const postAuthorId = post.user_id; // 게시글 작성자 ID
+    const postAuthorId = post.user_id;
     const query = new URLSearchParams({
       postId: post.id,
       postTitle: post.title || '',
@@ -149,7 +149,14 @@ export default function ReservationList() {
         return (
           <div key={post.id} className="mb-4 border-b pb-4">
             <p className="text-[15px]">{status}</p>
-            <p className="text-[15px]">Created at: {new Date(post.created_at).toLocaleString()}</p>
+            <div className="flex justify-around">
+              <p className="text-[15px]">
+                Payment at: {payment ? new Date(payment.created_at).toLocaleDateString() : 'N/A'}
+              </p>
+              <Link href={`/detail/payment/${post.id}`}>
+                <p className="text-[15px]">결제 상세보기</p>
+              </Link>
+            </div>
             <Link href={`/detail/${post.id}`}>
               <div className="flex">
                 <Image
