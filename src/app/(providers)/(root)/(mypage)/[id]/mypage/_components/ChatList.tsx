@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -11,12 +11,19 @@ type ChatListProps = {
   userId: string;
 };
 
-type Chat = {
-  post_id: string;
+type Message = {
   sender_id: string;
   receiver_id: string;
   content: string;
   created_at: string;
+  post_id: string;
+};
+
+type Chat = {
+  post_id: string;
+  sender_id: string;
+  receiver_id: string;
+  messages: Message[];
 };
 
 type Post = {
@@ -48,7 +55,7 @@ const ChatList = ({ userId }: ChatListProps) => {
     data: chatData,
     error: chatError,
     isPending: chatPending
-  } = useQuery<Chat[]>({
+  } = useQuery<Message[]>({
     queryKey: ['chatList', userId],
     queryFn: async () => {
       const response = await axios.get(API_MYPAGE_CHATS(userId));
@@ -88,40 +95,57 @@ const ChatList = ({ userId }: ChatListProps) => {
   if (chatPending || postPending || userPending) return <div>Loading...</div>;
   if (chatError || postError || userError) return <div>Error loading data</div>;
 
+  const groupedChats = chatData?.reduce((acc: { [key: string]: Chat }, message) => {
+    const chatId = `${message.post_id}-${[message.sender_id, message.receiver_id].sort().join('-')}`;
+    if (!acc[chatId]) {
+      acc[chatId] = {
+        post_id: message.post_id,
+        sender_id: message.sender_id,
+        receiver_id: message.receiver_id,
+        messages: []
+      };
+    }
+    acc[chatId].messages.push(message);
+    return acc;
+  }, {});
+
   return (
     <div>
-      {chatData?.map((chat: Chat, index: number) => {
-        const postDetails = postData?.find((post) => post.id === chat.post_id);
-        const receiverId = userId === chat.sender_id ? chat.receiver_id : chat.sender_id;
-        const senderDetails = userData?.find((user) => user.id === receiverId);
+      {groupedChats &&
+        Object.values(groupedChats).map((chat, index) => {
+          const postDetails = postData?.find((post) => post.id === chat.post_id);
+          const receiverId = userId === chat.sender_id ? chat.receiver_id : chat.sender_id;
+          const senderDetails = userData?.find((user) => user.id === receiverId);
 
-        return (
-          <div
-            className="mb-4"
-            key={index}
-            onClick={() =>
-              router.push(
-                `/${userId}/${receiverId}/chatpage?postId=${chat.post_id}&postTitle=${postDetails?.title}&postImage=${postDetails?.image}`
-              )
-            }
-          >
-            {senderDetails && (
-              <div className="flex items-center">
-                <Image
-                  className="mr-4"
-                  src={senderDetails.avatar || '/icons/upload.png'}
-                  alt={senderDetails.name || 'Default name'}
-                  width={40}
-                  height={40}
-                />
-                <p>{senderDetails.name}</p>
-              </div>
-            )}
-            <p>{chat.content}</p>
-            <p>{new Date(chat.created_at).toLocaleString()}</p>
-          </div>
-        );
-      })}
+          const firstMessage = chat.messages[0];
+
+          return (
+            <div
+              className="mb-4"
+              key={index}
+              onClick={() =>
+                router.push(
+                  `/${userId}/${receiverId}/chatpage?postId=${chat.post_id}&postTitle=${postDetails?.title}&postImage=${postDetails?.image}`
+                )
+              }
+            >
+              {senderDetails && (
+                <div className="flex items-center">
+                  <Image
+                    className="mr-4"
+                    src={senderDetails.avatar || '/icons/upload.png'}
+                    alt={senderDetails.name || 'Default name'}
+                    width={40}
+                    height={40}
+                  />
+                  <p>{senderDetails.name}</p>
+                </div>
+              )}
+              <p>{firstMessage?.content}</p>
+              <p>{new Date(firstMessage?.created_at).toLocaleString()}</p>
+            </div>
+          );
+        })}
     </div>
   );
 };
