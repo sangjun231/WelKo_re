@@ -50,16 +50,15 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     if (responseData.status === 'FAILED') {
       // 환불 실패 시 처리
-      return NextResponse.json({ message: 'Refund failed', error: responseData.reason }, { status: 400 });
+      return NextResponse.json({ message: 'Cancel failed', error: responseData.reason }, { status: 400 });
     } else {
-      // 환불 성공 시 처리 (예: 데이터베이스 업데이트)
-      const { error: cancelError } = await supabase.from('payments').delete().eq('id', id);
+      // 환불 성공 시 처리
+      const { error: cancelError } = await supabase.from('payments').update({ pay_state: 'cancel' }).eq('id', id);
 
       if (cancelError) {
         console.error('Error saving cancel data:', cancelError);
         return NextResponse.json({ error: 'Error saving cancel data' }, { status: 500 });
       }
-
       return NextResponse.json({ message: '환불 성공!', data: responseData }, { status: 200 });
     }
   } catch (error) {
