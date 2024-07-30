@@ -5,7 +5,13 @@ const supabase = createClient();
 export const fetchMessages = async (senderId: string, receiverId: string) => {
   const { data, error } = await supabase
     .from('messages')
-    .select('*')
+    .select(
+      `
+      *,
+      sender:users!messages_sender_id_fkey ( id, name, avatar ),
+      receiver:users!messages_receiver_id_fkey ( id, name, avatar )
+    `
+    )
     .or(
       `and(sender_id.eq.${senderId},receiver_id.eq.${receiverId}),and(sender_id.eq.${receiverId},receiver_id.eq.${senderId})`
     )
