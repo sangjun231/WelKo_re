@@ -2,18 +2,19 @@
 
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { API_MYPAGE_POST } from '@/utils/apiConstants';
+import { API_MYPAGE_POST, API_MYPAGE_REVIEWS } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
 
 export default function PostList() {
   const params = useParams();
   const router = useRouter();
-
   const userId = Array.isArray(params.id) ? params.id[0] : params.id;
+
+  const [reviews, setReviews] = useState<Tables<'reviews'>[]>([]);
 
   const getPostsData = async () => {
     try {
@@ -31,9 +32,33 @@ export default function PostList() {
     }
   };
 
-  const { data, isPending, error, refetch } = useQuery<Tables<'posts'>[]>({
+  const {
+    data: posts,
+    isPending,
+    error,
+    refetch
+  } = useQuery<Tables<'posts'>[]>({
     queryKey: ['post', userId],
     queryFn: getPostsData,
+    enabled: !!userId
+  });
+
+  const getReviewsData = async () => {
+    try {
+      const response = await axios.get(API_MYPAGE_REVIEWS(userId));
+      return response.data as Tables<'reviews'>[];
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(`HTTP error! status: ${error.response?.status}`);
+      } else {
+        throw new Error('An unknown error occurred');
+      }
+    }
+  };
+
+  const reviewsQuery = useQuery<Tables<'reviews'>[]>({
+    queryKey: ['reviews', userId],
+    queryFn: getReviewsData,
     enabled: !!userId
   });
 
@@ -51,13 +76,24 @@ export default function PostList() {
     return tourEndDate < currentDate ? 'Tour Completed' : 'Upcoming Tour';
   };
 
-  const handleWriteReview = (postId: string) => {
-    router.push(`/${userId}/reviewpage?post_id=${postId}`);
+  const handleReviewAction = (postId: string, reviewId?: string) => {
+    if (reviewId) {
+      router.push(`/${userId}/reviewpage?id=${reviewId}&post_id=${postId}`);
+    } else {
+      router.push(`/${userId}/reviewpage?post_id=${postId}`);
+    }
   };
 
   useEffect(() => {
+    if (reviewsQuery.data) {
+      setReviews(reviewsQuery.data);
+    }
+  }, [reviewsQuery.data]);
+
+  useEffect(() => {
     refetch();
-  }, [userId, refetch]);
+    reviewsQuery.refetch();
+  }, [userId, refetch, reviewsQuery.refetch]);
 
   if (isPending) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
@@ -65,14 +101,15 @@ export default function PostList() {
     return <div className="flex h-screen items-center justify-center">Error: {error.message}</div>;
   }
 
-  if (!data || data.length === 0) {
+  if (!posts || posts.length === 0) {
     return <div className="flex h-screen items-center justify-center">No posts found</div>;
   }
 
   return (
     <div className="mb-10 max-w-[360px]">
-      {data.map((post) => {
+      {posts.map((post) => {
         const status = tourStatus(post.endDate);
+        const review = reviews.find((review) => review.post_id === post.id);
 
         return (
           <div key={post.id} className="mb-4 border-b pb-4">
@@ -89,7 +126,7 @@ export default function PostList() {
                 <div className="ml-2 flex flex-col">
                   <p className="overflow-hidden text-ellipsis whitespace-nowrap text-[15px] font-bold">{post.title}</p>
                   <p className="text-[13px]">
-                    {post.startDate} -{post.endDate}
+                    {post.startDate} - {post.endDate}
                   </p>
                   <p className="text-[13px]">{formatPrice(post.price)}</p>
                 </div>
@@ -104,10 +141,10 @@ export default function PostList() {
               <button
                 className="mt-2 w-full rounded-lg border p-2"
                 onClick={() => {
-                  handleWriteReview(post.id);
+                  handleReviewAction(post.id, review?.id);
                 }}
               >
-                Write a Review
+                {review ? 'View Review' : 'Write a Review'}
               </button>
             )}
           </div>
