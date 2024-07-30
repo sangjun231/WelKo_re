@@ -94,7 +94,7 @@ const SelectUser = () => {
             logo_2nd: 'https://admin.portone.io/assets/img/auth/lock.png', // 결제창에 삽입할 서브 로고 URL
             parentemail: 'parentemail', // 보호자 이메일 주소
             Ini_SSGPAY_MDN: '01012341234', // SSGPAY 결제 요청 시 PUSH 전송 휴대폰 번호
-            acceptmethod: ['SKIN(#BA68C8)', 'below1000'], // 결제창 색상 및 1000원 미만 결제 허용 옵션
+            acceptmethod: ['SKIN(#BA68C8)', 'below1000', 'noeasypay'], // 결제창 색상 및 1000원 미만 결제 허용 옵션
             P_CARD_OPTION: 'selcode=14',
             P_MNAME: '포트원', // 결제 페이지에 표시될 가맹점 이름
             P_RESERVED: ['below1000=Y', 'noeasypay=Y'] // 1000원 미만 결제 허용 옵션 및 간편 결제 미노출 옵션
