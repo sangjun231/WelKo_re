@@ -29,7 +29,7 @@ function Navbar() {
             <BsFillPlusCircleFill size={40} style={{ color: '#BA68C8' }} className="" />
           </div>
         </Link>
-        <Link href={`/${user?.id}/chatpage`}>
+        <Link href={`/${user?.id}/chatlistpage`}>
           <div className="flex flex-col items-center hover:text-[#BA68C8]">
             <AiOutlineMessage size={24} />
             <span className="text-[10px]">Messages</span>
