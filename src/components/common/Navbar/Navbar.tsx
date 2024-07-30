@@ -7,7 +7,7 @@ import { BsFillPlusCircleFill, BsPersonCircle } from 'react-icons/bs';
 import Link from 'next/link';
 import useAuthStore from '@/zustand/bearsStore';
 
-function Footer() {
+function Navbar() {
   const user = useAuthStore((state) => state.user);
   return (
     <nav className="flex border-t border-[#DFDFE0] text-[#7A7A7A]">
@@ -46,4 +46,4 @@ function Footer() {
   );
 }
 
-export default Footer;
+export default Navbar;
