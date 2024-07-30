@@ -60,7 +60,8 @@ const ChatList = ({ userId }: ChatListProps) => {
     queryFn: async () => {
       const response = await axios.get(API_MYPAGE_CHATS(userId));
       return response.data;
-    }
+    },
+    refetchInterval: 5000
   });
 
   const postIds = chatData?.map((chat) => chat.post_id) || [];
@@ -129,6 +130,18 @@ const ChatList = ({ userId }: ChatListProps) => {
                 )
               }
             >
+              {postDetails && (
+                <div className="flex items-center">
+                  <Image
+                    className="mr-4"
+                    src={postDetails.image || '/icons/upload.png'}
+                    alt={postDetails.title || 'Default name'}
+                    width={40}
+                    height={40}
+                  />
+                  <p>{postDetails.title}</p>
+                </div>
+              )}
               {senderDetails && (
                 <div className="flex items-center">
                   <Image
