@@ -1,8 +1,8 @@
 import React from 'react';
 
 interface TabNavigationProps {
-  activeTab: 'user' | 'poster';
-  onChange: (tab: 'user' | 'poster') => void;
+  activeTab: 'user' | 'poster' | 'payment'; // 'payment' 추가
+  onChange: (tab: 'user' | 'poster' | 'payment') => void; // 'payment' 추가
 }
 
 const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, onChange }) => {
@@ -19,6 +19,12 @@ const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, onChange }) =>
         className={`rounded px-4 py-2 ${activeTab === 'poster' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
       >
         포스터 관리
+      </button>
+      <button
+        onClick={() => onChange('payment')}
+        className={`rounded px-4 py-2 ${activeTab === 'payment' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
+      >
+        결제 관리
       </button>
     </div>
   );
