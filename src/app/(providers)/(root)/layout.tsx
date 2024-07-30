@@ -1,4 +1,5 @@
 import UpButton from '@/components/common/Button/UpButton';
+import Navbar from '@/components/common/Navbar/Navbar';
 import { PropsWithChildren } from 'react';
 
 function RootLayout({ children }: PropsWithChildren) {
@@ -10,6 +11,7 @@ function RootLayout({ children }: PropsWithChildren) {
           <UpButton />
         </main>
       </div>
+      <Navbar />
     </div>
   );
 }
