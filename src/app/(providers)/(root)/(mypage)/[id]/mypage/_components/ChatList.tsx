@@ -36,7 +36,6 @@ const ChatList = ({ userId }: ChatListProps) => {
 
   const fetchPostDetails = async (postId: string): Promise<Post> => {
     const response = await axios.get(API_POST_DETAILS(postId));
-
     return response.data;
   };
 
@@ -58,7 +57,7 @@ const ChatList = ({ userId }: ChatListProps) => {
   });
 
   const postIds = chatData?.map((chat) => chat.post_id) || [];
-  const userIds = chatData ? Array.from(new Set(chatData.flatMap((chat) => [chat.sender_id, chat.receiver_id]))) : [];
+  const userIds = chatData ? chatData.flatMap((chat) => [chat.sender_id, chat.receiver_id]) : [];
 
   const {
     data: postData,

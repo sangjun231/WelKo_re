@@ -30,6 +30,17 @@ export default function ReservationList() {
     }
   };
 
+  const {
+    data: posts,
+    isPending,
+    error,
+    refetch: refetchPosts
+  } = useQuery<Tables<'posts'>[]>({
+    queryKey: ['post', userId],
+    queryFn: getPostsData,
+    enabled: !!userId
+  });
+
   const getPaymentsData = async (userId: string) => {
     try {
       const response = await axios.get(API_MYPAGE_PAYMENTS(userId));
@@ -42,17 +53,6 @@ export default function ReservationList() {
       }
     }
   };
-
-  const {
-    data: posts,
-    isPending,
-    error,
-    refetch: refetchPosts
-  } = useQuery<Tables<'posts'>[]>({
-    queryKey: ['post', userId],
-    queryFn: getPostsData,
-    enabled: !!userId
-  });
 
   const paymentsQuery = useQuery<Tables<'payments'>[]>({
     queryKey: ['payments', userId],
@@ -102,6 +102,21 @@ export default function ReservationList() {
     }
   };
 
+  const handleChat = (post: Tables<'posts'>) => {
+    const postAuthorId = post.user_id; // 게시글 작성자 ID
+    const query = new URLSearchParams({
+      postId: post.id,
+      postTitle: post.title || '',
+      postImage: post.image || ''
+    }).toString();
+    router.push(`/${userId}/${postAuthorId}/chatpage?${query}`);
+  };
+
+  const filteredPosts =
+    posts?.filter((post) =>
+      paymentsQuery.data?.some((payment) => payment.post_id === post.id && payment.user_id === userId)
+    ) ?? [];
+
   useEffect(() => {
     if (reviewsQuery.data) {
       setReviews(reviewsQuery.data);
@@ -123,11 +138,6 @@ export default function ReservationList() {
   if (!posts || posts.length === 0) {
     return <div className="flex h-screen items-center justify-center">No posts found</div>;
   }
-
-  const filteredPosts =
-    posts?.filter((post) =>
-      paymentsQuery.data?.some((payment) => payment.post_id === post.id && payment.user_id === userId)
-    ) ?? [];
 
   return (
     <div className="mb-10 max-w-[360px]">
@@ -162,7 +172,9 @@ export default function ReservationList() {
             {status === 'Upcoming Tour' ? (
               <div className="mt-2 flex space-x-2">
                 <button className="flex-1 rounded-lg border p-2">Change Tour</button>
-                <button className="flex-1 rounded-lg border p-2">Message Host</button>
+                <button className="flex-1 rounded-lg border p-2" onClick={() => handleChat(post)}>
+                  Message Host
+                </button>
               </div>
             ) : status === 'Refunded' ? (
               <p className="mt-2 w-full text-center text-red-500">Refunded</p>

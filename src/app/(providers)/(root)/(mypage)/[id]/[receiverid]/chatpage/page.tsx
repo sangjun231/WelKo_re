@@ -27,13 +27,13 @@ const ChatPage = () => {
     }
   };
 
-  useEffect(() => {
-    checkAccess();
-  }, [senderId, receiverId, router, supabase]);
-
   const postId = searchParams.get('postId');
   const postTitle = searchParams.get('postTitle');
   const postImage = searchParams.get('postImage');
+
+  useEffect(() => {
+    checkAccess();
+  }, [senderId, receiverId, router, supabase]);
 
   return (
     <div>
