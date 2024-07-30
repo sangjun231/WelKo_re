@@ -94,7 +94,7 @@ export default function PostList() {
               <button className="flex-1 rounded-lg border p-2">Delete Tour</button>
             </div>
             {status === 'Upcoming Tour' && (
-              <button className="mt-2 w-full rounded-lg border p-2">Check Reservations</button>
+              <button className="mt-2 w-full rounded-lg border p-2">Reservation List</button>
             )}
           </div>
         );

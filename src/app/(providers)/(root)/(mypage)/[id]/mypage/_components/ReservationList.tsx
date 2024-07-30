@@ -6,10 +6,10 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { API_MYPAGE_POST, API_MYPAGE_REVIEWS } from '@/utils/apiConstants';
+import { API_MYPAGE_POST, API_MYPAGE_REVIEWS, API_MYPAGE_PAYMENTS } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
 
-export default function PostList() {
+export default function ReservationList() {
   const params = useParams();
   const router = useRouter();
   const userId = Array.isArray(params.id) ? params.id[0] : params.id;
@@ -20,9 +20,20 @@ export default function PostList() {
     try {
       const response = await axios.get(API_MYPAGE_POST(userId));
       const data: Tables<'posts'>[] = response.data;
-      return data
-        .filter((post) => post.user_id === userId)
-        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      return data.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(`HTTP error! status: ${error.response?.status}`);
+      } else {
+        throw new Error('An unknown error occurred');
+      }
+    }
+  };
+
+  const getPaymentsData = async (userId: string) => {
+    try {
+      const response = await axios.get(API_MYPAGE_PAYMENTS(userId));
+      return response.data as Tables<'payments'>[];
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(`HTTP error! status: ${error.response?.status}`);
@@ -36,10 +47,16 @@ export default function PostList() {
     data: posts,
     isPending,
     error,
-    refetch
+    refetch: refetchPosts
   } = useQuery<Tables<'posts'>[]>({
     queryKey: ['post', userId],
     queryFn: getPostsData,
+    enabled: !!userId
+  });
+
+  const paymentsQuery = useQuery<Tables<'payments'>[]>({
+    queryKey: ['payments', userId],
+    queryFn: () => getPaymentsData(userId),
     enabled: !!userId
   });
 
@@ -69,7 +86,8 @@ export default function PostList() {
     return `$${price.toLocaleString('en-US')}`;
   };
 
-  const tourStatus = (endDate: string | null): string => {
+  const tourStatus = (endDate: string | null, payState: string | null): string => {
+    if (payState === 'cancel') return 'Refunded';
     if (!endDate) return 'N/A';
     const currentDate = new Date();
     const tourEndDate = new Date(endDate);
@@ -91,9 +109,10 @@ export default function PostList() {
   }, [reviewsQuery.data]);
 
   useEffect(() => {
-    refetch();
+    refetchPosts();
+    paymentsQuery.refetch();
     reviewsQuery.refetch();
-  }, [userId, refetch, reviewsQuery.refetch]);
+  }, [userId, refetchPosts, paymentsQuery.refetch, reviewsQuery.refetch]);
 
   if (isPending) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
@@ -105,10 +124,16 @@ export default function PostList() {
     return <div className="flex h-screen items-center justify-center">No posts found</div>;
   }
 
+  const filteredPosts =
+    posts?.filter((post) =>
+      paymentsQuery.data?.some((payment) => payment.post_id === post.id && payment.user_id === userId)
+    ) ?? [];
+
   return (
     <div className="mb-10 max-w-[360px]">
-      {posts.map((post) => {
-        const status = tourStatus(post.endDate);
+      {filteredPosts.map((post) => {
+        const payment = paymentsQuery.data?.find((pay) => pay.post_id === post.id);
+        const status = payment ? tourStatus(post.endDate, payment.pay_state ?? '') : 'N/A';
         const review = reviews.find((review) => review.post_id === post.id);
 
         return (
@@ -124,9 +149,11 @@ export default function PostList() {
                   height={76}
                 />
                 <div className="ml-2 flex flex-col">
-                  <p className="overflow-hidden text-ellipsis whitespace-nowrap text-[15px] font-bold">{post.title}</p>
+                  <p className="overflow-hidden text-ellipsis whitespace-nowrap text-[15px] font-bold">
+                    {post.title ?? 'No Title'}
+                  </p>
                   <p className="text-[13px]">
-                    {post.startDate} - {post.endDate}
+                    {post.startDate ?? 'No Start Date'} - {post.endDate ?? 'No End Date'}
                   </p>
                   <p className="text-[13px]">{formatPrice(post.price)}</p>
                 </div>
@@ -134,9 +161,11 @@ export default function PostList() {
             </Link>
             {status === 'Upcoming Tour' ? (
               <div className="mt-2 flex space-x-2">
-                <button className="flex-1 rounded-lg border p-2">Edit Tour</button>
-                <button className="flex-1 rounded-lg border p-2">Delete Tour</button>
+                <button className="flex-1 rounded-lg border p-2">Change Tour</button>
+                <button className="flex-1 rounded-lg border p-2">Message Host</button>
               </div>
+            ) : status === 'Refunded' ? (
+              <p className="mt-2 w-full text-center text-red-500">Refunded</p>
             ) : (
               <button
                 className="mt-2 w-full rounded-lg border p-2"
