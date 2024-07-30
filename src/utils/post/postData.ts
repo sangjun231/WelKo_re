@@ -28,3 +28,17 @@ export const updatePostDetails = async (postDetails: Partial<Tables<'posts'>>) =
     }
   }
 };
+
+export const savePlaces = async (placesDetails: Partial<Tables<'schedule'>>) => {
+  try {
+    const response = await axios.post('/api/search', placesDetails);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(error);
+      throw new Error(`HTTP error! status: ${error.response?.status}`);
+    } else {
+      throw new Error('An unknown error occurred');
+    }
+  }
+};

@@ -1,5 +1,6 @@
+import { createClient } from '@/utils/supabase/server';
 import axios from 'axios';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
   try {
@@ -38,5 +39,29 @@ export async function GET(request: Request) {
       console.error('Unexpected error:', error);
     }
     return NextResponse.json({ error: 'An error occurred while searching for places' }, { status: 500 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  const supabase = createClient();
+  const data = await request.json();
+  const { post_id, day, places, lat, long } = data;
+
+  try {
+    const { error } = await supabase.from('schedule').insert({
+      post_id,
+      day,
+      places,
+      lat,
+      long
+    });
+    if (error) {
+      console.error('Error inserting dates:', error.message);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json({ success: true }, { status: 200 }); // 성공적으로 데이터를 삽입한 후 응답 반환
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return NextResponse.json({ error: 'Unexpected error occurred' }, { status: 500 });
   }
 }

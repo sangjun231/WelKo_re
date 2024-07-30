@@ -20,3 +20,11 @@ export type DateType = {
   startDate?: string;
   endDate?: string;
 };
+
+export type Place = {
+  title: string;
+  roadAddress: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+};

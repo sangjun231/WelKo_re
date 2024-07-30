@@ -44,36 +44,51 @@ export type Database = {
       }
       messages: {
         Row: {
+          avatar: string | null
           content: string
           created_at: string | null
           id: number
-          last_message: string | null
+          name: string | null
           post_id: string | null
           receiver_id: string
-          receiver_name: string | null
           sender_id: string
         }
         Insert: {
+          avatar?: string | null
           content: string
           created_at?: string | null
           id?: number
-          last_message?: string | null
+          name?: string | null
           post_id?: string | null
           receiver_id: string
-          receiver_name?: string | null
           sender_id: string
         }
         Update: {
+          avatar?: string | null
           content?: string
           created_at?: string | null
           id?: number
-          last_message?: string | null
+          name?: string | null
           post_id?: string | null
           receiver_id?: string
-          receiver_name?: string | null
           sender_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "messages_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       payments: {
         Row: {
@@ -136,7 +151,7 @@ export type Database = {
           tag: Json | null
           title: string | null
           updated_at: string | null
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           content?: string | null
@@ -153,7 +168,7 @@ export type Database = {
           tag?: Json | null
           title?: string | null
           updated_at?: string | null
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           content?: string | null
@@ -170,7 +185,7 @@ export type Database = {
           tag?: Json | null
           title?: string | null
           updated_at?: string | null
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -212,6 +227,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "reviews_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "reviews_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -224,6 +246,7 @@ export type Database = {
         Row: {
           area: string | null
           created_at: string
+          day: string
           description: Json | null
           id: string
           lat: Json | null
@@ -234,8 +257,9 @@ export type Database = {
         Insert: {
           area?: string | null
           created_at?: string
+          day: string
           description?: Json | null
-          id: string
+          id?: string
           lat?: Json | null
           long?: Json | null
           places?: Json | null
@@ -244,6 +268,7 @@ export type Database = {
         Update: {
           area?: string | null
           created_at?: string
+          day?: string
           description?: Json | null
           id?: string
           lat?: Json | null
@@ -273,7 +298,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          avatar: string
+          avatar?: string
           created_at?: string
           email: string
           id: string

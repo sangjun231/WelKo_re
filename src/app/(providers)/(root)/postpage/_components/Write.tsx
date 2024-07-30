@@ -84,16 +84,16 @@ const Write = ({ prev }: { prev: () => void }) => {
       console.error('Post ID not found');
       return;
     }
-    // const {
-    //   data: { user },
-    //   error
-    // } = await supabase.auth.getUser();
-    // if (error) {
-    //   console.error('Error getting user:', error);
-    //   return;
-    // }
-    // const user_id = user?.id as string;
+    const {
+      data: { user },
+      error
+    } = await supabase.auth.getUser();
+    if (error) {
+      console.error('Error getting user:', error);
+      return;
+    }
     addMutation.mutate({
+      name: user?.user_metadata.name,
       id: postId,
       title,
       content,
