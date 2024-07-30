@@ -1,5 +1,6 @@
 'use client';
-import Link from 'next/link';
+import { useCurrentPosition } from '@/hooks/Map/useCurrentPosition';
+import { useNaverMapScript } from '@/hooks/Map/useNaverMapScript';
 import { useEffect, useState } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -11,104 +12,57 @@ type MapProps = {
 };
 
 const NaverMap: React.FC<MapProps> = ({ next, prev }) => {
-  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
-  const [position, setPosition] = useState<{ latitude: number; longitude: number } | null>(null);
+  const clientId = process.env.NEXT_PUBLIC_NCP_CLIENT_ID!;
+  const isScriptLoaded = useNaverMapScript(clientId);
+  const position = useCurrentPosition();
   const [region, setRegion] = useState<string | null>(null);
-  const [showSearchPage, setShowSearchPage] = useState(false);
-  const [selectedPlace, setSelectedPlace] = useState(null);
 
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${
-      process.env.NEXT_PUBLIC_NCP_CLIENT_ID
-    }&submodules=geocoder`;
-    script.async = true;
+    const getRegionName = (latitude: number, longitude: number) => {
+      if (!window.naver) return;
 
-    script.onload = () => {
-      if (window.naver) {
-        setIsScriptLoaded(true);
-      } else {
-        console.error('네이버 맵 스크립트 로드 실패: window.naver가 정의되지 않음');
-      }
-    };
-    script.onerror = () => {
-      console.error('네이버 맵 스크립트 로드 실패');
-    };
-    document.body.appendChild(script);
+      const coord = new window.naver.maps.LatLng(latitude, longitude);
 
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
-
-  const getCurrentPosition = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const { latitude, longitude } = pos.coords;
-          setPosition({ latitude, longitude });
+      window.naver.maps.Service.reverseGeocode(
+        {
+          location: coord,
+          coordType: window.naver.maps.Service.CoordType.LatLng
         },
-        (error) => {
-          toast.error(`Error occurred while retrieving location: ${error.message}`);
+        (status: any, response: any) => {
+          if (status === 200) {
+            if (response.result.items && response.result.items.length > 0) {
+              const address = response.result.items[0].addrdetail.sigugun;
+              setRegion(address);
+            } else {
+              toast.error('주소를 찾을 수 없습니다.');
+            }
+          } else {
+            toast.error('Failed to get the location name.');
+          }
         }
       );
-    } else {
-      toast.error('Geolocation is not supported by this browser.');
-    }
-  };
+    };
 
-  const getRegionName = (latitude: number, longitude: number) => {
-    if (!window.naver) return;
+    const initializeMap = () => {
+      if (position && window.naver) {
+        const map = new window.naver.maps.Map('map', {
+          center: new window.naver.maps.LatLng(position.latitude, position.longitude),
+          zoom: 15
+        });
 
-    const coord = new window.naver.maps.LatLng(latitude, longitude);
+        new window.naver.maps.Marker({
+          position: new window.naver.maps.LatLng(position.latitude, position.longitude),
+          map: map
+        });
 
-    window.naver.maps.Service.reverseGeocode(
-      {
-        location: coord,
-        coordType: window.naver.maps.Service.CoordType.LatLng
-      },
-      (status: any, response: any) => {
-        if (status === 200) {
-          if (response.result.items && response.result.items.length > 0) {
-            const address = response.result.items[0].address;
-            setRegion(address);
-          } else {
-            toast.error('주소를 찾을 수 없습니다.');
-          }
-        } else {
-          toast.error('Failed to get the location name.');
-        }
+        getRegionName(position.latitude, position.longitude);
       }
-    );
-  };
-  // 현재 위치 띄우기
-  const initializeMap = () => {
-    if (position) {
-      const map = new window.naver.maps.Map('map', {
-        center: new window.naver.maps.LatLng(position.latitude, position.longitude),
-        zoom: 15
-      });
+    };
 
-      new window.naver.maps.Marker({
-        position: new window.naver.maps.LatLng(position.latitude, position.longitude),
-        map: map
-      });
-
-      getRegionName(position.latitude, position.longitude);
-    }
-  };
-
-  useEffect(() => {
-    if (isScriptLoaded) {
-      getCurrentPosition();
-    }
-  }, [isScriptLoaded]);
-
-  useEffect(() => {
-    if (position) {
+    if (isScriptLoaded && position) {
       initializeMap();
     }
-  }, [position]);
+  }, [isScriptLoaded, position]);
 
   return (
     <>
@@ -122,12 +76,7 @@ const NaverMap: React.FC<MapProps> = ({ next, prev }) => {
         </div>
       </div>
       {/* 수정 필요 */}
-      <div className="flex justify-between">
-        <p>현재 위치</p>
-        <Link href="/" className="underline">
-          지역 변경하기
-        </Link>
-      </div>
+      <div className="flex justify-between">{region && <p>현재 위치: {region}</p>}</div>
 
       <div id="map" style={{ width: '100%', height: '400px' }}></div>
       <MapSelect next={next} />

@@ -1,4 +1,6 @@
 'use client';
+import { useCurrentPosition } from '@/hooks/Map/useCurrentPosition';
+import { useNaverMapScript } from '@/hooks/Map/useNaverMapScript';
 import axios from 'axios';
 import DOMPurify from 'dompurify';
 import { useEffect, useState } from 'react';
@@ -24,6 +26,10 @@ const SearchAddress = ({ prev, onSave }: SearchAddressProps) => {
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [markers, setMarkers] = useState<any[]>([]);
   const [cleanHTML, setCleanHTML] = useState<string>('');
+  const clientId = process.env.NEXT_PUBLIC_NCP_CLIENT_ID!;
+  const isScriptLoaded = useNaverMapScript(clientId);
+  const position = useCurrentPosition();
+
   //검색 결과에 적용된 태그 없애기
   useEffect(() => {
     if (selectedPlace) {
@@ -31,38 +37,25 @@ const SearchAddress = ({ prev, onSave }: SearchAddressProps) => {
     }
   }, [selectedPlace]);
 
-  //지도 띄우기
+  // 초기 지도, 마커 보여주기
   useEffect(() => {
-    if (window.naver && window.naver.maps) {
-      initializeMap();
-    } else {
-      loadNaverMapsScript();
-    }
-  }, []);
-  const initializeMap = () => {
-    const mapInstance = new window.naver.maps.Map('map', {
-      center: new window.naver.maps.LatLng(37.5665, 126.978), //서울시청 위경도
-      zoom: 15
-    });
+    if (!isScriptLoaded || !position) return;
+    const initializeMap = () => {
+      const mapInstance = new window.naver.maps.Map('map', {
+        center: new window.naver.maps.LatLng(position.latitude, position.longitude),
+        zoom: 15
+      });
 
-    new window.naver.maps.Marker({
-      position: new window.naver.maps.LatLng(37.5665, 126.978),
-      map: map
-    });
-    setMap(mapInstance);
-    // 지도 초기화 시 마커 추가
-    if (searchResults.length > 0) {
-      displayMarkers(searchResults, mapInstance);
-    }
-  };
+      const currentMarker = new window.naver.maps.Marker({
+        position: new window.naver.maps.LatLng(position.latitude, position.longitude),
+        map: mapInstance
+      });
 
-  const loadNaverMapsScript = () => {
-    const script = document.createElement('script');
-    script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NEXT_PUBLIC_NCP_CLIENT_ID}&submodules=geocoder`;
-    script.async = true;
-    script.onload = initializeMap;
-    document.body.appendChild(script);
-  };
+      setMap(mapInstance);
+      setMarkers(currentMarker);
+    };
+    initializeMap();
+  }, [isScriptLoaded, position]);
 
   // 검색 api를 불러와 장소 검색하기 (주소 아님)
   const searchPlaces = async () => {
@@ -72,7 +65,6 @@ const SearchAddress = ({ prev, onSave }: SearchAddressProps) => {
       const response = await axios.get('/api/search', {
         params: { query: searchQuery }
       });
-      console.log(response);
 
       const places = response.data.items.map((item: any) => ({
         title: item.title,
@@ -83,51 +75,24 @@ const SearchAddress = ({ prev, onSave }: SearchAddressProps) => {
       }));
 
       setSearchResults(places); // 검색 결과를 배열로 설정
-      displayMarkers(places, map);
     } catch (error) {
       console.error('Error searching places:', error);
     }
   };
 
-  const displayMarkers = (places: Place[], mapInstance: any) => {
-    if (!mapInstance) {
-      console.error('Map object is not initialized');
-      return;
-    }
-
-    // 기존 마커 제거
-    markers.forEach((marker) => marker.setMap(null));
-    setMarkers([]);
-
-    const newMarkers = places.map((place) => {
-      const position = new window.naver.maps.LatLng(place.latitude, place.longitude);
-      const marker = new window.naver.maps.Marker({
-        position: position,
-        map: map
-      });
-
-      window.naver.maps.Event.addListener(marker, 'click', () => handlePlaceSelect(place));
-
-      console.log('Marker added at position:', position);
-      return marker;
-    });
-
-    setMarkers(newMarkers);
-
-    // 검색 결과의 첫 번째 위치로 지도 중심 이동
-    if (places.length > 0) {
-      const firstPlace = places[0];
-      map.setCenter(new window.naver.maps.LatLng(firstPlace.latitude, firstPlace.longitude));
-      console.log('Map center set to:', firstPlace.latitude, firstPlace.longitude);
-    }
-  };
-
   const handlePlaceSelect = (place: Place) => {
     setSelectedPlace(place);
-    if (map) {
-      const position = new window.naver.maps.LatLng(place.latitude, place.longitude);
-      map.setCenter(position);
-    }
+    markers.forEach((marker) => marker.setVisible(false)); // 기존 마커 숨기기
+    setMarkers([]);
+    // 새로운 위치로 지도 이동 및 마커 추가
+    const newCenter = new window.naver.maps.LatLng(place.latitude, place.longitude);
+    map.setCenter(newCenter);
+
+    const selectedMarker = new window.naver.maps.Marker({
+      position: newCenter,
+      map: map
+    });
+    setMarkers([selectedMarker]);
   };
 
   return (
@@ -158,27 +123,22 @@ const SearchAddress = ({ prev, onSave }: SearchAddressProps) => {
         {searchResults.map((place, index) => {
           const cleanHTML = DOMPurify.sanitize(place.title);
           return (
-            <div
-              key={index}
-              className="cursor-pointer border-b p-4 hover:bg-gray-100"
-              onClick={() => handlePlaceSelect(place)}
-            >
-              <h3 className="font bold" dangerouslySetInnerHTML={{ __html: cleanHTML }} />
-              <p>{place.roadAddress}</p>
+            <div key={index} className="flex justify-between border-b p-4 hover:bg-gray-100">
+              <div>
+                <h3 className="font bold" dangerouslySetInnerHTML={{ __html: cleanHTML }} />
+                <p>{place.roadAddress}</p>
+              </div>
+              {place === selectedPlace ? (
+                <button className="mt-2 rounded border-2 bg-white p-2">취소</button>
+              ) : (
+                <button onClick={() => handlePlaceSelect(place)} className="mt-2 rounded bg-green-500 p-2 text-white">
+                  선택
+                </button>
+              )}
             </div>
           );
         })}
       </div>
-
-      {selectedPlace && (
-        <div className="bg-gray-200 p-4">
-          <h3 className="font bold" dangerouslySetInnerHTML={{ __html: cleanHTML }} />
-          <p>{selectedPlace.roadAddress}</p>
-          <button onClick={() => onSave(selectedPlace)} className="mt-2 rounded bg-green-500 p-2 text-white">
-            이 장소 저장하기
-          </button>
-        </div>
-      )}
     </div>
   );
 };
