@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
@@ -13,7 +15,7 @@ export default function PaymentSuccess() {
     post: state.post
   }));
   const [paymentData, setPaymentData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setPending] = useState(true);
 
   useEffect(() => {
     const fetchPaymentData = async () => {
@@ -32,7 +34,7 @@ export default function PaymentSuccess() {
         if (data && data.post_id) {
           fetchPost(data.post_id);
         }
-        setLoading(false);
+        setPending(false);
       });
     }
   }, [id, fetchPost]);
