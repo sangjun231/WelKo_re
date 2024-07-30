@@ -4,7 +4,6 @@ import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import React, { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { API_MYPAGE_POST } from '@/utils/apiConstants';
