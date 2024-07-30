@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react';
 import { fetchMessages, sendMessage } from '../services/chatService';
+import Image from 'next/image';
+
+type User = {
+  id: string;
+  name: string;
+  avatar: string;
+};
 
 type Message = {
   id: string;
@@ -8,6 +15,8 @@ type Message = {
   content: string;
   created_at: string;
   post_id: string;
+  sender: User;
+  receiver: User;
 };
 
 type ChatProps = {
@@ -21,11 +30,12 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
   const [newMessage, setNewMessage] = useState<string>('');
 
   useEffect(() => {
-    const interval = setInterval(async () => {
+    const fetchData = async () => {
       const fetchedMessages = await fetchMessages(senderId, receiverId);
       setMessages(fetchedMessages);
-    }, 1000);
+    };
 
+    const interval = setInterval(fetchData, 1000);
     return () => clearInterval(interval);
   }, [senderId, receiverId]);
 
@@ -46,7 +56,12 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
             key={msg.id}
             className={`mb-10 flex flex-col ${msg.sender_id === senderId ? 'items-end' : 'items-start'}`}
           >
-            {msg.sender_id !== senderId && <p className="mr-2 text-sm font-bold">{msg.sender_id}</p>}
+            {msg.sender_id !== senderId && msg.sender && (
+              <div className="flex items-center">
+                <Image src={msg.sender.avatar} alt="avatar" width={24} height={24} className="mr-2 rounded-full" />
+                <p className="mr-2 text-sm font-bold">{msg.sender.name}</p>
+              </div>
+            )}
             <div
               className={`max-w-[240px] break-all rounded p-2 ${msg.sender_id === senderId ? 'bg-green-200' : 'bg-gray-200'}`}
             >
