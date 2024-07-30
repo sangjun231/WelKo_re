@@ -46,7 +46,7 @@ export default function PostList() {
     if (!endDate) return 'N/A';
     const currentDate = new Date();
     const tourEndDate = new Date(endDate);
-    return tourEndDate < currentDate ? '투어 완료' : '투어 예정';
+    return tourEndDate < currentDate ? 'Tour Completed' : 'Upcoming Tour';
   };
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function PostList() {
         return (
           <div key={post.id} className="mb-4 border-b pb-4">
             <p className="text-[15px]">{status}</p>
-            <p className="text-[15px]">작성 시각 : {new Date(post.created_at).toLocaleString()}</p>
+            <p className="text-[15px]">Created at: {new Date(post.created_at).toLocaleString()}</p>
             <Link href={`/detail/${post.id}`}>
               <div className="flex">
                 <Image
@@ -83,17 +83,19 @@ export default function PostList() {
                 <div className="ml-2 flex flex-col">
                   <p className="overflow-hidden text-ellipsis whitespace-nowrap text-[15px] font-bold">{post.title}</p>
                   <p className="text-[13px]">
-                    {post.startDate} -{post.endDate}
+                    {post.startDate} - {post.endDate}
                   </p>
                   <p className="text-[13px]">{formatPrice(post.price)}</p>
                 </div>
               </div>
             </Link>
             <div className="mt-2 flex space-x-2">
-              <button className="flex-1 rounded-lg border p-2">투어 수정</button>
-              <button className="flex-1 rounded-lg border p-2">투어 삭제</button>
+              <button className="flex-1 rounded-lg border p-2">Edit Tour</button>
+              <button className="flex-1 rounded-lg border p-2">Delete Tour</button>
             </div>
-            {status === '투어 예정' && <button className="mt-2 w-full rounded-lg border p-2">예약자 확인</button>}
+            {status === 'Upcoming Tour' && (
+              <button className="mt-2 w-full rounded-lg border p-2">Check Reservations</button>
+            )}
           </div>
         );
       })}

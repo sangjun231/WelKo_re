@@ -2,13 +2,14 @@
 
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Rating from 'react-rating-stars-component';
 import { API_MYPAGE_REVIEWS } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
 
 const ReviewList = ({ userId }: { userId: string }) => {
   const [reviews, setReviews] = useState<Tables<'reviews'>[]>([]);
+  const router = useRouter();
 
   const handleDelete = async (id: string) => {
     await axios.delete(API_MYPAGE_REVIEWS(userId), { data: { id } });
@@ -20,15 +21,21 @@ const ReviewList = ({ userId }: { userId: string }) => {
     setReviews(response.data);
   };
 
+  const handleCreateReview = (postId: string) => {
+    router.push(`/${userId}/reviewpage?post_id=${postId}`);
+  };
+
+  const handleEditReview = (id: string, postId: string | null) => {
+    router.push(`/${userId}/reviewpage?id=${id}&post_id=${postId}`);
+  };
+
   useEffect(() => {
     fetchReviews();
   }, [userId]);
 
   return (
     <div>
-      <Link href={`/${userId}/reviewpage`}>
-        <button>Create New Review</button>
-      </Link>
+      <button onClick={() => handleCreateReview('yourPostIdHere')}>Create New Review</button>
       {reviews.length === 0 ? (
         <div>Loading...</div>
       ) : (
@@ -37,9 +44,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
             <Rating count={5} value={item.rating ?? 0} size={24} edit={false} activeColor="#ffd700" />
             <p>{item.content}</p>
             <div className="mt-2 flex justify-around">
-              <Link href={`/${userId}/reviewpage?id=${item.id}`}>
-                <button>Edit</button>
-              </Link>
+              <button onClick={() => handleEditReview(item.id, item.post_id)}>Edit</button>
               <button onClick={() => handleDelete(item.id)}>Delete</button>
             </div>
           </div>

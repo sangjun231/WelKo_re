@@ -227,6 +227,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "reviews_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "reviews_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -239,6 +246,7 @@ export type Database = {
         Row: {
           area: string | null
           created_at: string
+          day: string
           description: Json | null
           id: string
           lat: Json | null
@@ -249,6 +257,7 @@ export type Database = {
         Insert: {
           area?: string | null
           created_at?: string
+          day: string
           description?: Json | null
           id: string
           lat?: Json | null
@@ -259,6 +268,7 @@ export type Database = {
         Update: {
           area?: string | null
           created_at?: string
+          day?: string
           description?: Json | null
           id?: string
           lat?: Json | null
