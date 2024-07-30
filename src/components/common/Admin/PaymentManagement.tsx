@@ -120,7 +120,26 @@ const PaymentManagement = () => {
         requester: 'ADMIN'
       });
       toast.success(response.data.message);
-      setPayments(payments.filter((payment) => payment.id !== selectedPayment.id));
+
+      // 업데이트된 결제 정보 가져오기
+      const { data: updatedPayment } = await axios.get(`/api/detail/payment/${selectedPayment.id}`);
+      const formattedUpdatedPayment = {
+        id: updatedPayment.id,
+        user_id: updatedPayment.user_id,
+        post_id: updatedPayment.post_id,
+        total_price: updatedPayment.total_price,
+        created_at: updatedPayment.created_at,
+        pay_state: updatedPayment.pay_state,
+        user_name: updatedPayment.users.name,
+        user_email: updatedPayment.users.email,
+        post_title: updatedPayment.posts.title
+      };
+
+      // 상태 업데이트
+      setPayments(
+        payments.map((payment) => (payment.id === formattedUpdatedPayment.id ? formattedUpdatedPayment : payment))
+      );
+
       setSelectedPayment(null);
       setReason('');
     } catch (error) {
