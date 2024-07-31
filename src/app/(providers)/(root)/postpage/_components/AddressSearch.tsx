@@ -24,6 +24,7 @@ const AddressSearch = ({ prev, selectedDay, selectedPlaces, setSelectedPlaces }:
   const clientId = process.env.NEXT_PUBLIC_NCP_CLIENT_ID!;
   const isScriptLoaded = useNaverMapScript(clientId);
   const position = useCurrentPosition();
+  const [selectedSearch, setSelectedSearch] = useState<Place[]>([]);
 
   // 검색 결과에 적용된 태그 없애기
   useEffect(() => {
@@ -78,7 +79,7 @@ const AddressSearch = ({ prev, selectedDay, selectedPlaces, setSelectedPlaces }:
   useEffect(() => {
     const storedPlaces = sessionStorage.getItem(selectedDay);
     if (storedPlaces) {
-      setSelectedPlaces(JSON.parse(storedPlaces));
+      setSelectedSearch(JSON.parse(storedPlaces));
     }
   }, [selectedDay]);
 
@@ -111,18 +112,18 @@ const AddressSearch = ({ prev, selectedDay, selectedPlaces, setSelectedPlaces }:
   // 선택한 장소 목록에 추가 (선택버튼)
   const handlePlaceSelect = (place: Place) => {
     setSelectedPlace(place);
-    if (!selectedPlaces.includes(place)) {
-      setSelectedPlaces((prev) => [...prev, place]);
+    if (!selectedSearch.includes(place)) {
+      setSelectedSearch((prev) => [...prev, place]);
     }
   };
   // 목록에서 제거 (취소버튼)
   const handlePlaceRemove = (place: Place) => {
-    setSelectedPlaces((prev) => prev.filter((p) => p !== place));
+    setSelectedSearch((prev) => prev.filter((p) => p !== place));
   };
   // 세션에 임시저장
   const handlePlaceSave = () => {
-    sessionStorage.setItem(selectedDay, JSON.stringify(selectedPlaces));
-    setSelectedPlaces([]);
+    sessionStorage.setItem(selectedDay, JSON.stringify(selectedSearch));
+    setSelectedSearch([]);
     prev();
   };
   const storedPlaces = sessionStorage.getItem(selectedDay);
@@ -159,7 +160,7 @@ const AddressSearch = ({ prev, selectedDay, selectedPlaces, setSelectedPlaces }:
         <div className="h-1/5 overflow-y-scroll">
           {searchResults.map((place, index) => {
             const cleanHTML = DOMPurify.sanitize(place.title);
-            const isSelected = selectedPlaces.includes(place);
+            const isSelected = selectedSearch.includes(place);
             return (
               <div key={index} className="flex justify-between border-b p-4 hover:bg-gray-100">
                 <div>
@@ -179,8 +180,8 @@ const AddressSearch = ({ prev, selectedDay, selectedPlaces, setSelectedPlaces }:
 
       <h2 className="p-4 text-lg font-bold">선택한 장소들</h2>
       <div className="h-1/5 overflow-y-scroll">
-        {selectedDay === storedPlacesKey &&
-          selectedPlaces.map((place, index) => {
+        {(storedPlacesKey === undefined || selectedDay === storedPlacesKey) &&
+          selectedSearch.map((place, index) => {
             const cleanHTML = DOMPurify.sanitize(place.title);
             return (
               <div key={index} className="flex justify-between border-b p-4 hover:bg-gray-100">

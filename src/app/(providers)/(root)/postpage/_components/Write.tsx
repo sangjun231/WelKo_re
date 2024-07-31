@@ -13,21 +13,21 @@ const Write = ({ prev }: { prev: () => void }) => {
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [image, setImage] = useState<string>('');
-  const [maxPeople, setMaxPeople] = useState<number>(0);
-  const [price, setPrice] = useState(0);
+  const [maxPeople, setMaxPeople] = useState<number>();
+  const [price, setPrice] = useState<number>();
   const [tag, setTag] = useState<string[]>([]);
   const tags = [
-    '체험과 액티비티',
-    '유명 핫플레이스',
-    '자연과 함께',
-    '관광지도 갈래요',
-    '현적하고 여유롭게',
-    '쇼핑 할래요',
-    '맛집은 필수',
-    '문화 예술 탐방'
+    'Activities',
+    'Popular Places',
+    'With Nature',
+    'Tourist Spots',
+    'Relax and Leisurely',
+    'Shopping',
+    'Must-Visit Restaurants',
+    'Cultural Exploration'
   ];
   const [selectedPrices, setSelectedPrices] = useState<string[]>([]);
-  const prices = ['숙소비 포함', '식사비 포함', '레저비 포함', '교통비 포함'];
+  const prices = ['Accommodation', 'Meals', 'Leisure Activities', 'Transportation'];
 
   //이미지 추가하는 핸들러
   const handleImageAdd = (event: ChangeEvent<HTMLInputElement>) => {
@@ -103,7 +103,7 @@ const Write = ({ prev }: { prev: () => void }) => {
       price,
       selectedPrices
     });
-    alert('posting!');
+    alert('posting success!');
     router.replace('/');
     sessionStorage.clear();
   };
@@ -195,7 +195,9 @@ const Write = ({ prev }: { prev: () => void }) => {
         </div>
       </div>
 
-      <button className="my-4 w-full rounded bg-black p-2 text-white">저장하기</button>
+      <button type="submit" className="my-4 w-full rounded bg-black p-2 text-white">
+        저장하기
+      </button>
     </form>
   );
 };

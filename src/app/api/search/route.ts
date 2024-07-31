@@ -6,7 +6,6 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('query');
-    console.log('Query:', query);
 
     if (!query) {
       return NextResponse.json({ error: 'Query parameter is required' }, { status: 400 });
@@ -24,10 +23,13 @@ export async function GET(request: Request) {
         query,
         display: 5, // 검색 결과 개수
         start: 1,
-        sort: 'random' // 정렬 기준
+        sort: 'sim' // 정렬 기준 정확도 순, 리뷰순은 comment
       }
     });
-    console.log('Naver API Response:', response.data);
+
+    if (response === null) {
+      console.log('검색 결과가 없습니다');
+    }
 
     return NextResponse.json(response.data);
   } catch (error) {
