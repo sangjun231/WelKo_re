@@ -105,27 +105,36 @@ export const Guide = () => {
   if (error) return <div>Error fetching user data</div>;
 
   return (
-    <div>
-      <h3>투어 가이드</h3>
-      <div>
+    <div className="flex flex-col gap-6">
+      <h2 className="text-grayscale-900 text-lg font-semibold">Contact your guide</h2>
+      <p className="text-grayscale-500 text-xs font-normal">
+        For more information such as the number of people and schedule change, it is recommended to send a message to
+        the guide to discuss and check.
+      </p>
+      <div className="flex gap-4">
         {user && (
           <>
             <Image
               src={user.avatar}
               alt={`${user.name}의 아바타`}
-              width={96}
-              height={96}
-              className="mr-2 h-24 w-24 rounded-full object-cover"
+              width={56}
+              height={56}
+              className="mr-2 h-14 w-14 rounded-full object-cover"
             />
-            <p>{user.region}</p>
-            <h4>{user.name}</h4>
-            <h5>투어 지역은 보류</h5>
-            <button className="mb-6 border" onClick={handleChat}>
-              메시지 보내기
-            </button>
+            <div className="gap-3">
+              <h4 className="text-lg font-semibold">{user.name}</h4>
+              <h5 className="text-sm font-normal">Seoul, Korea</h5>
+            </div>
           </>
         )}
       </div>
+      <button
+        className="border-grayscale-800 rounded-2xl border px-5 py-3 text-base font-semibold"
+        onClick={handleChat}
+      >
+        Message Host
+      </button>
+      <hr className="bg-grayscale-100 my-8 h-[1px] w-full" />
     </div>
   );
 };

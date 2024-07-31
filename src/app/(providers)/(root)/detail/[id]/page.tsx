@@ -14,9 +14,13 @@ export default function DetailPage() {
   return (
     <>
       <Read />
-      <Guide />
-      <Reviews />
-      <SelectBtn />
+      <div className="flex w-full justify-center">
+        <div className="w-full max-w-[320px]">
+          <Guide />
+          <Reviews />
+          <SelectBtn />
+        </div>
+      </div>
     </>
   );
 }
