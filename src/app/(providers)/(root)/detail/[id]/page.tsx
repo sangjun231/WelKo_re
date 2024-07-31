@@ -3,7 +3,6 @@
 import React from 'react';
 import Read from './_components/Read';
 import { Guide } from './_components/Guide';
-import SelectBtn from './_components/SelectBtn';
 import Reviews from './_components/Reviews';
 import { useParams } from 'next/navigation';
 import { CheckboxDetail } from './_components/CheckboxDetail';
@@ -21,7 +20,6 @@ export default function DetailPage() {
           <CheckboxDetail />
           <Guide />
           <Reviews />
-          <SelectBtn />
         </div>
       </div>
       <DetailNavbar />
