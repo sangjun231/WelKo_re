@@ -26,6 +26,7 @@ const SelectUser = () => {
         const paymentData = {
           id: response.txId, // 고유 트랜잭션 ID
           user_id: user?.id, // 로그인한 사용자 ID
+          user_email: user?.email,
           post_id: post?.id, // 결제한 게시물 ID
           pay_state: response.paymentId, // 결제 서비스 제공자에서 생성한 고유 결제 ID
           total_price: totalAmount // 총 결제 금액
@@ -57,7 +58,7 @@ const SelectUser = () => {
         router.back();
       }
     },
-    [router, user?.id, post?.id, totalAmount]
+    [router, user?.id, user?.email, post?.id, totalAmount]
   );
 
   // 결제 실패 시 호출되는 함수
