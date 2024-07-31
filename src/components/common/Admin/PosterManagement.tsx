@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
-import { toast } from 'react-toastify';
+import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
+import { toast } from 'react-toastify';
 
 // 게시글 데이터 타입 정의
 interface Post {

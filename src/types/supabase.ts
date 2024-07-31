@@ -151,7 +151,7 @@ export type Database = {
           tag: Json | null
           title: string | null
           updated_at: string | null
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           content?: string | null
@@ -168,7 +168,7 @@ export type Database = {
           tag?: Json | null
           title?: string | null
           updated_at?: string | null
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           content?: string | null
@@ -185,7 +185,7 @@ export type Database = {
           tag?: Json | null
           title?: string | null
           updated_at?: string | null
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -259,7 +259,7 @@ export type Database = {
           created_at?: string
           day: string
           description?: Json | null
-          id: string
+          id?: string
           lat?: Json | null
           long?: Json | null
           places?: Json | null
