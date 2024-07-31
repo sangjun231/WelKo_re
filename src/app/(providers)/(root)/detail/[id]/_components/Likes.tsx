@@ -1,4 +1,3 @@
-// components/Likes.tsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
@@ -71,15 +70,19 @@ const Likes = () => {
       <div className="flex space-x-4">
         {post && post.user_id === user.id && (
           <>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white shadow">
-              <GoPencil size={24} />
+            <div className="icon-button">
+              <button className="flex h-full w-full items-center justify-center">
+                <GoPencil size={24} />
+              </button>
             </div>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white shadow">
-              <GoTrash size={24} />
+            <div className="icon-button">
+              <button className="flex h-full w-full items-center justify-center">
+                <GoTrash size={24} />
+              </button>
             </div>
           </>
         )}
-        <div className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white shadow">
+        <div className="icon-button">
           <button onClick={handleLike} className="flex h-full w-full items-center justify-center">
             {liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
           </button>

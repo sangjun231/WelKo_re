@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.icon-button {
+  @apply bg-grayscale-50 border-grayscale-50 flex h-8 w-8 items-center justify-center rounded-full border;
+}
