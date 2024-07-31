@@ -70,6 +70,7 @@ export async function PUT(request: NextRequest) {
     const { error: updateError } = await supabase
       .from('posts')
       .update({
+        name,
         title,
         content,
         image,

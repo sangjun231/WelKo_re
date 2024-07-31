@@ -103,8 +103,9 @@ const Write = ({ prev }: { prev: () => void }) => {
       price,
       selectedPrices
     });
+    alert('posting!');
     router.replace('/');
-    sessionStorage.removeItem('postId');
+    sessionStorage.clear();
   };
 
   return (

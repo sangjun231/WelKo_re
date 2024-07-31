@@ -75,6 +75,13 @@ const AddressSearch = ({ prev, selectedDay, selectedPlaces, setSelectedPlaces }:
     }
   }, [map, selectedPlace]);
 
+  useEffect(() => {
+    const storedPlaces = sessionStorage.getItem(selectedDay);
+    if (storedPlaces) {
+      setSelectedPlaces(JSON.parse(storedPlaces));
+    }
+  }, [selectedDay]);
+
   // 검색 api를 불러와 장소 검색하기 (주소 아님)
   const searchPlaces = async () => {
     if (!searchQuery) return;
@@ -101,60 +108,26 @@ const AddressSearch = ({ prev, selectedDay, selectedPlaces, setSelectedPlaces }:
       console.error('Error searching places:', error);
     }
   };
-
+  // 선택한 장소 목록에 추가 (선택버튼)
   const handlePlaceSelect = (place: Place) => {
     setSelectedPlace(place);
     if (!selectedPlaces.includes(place)) {
-      setSelectedPlaces((prev) => [...prev, place]); // 선택한 장소 목록에 추가
+      setSelectedPlaces((prev) => [...prev, place]);
     }
   };
+  // 목록에서 제거 (취소버튼)
   const handlePlaceRemove = (place: Place) => {
     setSelectedPlaces((prev) => prev.filter((p) => p !== place));
   };
-
+  // 세션에 임시저장
   const handlePlaceSave = () => {
     sessionStorage.setItem(selectedDay, JSON.stringify(selectedPlaces));
     setSelectedPlaces([]);
     prev();
   };
-
-  useEffect(() => {
-    const storedPlaces = sessionStorage.getItem(selectedDay);
-    if (storedPlaces) {
-      setSelectedPlaces(JSON.parse(storedPlaces));
-    }
-  }, [selectedDay]);
-
-  //   const addMutation = useMutation({
-  //     mutationFn: savePlaces
-  //   });
-
-  //   const handlePlaceSave = async () => {
-  //     const postId = sessionStorage.getItem('postId');
-  //     if (!postId) {
-  //       console.error('Post ID not found');
-  //       return;
-  //     }
-  //     addMutation.mutate(
-  //       {
-  //         post_id: postId,
-  //         day: selectedDay,
-  //         places: selectedPlaces.map((place) => place.title),
-  //         lat: selectedPlaces.map((place) => place.latitude),
-  //         long: selectedPlaces.map((place) => place.longitude)
-  //       },
-  //       {
-  //         onSuccess: () => {
-  //           alert('장소가 저장되었습니다!');
-  //           prev();
-  //         },
-  //         onError: (error) => {
-  //           console.error('Error saving places:', error);
-  //           alert('장소 저장에 실패했습니다.');
-  //         }
-  //       }
-  //     );
-  //   };
+  const storedPlaces = sessionStorage.getItem(selectedDay);
+  const keys = Object.keys(sessionStorage);
+  const storedPlacesKey = keys.find((key) => sessionStorage.getItem(key) === storedPlaces);
 
   return (
     <div className="flex h-screen flex-col">
@@ -206,22 +179,23 @@ const AddressSearch = ({ prev, selectedDay, selectedPlaces, setSelectedPlaces }:
 
       <h2 className="p-4 text-lg font-bold">선택한 장소들</h2>
       <div className="h-1/5 overflow-y-scroll">
-        {selectedPlaces.map((place, index) => {
-          const cleanHTML = DOMPurify.sanitize(place.title);
-          return (
-            <div key={index} className="flex justify-between border-b p-4 hover:bg-gray-100">
-              <div>
-                <h3 className="font bold" dangerouslySetInnerHTML={{ __html: cleanHTML }} />
-                <p>{place.roadAddress}</p>
+        {selectedDay === storedPlacesKey &&
+          selectedPlaces.map((place, index) => {
+            const cleanHTML = DOMPurify.sanitize(place.title);
+            return (
+              <div key={index} className="flex justify-between border-b p-4 hover:bg-gray-100">
+                <div>
+                  <h3 className="font bold" dangerouslySetInnerHTML={{ __html: cleanHTML }} />
+                  <p>{place.roadAddress}</p>
+                </div>
+                <button onClick={() => handlePlaceRemove(place)} className="mt-2 rounded bg-red-500 p-2 text-white">
+                  취소
+                </button>
               </div>
-              <button onClick={() => handlePlaceRemove(place)} className="mt-2 rounded bg-red-500 p-2 text-white">
-                취소
-              </button>
-            </div>
-          );
-        })}
+            );
+          })}
       </div>
-      <button onClick={handlePlaceSave}>저장하기</button>
+      <button onClick={handlePlaceSave}>임시 저장</button>
     </div>
   );
 };

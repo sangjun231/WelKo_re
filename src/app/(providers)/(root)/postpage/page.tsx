@@ -13,6 +13,7 @@ function PostPage() {
 
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
+  const goToStep4 = () => setStep(4);
 
   return (
     <div>
@@ -21,9 +22,11 @@ function PostPage() {
         <DayPlaces
           next={nextStep}
           prev={prevStep}
+          goToStep4={goToStep4}
           selectedDay={selectedDay}
           setSelectedDay={setSelectedDay}
           selectedPlaces={selectedPlaces}
+          setSelectedPlaces={setSelectedPlaces}
         />
       )}
       {step === 3 && (
