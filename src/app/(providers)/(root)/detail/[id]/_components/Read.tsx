@@ -5,6 +5,8 @@ import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import usePostStore from '@/zustand/postStore';
 import Likes from './Likes';
+import { GoPeople } from 'react-icons/go';
+import { IoLocationOutline } from 'react-icons/io5';
 
 export default function Read() {
   const { id } = useParams();
@@ -61,15 +63,23 @@ export default function Read() {
             ))}
           </ul>
           <h1 className="text-grayscale-900 text-xl font-semibold">{post.title}</h1>
-          <p className="text-grayscale-500 text-xl">{formatDateRange(startDate, endDate)}</p>
+          <p className="text-grayscale-500 text-xl font-normal">{formatDateRange(startDate, endDate)}</p>
           <div className="flex text-lg">
-            <h4 className="text-primary-300 font-semibold">${post.price}</h4>
-            <h4 className="text-grayscale-600 font-medium">/Person</h4>
+            <span className="text-primary-300 font-semibold">${post.price}</span>
+            <span className="text-grayscale-600 font-medium">/Person</span>
+          </div>
+          <div className="text-grayscale-900 flex text-sm font-semibold">
+            <IoLocationOutline size={20} />
+            <h4 className="ml-1 mr-8">Gyeongju</h4>
+            <GoPeople size={20} />
+            <h4 className="ml-1">Max {post.maxPeople}</h4>
           </div>
         </div>
-        <div className="text-md">
-          <p>{post.content}</p>
+        <hr className="bg-grayscale-100 my-8 h-[1px] w-full" />
+        <div className="text-md text-grayscale-700">
+          <h3>{post.content}</h3>
         </div>
+        <hr className="bg-grayscale-100 my-8 h-[1px] w-full" />
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ export interface Post {
   image: string;
   content: string | null;
   tag: string[] | null;
-  area: string | null;
+  maxPeople: number;
   price: number;
   startDate: string | null;
   endDate: string | null;

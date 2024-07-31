@@ -17,6 +17,7 @@ const config: Config = {
         'grayscale-100': 'var(--Grayscale-100, #DFDFE0)',
         'grayscale-500': 'var(--Grayscale-500, #7A7A7A)',
         'grayscale-600': 'var(--Grayscale-600, #606061)',
+        'grayscale-700': 'var(--Grayscale-700, #474747)',
         'grayscale-900': 'var(--Grayscale-900, #141414)',
         'primary-300': 'var(--Primary-300, #B95FAB)'
       },
