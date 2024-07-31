@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { IoChevronBack } from 'react-icons/io5';
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import useAuthStore from '@/zustand/bearsStore';
 import { useParams } from 'next/navigation';
 import { GoPencil, GoTrash } from 'react-icons/go';
 import BackButton from '@/components/common/Button/BackButton';
+import usePostStore from '@/zustand/postStore';
 
 interface Like {
   user_id: string;
@@ -17,6 +17,9 @@ interface Like {
 const Like = () => {
   const { id: postId } = useParams<{ id: string }>();
   const user = useAuthStore((state) => state.user);
+  const { post } = usePostStore((state) => ({
+    post: state.post
+  }));
   const [liked, setLiked] = useState(false);
 
   // 좋아요 상태를 가져오는 함수
@@ -68,12 +71,24 @@ const Like = () => {
   if (isError) return <div>Error fetching like status</div>;
 
   return (
-    <div className="flex">
+    <div className="flex items-center justify-between p-4">
       <BackButton />
-      <div className="flex">
-        <GoPencil size={30} />
-        <GoTrash size={30} />
-        <button onClick={handleLike}>{liked ? <FaHeart size={30} color="red" /> : <FaRegHeart size={30} />}</button>
+      <div className="ml-auto flex space-x-2">
+        {post && post.user_id === user.id && (
+          <>
+            <div className="bg-grayscale-50 border-grayscale-50 flex h-8 w-8 items-center justify-center rounded-full border">
+              <GoPencil size={24} />
+            </div>
+            <div className="bg-grayscale-50 border-grayscale-50 flex h-8 w-8 items-center justify-center rounded-full border">
+              <GoTrash size={24} />
+            </div>
+          </>
+        )}
+        <div className="bg-grayscale-50 border-grayscale-50 flex h-8 w-8 items-center justify-center rounded-full border">
+          <button onClick={handleLike} className="flex h-full w-full items-center justify-center">
+            {liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
+          </button>
+        </div>
       </div>
     </div>
   );
