@@ -53,9 +53,9 @@ export default function Read() {
           <Likes />
         </div>
         <div>
-          <ul className="flex">
+          <ul className="flex w-full flex-wrap">
             {tags.map((tag, index) => (
-              <li key={index} className="border text-[13px]">
+              <li key={index} className="select-button gap-[4px] text-[13px]">
                 {tag}
               </li>
             ))}
