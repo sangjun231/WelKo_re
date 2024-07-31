@@ -31,7 +31,7 @@
     "react-modal": "^3.16.1",
     "react-rating-stars-component": "^2.2.0",
     "react-toastify": "^10.0.5",
-    "supabase": "^1.187.3",
+    "supabase": "^1.187.8",
     "swiper": "^11.1.7",
     "uuid": "^10.0.0",
     "zustand": "^4.5.4"

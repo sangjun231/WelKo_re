@@ -45,7 +45,7 @@ function Navbar() {
   };
 
   // 특정 경로에서 Navbar를 숨기기
-  const excludedRoutes = ['/login','/postpage'];
+  const excludedRoutes = ['/login', '/postpage'];
   if (excludedRoutes.includes(pathname) || pathname.startsWith('/detail')) {
     return null;
   }
@@ -71,20 +71,18 @@ function Navbar() {
             <BsFillPlusCircleFill size={50} style={{ color: '#BA68C8' }} />
           </div>
         </Link>
-        <div
-          onClick={handleMessagesClick}
-          className="flex cursor-pointer flex-col items-center space-y-2 hover:text-[#BA68C8]"
-        >
-          <AiOutlineMessage size={24} />
-          <span className="text-[10px]">Messages</span>
-        </div>
-        <div
-          onClick={handleLikesClick}
-          className="flex cursor-pointer flex-col items-center space-y-2 hover:text-[#BA68C8]"
-        >
-          <BsPersonCircle size={24} />
-          <span className="text-[10px]">Mypage</span>
-        </div>
+        <Link href={`/${user?.id}/chatlistpage`}>
+          <div className="flex cursor-pointer flex-col items-center space-y-2 hover:text-[#BA68C8]">
+            <AiOutlineMessage size={24} />
+            <span className="text-[10px]">Messages</span>
+          </div>
+        </Link>
+        <Link href={`/${user?.id}/mypage`}>
+          <div className="flex cursor-pointer flex-col items-center space-y-2 hover:text-[#BA68C8]">
+            <BsPersonCircle size={24} />
+            <span className="text-[10px]">Mypage</span>
+          </div>
+        </Link>
       </div>
     </nav>
   );

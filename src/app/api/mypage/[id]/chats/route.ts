@@ -17,15 +17,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 
     const chatList: any[] = [];
-    const chatSet = new Set();
 
     data.forEach((message) => {
-      const chatId = message.sender_id === userId ? message.receiver_id : message.sender_id;
-
-      if (!chatSet.has(chatId)) {
-        chatSet.add(chatId);
-        chatList.push(message);
-      }
+      chatList.push(message);
     });
 
     return NextResponse.json(chatList, { status: 200 });

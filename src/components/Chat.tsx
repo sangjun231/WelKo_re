@@ -29,24 +29,24 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState<string>('');
 
+  const handleSend = async () => {
+    if (newMessage.trim()) {
+      await sendMessage(senderId, receiverId, newMessage, postId);
+      setNewMessage('');
+      const fetchedMessages = await fetchMessages(senderId, receiverId, postId);
+      setMessages(fetchedMessages);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
-      const fetchedMessages = await fetchMessages(senderId, receiverId);
+      const fetchedMessages = await fetchMessages(senderId, receiverId, postId);
       setMessages(fetchedMessages);
     };
 
     const interval = setInterval(fetchData, 1000);
     return () => clearInterval(interval);
-  }, [senderId, receiverId]);
-
-  const handleSend = async () => {
-    if (newMessage.trim()) {
-      await sendMessage(senderId, receiverId, newMessage, postId);
-      setNewMessage('');
-      const fetchedMessages = await fetchMessages(senderId, receiverId);
-      setMessages(fetchedMessages);
-    }
-  };
+  }, [senderId, receiverId, postId]);
 
   return (
     <div className="flex h-screen max-w-[360px] flex-col border border-gray-300 text-[14px]">

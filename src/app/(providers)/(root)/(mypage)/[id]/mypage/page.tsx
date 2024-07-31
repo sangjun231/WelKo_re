@@ -1,13 +1,11 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import Chat from '@/components/Chat';
 import PostList from './_components/PostList';
 import ProfileView from './_components/ProfileView';
 import ReviewList from './_components/ReviewList';
 import LikeList from './_components/LikeList';
 import ReservationList from './_components/ReservationList';
-import ChatList from './_components/ChatList';
 import { useMyPageStore } from '@/zustand/mypageStore';
 
 const MyPage = () => {
@@ -35,9 +33,6 @@ const MyPage = () => {
       {selectedComponent === 'posts' && <PostList />}
       {selectedComponent === 'Reservations' && <ReservationList />}
       {selectedComponent === 'reviews' && <ReviewList userId={id} />}
-      <div>
-        <ChatList userId={id} />
-      </div>
     </div>
   );
 };
