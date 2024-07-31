@@ -40,7 +40,7 @@ export default function Read() {
   };
 
   return (
-    <div className="relative w-full max-w-[400px]">
+    <div className="relative w-full max-w-[360px]">
       <div className="relative w-full">
         <div className="relative h-[300px] w-full">
           <Image
@@ -52,19 +52,15 @@ export default function Read() {
           />
           <Likes />
         </div>
-        <div>
-          <ul className="flex w-full flex-wrap">
+        <div className="mt-6 max-w-[320px]">
+          <ul className="mb-4 flex max-w-[320px] flex-wrap content-start items-start gap-[8px]">
             {tags.map((tag, index) => (
-              <li key={index} className="select-button gap-[4px] text-[13px]">
+              <li key={index} className="select-button text-[13px]">
                 {tag}
               </li>
             ))}
           </ul>
-        </div>
-        <div>
           <h1 className="text-2xl font-bold">{post.title}</h1>
-        </div>
-        <div className="mt-4">
           <p>{formatDateRange(startDate, endDate)}</p>
         </div>
         <div className="text-md">

@@ -7,5 +7,5 @@
 }
 
 .select-button {
-  @apply bg-grayscale-50 border-grayscale-50 border;
+  @apply bg-grayscale-50 border-grayscale-50 gap-[4px] rounded-3xl border px-2 py-3;
 }
