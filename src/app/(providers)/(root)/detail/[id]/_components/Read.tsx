@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import usePostStore from '@/zustand/postStore';
@@ -8,7 +8,6 @@ import usePostStore from '@/zustand/postStore';
 export default function Read() {
   const { id } = useParams();
   const postId = Array.isArray(id) ? id[0] : id;
-  const [selectedDay, setSelectedDay] = useState<string>('1일차');
   const { setPostId, post, fetchPost } = usePostStore((state) => ({
     setPostId: state.setPostId,
     post: state.post,
@@ -24,14 +23,29 @@ export default function Read() {
 
   if (!post) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
+  const tags: string[] = Array.isArray(post.tag) ? post.tag.map((tag) => String(tag)) : [];
+  const startDate: Date | null = post.startDate ? new Date(post.startDate) : null;
+  const endDate: Date | null = post.endDate ? new Date(post.endDate) : null;
+
+  const formatDateRange = (startDate: Date | null, endDate: Date | null) => {
+    if (!startDate || !endDate) return 'N/A';
+    const formatMonthDay = (date: Date) => `${date.getMonth() + 1}.${date.getDate()}`;
+
+    if (startDate.getFullYear() === endDate.getFullYear()) {
+      return `${startDate.getFullYear().toString().slice(2)}.${formatMonthDay(startDate)} ~ ${formatMonthDay(endDate)}`;
+    } else {
+      return `${startDate.getFullYear().toString().slice(2)}.${formatMonthDay(startDate)} ~ ${endDate.getFullYear().toString().slice(2)}.${formatMonthDay(endDate)}`;
+    }
+  };
+
   return (
     <div className="w-full max-w-[400px]">
       <div className="w-full p-[40px]">
         <div>
           <div className="w-full">
             <Image
-              src={post.image}
-              alt={post.title}
+              src={post.image || '/path/to/default-image.jpg'} // 기본 이미지 경로를 제공
+              alt={post.title || 'Default title'} // 기본 제목을 제공
               width={300}
               height={300}
               className="mb-[20px] h-[300px] w-[300px]"
@@ -47,34 +61,15 @@ export default function Read() {
             <p>{post.content}</p>
             <div>
               <ul>
-                {Object.entries(post.tag).map(([key, value]) => (
-                  <li key={key}>{value}</li>
+                {tags.map((tag, index) => (
+                  <li key={index}>{tag}</li>
                 ))}
               </ul>
             </div>
-            <div>
-              <div className="flex space-x-2">
-                {Object.keys(post.period).map((day) => (
-                  <button
-                    key={day}
-                    className={`rounded px-4 py-2 ${selectedDay === day ? 'bg-blue-500 text-white' : 'bg-gray-400'}`}
-                    onClick={() => setSelectedDay(day)}
-                  >
-                    {day}
-                  </button>
-                ))}
-              </div>
-              <div className="mt-4">
-                {Object.entries(post.period).map(([day, details]) => (
-                  <div key={day} className={`${selectedDay === day ? 'block' : 'hidden'}`}>
-                    <ul>
-                      {details.events.map((event, eventIndex) => (
-                        <li key={eventIndex}>{event}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
+            <div className="mt-4">
+              <p>
+                <strong>기간:</strong> {formatDateRange(startDate, endDate)}
+              </p>
             </div>
             <p>{new Date(post.created_at).toLocaleString()}</p>
           </div>
