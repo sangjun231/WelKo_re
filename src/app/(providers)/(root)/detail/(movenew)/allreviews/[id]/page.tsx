@@ -4,7 +4,7 @@ import React from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { fetchReviews, Review } from '@/utils/supabase/api/detail/reviews';
-import { averageRatings } from '@/utils/averageRating';
+import { averageRatings } from '@/utils/detail/averageRating';
 import ReactStars from 'react-rating-stars-component';
 
 const AllReviewsPage = () => {
