@@ -1,14 +1,14 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import usePostStore from '@/zustand/postStore';
+import Likes from './Likes';
 
 export default function Read() {
   const { id } = useParams();
   const postId = Array.isArray(id) ? id[0] : id;
-  const [selectedDay, setSelectedDay] = useState<string>('1일차');
   const { setPostId, post, fetchPost } = usePostStore((state) => ({
     setPostId: state.setPostId,
     post: state.post,
@@ -24,60 +24,48 @@ export default function Read() {
 
   if (!post) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
+  const tags: string[] = Array.isArray(post.tag) ? post.tag.map((tag) => String(tag)) : [];
+  const startDate: Date | null = post.startDate ? new Date(post.startDate) : null;
+  const endDate: Date | null = post.endDate ? new Date(post.endDate) : null;
+
+  const formatDateRange = (startDate: Date | null, endDate: Date | null) => {
+    if (!startDate || !endDate) return 'N/A';
+    const formatMonthDay = (date: Date) => `${date.getMonth() + 1}.${date.getDate()}`;
+
+    if (startDate.getFullYear() === endDate.getFullYear()) {
+      return `${startDate.getFullYear().toString().slice(2)}.${formatMonthDay(startDate)} - ${formatMonthDay(endDate)}`;
+    } else {
+      return `${startDate.getFullYear().toString().slice(2)}.${formatMonthDay(startDate)} - ${endDate.getFullYear().toString().slice(2)}.${formatMonthDay(endDate)}`;
+    }
+  };
+
   return (
-    <div className="w-full max-w-[400px]">
-      <div className="w-full p-[40px]">
-        <div>
-          <div className="w-full">
-            <Image
-              src={post.image}
-              alt={post.title}
-              width={300}
-              height={300}
-              className="mb-[20px] h-[300px] w-[300px]"
-            />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">{post.title}</h1>
-          </div>
-          <div className="text-md">
-            <p>
-              <strong>{post.price}$</strong>
-            </p>
-            <p>{post.content}</p>
-            <div>
-              <ul>
-                {Object.entries(post.tag).map(([key, value]) => (
-                  <li key={key}>{value}</li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <div className="flex space-x-2">
-                {Object.keys(post.period).map((day) => (
-                  <button
-                    key={day}
-                    className={`rounded px-4 py-2 ${selectedDay === day ? 'bg-blue-500 text-white' : 'bg-gray-400'}`}
-                    onClick={() => setSelectedDay(day)}
-                  >
-                    {day}
-                  </button>
-                ))}
-              </div>
-              <div className="mt-4">
-                {Object.entries(post.period).map(([day, details]) => (
-                  <div key={day} className={`${selectedDay === day ? 'block' : 'hidden'}`}>
-                    <ul>
-                      {details.events.map((event, eventIndex) => (
-                        <li key={eventIndex}>{event}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <p>{new Date(post.created_at).toLocaleString()}</p>
-          </div>
+    <div className="relative w-full max-w-[360px]">
+      <div className="relative w-full">
+        <div className="relative h-[300px] w-full">
+          <Image
+            src={post.image}
+            alt={post.title}
+            layout="fill" // 이미지가 부모 컨테이너에 맞춰지도록 설정
+            objectFit="cover" // 이미지를 커버 모드로 설정
+            className="mb-[20px] h-[300px] w-[360px]"
+          />
+          <Likes />
+        </div>
+        <div className="mt-6 max-w-[320px]">
+          <ul className="mb-4 flex max-w-[320px] flex-wrap content-start items-start gap-[8px]">
+            {tags.map((tag, index) => (
+              <li key={index} className="select-button text-[13px]">
+                {tag}
+              </li>
+            ))}
+          </ul>
+          <h1 className="text-2xl font-bold">{post.title}</h1>
+          <p>{formatDateRange(startDate, endDate)}</p>
+        </div>
+        <div className="text-md">
+          <p>${post.price}/Person</p>
+          <p>{post.content}</p>
         </div>
       </div>
     </div>

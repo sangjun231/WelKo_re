@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { createClient } from '@/utils/supabase/client';
-import { Post } from '@/types/post';
+import { Post } from '@/types/posts';
 
 interface PostState {
   postId: string | null;
@@ -14,7 +14,7 @@ const usePostStore = create<PostState>((set) => ({
   postId: null,
   post: null,
   setPostId: (id) => set({ postId: id }),
-  setPost: (post) => set({ post: post }),
+  setPost: (post) => set({ post }),
   fetchPost: async (id: string) => {
     const supabase = createClient();
     const { data, error } = await supabase.from('posts').select('*').eq('id', id).single();
