@@ -43,6 +43,13 @@ const CitySelector: React.FC<CitySelectorProps> = ({
     fetchAutoCompleteResults();
   }, [searchQuery]);
 
+  useEffect(() => {
+    // Automatically select city if searchQuery matches an existing city in the list
+    if (searchQuery && cities.includes(searchQuery)) {
+      handleCityClick(searchQuery);
+    }
+  }, [searchQuery, cities, handleCityClick]);
+
   const handleAutoCompleteClick = (result: string) => {
     handleCityClick(result);
     setSearchQuery(result);
@@ -50,7 +57,13 @@ const CitySelector: React.FC<CitySelectorProps> = ({
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+    const value = e.target.value;
+    setSearchQuery(value);
+
+    // Automatically select city if searchQuery matches an existing city in the list
+    if (cities.includes(value)) {
+      handleCityClick(value);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -88,6 +101,7 @@ const CitySelector: React.FC<CitySelectorProps> = ({
           </div>
         )}
         <div className="flex flex-wrap mb-4">
+          {/* Display filtered cities */}
           {filteredCities.map((city) => (
             <div
               key={city}
@@ -99,6 +113,17 @@ const CitySelector: React.FC<CitySelectorProps> = ({
               {city}
             </div>
           ))}
+          {/* Allow selecting cities not in the list */}
+          {searchQuery && !cities.includes(searchQuery) && (
+            <div
+              className={`cursor-pointer p-2 mb-2 border rounded-full flex-1 min-w-[30%] mx-1 text-center ${
+                searchQuery === selectedCity ? 'bg-blue-100 border-blue-500' : 'bg-white border-gray-300'
+              }`}
+              onClick={() => handleCityClick(searchQuery)}
+            >
+              {searchQuery}
+            </div>
+          )}
         </div>
         <div className="flex justify-between">
           <button onClick={goToPreviousStep} className="px-4 py-2 bg-gray-500 text-white rounded-md">

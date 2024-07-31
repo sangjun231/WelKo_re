@@ -11,15 +11,15 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     .from('payments')
     .select(
       `
-     id,
-     user_id,
-     post_id,
-     total_price,
-     created_at,
-     pay_state,
-     users ( name, email ),
-     posts ( title )
-   `
+    id,
+    user_id,
+    post_id,
+    total_price,
+    created_at,
+    pay_state,
+    users ( name, email ),
+    posts ( title )
+  `
     )
     .eq('id', id)
     .single();
