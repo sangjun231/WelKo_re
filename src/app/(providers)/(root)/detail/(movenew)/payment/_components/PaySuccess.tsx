@@ -15,7 +15,7 @@ export default function PaymentSuccess() {
     post: state.post
   }));
   const [paymentData, setPaymentData] = useState<any>(null);
-  const [loading, setPending] = useState(true);
+  const [pending, setPending] = useState(true);
 
   useEffect(() => {
     const fetchPaymentData = async () => {
@@ -39,7 +39,7 @@ export default function PaymentSuccess() {
     }
   }, [id, fetchPost]);
 
-  if (loading) {
+  if (pending) {
     return <div>Loading...</div>;
   }
 

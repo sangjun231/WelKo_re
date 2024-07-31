@@ -2,10 +2,17 @@ import { createClient } from '@/utils/supabase/client';
 
 const supabase = createClient();
 
-export const fetchMessages = async (senderId: string, receiverId: string) => {
+export const fetchMessages = async (senderId: string, receiverId: string, postId: string) => {
   const { data, error } = await supabase
     .from('messages')
-    .select('*')
+    .select(
+      `
+      *,
+      sender:users!messages_sender_id_fkey ( id, name, avatar ),
+      receiver:users!messages_receiver_id_fkey ( id, name, avatar )
+    `
+    )
+    .eq('post_id', postId)
     .or(
       `and(sender_id.eq.${senderId},receiver_id.eq.${receiverId}),and(sender_id.eq.${receiverId},receiver_id.eq.${senderId})`
     )

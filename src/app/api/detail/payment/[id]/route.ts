@@ -6,7 +6,23 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   const supabase = createClient();
   const { id } = params;
 
-  const { data, error } = await supabase.from('payments').select('*').eq('id', id).single();
+  // 결제 정보와 관련된 유저 및 포스트 정보 가져오기
+  const { data, error } = await supabase
+    .from('payments')
+    .select(
+      `
+    id,
+    user_id,
+    post_id,
+    total_price,
+    created_at,
+    pay_state,
+    users ( name, email ),
+    posts ( title )
+  `
+    )
+    .eq('id', id)
+    .single();
 
   if (error) {
     console.error('Error fetching payment data:', error);
@@ -22,7 +38,22 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
   const { reason, requester } = await request.json();
 
   // 결제 정보를 가져옵니다.
-  const { data: paymentData, error: paymentError } = await supabase.from('payments').select('*').eq('id', id).single();
+  const { data: paymentData, error: paymentError } = await supabase
+    .from('payments')
+    .select(
+      `
+      id,
+      user_id,
+      post_id,
+      total_price,
+      created_at,
+      pay_state,
+      users ( name, email ),
+      posts ( title )
+    `
+    )
+    .eq('id', id)
+    .single();
 
   if (paymentError) {
     console.error('Error fetching payment data:', paymentError);
@@ -59,7 +90,31 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
         console.error('Error saving cancel data:', cancelError);
         return NextResponse.json({ error: 'Error saving cancel data' }, { status: 500 });
       }
-      return NextResponse.json({ message: '환불 성공!', data: responseData }, { status: 200 });
+
+      // 환불 성공 후 결제 정보 다시 가져오기
+      const { data: updatedPayment, error: updatedPaymentError } = await supabase
+        .from('payments')
+        .select(
+          `
+    id,
+    user_id,
+    post_id,
+    total_price,
+    created_at,
+    pay_state,
+    users ( name, email ),
+    posts ( title )
+  `
+        )
+        .eq('id', id)
+        .single();
+
+      if (updatedPaymentError) {
+        console.error('Error fetching updated payment data:', updatedPaymentError);
+        return NextResponse.json({ error: 'Error fetching updated payment data' }, { status: 500 });
+      }
+
+      return NextResponse.json({ message: '환불 성공!', data: updatedPayment }, { status: 200 });
     }
   } catch (error) {
     const axiosError = error as AxiosError;
