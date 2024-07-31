@@ -3,7 +3,7 @@ import { IoChevronBack } from 'react-icons/io5';
 
 const BackButton = () => {
   return (
-    <div className="icon-button">
+    <div className="icon-button rounded-full">
       <button onClick={() => window.history.back()} className="flex h-full w-full items-center justify-center">
         <IoChevronBack size={24} />
       </button>
