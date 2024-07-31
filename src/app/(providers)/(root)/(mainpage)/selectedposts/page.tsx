@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import Image from 'next/image';
@@ -18,7 +18,7 @@ interface Post {
   price: number;
 }
 
-export default function SelectedPosts() {
+const PostsList = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [posts, setPosts] = useState<Post[]>([]);
@@ -108,5 +108,13 @@ export default function SelectedPosts() {
         ))}
       </ul>
     </div>
+  );
+};
+
+export default function SelectedPosts() {
+  return (
+    <Suspense fallback={<div>로딩 중...</div>}>
+      <PostsList />
+    </Suspense>
   );
 }
