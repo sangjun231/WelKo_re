@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { IoChevronBack } from 'react-icons/io5';
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import useAuthStore from '@/zustand/bearsStore';
 import { useParams } from 'next/navigation';
 import { GoPencil, GoTrash } from 'react-icons/go';
+import BackButton from '@/components/common/Button/BackButton';
 
 interface Like {
   user_id: string;
@@ -66,10 +68,13 @@ const Like = () => {
   if (isError) return <div>Error fetching like status</div>;
 
   return (
-    <div>
-      <GoPencil size={30} />
-      <GoTrash size={30} />
-      <button onClick={handleLike}>{liked ? <FaHeart size={30} color="red" /> : <FaRegHeart size={30} />}</button>
+    <div className="flex">
+      <BackButton />
+      <div className="flex">
+        <GoPencil size={30} />
+        <GoTrash size={30} />
+        <button onClick={handleLike}>{liked ? <FaHeart size={30} color="red" /> : <FaRegHeart size={30} />}</button>
+      </div>
     </div>
   );
 };
