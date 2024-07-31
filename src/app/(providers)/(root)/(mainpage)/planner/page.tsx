@@ -1,13 +1,10 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import ThemeSelector from '../_components/planner/ThemeSelector';
 import CitySelector from '../_components/planner/CitySelector';
 import PeriodSelector from '../_components/planner/PeriodSelector';
-import { createClient } from '@/utils/supabase/client';
-
-const supabase = createClient();
 
 const themes = ['Activities', 'Famous', 'With Nature', 'Tourist Attraction', 'Shopping', 'Peaceful', 'Mukbang', 'Cultural and Arts', 'K-Drama Location'];
 const cities = ['Seoul', 'Busan', 'Sokcho', 'Gangneung', 'Jeonju', 'Daegu', 'Gyeongju', 'Yeosu', 'Jeju'];
@@ -19,7 +16,6 @@ export default function TravelPlanner() {
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [posts, setPosts] = useState<any[]>([]);
 
   const handleThemeClick = (theme: string) => {
     setSelectedThemes((prevThemes) =>
@@ -31,39 +27,9 @@ export default function TravelPlanner() {
     setSelectedCity(city);
   };
 
-  const formatDateToISOString = (date: Date | null): string | null => {
-    return date ? new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())).toISOString() : null;
-  };
-
   const formatDateToShortString = (date: Date | null): string => {
     return date ? `${date.getFullYear().toString().slice(-2)}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')}` : 'Anything';
   };
-
-  const fetchPosts = async () => {
-    if (!selectedCity) return;
-
-    let query = supabase.from('posts').select('*');
-
-    if (selectedCity) {
-      query = query.ilike('title', `%${selectedCity}%`);
-    }
-
-    if (selectedThemes.length > 0) {
-      query = query.in('theme', selectedThemes);
-    }
-
-    const { data, error } = await query;
-
-    if (error) {
-      console.error('Error fetching posts:', error);
-    } else {
-      setPosts(data || []);
-    }
-  };
-
-  useEffect(() => {
-    fetchPosts();
-  }, [selectedCity, selectedThemes]);
 
   const handleDateSelection = () => {
     const query = new URLSearchParams();
@@ -76,18 +42,15 @@ export default function TravelPlanner() {
       query.append('city', selectedCity);
     }
 
-    const formattedStartDate = formatDateToISOString(startDate);
-    const formattedEndDate = formatDateToISOString(endDate);
-
-    if (formattedStartDate) {
-      query.append('startDate', formattedStartDate);
+    if (startDate) {
+      query.append('startDate', startDate.toISOString());
     }
 
-    if (formattedEndDate) {
-      query.append('endDate', formattedEndDate);
+    if (endDate) {
+      query.append('endDate', endDate.toISOString());
     }
 
-    fetchPosts();
+    router.push(`/selectedposts?${query.toString()}`);
   };
 
   const toggleStep = (step: number) => {
@@ -123,7 +86,7 @@ export default function TravelPlanner() {
           toggleStep={toggleStep}
           title="Where to?"
           shortTitle="Where"
-          selection={selectedCity}
+          selection={selectedCity || 'Anything'}
         >
           <CitySelector
             selectedCity={selectedCity}
@@ -154,21 +117,15 @@ export default function TravelPlanner() {
             setEndDate={setEndDate}
           />
         </AccordionStep>
-      </div>
 
-      {posts.length > 0 && (
-        <div className="mt-4">
-          <h2 className="text-xl font-bold">Related Posts</h2>
-          <ul>
-            {posts.map((post, index) => (
-              <li key={`${post.id}-${index}`} className="mb-4 border p-2 rounded-md">
-                <h3 className="font-bold">{post.title}</h3>
-                <p>{post.content}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+        {/* 결과보기 버튼 추가 */}
+        <button
+          onClick={handleDateSelection}
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+        >
+          결과보기
+        </button>
+      </div>
     </div>
   );
 }
