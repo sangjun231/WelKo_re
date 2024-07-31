@@ -44,8 +44,8 @@ export default function Read() {
       <div className="relative w-full">
         <div className="relative h-[300px] w-full">
           <Image
-            src={post.image || '/path/to/default-image.jpg'} // 기본 이미지 경로를 제공
-            alt={post.title || 'Default title'} // 기본 제목을 제공
+            src={post.image}
+            alt={post.title}
             layout="fill" // 이미지가 부모 컨테이너에 맞춰지도록 설정
             objectFit="cover" // 이미지를 커버 모드로 설정
             className="mb-[20px] h-[300px] w-[360px]"

@@ -1,14 +1,13 @@
-// zustand/postStore.ts
-import create from 'zustand';
-import { Post } from '@/types/post';
+import { create } from 'zustand';
 import { createClient } from '@/utils/supabase/client';
+import { Post } from '@/types/posts';
 
 interface PostState {
   postId: string | null;
   post: Post | null;
   setPostId: (id: string | null) => void;
   setPost: (post: Post | null) => void;
-  fetchPost: (id: string) => Promise<Post | null>;
+  fetchPost: (id: string) => Promise<void>;
 }
 
 const usePostStore = create<PostState>((set) => ({
@@ -22,15 +21,8 @@ const usePostStore = create<PostState>((set) => ({
 
     if (error) {
       console.error('Error fetching post:', error);
-      return null;
     } else {
-      const post = {
-        ...data,
-        startDate: data.startDate ? new Date(data.startDate) : null,
-        endDate: data.endDate ? new Date(data.endDate) : null
-      } as Post;
-      set({ post });
-      return post;
+      set({ post: data });
     }
   }
 }));
