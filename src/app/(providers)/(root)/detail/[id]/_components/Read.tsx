@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import usePostStore from '@/zustand/postStore';
+import Likes from './Likes';
 
 export default function Read() {
   const { id } = useParams();
@@ -32,47 +33,43 @@ export default function Read() {
     const formatMonthDay = (date: Date) => `${date.getMonth() + 1}.${date.getDate()}`;
 
     if (startDate.getFullYear() === endDate.getFullYear()) {
-      return `${startDate.getFullYear().toString().slice(2)}.${formatMonthDay(startDate)} ~ ${formatMonthDay(endDate)}`;
+      return `${startDate.getFullYear().toString().slice(2)}.${formatMonthDay(startDate)} - ${formatMonthDay(endDate)}`;
     } else {
-      return `${startDate.getFullYear().toString().slice(2)}.${formatMonthDay(startDate)} ~ ${endDate.getFullYear().toString().slice(2)}.${formatMonthDay(endDate)}`;
+      return `${startDate.getFullYear().toString().slice(2)}.${formatMonthDay(startDate)} - ${endDate.getFullYear().toString().slice(2)}.${formatMonthDay(endDate)}`;
     }
   };
 
   return (
-    <div className="w-full max-w-[400px]">
-      <div className="w-full p-[40px]">
+    <div className="relative w-full max-w-[400px]">
+      <div className="relative w-full">
+        <div className="relative h-[300px] w-full">
+          <Image
+            src={post.image || '/path/to/default-image.jpg'} // 기본 이미지 경로를 제공
+            alt={post.title || 'Default title'} // 기본 제목을 제공
+            layout="fill" // 이미지가 부모 컨테이너에 맞춰지도록 설정
+            objectFit="cover" // 이미지를 커버 모드로 설정
+            className="mb-[20px] h-[300px] w-[360px]"
+          />
+          <Likes />
+        </div>
         <div>
-          <div className="w-full">
-            <Image
-              src={post.image || '/path/to/default-image.jpg'} // 기본 이미지 경로를 제공
-              alt={post.title || 'Default title'} // 기본 제목을 제공
-              width={300}
-              height={300}
-              className="mb-[20px] h-[300px] w-[300px]"
-            />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">{post.title}</h1>
-          </div>
-          <div className="text-md">
-            <p>
-              <strong>{post.price}$</strong>
-            </p>
-            <p>{post.content}</p>
-            <div>
-              <ul>
-                {tags.map((tag, index) => (
-                  <li key={index}>{tag}</li>
-                ))}
-              </ul>
-            </div>
-            <div className="mt-4">
-              <p>
-                <strong>기간:</strong> {formatDateRange(startDate, endDate)}
-              </p>
-            </div>
-            <p>{new Date(post.created_at).toLocaleString()}</p>
-          </div>
+          <ul className="flex">
+            {tags.map((tag, index) => (
+              <li key={index} className="border text-[13px]">
+                {tag}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold">{post.title}</h1>
+        </div>
+        <div className="mt-4">
+          <p>{formatDateRange(startDate, endDate)}</p>
+        </div>
+        <div className="text-md">
+          <p>${post.price}/Person</p>
+          <p>{post.content}</p>
         </div>
       </div>
     </div>

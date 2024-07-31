@@ -1,3 +1,4 @@
+// components/Likes.tsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
@@ -8,13 +9,7 @@ import { GoPencil, GoTrash } from 'react-icons/go';
 import BackButton from '@/components/common/Button/BackButton';
 import usePostStore from '@/zustand/postStore';
 
-interface Like {
-  user_id: string;
-  post_id: string;
-  created_at: string;
-}
-
-const Like = () => {
+const Likes = () => {
   const { id: postId } = useParams<{ id: string }>();
   const user = useAuthStore((state) => state.user);
   const { post } = usePostStore((state) => ({
@@ -71,20 +66,20 @@ const Like = () => {
   if (isError) return <div>Error fetching like status</div>;
 
   return (
-    <div className="flex items-center justify-between p-4">
+    <div className="absolute left-0 right-0 top-2 z-10 flex items-center justify-between px-4">
       <BackButton />
-      <div className="ml-auto flex space-x-2">
+      <div className="flex space-x-4">
         {post && post.user_id === user.id && (
           <>
-            <div className="bg-grayscale-50 border-grayscale-50 flex h-8 w-8 items-center justify-center rounded-full border">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white shadow">
               <GoPencil size={24} />
             </div>
-            <div className="bg-grayscale-50 border-grayscale-50 flex h-8 w-8 items-center justify-center rounded-full border">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white shadow">
               <GoTrash size={24} />
             </div>
           </>
         )}
-        <div className="bg-grayscale-50 border-grayscale-50 flex h-8 w-8 items-center justify-center rounded-full border">
+        <div className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white shadow">
           <button onClick={handleLike} className="flex h-full w-full items-center justify-center">
             {liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
           </button>
@@ -94,4 +89,4 @@ const Like = () => {
   );
 };
 
-export default Like;
+export default Likes;
