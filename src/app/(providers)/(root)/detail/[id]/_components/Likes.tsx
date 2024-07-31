@@ -70,19 +70,19 @@ const Likes = () => {
       <div className="flex space-x-4">
         {post && post.user_id === user.id && (
           <>
-            <div className="icon-button rounded-full">
+            <div className="icon-button">
               <button className="flex h-full w-full items-center justify-center">
                 <GoPencil size={24} />
               </button>
             </div>
-            <div className="icon-button rounded-full">
+            <div className="icon-button">
               <button className="flex h-full w-full items-center justify-center">
                 <GoTrash size={24} />
               </button>
             </div>
           </>
         )}
-        <div className="icon-button rounded-full">
+        <div className="icon-button">
           <button onClick={handleLike} className="flex h-full w-full items-center justify-center">
             {liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
           </button>
