@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
 
-const Write = ({ prev }: { prev: () => void }) => {
+const Write = ({ goToStep2 }: { goToStep2: () => void }) => {
   const router = useRouter();
   const supabase = createClient();
   const [title, setTitle] = useState<string>('');
@@ -17,18 +17,18 @@ const Write = ({ prev }: { prev: () => void }) => {
   const [price, setPrice] = useState<number>();
   const [tag, setTag] = useState<string[]>([]);
   const tags = [
-    'Activities',
-    'Popular Places',
-    'With Nature',
-    'Tourist Spots',
-    'Relax and Leisurely',
-    'Shopping',
-    'Must-Visit Restaurants',
-    'Cultural Exploration'
+    'Activities', //체험과 액티비티
+    'Popular Places', // 유명 핫플레이스
+    'With Nature', // 자연과 함께
+    'Tourist Spots', // 관광지
+    'Relax and Leisurely', // 한적, 여유
+    'Shopping', // 쇼핑
+    'Must-Visit Restaurants', // 맛집
+    'Cultural Exploration' // 문화 탐방
   ];
   const [selectedPrices, setSelectedPrices] = useState<string[]>([]);
   const prices = ['Accommodation', 'Meals', 'Leisure Activities', 'Transportation'];
-
+  //순서대로 숙소비, 식사비, 레저비, 교통비
   //이미지 추가하는 핸들러
   const handleImageAdd = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -111,7 +111,7 @@ const Write = ({ prev }: { prev: () => void }) => {
   return (
     <form onSubmit={handleSavePost}>
       <div className="my-4 flex">
-        <button onClick={prev}>
+        <button onClick={goToStep2}>
           <FaArrowLeft className="m-1" />
         </button>
         <div className="flex-grow text-center">

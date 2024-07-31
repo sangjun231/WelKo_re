@@ -1,7 +1,9 @@
 'use client';
 
+import { useCurrentPosition } from '@/hooks/Map/useCurrentPosition';
+import { useNaverMapScript } from '@/hooks/Map/useNaverMapScript';
 import { Place } from '@/types/types';
-import { savePlaces } from '@/utils/post/postData';
+import { savePlaces, translateAddress } from '@/utils/post/postData';
 import { useMutation } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
 import { useEffect, useState } from 'react';
@@ -13,28 +15,23 @@ type PlaceProps = {
   goToStep4: () => void;
   selectedDay: string;
   setSelectedDay: React.Dispatch<React.SetStateAction<string>>;
-  selectedPlaces: Place[];
-  setSelectedPlaces: React.Dispatch<React.SetStateAction<Place[]>>;
 };
 
-const DayPlaces: React.FC<PlaceProps> = ({
-  next,
-  prev,
-  goToStep4,
-  selectedDay,
-  setSelectedDay,
-  selectedPlaces,
-  setSelectedPlaces
-}) => {
+const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, setSelectedDay }) => {
   const [region, setRegion] = useState<string | null>(null);
-
+  const [selectedPlaces, setSelectedPlaces] = useState<Place[]>([]); // 선택한 장소 목록
   const handleDaySelect = (day: string) => {
     setSelectedDay(day);
   };
+  //지도 관련
+  const clientId = process.env.NEXT_PUBLIC_NCP_CLIENT_ID!;
+  const isScriptLoaded = useNaverMapScript(clientId);
+  const position = useCurrentPosition();
+  const [markers, setMarkers] = useState<any[]>([]);
+  //sessionStorage 관련
   const storedPlaces = sessionStorage.getItem(selectedDay); //선택한 day에 맞는 value값 가져옴
   const keys = Object.keys(sessionStorage);
   const storedPlacesKey = keys.find((key) => sessionStorage.getItem(key) === storedPlaces);
-
   useEffect(() => {
     if (storedPlaces) {
       if (storedPlacesKey === selectedDay) {
@@ -43,6 +40,80 @@ const DayPlaces: React.FC<PlaceProps> = ({
     }
   }, [selectedDay]);
 
+  // 지도 띄우기
+  useEffect(() => {
+    // 현재 위치 이름 가져오기
+    const getRegionName = (latitude: number, longitude: number) => {
+      if (!window.naver) return;
+      const coord = new window.naver.maps.LatLng(latitude, longitude);
+      window.naver.maps.Service.reverseGeocode(
+        {
+          location: coord,
+          coordType: window.naver.maps.Service.CoordType.LatLng
+        },
+        //현재 위치 이름 영어로 번역하기
+        async (status: any, response: any) => {
+          if (status === 200) {
+            if (response.result.items && response.result.items.length > 0) {
+              const address = response.result.items[0].addrdetail.sigugun;
+              try {
+                const translatedAddress = await translateAddress(address);
+                setRegion(translatedAddress);
+                console.log(response);
+              } catch (error) {
+                console.error('Failed to translate address:', error);
+                alert('Failed to translate address.');
+              }
+            } else {
+              alert('Failed to get the location name.');
+            }
+          }
+        }
+      );
+    };
+    // 현재 위치로 지도 띄우기
+    if (!isScriptLoaded || !position) return;
+    const initializeMap = () => {
+      const mapInstance = new window.naver.maps.Map('map', {
+        center: new window.naver.maps.LatLng(position.latitude, position.longitude),
+        zoom: 14
+      });
+      const currentMarker = new window.naver.maps.Marker({
+        position: new window.naver.maps.LatLng(position.latitude, position.longitude),
+        map: mapInstance
+      });
+
+      getRegionName(position.latitude, position.longitude);
+      setMarkers([currentMarker]);
+      // 추가한 장소로 지도 띄우기
+      if (selectedPlaces.length > 0) {
+        //기존 마커 숨기기
+        markers.forEach((marker) => marker.setMap(null));
+        setMarkers([]);
+        //center 이동하기
+        const newCenter = new window.naver.maps.LatLng(selectedPlaces[0].latitude, selectedPlaces[0].longitude);
+        mapInstance.setCenter(newCenter);
+        selectedPlaces.forEach((place, index) => {
+          // 마커 꾸미기
+          const markerContent = `
+          <div class="text-white bg-primary-300 border-2 border-white px-2 rounded-full">${index + 1}</div>
+      `;
+          //저장된 장소 마커 생성하기
+          new window.naver.maps.Marker({
+            position: new window.naver.maps.LatLng(place.latitude, place.longitude),
+            map: mapInstance,
+            icon: {
+              content: markerContent,
+              anchor: new window.naver.maps.Point(12, 12)
+            }
+          });
+        });
+      }
+    };
+    initializeMap();
+  }, [isScriptLoaded, position, selectedPlaces]);
+
+  //장소 저장 핸들러
   const addMutation = useMutation({
     mutationFn: savePlaces
   });
@@ -59,15 +130,16 @@ const DayPlaces: React.FC<PlaceProps> = ({
         day: selectedDay,
         places: selectedPlaces.map((place) => place.title),
         lat: selectedPlaces.map((place) => place.latitude),
-        long: selectedPlaces.map((place) => place.longitude)
+        long: selectedPlaces.map((place) => place.longitude),
+        area: region
       },
       {
         onSuccess: () => {
-          alert('장소가 저장되었습니다!');
+          alert('Saved successfully!');
         },
         onError: (error) => {
           console.error('Error saving places:', error);
-          alert('장소 저장에 실패했습니다.');
+          alert('Failed to save.');
         }
       }
     );
@@ -86,19 +158,28 @@ const DayPlaces: React.FC<PlaceProps> = ({
       </div>
       <div className="flex justify-between">{region && <p>현재 위치: {region}</p>}</div>
 
-      {/*<div id="map" style={{ width: '100%', height: '200px' }}></div>*/}
+      <div id="map" style={{ width: '100%', height: '300px' }}></div>
       <div>
         <div className="flex">
           <div>
-            <button className="border-gray rounded-full border-2 p-2" onClick={() => handleDaySelect('day1')}>
+            <button
+              className="bg-grayscale-50 hover:bg-primary-300 active:bg-primary-300 rounded-full p-3 hover:text-white active:text-white"
+              onClick={() => handleDaySelect('day1')}
+            >
               Day 1
             </button>
           </div>
 
-          <button className="border-gray rounded-full border-2 p-2" onClick={() => handleDaySelect('day2')}>
+          <button
+            className="bg-grayscale-50 hover:bg-primary-300 active:bg-primary-300 rounded-full p-3 hover:text-white active:text-white"
+            onClick={() => handleDaySelect('day2')}
+          >
             Day 2
           </button>
-          <button className="border-gray rounded-full border-2 p-2" onClick={() => handleDaySelect('day3')}>
+          <button
+            className="bg-grayscale-50 hover:bg-primary-300 active:bg-primary-300 rounded-full p-3 hover:text-white active:text-white"
+            onClick={() => handleDaySelect('day3')}
+          >
             Day 3
           </button>
         </div>

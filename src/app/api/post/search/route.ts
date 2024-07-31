@@ -21,7 +21,7 @@ export async function GET(request: Request) {
       headers,
       params: {
         query,
-        display: 5, // 검색 결과 개수
+        display: 20, // 검색 결과 개수
         start: 1,
         sort: 'sim' // 정렬 기준 정확도 순, 리뷰순은 comment
       }
