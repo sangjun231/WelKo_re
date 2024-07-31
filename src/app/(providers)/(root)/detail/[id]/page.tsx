@@ -7,6 +7,7 @@ import SelectBtn from './_components/SelectBtn';
 import Reviews from './_components/Reviews';
 import { useParams } from 'next/navigation';
 import { CheckboxDetail } from './_components/CheckboxDetail';
+import DetailNavbar from './_components/DetailNavbar';
 
 export default function DetailPage() {
   const params = useParams();
@@ -23,6 +24,7 @@ export default function DetailPage() {
           <SelectBtn />
         </div>
       </div>
+      <DetailNavbar />
     </>
   );
 }
