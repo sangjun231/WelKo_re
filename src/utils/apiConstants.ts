@@ -6,4 +6,6 @@ export const API_MYPAGE_REVIEWS = (userId: string) => `/api/mypage/${userId}/rev
 export const API_MYPAGE_CHATS = (userId: string) => `/api/mypage/${userId}/chats`;
 export const API_MYPAGE_PAYMENTS = (userId: string) => `/api/mypage/${userId}/payments`;
 
+export const API_MYPAGE_TOURRESERVATIONLIST = (postId: string) => `/api/mypage/${postId}/tourreservationlist`;
+
 export const API_POST_DETAILS = (postId: string) => `/api/mypage/${postId}/chatpost`;
