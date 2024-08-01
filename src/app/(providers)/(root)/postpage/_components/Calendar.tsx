@@ -75,6 +75,7 @@ const Calendar = ({ next }: { next: () => void }) => {
             ? `${format(selectedMonth, 'yyyy년 MMM')} 선택하기`
             : '날짜 선택하기'}
       </button>
+      <button onClick={next}>next</button>
     </div>
   );
 };
