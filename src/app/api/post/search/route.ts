@@ -47,7 +47,7 @@ export async function GET(request: Request) {
 export async function POST(request: NextRequest) {
   const supabase = createClient();
   const data = await request.json();
-  const { post_id, day, places, lat, long } = data;
+  const { post_id, day, places, lat, long, area } = data;
 
   try {
     const { error } = await supabase.from('schedule').insert({
@@ -55,7 +55,8 @@ export async function POST(request: NextRequest) {
       day,
       places,
       lat,
-      long
+      long,
+      area
     });
     if (error) {
       console.error('Error inserting dates:', error.message);

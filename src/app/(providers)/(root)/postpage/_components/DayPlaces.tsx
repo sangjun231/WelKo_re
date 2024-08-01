@@ -55,7 +55,7 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
         async (status: any, response: any) => {
           if (status === 200) {
             if (response.result.items && response.result.items.length > 0) {
-              const address = response.result.items[0].addrdetail.sigugun;
+              const address = response.result.items[0].addrdetail.sigugun.slice(0, -1);
               try {
                 const translatedAddress = await translateAddress(address);
                 setRegion(translatedAddress);
@@ -163,7 +163,7 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
         <div className="flex">
           <div>
             <button
-              className="bg-grayscale-50 hover:bg-primary-300 active:bg-primary-300 rounded-full p-3 hover:text-white active:text-white"
+              className="rounded-full bg-grayscale-50 p-3 hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
               onClick={() => handleDaySelect('day1')}
             >
               Day 1
@@ -171,13 +171,13 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
           </div>
 
           <button
-            className="bg-grayscale-50 hover:bg-primary-300 active:bg-primary-300 rounded-full p-3 hover:text-white active:text-white"
+            className="rounded-full bg-grayscale-50 p-3 hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
             onClick={() => handleDaySelect('day2')}
           >
             Day 2
           </button>
           <button
-            className="bg-grayscale-50 hover:bg-primary-300 active:bg-primary-300 rounded-full p-3 hover:text-white active:text-white"
+            className="rounded-full bg-grayscale-50 p-3 hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
             onClick={() => handleDaySelect('day3')}
           >
             Day 3
