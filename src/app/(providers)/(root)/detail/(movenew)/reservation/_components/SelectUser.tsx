@@ -57,10 +57,6 @@ const SelectUser = () => {
           after payment. After that, there will be a <u className="text-grayscale-900">cancellation penalty.</u>
         </p>
       </div>
-      <div>
-        <h3 className="font-bold">전체 금액</h3>
-        <p className="font-bold">${totalAmount.toFixed(2)}</p>
-      </div>
     </div>
   );
 };

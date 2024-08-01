@@ -37,7 +37,7 @@ const AllReviewsPage = () => {
   const averageRating: number = averageRatings(reviews || []);
 
   return (
-    <div className="mx-auto max-w-[360px]">
+    <div className="mx-auto mt-12 max-w-[360px]">
       <div className="mx-auto w-full max-w-[320px]">
         <div className="my-8">
           <BackButton />
