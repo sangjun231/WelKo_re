@@ -39,29 +39,41 @@ const Reviews = () => {
       <div className="flex flex-col gap-4">
         <div className="text-grayscale-900 flex items-center gap-1 text-lg">
           <FaStar size={24} />
-          <h2 className="font-semibold">{averageRating.toFixed(2)}</h2>
-          <span className="font-medium">·</span>
-          <span className="font-medium">{reviews.length} reviews</span>
+          {reviews.length > 0 ? (
+            <>
+              <h2 className="font-semibold">{averageRating.toFixed(2)}</h2>
+              <span className="font-medium">·</span>
+              <span className="font-medium">{reviews.length} reviews</span>
+            </>
+          ) : (
+            <h2 className="font-semibold">No Reviews</h2>
+          )}
         </div>
-        <div className="bg-grayscale-50 gap-3 rounded-2xl p-4">
-          {reviews.slice(0, 1).map((review) => (
-            <div key={review.id} className="flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <FaStar size={16} />
-                <h4 className="text-xs font-semibold">{review.rating.toFixed(2)}</h4>
-                <span className="text-xs text-gray-900">{review.user_name}</span>
-                <span className="text-[10px] font-normal text-gray-700">{formatRelativeDate(review.created_at)}</span>
-              </div>
-              <p className="line-clamp-3 text-sm font-normal text-gray-700">{review.content}</p>
+        {reviews.length > 0 && (
+          <>
+            <div className="bg-grayscale-50 gap-3 rounded-2xl p-4">
+              {reviews.slice(0, 1).map((review) => (
+                <div key={review.id} className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <FaStar size={16} />
+                    <h4 className="text-xs font-semibold">{review.rating.toFixed(2)}</h4>
+                    <span className="text-xs text-gray-900">{review.user_name}</span>
+                    <span className="text-[10px] font-normal text-gray-700">
+                      {formatRelativeDate(review.created_at)}
+                    </span>
+                  </div>
+                  <p className="line-clamp-3 text-sm font-normal text-gray-700">{review.content}</p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        <button
-          className="w-full rounded-xl border border-gray-800 px-5 py-3 text-center text-base font-semibold text-gray-700"
-          onClick={() => router.push(`/detail/allreviews/${postId}`)}
-        >
-          Show more reviews
-        </button>
+            <button
+              className="w-full rounded-xl border border-gray-800 px-5 py-3 text-center text-base font-semibold text-gray-700"
+              onClick={() => router.push(`/detail/allreviews/${postId}`)}
+            >
+              Show more reviews
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
