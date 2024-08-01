@@ -5,16 +5,15 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import useAuthStore from '@/zustand/bearsStore';
 import { useParams } from 'next/navigation';
 import { GoPencil, GoTrash } from 'react-icons/go';
+import BackButton from '@/components/common/Button/BackButton';
+import usePostStore from '@/zustand/postStore';
 
-interface Like {
-  user_id: string;
-  post_id: string;
-  created_at: string;
-}
-
-const Like = () => {
+const Likes = () => {
   const { id: postId } = useParams<{ id: string }>();
   const user = useAuthStore((state) => state.user);
+  const { post } = usePostStore((state) => ({
+    post: state.post
+  }));
   const [liked, setLiked] = useState(false);
 
   // 좋아요 상태를 가져오는 함수
@@ -66,12 +65,31 @@ const Like = () => {
   if (isError) return <div>Error fetching like status</div>;
 
   return (
-    <div>
-      <GoPencil size={30} />
-      <GoTrash size={30} />
-      <button onClick={handleLike}>{liked ? <FaHeart size={30} color="red" /> : <FaRegHeart size={30} />}</button>
+    <div className="absolute left-0 right-0 top-2 z-10 flex items-center justify-between px-4">
+      <BackButton />
+      <div className="flex space-x-4">
+        {post && post.user_id === user.id && (
+          <>
+            <div className="icon-button">
+              <button className="flex h-full w-full items-center justify-center">
+                <GoPencil size={24} />
+              </button>
+            </div>
+            <div className="icon-button">
+              <button className="flex h-full w-full items-center justify-center">
+                <GoTrash size={24} />
+              </button>
+            </div>
+          </>
+        )}
+        <div className="icon-button">
+          <button onClick={handleLike} className="flex h-full w-full items-center justify-center">
+            {liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default Like;
+export default Likes;

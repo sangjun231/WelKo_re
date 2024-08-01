@@ -51,34 +51,34 @@ function Navbar() {
   }
 
   return (
-    <nav className="flex border-t border-[#DFDFE0] text-[#7A7A7A]">
+    <nav className="text-grayscale-500 border-grayscale-100 flex border-t">
       <div className="container mx-auto flex items-center justify-between p-8">
         <Link href="/">
-          <div className="flex flex-col items-center space-y-2 hover:text-[#BA68C8]">
+          <div className="hover:text-primary-300 flex flex-col items-center space-y-2">
             <RiHome3Line size={24} />
             <span className="text-[10px]">Home</span>
           </div>
         </Link>
         <div
           onClick={handleReservationsClick}
-          className="flex cursor-pointer flex-col items-center space-y-2 hover:text-[#BA68C8]"
+          className="hover:text-primary-300 flex cursor-pointer flex-col items-center space-y-2"
         >
           <IoCalendarOutline size={24} />
           <span className="text-[10px]">Reservations</span>
         </div>
         <Link href="/postpage">
           <div className="flex flex-col items-center rounded-full shadow-[0px_8px_19px_rgba(0,0,0,0.17)]">
-            <BsFillPlusCircleFill size={50} style={{ color: '#BA68C8' }} />
+            <BsFillPlusCircleFill size={50} className="text-primary-300" />
           </div>
         </Link>
         <Link href={`/${user?.id}/chatlistpage`}>
-          <div className="flex cursor-pointer flex-col items-center space-y-2 hover:text-[#BA68C8]">
+          <div className="hover:text-primary-300 flex cursor-pointer flex-col items-center space-y-2">
             <AiOutlineMessage size={24} />
             <span className="text-[10px]">Messages</span>
           </div>
         </Link>
         <Link href={`/${user?.id}/mypage`}>
-          <div className="flex cursor-pointer flex-col items-center space-y-2 hover:text-[#BA68C8]">
+          <div className="hover:text-primary-300 flex cursor-pointer flex-col items-center space-y-2">
             <BsPersonCircle size={24} />
             <span className="text-[10px]">Mypage</span>
           </div>

@@ -3,7 +3,6 @@
 import React from 'react';
 import Read from './_components/Read';
 import { Guide } from './_components/Guide';
-import Likes from './_components/Likes';
 import SelectBtn from './_components/SelectBtn';
 import Reviews from './_components/Reviews';
 import { useParams } from 'next/navigation';
@@ -14,11 +13,14 @@ export default function DetailPage() {
 
   return (
     <>
-      <Likes />
       <Read />
-      <Guide />
-      <Reviews />
-      <SelectBtn />
+      <div className="flex w-full justify-center">
+        <div className="w-full max-w-[320px]">
+          <Guide />
+          <Reviews />
+          <SelectBtn />
+        </div>
+      </div>
     </>
   );
 }
