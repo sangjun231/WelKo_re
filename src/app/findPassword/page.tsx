@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client'; // Supabase 클라이언트 인스턴스 가정
+import BackButton from '@/components/common/Button/BackButton';
 
 const FindPassword = () => {
   const [email, setEmail] = useState('');
@@ -30,8 +31,11 @@ const FindPassword = () => {
 
   return (
     <div className="flex items-center justify-center md:h-screen md:bg-gray-100">
-      <div className="h-[800px] w-[360px] max-w-md bg-white p-6 md:w-full md:rounded-lg md:shadow-lg">
-        <h1 className="text-center text-2xl font-bold">Find Password</h1>
+      <div className="h-[800px] w-[360px] max-w-md bg-white px-5 md:w-full md:rounded-lg md:p-6 md:shadow-lg">
+        <div className="mt-2 flex h-[44px] items-center pb-[16px] pt-3.5 md:hidden">
+          <BackButton />
+        </div>
+        <h1 className="mt-[41px] text-center text-2xl font-bold">Find Password</h1>
         <span className="mb-8 mt-3 block text-center text-sm text-[#7D848D]">We’ll send you reset email</span>
         <form onSubmit={handleFindPassword}>
           <p className="mb-2 font-medium">Email</p>

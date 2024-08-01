@@ -98,12 +98,12 @@ const ResetPassword = () => {
 
   return (
     <div className="flex items-center justify-center md:h-screen md:bg-gray-100">
-      <div className="h-[800px] w-[360px] max-w-md bg-white p-6 md:w-full md:rounded-lg md:shadow-lg">
+      <div className="h-[800px] w-[360px] max-w-md bg-white px-5 md:w-full md:rounded-lg md:p-6 md:shadow-lg">
         {error ? (
           <p className="text-center text-red-500">{error}</p>
         ) : showResetForm ? (
           <>
-            <h1 className="text-center text-2xl font-bold">Reset Your Password</h1>
+            <h1 className="mt-[24px] text-center text-2xl font-bold">Reset Your Password</h1>
             <span className="mb-8 mt-3 block text-center text-sm text-[#7D848D]">Please reset your new password</span>
             <form onSubmit={handleResetPassword}>
               <p className="mb-2 font-medium">New Password</p>

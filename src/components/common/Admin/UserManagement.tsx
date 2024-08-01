@@ -116,9 +116,20 @@ const UserManagement = () => {
   const handleDelete = async () => {
     if (deleteUserId) {
       try {
-        const { error } = await supabase.from('users').delete().eq('id', deleteUserId);
-        if (error) throw error;
+        // 관련 결제 데이터의 외래 키를 NULL로 설정
+        const { error: paymentError } = await supabase
+          .from('payments')
+          .update({ user_id: null }) // user_id를 NULL로 업데이트
+          .eq('user_id', deleteUserId);
 
+        if (paymentError) throw paymentError;
+
+        // 사용자 삭제
+        const { error: userError } = await supabase.from('users').delete().eq('id', deleteUserId);
+
+        if (userError) throw userError;
+
+        // 상태 업데이트
         setUsers(users.filter((user) => user.id !== deleteUserId));
         toast.success('User deleted successfully');
         setDeleteUserId(null);

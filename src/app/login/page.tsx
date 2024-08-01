@@ -1,4 +1,5 @@
 'use client';
+import BackButton from '@/components/common/Button/BackButton';
 import { googleLogin, handleLogin, handleSignUp } from '@/utils/supabase/service';
 import useAuthStore from '@/zustand/bearsStore';
 import Image from 'next/image';
@@ -44,9 +45,12 @@ const AuthForm = () => {
 
   return (
     <div className="flex items-center justify-center md:h-screen md:bg-gray-100">
-      <div className="h-[800px] w-[360px] max-w-md bg-white p-6 md:w-full md:rounded-lg md:shadow-lg">
-        <h1 className="text-center text-2xl font-bold">{isSignUp ? 'Create account' : 'Sign in now'}</h1>
+      <div className="h-[800px] w-[360px] max-w-md bg-white px-5 md:w-full md:rounded-lg md:p-6 md:shadow-lg">
+        <div className="mt-2 flex h-[44px] items-center pb-[16px] pt-3.5 md:hidden">
+          <BackButton />
+        </div>
 
+        <h1 className="mt-[41px] text-center text-2xl font-bold">{isSignUp ? 'Create account' : 'Sign in now'}</h1>
         <span className="mb-8 mt-3 block text-center text-sm text-[#7D848D]">
           {isSignUp ? 'Please sign up to continue Welko' : 'Please sign in to continue Welko'}
         </span>
@@ -99,7 +103,7 @@ const AuthForm = () => {
           {isSignUp ? 'Sign Up' : 'Sign In'}
         </button>
 
-        <div className={`absolute left-0 ${isSignUp ? 'mt-[58px]' : 'mt-[208px]'} w-full text-center`}>
+        <div className={`absolute left-0 ${isSignUp ? 'mt-[58px]' : 'mt-[214px]'} w-full text-center`}>
           <p className="text-center text-[#707B81]">
             {isSignUp ? 'Already have an account?' : 'Don’t have an account?'}{' '}
             <button onClick={toggleForm} className="text-[#FF7029] underline">
