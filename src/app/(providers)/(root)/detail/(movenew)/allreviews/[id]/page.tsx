@@ -1,16 +1,16 @@
 'use client';
 
 import React from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { fetchReviews, Review } from '@/utils/supabase/api/detail/reviews';
-import { averageRatings } from '@/utils/averageRating';
-import ReactStars from 'react-rating-stars-component';
+import { averageRatings, formatRelativeDate } from '@/utils/detail/functions';
+import { FaStar } from 'react-icons/fa6';
+import BackButton from '@/components/common/Button/BackButton';
 
 const AllReviewsPage = () => {
   const params = useParams();
   const postId = Array.isArray(params.id) ? params.id[0] : params.id;
-  const router = useRouter();
 
   // React Query를 사용하여 리뷰 데이터 가져오기
   const {
@@ -37,22 +37,33 @@ const AllReviewsPage = () => {
   const averageRating: number = averageRatings(reviews || []);
 
   return (
-    <div>
-      <h2>평균 점수: {averageRating} / 5.0</h2>
-      <ReactStars count={5} value={averageRating} size={24} isHalf={true} edit={false} activeColor="#ffd700" />
-      <h2>후기: {reviews.length}개</h2>
-      <div>
-        {reviews.map((review) => (
-          <div key={review.id} className="mb-4 border-b p-2">
-            <p>{review.content}</p>
-            <ReactStars count={5} value={review.rating} size={24} isHalf={true} edit={false} activeColor="#ffd700" />
-            <small>{new Date(review.created_at).toLocaleString()}</small>
-          </div>
-        ))}
+    <div className="mx-auto max-w-[360px]">
+      <div className="mx-auto w-full max-w-[320px]">
+        <div className="my-8">
+          <BackButton />
+        </div>
+        <div className="text-grayscale-900 ml-1 flex items-center gap-1 text-lg font-semibold">
+          <FaStar size={24} />
+          <h2 className="flex font-semibold">{averageRating.toFixed(2)}</h2>
+          <span className="flex font-medium">·</span>
+          <span className="flex font-medium">{reviews.length} reviews</span>
+        </div>
+        <div className="mt-5 flex flex-col items-center">
+          {reviews.map((review) => (
+            <div key={review.id} className="bg-grayscale-50 mb-4 items-center gap-3 rounded-2xl p-4">
+              <div className="flex items-center gap-2 pb-2">
+                <FaStar size={16} />
+                <p className="font-semibold">{review.rating.toFixed(2)}</p>
+                <p className="text-xs font-medium">{review.user_name}</p>
+                <p className="text-[10px] font-normal">{formatRelativeDate(review.created_at)}</p>
+              </div>
+              <div>
+                <p className="text-sm font-normal text-gray-700">{review.content}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-      <button className="mt-6 border" onClick={() => router.back()}>
-        뒤로가기
-      </button>
     </div>
   );
 };

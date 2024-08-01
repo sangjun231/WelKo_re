@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Link from 'next/link';
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
+import { RiHome3Line } from 'react-icons/ri';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import useAuthStore from '@/zustand/bearsStore';
 import { useParams } from 'next/navigation';
@@ -70,23 +72,24 @@ const Likes = () => {
       <div className="flex space-x-4">
         {post && post.user_id === user.id && (
           <>
-            <div className="icon-button">
-              <button className="flex h-full w-full items-center justify-center">
-                <GoPencil size={24} />
-              </button>
-            </div>
-            <div className="icon-button">
-              <button className="flex h-full w-full items-center justify-center">
-                <GoTrash size={24} />
-              </button>
-            </div>
+            <button className="icon-button">
+              <GoPencil size={24} />
+            </button>
+            <button className="icon-button">
+              <GoTrash size={24} />
+            </button>
           </>
         )}
-        <div className="icon-button">
-          <button onClick={handleLike} className="flex h-full w-full items-center justify-center">
+        <div>
+          <button onClick={handleLike} className="icon-button">
             {liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
           </button>
         </div>
+        <Link href="/">
+          <button className="icon-button">
+            <RiHome3Line size={24} />
+          </button>
+        </Link>
       </div>
     </div>
   );
