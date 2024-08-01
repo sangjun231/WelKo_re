@@ -125,29 +125,35 @@ const SelectUser = () => {
   };
 
   return (
-    <div>
-      <div>
-        <h3 className="font-bold">예약 인원</h3>
+    <div className="mt-6 flex flex-col">
+      <div className="mb-6 gap-2">
+        <h3 className="text-text-color text-base font-medium">How many tourists?</h3>
         <input
           type="number"
-          className="my-6 w-16 border-b-2 p-1"
+          className="bg-grayscale-50 my-2 w-full rounded-xl px-4 py-2"
           min="1"
           value={numPersons}
           onChange={handleNumPersonsChange}
         />
-        명<h5>투어 인원을 초과한 경우 예약이 취소될 수 있습니다. 판매자에게 먼저 문의 후 결제 바랍니다.</h5>
+        <p className="text-grayscale-500 text-[10px]">
+          If you exceed the number of people booked, your reservation may be canceled. Please contact the guide first.
+        </p>
       </div>
-      <div>
-        <h3 className="font-bold">예약자 정보</h3>
-        <div className="border">{user ? user.email : '로그인 정보가 없습니다.'}</div>
+      <div className="mb-6 gap-2">
+        <h3 className="text-text-color text-base font-medium">Nickname/email</h3>
+        <div className="bg-grayscale-50 my-2 w-full rounded-xl px-4 py-2">
+          {user ? user.email : '로그인 정보가 없습니다.'}
+        </div>
       </div>
-      <div>
-        <h3 className="font-bold">예약 약관</h3>
-        <h5>
-          투어 인원을 초과한 경우 예약이 취소될 수 있습니다. 판매자에게 먼저 문의 후 결제 바랍니다. 투어 인원을 초과한
-          경우 예약이 취소될 수 있습니다. 판매자에게 먼저 문의 후 결제 바랍니다. 투어 인원을 초과한 경우 예약이 취소될
-          수 있습니다. 판매자에게 먼저 문의 후 결제 바랍니다.
-        </h5>
+      <div className="mb-6">
+        <h3 className="text-text-color mb-1 text-base font-medium">Cancellation Policy</h3>
+        <p className="text-grayscale-500 text-xs font-normal">
+          Before you book, make sure you’re comfortable with{' '}
+          <u className="text-grayscale-900">this guide’s cancellation policy.</u> If you want a refund, click the
+          Request for a <u className="text-grayscale-900">refund button</u> and you will get a refund right away. The
+          refund amount will be refunded before 12 o'clock on the same day. You can cancel it for free up to two days
+          after payment. After that, there will be a <u className="text-grayscale-900">cancellation penalty.</u>
+        </p>
       </div>
       <div>
         <h3 className="font-bold">전체 금액</h3>
