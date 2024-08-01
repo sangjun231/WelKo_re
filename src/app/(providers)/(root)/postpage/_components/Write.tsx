@@ -99,7 +99,7 @@ const Write = ({ goToStep2 }: { goToStep2: () => void }) => {
       content,
       image,
       maxPeople,
-      tag,
+      tags,
       price,
       selectedPrices
     });
