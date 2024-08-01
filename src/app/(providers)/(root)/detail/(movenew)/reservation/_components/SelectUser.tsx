@@ -50,11 +50,11 @@ const SelectUser = () => {
       <div className="mb-6">
         <h3 className="text-text-color mb-1 text-base font-medium">Cancellation Policy</h3>
         <p className="text-grayscale-500 text-xs font-normal">
-          Before you book, make sure you’re comfortable with{' '}
-          <u className="text-grayscale-900">this guide’s cancellation policy.</u> If you want a refund, click the
+          Before you book, make sure you&apos;re comfortable with
+          <u className="text-grayscale-900">this guide&apos;s cancellation policy.</u> If you want a refund, click the
           Request for a <u className="text-grayscale-900">refund button</u> and you will get a refund right away. The
-          refund amount will be refunded before 12 o'clock on the same day. You can cancel it for free up to two days
-          after payment. After that, there will be a <u className="text-grayscale-900">cancellation penalty.</u>
+          refund amount will be refunded before 12 o&apos;clock on the same day. You can cancel it for free up to two
+          days after payment. After that, there will be a <u className="text-grayscale-900">cancellation penalty.</u>
         </p>
       </div>
     </div>
