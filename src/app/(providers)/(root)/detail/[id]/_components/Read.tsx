@@ -65,7 +65,7 @@ export default function Read() {
         </div>
         <hr className="bg-grayscale-100 my-8 h-[1px] w-full" />
         <div className="text-md text-grayscale-700">
-          <h3>{post.content}</h3>
+          <p>{post.content}</p>
         </div>
         <hr className="bg-grayscale-100 my-8 h-[1px] w-full" />
       </div>

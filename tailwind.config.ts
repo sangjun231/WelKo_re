@@ -23,7 +23,7 @@ const config: Config = {
         'primary-300': 'var(--Primary-300, #B95FAB)'
       },
       boxShadow: {
-        'custom-navbar': '0px -8px 15px 0px rgba(0, 0, 0, 0.05)',
+        'custom-navbar': '0px -8px 15px 0px rgba(0, 0, 0, 0.05)'
       },
       fontFamily: {
         inter: ['Inter', 'sans-serif'],
