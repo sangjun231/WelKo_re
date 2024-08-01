@@ -1,19 +1,23 @@
 'use client';
 
-import Link from 'next/link';
-import { useParams } from 'next/navigation';
-import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import usePostStore from '@/zustand/postStore';
-import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useMyPageStore } from '@/zustand/mypageStore';
+import useAuthStore from '@/zustand/bearsStore';
+import Link from 'next/link';
 
 export default function PaymentSuccess() {
+  const user = useAuthStore((state) => state.user);
   const { id } = useParams();
+  const router = useRouter();
   const { setPostId, fetchPost, post } = usePostStore((state) => ({
     setPostId: state.setPostId,
     fetchPost: state.fetchPost,
     post: state.post
   }));
+  const setSelectedComponent = useMyPageStore((state) => state.setSelectedComponent);
   const [paymentData, setPaymentData] = useState<any>(null);
   const [pending, setPending] = useState(true);
 
@@ -22,34 +26,29 @@ export default function PaymentSuccess() {
       try {
         const response = await axios.get(`/api/detail/payment/${id}`);
         setPaymentData(response.data);
-        return response.data;
+        if (response.data && response.data.post_id) {
+          fetchPost(response.data.post_id);
+        }
+        setPending(false);
       } catch (error) {
         console.error('Error fetching payment data:', error);
-        return null;
+        setPending(false);
       }
     };
 
     if (id) {
-      fetchPaymentData().then((data) => {
-        if (data && data.post_id) {
-          fetchPost(data.post_id);
-        }
-        setPending(false);
-      });
+      fetchPaymentData();
     }
   }, [id, fetchPost]);
 
-  if (pending) {
-    return <div>Loading...</div>;
-  }
-
-  if (!paymentData) {
-    return <div>No payment data found.</div>;
-  }
-
-  const handleGoToMyPage = () => {
-    const userId = paymentData.user_id;
-    window.location.href = `/${userId}/mypage`;
+  const handleReservationsClick = () => {
+    if (!user) {
+      alert('로그인이 필요한 서비스입니다!!');
+      router.push('/login');
+      return;
+    }
+    setSelectedComponent('Reservations');
+    router.push(`/${user?.id}/mypage`);
   };
 
   const handleCancelRequest = async () => {
@@ -65,36 +64,40 @@ export default function PaymentSuccess() {
     }
   };
 
+  if (pending) {
+    return <div>Loading...</div>;
+  }
+
+  if (!paymentData) {
+    return <div>No payment data found.</div>;
+  }
+
   return (
-    <div>
-      {post && (
-        <div className="p-4">
-          <div className="flex items-center space-x-4">
-            <div className="flex">
-              <Image src={post.image} alt={post.title} width={96} height={96} className="mr-2 w-24" />
-              <div className="">
-                <h2 className="text-xl font-bold">{post.title}</h2>
-                <p className="text-gray-500">24.8.19~8.22</p> {/* 날짜는 하드코딩 대신 추후 실제 데이터로 대체 */}
-                <div className="text-sm font-bold">${post.price.toFixed(2)}</div>
-              </div>
-            </div>
-          </div>
+    <div className="flex min-h-screen flex-col items-center justify-center">
+      <div className="mb-5 flex w-full max-w-[300px] flex-col items-center gap-1">
+        <h1 className="text-grayscale-900 mb-2 text-2xl font-semibold">We’re getting your tour!</h1>
+        <p className="text-grayscale-600 text-xs font-normal">The payment has been completed.</p>
+      </div>
+      <div className="mb-40 flex w-full max-w-[320px] flex-col">
+        <div
+          onClick={handleReservationsClick}
+          className="bg-primary-300 mb-4 w-full cursor-pointer rounded-xl px-6 py-3 text-center text-white"
+        >
+          My Reservation
         </div>
-      )}
-      <div>
-        <h1>결제 내역</h1>
-        <p>결제가 완료되었습니다!</p>
-        <p>Total Price: ${paymentData.total_price.toFixed(2)}</p>
+        <Link
+          href="/"
+          className="border-primary-300 text-primary-300 mb-4 w-full rounded-xl border px-6 py-3 text-center"
+        >
+          Back to Home
+        </Link>
       </div>
-      <div className="flex flex-col">
-        <button className="border">
-          <Link href="/">홈 화면 바로가기</Link>
-        </button>
-        <button onClick={handleGoToMyPage} className="border">
-          마이페이지 바로가기
-        </button>
-        <button onClick={handleCancelRequest} className="border">환불 요청하기</button>
+      <div className="mb-2 text-center text-gray-600">
+        Is there a mistake? You can cancel it immediately by pressing the button below
       </div>
+      <button onClick={handleCancelRequest} className="text-grayscale-900 text-sm font-semibold underline">
+        Cancel Now
+      </button>
     </div>
   );
 }
