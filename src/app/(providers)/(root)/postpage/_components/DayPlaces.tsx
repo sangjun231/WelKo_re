@@ -39,12 +39,15 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
       }
     }
   }, [selectedDay]);
-
   // 지도 띄우기
   useEffect(() => {
+    if (!isScriptLoaded || !position) return;
     // 현재 위치 이름 가져오기
     const getRegionName = (latitude: number, longitude: number) => {
-      if (!window.naver) return;
+      if (!window.naver || !window.naver.maps || !window.naver.maps.Service) {
+        console.error('네이버 맵 서비스가 초기화되지 않았습니다.');
+        return;
+      }
       const coord = new window.naver.maps.LatLng(latitude, longitude);
       window.naver.maps.Service.reverseGeocode(
         {
@@ -71,7 +74,6 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
       );
     };
     // 현재 위치로 지도 띄우기
-    if (!isScriptLoaded || !position) return;
     const initializeMap = () => {
       const mapInstance = new window.naver.maps.Map('map', {
         center: new window.naver.maps.LatLng(position.latitude, position.longitude),
@@ -113,11 +115,22 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
     initializeMap();
   }, [isScriptLoaded, position, selectedPlaces]);
 
+  //장소마다 소개 작성
+  const [descriptions, setDescriptions] = useState<{ [key: number]: string }>(
+    selectedPlaces.reduce((acc, _, index) => ({ ...acc, [index]: '' }), {})
+  );
+
+  const handleDescriptionChange = (index: number, value: string) => {
+    setDescriptions((prevDescriptions) => ({
+      ...prevDescriptions,
+      [index]: value
+    }));
+  };
+
   //장소 저장 핸들러
   const addMutation = useMutation({
     mutationFn: savePlaces
   });
-
   const handlePlaceSave = async () => {
     const postId = sessionStorage.getItem('postId');
     if (!postId) {
@@ -128,13 +141,18 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
       {
         post_id: postId,
         day: selectedDay,
-        places: selectedPlaces.map((place) => place.title),
+        places: selectedPlaces.map((place, index) => ({
+          title: place.title,
+          category: place.category,
+          description: descriptions[index]
+        })),
         lat: selectedPlaces.map((place) => place.latitude),
         long: selectedPlaces.map((place) => place.longitude),
         area: region
       },
       {
         onSuccess: () => {
+          setDescriptions({});
           alert('Saved successfully!');
         },
         onError: (error) => {
@@ -202,7 +220,19 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
                 <div key={index} className="flex justify-between border-b p-4 hover:bg-gray-100">
                   <div>
                     <h3 className="font bold" dangerouslySetInnerHTML={{ __html: cleanHTML }} />
-                    <p>{place.roadAddress}</p>
+                    <div className="flex text-xs text-gray-400">
+                      <p>{place.category} •&nbsp;</p>
+                      <p className="text-xs text-gray-400">{place.roadAddress}</p>
+                    </div>
+
+                    <hr className="mb-2 border" />
+
+                    <textarea
+                      className="resize-none"
+                      placeholder="간단한 소개 작성"
+                      value={descriptions[index] || ''}
+                      onChange={(e) => handleDescriptionChange(index, e.target.value)}
+                    />
                   </div>
                 </div>
               );
