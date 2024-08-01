@@ -104,9 +104,9 @@ const ResetPassword = () => {
         ) : showResetForm ? (
           <>
             <h1 className="text-center text-2xl font-bold">Reset Your Password</h1>
-            <span className="mb-8 mt-3 block text-center text-sm text-gray-500">Please reset your new password</span>
+            <span className="mb-8 mt-3 block text-center text-sm text-[#7D848D]">Please reset your new password</span>
             <form onSubmit={handleResetPassword}>
-              <p className="mb-2">New Password</p>
+              <p className="mb-2 font-medium">New Password</p>
               <div className="relative mb-3 w-full">
                 <input
                   type={showNewPassword ? 'text' : 'password'}
@@ -128,7 +128,7 @@ const ResetPassword = () => {
                   />
                 </span>
               </div>
-              <p className="mb-2">Confirm Password</p>
+              <p className="mb-2 font-medium">Confirm Password</p>
               <div className="relative mb-3 w-full">
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
@@ -150,7 +150,10 @@ const ResetPassword = () => {
                   />
                 </span>
               </div>
-              <button type="submit" className="w-full rounded-xl bg-[#B95FAB] px-5 py-3 text-white hover:bg-[#b344a2]">
+              <button
+                type="submit"
+                className="w-full rounded-xl bg-[#B95FAB] px-5 py-3 font-semibold text-white hover:bg-[#b344a2]"
+              >
                 Reset Password
               </button>
             </form>

@@ -46,10 +46,11 @@ const AuthForm = () => {
     <div className="flex items-center justify-center md:h-screen md:bg-gray-100">
       <div className="h-[800px] w-[360px] max-w-md bg-white p-6 md:w-full md:rounded-lg md:shadow-lg">
         <h1 className="text-center text-2xl font-bold">{isSignUp ? 'Create account' : 'Sign in now'}</h1>
-        <span className="mb-8 mt-3 block text-center text-sm text-gray-500">
+
+        <span className="mb-8 mt-3 block text-center text-sm text-[#7D848D]">
           {isSignUp ? 'Please sign up to continue Welko' : 'Please sign in to continue Welko'}
         </span>
-        {isSignUp && <p className="mb-2">Email</p>}
+        {isSignUp && <p className="mb-2 font-medium">Email</p>}
         <input
           type="email"
           placeholder="example@google.com"
@@ -57,7 +58,7 @@ const AuthForm = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        {isSignUp && <p className="mb-2">Password</p>}
+        {isSignUp && <p className="mb-2 font-medium">Password</p>}
         <div className="relative mb-3 w-full">
           <input
             type={showPassword ? 'text' : 'password'}
@@ -80,7 +81,7 @@ const AuthForm = () => {
         </div>
         {isSignUp && (
           <div>
-            <p className="mb-2">Nickname</p>
+            <p className="mb-2 font-medium">Nickname</p>
             <input
               type="text"
               placeholder="Nickname"
@@ -93,13 +94,13 @@ const AuthForm = () => {
 
         <button
           onClick={isSignUp ? onSignUp : onLogin}
-          className="w-full rounded-xl bg-[#B95FAB] px-5 py-3 text-white hover:bg-[#b344a2]"
+          className="w-full rounded-xl bg-[#B95FAB] px-5 py-3 font-semibold text-white hover:bg-[#b344a2]"
         >
           {isSignUp ? 'Sign Up' : 'Sign In'}
         </button>
 
-        <div className="absolute bottom-[100px] left-0 w-full text-center">
-          <p className="mt-[58px] text-center">
+        <div className={`absolute left-0 ${isSignUp ? 'mt-[58px]' : 'mt-[208px]'} w-full text-center`}>
+          <p className="text-center text-[#707B81]">
             {isSignUp ? 'Already have an account?' : 'Don’t have an account?'}{' '}
             <button onClick={toggleForm} className="text-[#FF7029] underline">
               {isSignUp ? 'Sign In' : 'Sign Up'}

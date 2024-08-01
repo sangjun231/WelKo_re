@@ -32,9 +32,9 @@ const FindPassword = () => {
     <div className="flex items-center justify-center md:h-screen md:bg-gray-100">
       <div className="h-[800px] w-[360px] max-w-md bg-white p-6 md:w-full md:rounded-lg md:shadow-lg">
         <h1 className="text-center text-2xl font-bold">Find Password</h1>
-        <span className="mb-8 mt-3 block text-center text-sm text-gray-500">We’ll send you reset email</span>
+        <span className="mb-8 mt-3 block text-center text-sm text-[#7D848D]">We’ll send you reset email</span>
         <form onSubmit={handleFindPassword}>
-          <p className="mb-2">Email</p>
+          <p className="mb-2 font-medium">Email</p>
           <input
             type="email"
             placeholder="example@google.com"
@@ -43,7 +43,10 @@ const FindPassword = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <button type="submit" className="w-full rounded-xl bg-[#B95FAB] px-5 py-3 text-white hover:bg-[#b344a2]">
+          <button
+            type="submit"
+            className="w-full rounded-xl bg-[#B95FAB] px-5 py-3 font-semibold text-white hover:bg-[#b344a2]"
+          >
             Send Reset Email
           </button>
         </form>
