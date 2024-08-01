@@ -1,16 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function GET(request: NextRequest, { params }: { params: { userId: string } }) {
+  const { userId } = params;
+  const postId = request.nextUrl.searchParams.get('postId');
 
-  if (!id) {
-    return NextResponse.json({ error: 'Invalid user ID' }, { status: 400 });
+  if (!postId) {
+    return NextResponse.json({ error: 'Invalid post ID' }, { status: 400 });
   }
 
   try {
     const supabase = createClient();
-    const { data, error } = await supabase.from('payments').select('*').eq('user_id', id);
+    const { data, error } = await supabase
+      .from('payments')
+      .select('*, users (email , name , avatar), posts (title , image)')
+      .eq('post_id', postId);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
