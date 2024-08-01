@@ -64,7 +64,7 @@ const DetailNavbar = () => {
   const handlePaymentFailure = useCallback(
     async (error: any) => {
       console.error('Payment failed:', error);
-      router.push(`/reservation/${post?.id}`);
+      router.push(`/detail/${post?.id}`);
     },
     [router, post?.id]
   );
@@ -89,13 +89,23 @@ const DetailNavbar = () => {
     <div className="fixed bottom-0 left-0 z-10 w-full bg-white">
       {pathname.includes('reservation') ? (
         <div className="shadow-custom-navbar border-t-1 border-grayscale-100 mx-auto max-w-[360px] py-4">
-          <div className="mx-auto flex max-w-[320px] items-center justify-between">
-            <div>
-              <h3 className="font-bold">전체 금액</h3>
-              <p className="font-bold">${totalAmount.toFixed(2)}</p>
+          <div className="mx-auto flex max-w-[320px] items-center">
+            <div className="flex flex-1 flex-col justify-center">
+              <div className="flex items-center text-lg">
+                <span className="text-grayscale-900 font-semibold">${totalAmount.toFixed(2)}</span>
+                <span className="text-grayscale-600 font-medium">/Total</span>
+              </div>
+              <div className="flex justify-start">
+                <p className="text-grayscale-900 text-xs font-medium">
+                  {formatDateRange(post?.startDate ?? null, post?.endDate ?? null)}
+                </p>
+              </div>
             </div>
-            <button onClick={handlePaymentClick} className="bg-primary-300 w-40 rounded-xl px-4 py-2 text-white">
-              결제하기
+            <button
+              onClick={handlePaymentClick}
+              className="bg-primary-300 w-40 flex-1 rounded-xl py-2 text-base font-semibold text-white"
+            >
+              Confirm and Pay
             </button>
           </div>
         </div>
@@ -113,7 +123,10 @@ const DetailNavbar = () => {
                 </p>
               </div>
             </div>
-            <button onClick={handleReserveClick} className="bg-primary-300 w-40 rounded-xl px-4 py-2 text-white">
+            <button
+              onClick={handleReserveClick}
+              className="bg-primary-300 w-40 rounded-xl px-4 py-2 text-base font-semibold text-white"
+            >
               Reserve
             </button>
           </div>
