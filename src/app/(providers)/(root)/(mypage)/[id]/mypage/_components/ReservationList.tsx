@@ -153,7 +153,7 @@ export default function ReservationList() {
               <p className="text-[15px]">
                 Payment at: {payment ? new Date(payment.created_at).toLocaleDateString() : 'N/A'}
               </p>
-              <Link href={`/detail/payment/${post.id}`}>
+              <Link href={`/detail/payment/history/${payment?.id}`}>
                 <p className="text-[15px]">결제 상세보기</p>
               </Link>
             </div>

@@ -1,14 +1,15 @@
 'use client';
 
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import usePostStore from '@/zustand/postStore';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { formatDateRange } from '@/utils/detail/functions';
+import { useParams } from 'next/navigation';
 
-export default function PaymentSuccess() {
-  const { id } = useParams();
+export default function PaymentHistory() {
+  const { id } = useParams(); // URL 경로에서 id 파라미터를 가져옴
   const { setPostId, fetchPost, post } = usePostStore((state) => ({
     setPostId: state.setPostId,
     fetchPost: state.fetchPost,
@@ -19,24 +20,26 @@ export default function PaymentSuccess() {
 
   useEffect(() => {
     const fetchPaymentData = async () => {
+      if (!id) {
+        setPending(false);
+        return;
+      }
+
       try {
         const response = await axios.get(`/api/detail/payment/${id}`);
         setPaymentData(response.data);
-        return response.data;
+
+        if (response.data && response.data.post_id) {
+          await fetchPost(response.data.post_id);
+        }
       } catch (error) {
         console.error('Error fetching payment data:', error);
-        return null;
+      } finally {
+        setPending(false);
       }
     };
 
-    if (id) {
-      fetchPaymentData().then((data) => {
-        if (data && data.post_id) {
-          fetchPost(data.post_id);
-        }
-        setPending(false);
-      });
-    }
+    fetchPaymentData();
   }, [id, fetchPost]);
 
   if (pending) {
@@ -52,19 +55,6 @@ export default function PaymentSuccess() {
     window.location.href = `/${userId}/mypage`;
   };
 
-  const handleCancelRequest = async () => {
-    try {
-      const response = await axios.post(`/api/detail/payment/${id}`, {
-        reason: 'User requested cancel',
-        requester: 'CUSTOMER'
-      });
-      alert(response.data.message);
-    } catch (error) {
-      console.error('Error requesting cancel:', error);
-      alert('Cancel request failed.');
-    }
-  };
-
   return (
     <div>
       {post && (
@@ -74,7 +64,9 @@ export default function PaymentSuccess() {
               <Image src={post.image} alt={post.title} width={96} height={96} className="mr-2 w-24" />
               <div className="">
                 <h2 className="text-xl font-bold">{post.title}</h2>
-                <p className="text-gray-500">24.8.19~8.22</p> {/* 날짜는 하드코딩 대신 추후 실제 데이터로 대체 */}
+                <p className="text-grayscale-500 text-xl font-normal">
+                  {formatDateRange(post.startDate, post.endDate)}
+                </p>
                 <div className="text-sm font-bold">${post.price.toFixed(2)}</div>
               </div>
             </div>
@@ -83,7 +75,6 @@ export default function PaymentSuccess() {
       )}
       <div>
         <h1>결제 내역</h1>
-        <p>결제가 완료되었습니다!</p>
         <p>Total Price: ${paymentData.total_price.toFixed(2)}</p>
       </div>
       <div className="flex flex-col">
@@ -93,7 +84,6 @@ export default function PaymentSuccess() {
         <button onClick={handleGoToMyPage} className="border">
           마이페이지 바로가기
         </button>
-        <button onClick={handleCancelRequest} className="border">환불 요청하기</button>
       </div>
     </div>
   );
