@@ -7,6 +7,7 @@ import usePostStore from '@/zustand/postStore';
 import Likes from './Likes';
 import { GoPeople } from 'react-icons/go';
 import { IoLocationOutline } from 'react-icons/io5';
+import { formatDateRange } from '@/utils/detail/functions';
 
 export default function Read() {
   const { id } = useParams();
@@ -27,19 +28,6 @@ export default function Read() {
   if (!post) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
   const tags: string[] = Array.isArray(post.tag) ? post.tag.map((tag) => String(tag)) : [];
-  const startDate: Date | null = post.startDate ? new Date(post.startDate) : null;
-  const endDate: Date | null = post.endDate ? new Date(post.endDate) : null;
-
-  const formatDateRange = (startDate: Date | null, endDate: Date | null) => {
-    if (!startDate || !endDate) return 'N/A';
-    const formatMonthDay = (date: Date) => `${date.getMonth() + 1}.${date.getDate()}`;
-
-    if (startDate.getFullYear() === endDate.getFullYear()) {
-      return `${startDate.getFullYear().toString().slice(2)}.${formatMonthDay(startDate)} - ${formatMonthDay(endDate)}`;
-    } else {
-      return `${startDate.getFullYear().toString().slice(2)}.${formatMonthDay(startDate)} - ${endDate.getFullYear().toString().slice(2)}.${formatMonthDay(endDate)}`;
-    }
-  };
 
   return (
     <div className="flex w-full flex-col items-center">
@@ -63,7 +51,7 @@ export default function Read() {
             ))}
           </ul>
           <h1 className="text-grayscale-900 text-xl font-semibold">{post.title}</h1>
-          <p className="text-grayscale-500 text-xl font-normal">{formatDateRange(startDate, endDate)}</p>
+          <p className="text-grayscale-500 text-xl font-normal"> {formatDateRange(post.startDate, post.endDate)}</p>
           <div className="flex text-lg">
             <span className="text-primary-300 font-semibold">${post.price}</span>
             <span className="text-grayscale-600 font-medium">/Person</span>
@@ -77,7 +65,7 @@ export default function Read() {
         </div>
         <hr className="bg-grayscale-100 my-8 h-[1px] w-full" />
         <div className="text-md text-grayscale-700">
-          <h3>{post.content}</h3>
+          <p>{post.content}</p>
         </div>
         <hr className="bg-grayscale-100 my-8 h-[1px] w-full" />
       </div>
