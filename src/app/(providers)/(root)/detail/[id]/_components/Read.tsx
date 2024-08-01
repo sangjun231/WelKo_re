@@ -27,7 +27,7 @@ export default function Read() {
 
   if (!post) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
-  const tags: string[] = Array.isArray(post.tag) ? post.tag.map((tag) => String(tag)) : [];
+  const tags: string[] = Array.isArray(post.tags) ? post.tags.map((tag) => String(tag)) : [];
 
   return (
     <div className="flex w-full flex-col items-center">
