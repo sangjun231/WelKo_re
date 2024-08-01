@@ -108,44 +108,46 @@ const Map = () => {
   if (error) return <div>Error loading map data</div>;
 
   return (
-    <div>
-      <h1>Where you’ll tour</h1>
-      <div>
+    <div className="flex flex-col text-lg">
+      <h2 className="text-grayscale-900 mb-4 font-semibold">Where you’ll tour</h2>
+      <div id="map" style={{ width: '100%', height: '300px' }}></div>
+      <div className="my-6 flex gap-2 text-xs font-medium">
         <button
           onClick={() => setSelectedDay(0)}
-          className={`${selectedDay === 0 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+          className={`rounded-3xl px-4 py-2 ${selectedDay === 0 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
         >
           Day 1
         </button>
         <button
           onClick={() => setSelectedDay(1)}
-          className={`${selectedDay === 1 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+          className={`rounded-3xl px-4 py-2 ${selectedDay === 1 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
         >
           Day 2
         </button>
         <button
           onClick={() => setSelectedDay(2)}
-          className={` ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+          className={`rounded-3xl px-4 py-2 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
         >
           Day 3
         </button>
       </div>
-      <div id="map" style={{ width: '100%', height: '300px', marginTop: '20px' }}></div>
-      <hr className="bg-grayscale-100 h-[1px] w-full" />
-      <div className="place-list">
+
+      <div className="flex flex-col gap-4">
         {data?.places[selectedDay].places.map((place, index) => (
           <div key={index} className="place-item flex items-start">
-            <div className="number-circle bg-primary-300 flex h-8 w-8 items-center justify-center rounded-full text-white">
+            <div className="number-circle bg-primary-300 mr-3 flex h-6 w-6 items-center justify-center rounded-full text-sm font-medium text-white">
               {index + 1}
             </div>
-            <div>
-              <h2 className="text-lg font-semibold">{place.title.replace(/<\/?[^>]+(>|$)/g, '')}</h2>
-              <p className="text-gray-500">{place.category}</p>
-              <p>{place.description}</p>
+            <div className="flex w-full flex-col gap-1 rounded-lg border bg-white px-4 py-3 shadow-lg">
+              <h2 className="text-sm font-semibold">{place.title.replace(/<\/?[^>]+(>|$)/g, '')}</h2>
+              <p className="text-xs text-gray-500">{place.category}</p>
+              <hr className="bg-grayscale-100 my-2 h-[1px] w-full" />
+              <p className="text-xs font-normal text-gray-700">{place.description}</p>
             </div>
           </div>
         ))}
       </div>
+      <hr className="bg-grayscale-100 my-8 h-[1px] w-full" />
     </div>
   );
 };
