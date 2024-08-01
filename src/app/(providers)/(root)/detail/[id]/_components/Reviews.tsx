@@ -6,8 +6,10 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchReviews, Review } from '@/utils/supabase/api/detail/reviews';
 import { averageRatings } from '@/utils/detail/averageRating';
 import ReactStars from 'react-rating-stars-component';
+import useAuthStore from '@/zustand/bearsStore';
 
 const Reviews = () => {
+  const user = useAuthStore((state) => state.user);
   const params = useParams();
   const postId = Array.isArray(params.id) ? params.id[0] : params.id;
   const router = useRouter();
@@ -32,28 +34,37 @@ const Reviews = () => {
     return <div className="flex h-screen items-center justify-center">Error: {error.message}</div>;
   }
 
-  if (!reviews || reviews.length === 0) {
-    return <div className="flex h-screen items-center justify-center">No reviews found</div>;
-  }
-
   return (
-    <div>
-      <h2>평균 점수: {averageRating} / 5.0</h2>
-      <ReactStars count={5} value={averageRating} size={24} isHalf={true} edit={false} activeColor="#ffd700" />
-      <h2>후기: {reviews.length}개</h2>
-      <div>
-        {reviews.slice(0, 1).map((review) => (
-          <div key={review.id} className="mb-4 border-b p-2">
-            <p>평점: {review.rating} / 5.0</p>
-            <ReactStars count={5} value={review.rating} size={24} isHalf={true} edit={false} activeColor="#ffd700" />
-            <p>{review.content}</p>
-            <p>{new Date(review.created_at).toLocaleString()}</p>
-          </div>
-        ))}
+    <div className="mb-32 flex gap-6">
+      <div className="flex flex-col gap-4">
+        <div className="text-grayscale-900 flex items-center gap-1 text-lg">
+          <ReactStars count={1} size={24} edit={false} />
+          <h2 className="font-semibold">{averageRating.toFixed(2)}</h2>
+          <span className="font-medium">·</span>
+          <span className="font-medium">{reviews.length} reviews</span>
+        </div>
+        <div className="bg-grayscale-50 gap-3 rounded-2xl p-4">
+          {reviews.slice(0, 1).map((review) => (
+            <div key={review.id} className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <ReactStars count={1} size={16} value={review.rating} edit={false} />
+                <h4 className="text-xs font-semibold">{review.rating.toFixed(2)}</h4>
+                <span className="text-xs text-gray-900">{review.user_name}</span>
+                <span className="text-[10px] font-normal text-gray-700">
+                  {new Date(review.created_at).toLocaleDateString()}
+                </span>
+              </div>
+              <p className="line-clamp-3 text-sm font-normal text-gray-700">{review.content}</p>
+            </div>
+          ))}
+        </div>
+        <button
+          className="w-full rounded-xl border border-gray-800 px-5 py-3 text-center text-base font-semibold text-gray-700"
+          onClick={() => router.push(`/detail/allreviews/${postId}`)}
+        >
+          Show more reviews
+        </button>
       </div>
-      <button className="mb-6 border" onClick={() => router.push(`/detail/allreviews/${postId}`)}>
-        후기 {reviews.length}개 모두 보기
-      </button>
     </div>
   );
 };
