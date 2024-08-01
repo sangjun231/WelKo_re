@@ -93,9 +93,6 @@ const ChatList = ({ userId }: ChatListProps) => {
     enabled: userIds.length > 0
   });
 
-  if (chatPending || postPending || userPending) return <div>Loading...</div>;
-  if (chatError || postError || userError) return <div>Error loading data</div>;
-
   const groupedChats = chatData?.reduce((acc: { [key: string]: Chat }, message) => {
     const chatId = `${message.post_id}-${[message.sender_id, message.receiver_id].sort().join('-')}`;
     if (!acc[chatId]) {
@@ -109,6 +106,9 @@ const ChatList = ({ userId }: ChatListProps) => {
     acc[chatId].messages.push(message);
     return acc;
   }, {});
+
+  if (chatPending || postPending || userPending) return <div>Loading...</div>;
+  if (chatError || postError || userError) return <div>Error loading data</div>;
 
   return (
     <div>
