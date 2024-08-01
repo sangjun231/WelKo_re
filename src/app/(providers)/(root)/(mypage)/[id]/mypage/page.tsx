@@ -21,7 +21,7 @@ const MyPage = () => {
   return (
     <div>
       <h1 className="mb-4">My Page</h1>
-      <button onClick={handleBack}>Go Back</button>
+      <button onClick={handleBack}>Go Back!</button>
       <ProfileView userId={id} />
       <div className="mb-2 mt-4 flex justify-around">
         <button onClick={() => setSelectedComponent('likes')}>likes</button>

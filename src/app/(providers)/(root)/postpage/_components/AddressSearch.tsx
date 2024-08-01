@@ -39,6 +39,7 @@ const AddressSearch = ({ prev, selectedDay }: SearchAddressProps) => {
       const response = await axios.get('/api/post/search', {
         params: { query: searchQuery }
       });
+      console.log(response);
 
       const places = response.data.items.map((item: any) => {
         const latitude = parseFloat(item.mapy) / 1e7;

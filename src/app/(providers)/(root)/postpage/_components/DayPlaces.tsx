@@ -55,11 +55,10 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
         async (status: any, response: any) => {
           if (status === 200) {
             if (response.result.items && response.result.items.length > 0) {
-              const address = response.result.items[0].addrdetail.sigugun.slice(0, -1);
+              const address = response.result.items[0].addrdetail.sigugun;
               try {
                 const translatedAddress = await translateAddress(address);
-                setRegion(translatedAddress);
-                console.log(response);
+                setRegion(translatedAddress.split(' ')[0]);
               } catch (error) {
                 console.error('Failed to translate address:', error);
                 alert('Failed to translate address.');
@@ -102,6 +101,7 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
           new window.naver.maps.Marker({
             position: new window.naver.maps.LatLng(place.latitude, place.longitude),
             map: mapInstance,
+            title: place.title,
             icon: {
               content: markerContent,
               anchor: new window.naver.maps.Point(12, 12)
