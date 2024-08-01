@@ -1,4 +1,5 @@
 'use client';
+import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import AddressSearch from './_components/AddressSearch';
 import Calendar from './_components/Calendar';
@@ -6,6 +7,8 @@ import DayPlaces from './_components/DayPlaces';
 import Write from './_components/Write';
 
 function PostPage() {
+  const { id } = useParams();
+  const postId = id;
   const [step, setStep] = useState(1);
   const [selectedDay, setSelectedDay] = useState<string>('');
 
@@ -16,7 +19,7 @@ function PostPage() {
 
   return (
     <div>
-      {step === 1 && <Calendar next={nextStep} />}
+      {step === 1 && <Calendar next={nextStep} postId={postId as string} />}
       {step === 2 && (
         <DayPlaces
           next={nextStep}

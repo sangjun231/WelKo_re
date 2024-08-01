@@ -2,16 +2,43 @@
 import { upsertDate } from '@/utils/post/postData';
 import { createClient } from '@/utils/supabase/client';
 import { addMonths, format, startOfDay } from 'date-fns';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DaySelect from './DaySelect';
 
-const Calendar = ({ next }: { next: () => void }) => {
+interface CalendarProps {
+  next: () => void;
+  postId?: string; // 수정 모드일 때 사용
+}
+
+const Calendar = ({ next, postId }: CalendarProps) => {
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
   const months = Array.from({ length: 12 }, (_, i) => i);
   const monthLabels = months.map((month) => format(addMonths(new Date(), month), 'MMM yyyy'));
+
+  // 수정할 때
+  useEffect(() => {
+    if (postId) {
+      const fetchData = async () => {
+        const supabase = createClient();
+        const { data, error } = await supabase.from('posts').select('startDate, endDate').eq('id', postId).single();
+
+        if (error) {
+          console.error('Error fetching post data:', error);
+          return;
+        }
+
+        if (data) {
+          setStartDate(new Date(data.startDate));
+          setEndDate(new Date(data.endDate));
+        }
+      };
+
+      fetchData();
+    }
+  }, [postId]);
 
   const handleDateSave = async () => {
     const supabase = createClient();
@@ -34,11 +61,12 @@ const Calendar = ({ next }: { next: () => void }) => {
       const datePostData = {
         user_id,
         startDate: formatDateForDB(startDate),
-        endDate: formatDateForDB(endDate)
+        endDate: formatDateForDB(endDate),
+        id: postId // postId를 포함하여 기존 데이터를 업데이트
       };
       const dateResponse = await upsertDate(datePostData);
-      const postId = dateResponse.data.id;
-      sessionStorage.setItem('postId', postId);
+      const post_id = dateResponse.data.id;
+      sessionStorage.setItem('postId', post_id);
       //sessionStorage.setItem('datePostData', JSON.stringify(datePostData));
       next();
     } catch (error) {

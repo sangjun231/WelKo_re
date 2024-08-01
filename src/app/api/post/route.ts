@@ -15,23 +15,24 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const supabase = createClient();
   const data = await request.json();
-  const { user_id, startDate, endDate }: Partial<Tables<'posts'>> = data;
+  const { user_id, startDate, endDate, id }: Partial<Tables<'posts'>> = data;
 
   if (!user_id) {
     return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
   }
 
   try {
-    // 날짜 삽입
-    const { error: insertError } = await supabase.from('posts').insert({
+    // 날짜 삽입 또는 업데이트
+    const { error: upsertError } = await supabase.from('posts').upsert({
       user_id,
       startDate,
-      endDate
+      endDate,
+      id
     });
 
-    if (insertError) {
-      console.error('Error inserting dates:', insertError.message);
-      return NextResponse.json({ error: insertError.message }, { status: 500 });
+    if (upsertError) {
+      console.error('Error inserting dates:', upsertError.message);
+      return NextResponse.json({ error: upsertError.message }, { status: 500 });
     }
 
     // 삽입된 데이터의 ID 가져오기
@@ -39,8 +40,6 @@ export async function POST(request: NextRequest) {
       .from('posts')
       .select('id')
       .eq('user_id', user_id)
-      .eq('startDate', startDate)
-      .eq('endDate', endDate)
       .order('created_at', { ascending: false })
       .limit(1)
       .single();

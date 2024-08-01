@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { GoPencil, GoTrash } from 'react-icons/go';
 import { RiHome3Line } from 'react-icons/ri';
-import { DeletePost } from '../../../postpage/_components/PostEdit';
+import { DeletePost } from '../../../postpage/[id]/_components/PostEdit';
 
 const Likes = () => {
   const { id: postId } = useParams<{ id: string }>();
@@ -75,9 +75,11 @@ const Likes = () => {
       <div className="flex space-x-4">
         {post && post.user_id === user.id && (
           <>
-            <button className="icon-button">
-              <GoPencil size={24} />
-            </button>
+            <Link href={`/postpage/${postId}`}>
+              <button className="icon-button">
+                <GoPencil size={24} />
+              </button>
+            </Link>
             <button className="icon-button" onClick={() => handleDelete(postId)}>
               <GoTrash size={24} />
             </button>
