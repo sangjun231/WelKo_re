@@ -7,28 +7,28 @@ import { useRouter } from 'next/navigation';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
 
-const Write = ({ prev }: { prev: () => void }) => {
+const Write = ({ goToStep2 }: { goToStep2: () => void }) => {
   const router = useRouter();
   const supabase = createClient();
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [image, setImage] = useState<string>('');
-  const [maxPeople, setMaxPeople] = useState<number>(0);
-  const [price, setPrice] = useState(0);
+  const [maxPeople, setMaxPeople] = useState<number>();
+  const [price, setPrice] = useState<number>();
   const [tag, setTag] = useState<string[]>([]);
   const tags = [
-    '체험과 액티비티',
-    '유명 핫플레이스',
-    '자연과 함께',
-    '관광지도 갈래요',
-    '현적하고 여유롭게',
-    '쇼핑 할래요',
-    '맛집은 필수',
-    '문화 예술 탐방'
+    'Activities', //체험과 액티비티
+    'Popular Places', // 유명 핫플레이스
+    'With Nature', // 자연과 함께
+    'Tourist Spots', // 관광지
+    'Relax and Leisurely', // 한적, 여유
+    'Shopping', // 쇼핑
+    'Must-Visit Restaurants', // 맛집
+    'Cultural Exploration' // 문화 탐방
   ];
   const [selectedPrices, setSelectedPrices] = useState<string[]>([]);
-  const prices = ['숙소비 포함', '식사비 포함', '레저비 포함', '교통비 포함'];
-
+  const prices = ['Accommodation', 'Meals', 'Leisure Activities', 'Transportation'];
+  //순서대로 숙소비, 식사비, 레저비, 교통비
   //이미지 추가하는 핸들러
   const handleImageAdd = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -103,7 +103,7 @@ const Write = ({ prev }: { prev: () => void }) => {
       price,
       selectedPrices
     });
-    alert('posting!');
+    alert('posting success!');
     router.replace('/');
     sessionStorage.clear();
   };
@@ -111,7 +111,7 @@ const Write = ({ prev }: { prev: () => void }) => {
   return (
     <form onSubmit={handleSavePost}>
       <div className="my-4 flex">
-        <button onClick={prev}>
+        <button onClick={goToStep2}>
           <FaArrowLeft className="m-1" />
         </button>
         <div className="flex-grow text-center">
@@ -195,7 +195,9 @@ const Write = ({ prev }: { prev: () => void }) => {
         </div>
       </div>
 
-      <button className="my-4 w-full rounded bg-black p-2 text-white">저장하기</button>
+      <button type="submit" className="my-4 w-full rounded bg-black p-2 text-white">
+        저장하기
+      </button>
     </form>
   );
 };

@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   const supabase = createClient();
   const data = await request.json();
-  const { id, title, content, image, maxPeople, tag, price, selectedPrices }: Partial<Tables<'posts'>> = data;
+  const { name, id, title, content, image, maxPeople, tag, price, selectedPrices }: Partial<Tables<'posts'>> = data;
 
   if (!id) {
     return NextResponse.json({ error: 'Post ID is required' }, { status: 400 });

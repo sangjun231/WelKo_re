@@ -31,7 +31,7 @@ export const updatePostDetails = async (postDetails: Partial<Tables<'posts'>>) =
 
 export const savePlaces = async (placesDetails: Partial<Tables<'schedule'>>) => {
   try {
-    const response = await axios.post('/api/search', placesDetails);
+    const response = await axios.post('/api/post/search', placesDetails);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -40,5 +40,23 @@ export const savePlaces = async (placesDetails: Partial<Tables<'schedule'>>) => 
     } else {
       throw new Error('An unknown error occurred');
     }
+  }
+};
+
+export const translateAddress = async (text: string) => {
+  try {
+    const response = await axios.post(
+      '/api/post/translation',
+      { text },
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    return response.data.translatedText;
+  } catch (error) {
+    console.error('Error translating text:', error);
+    throw new Error('Failed to translate the text');
   }
 };

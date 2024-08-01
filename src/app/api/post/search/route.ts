@@ -6,7 +6,6 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('query');
-    console.log('Query:', query);
 
     if (!query) {
       return NextResponse.json({ error: 'Query parameter is required' }, { status: 400 });
@@ -22,12 +21,15 @@ export async function GET(request: Request) {
       headers,
       params: {
         query,
-        display: 5, // 검색 결과 개수
+        display: 5, // 검색 결과 개수, 5개가 최대임..
         start: 1,
-        sort: 'random' // 정렬 기준
+        sort: 'sim' // 정렬 기준 정확도 순, 리뷰순은 comment
       }
     });
-    console.log('Naver API Response:', response.data);
+
+    if (response === null) {
+      console.log('검색 결과가 없습니다');
+    }
 
     return NextResponse.json(response.data);
   } catch (error) {
@@ -45,7 +47,7 @@ export async function GET(request: Request) {
 export async function POST(request: NextRequest) {
   const supabase = createClient();
   const data = await request.json();
-  const { post_id, day, places, lat, long } = data;
+  const { post_id, day, places, lat, long, area } = data;
 
   try {
     const { error } = await supabase.from('schedule').insert({
@@ -53,7 +55,8 @@ export async function POST(request: NextRequest) {
       day,
       places,
       lat,
-      long
+      long,
+      area
     });
     if (error) {
       console.error('Error inserting dates:', error.message);

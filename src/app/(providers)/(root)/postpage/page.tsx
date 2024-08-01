@@ -1,5 +1,4 @@
 'use client';
-import { Place } from '@/types/types';
 import { useState } from 'react';
 import AddressSearch from './_components/AddressSearch';
 import Calendar from './_components/Calendar';
@@ -9,11 +8,11 @@ import Write from './_components/Write';
 function PostPage() {
   const [step, setStep] = useState(1);
   const [selectedDay, setSelectedDay] = useState<string>('');
-  const [selectedPlaces, setSelectedPlaces] = useState<Place[]>([]); // 선택한 장소 목록
 
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
   const goToStep4 = () => setStep(4);
+  const goToStep2 = () => setStep(2);
 
   return (
     <div>
@@ -25,19 +24,10 @@ function PostPage() {
           goToStep4={goToStep4}
           selectedDay={selectedDay}
           setSelectedDay={setSelectedDay}
-          selectedPlaces={selectedPlaces}
-          setSelectedPlaces={setSelectedPlaces}
         />
       )}
-      {step === 3 && (
-        <AddressSearch
-          prev={prevStep}
-          selectedDay={selectedDay}
-          selectedPlaces={selectedPlaces}
-          setSelectedPlaces={setSelectedPlaces}
-        />
-      )}
-      {step === 4 && <Write prev={prevStep} />}
+      {step === 3 && <AddressSearch prev={prevStep} selectedDay={selectedDay} />}
+      {step === 4 && <Write goToStep2={goToStep2} />}
     </div>
   );
 }
