@@ -1,13 +1,14 @@
 'use client';
 
-import { IoCalendarOutline } from 'react-icons/io5';
-import { RiHome3Line } from 'react-icons/ri';
-import { AiOutlineMessage } from 'react-icons/ai';
-import { BsFillPlusCircleFill, BsPersonCircle } from 'react-icons/bs';
-import Link from 'next/link';
 import useAuthStore from '@/zustand/bearsStore';
 import { useMyPageStore } from '@/zustand/mypageStore';
+import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { AiOutlineMessage } from 'react-icons/ai';
+import { BsFillPlusCircleFill, BsPersonCircle } from 'react-icons/bs';
+import { IoCalendarOutline } from 'react-icons/io5';
+import { RiHome3Line } from 'react-icons/ri';
+import { v4 as uuidv4 } from 'uuid';
 
 function Navbar() {
   const router = useRouter();
@@ -44,41 +45,42 @@ function Navbar() {
     router.push(`/${user?.id}/chatpage`);
   };
 
+  const uuid = uuidv4();
   // 특정 경로에서 Navbar를 숨기기
-  const excludedRoutes = ['/login', '/postpage'];
+  const excludedRoutes = ['/login', `/postpage/${uuid}`];
   if (excludedRoutes.includes(pathname) || pathname.startsWith('/detail')) {
     return null;
   }
 
   return (
-    <nav className="text-grayscale-500 border-grayscale-100 flex border-t">
+    <nav className="flex border-t border-grayscale-100 text-grayscale-500">
       <div className="container mx-auto flex items-center justify-between p-8">
         <Link href="/">
-          <div className="hover:text-primary-300 flex flex-col items-center space-y-2">
+          <div className="flex flex-col items-center space-y-2 hover:text-primary-300">
             <RiHome3Line size={24} />
             <span className="text-[10px]">Home</span>
           </div>
         </Link>
         <div
           onClick={handleReservationsClick}
-          className="hover:text-primary-300 flex cursor-pointer flex-col items-center space-y-2"
+          className="flex cursor-pointer flex-col items-center space-y-2 hover:text-primary-300"
         >
           <IoCalendarOutline size={24} />
           <span className="text-[10px]">Reservations</span>
         </div>
-        <Link href="/postpage">
+        <Link href={`/postpage/${uuid}`}>
           <div className="flex flex-col items-center rounded-full shadow-[0px_8px_19px_rgba(0,0,0,0.17)]">
             <BsFillPlusCircleFill size={50} className="text-primary-300" />
           </div>
         </Link>
         <Link href={`/${user?.id}/chatlistpage`}>
-          <div className="hover:text-primary-300 flex cursor-pointer flex-col items-center space-y-2">
+          <div className="flex cursor-pointer flex-col items-center space-y-2 hover:text-primary-300">
             <AiOutlineMessage size={24} />
             <span className="text-[10px]">Messages</span>
           </div>
         </Link>
         <Link href={`/${user?.id}/mypage`}>
-          <div className="hover:text-primary-300 flex cursor-pointer flex-col items-center space-y-2">
+          <div className="flex cursor-pointer flex-col items-center space-y-2 hover:text-primary-300">
             <BsPersonCircle size={24} />
             <span className="text-[10px]">Mypage</span>
           </div>

@@ -9,6 +9,23 @@ import Write from './_components/Write';
 function PostPage() {
   const { id } = useParams();
   const postId = id;
+  // useEffect(()=>{
+  //   handleDateSave();
+  // },[id])
+  // const handleDateSave = async () => {
+  //   const supabase = createClient();
+  //   const {
+  //     data: { user },
+  //     error
+  //   } = await supabase.auth.getUser();
+
+  //  // user?.id === id ? postId = null : id
+
+  //   if (error) {
+  //     console.error('Error getting user:', error);
+  //     return;
+  //   }}
+
   const [step, setStep] = useState(1);
   const [selectedDay, setSelectedDay] = useState<string>('');
 

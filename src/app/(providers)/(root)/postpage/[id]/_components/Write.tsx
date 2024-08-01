@@ -29,6 +29,26 @@ const Write = ({ goToStep2 }: { goToStep2: () => void }) => {
   const [selectedPrices, setSelectedPrices] = useState<string[]>([]);
   const prices = ['Accommodation', 'Meals', 'Leisure Activities', 'Transportation'];
   //순서대로 숙소비, 식사비, 레저비, 교통비
+
+  const handleFormConfirm = () => {
+    const missingFields: string[] = [];
+
+    if (!title.trim()) missingFields.push('제목');
+    if (!content.trim()) missingFields.push('내용');
+    if (!image) missingFields.push('이미지');
+    if (!maxPeople || maxPeople < 1) missingFields.push('최대 인원');
+    if (!price || price < 0) missingFields.push('투어 금액');
+    if (tags.length === 0) missingFields.push('투어 태그');
+    if (selectedPrices.length === 0) missingFields.push('가격 옵션');
+
+    if (missingFields.length > 0) {
+      const missingFieldsString = missingFields.join(', ');
+      alert(`다음 정보를 입력해주세요: ${missingFieldsString}`);
+      return false;
+    }
+    return true;
+  };
+
   //이미지 추가하는 핸들러
   const handleImageAdd = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -96,6 +116,12 @@ const Write = ({ goToStep2 }: { goToStep2: () => void }) => {
       console.error('Error getting user:', error);
       return;
     }
+
+    if (!handleFormConfirm()) {
+      // 폼이 유효하지 않으면 여기서 함수 종료
+      return;
+    }
+
     addMutation.mutate({
       name: user?.user_metadata.name,
       id: postId,

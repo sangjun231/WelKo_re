@@ -4,6 +4,7 @@ import { useCurrentPosition } from '@/hooks/Map/useCurrentPosition';
 import { useNaverMapScript } from '@/hooks/Map/useNaverMapScript';
 import { Place } from '@/types/types';
 import { savePlaces, translateAddress } from '@/utils/post/postData';
+import { createClient } from '@/utils/supabase/client';
 import { useMutation } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
 import { useEffect, useState } from 'react';
@@ -28,6 +29,7 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
   const isScriptLoaded = useNaverMapScript(clientId);
   const position = useCurrentPosition();
   const [markers, setMarkers] = useState<any[]>([]);
+
   //sessionStorage 관련
   const storedPlaces = sessionStorage.getItem(selectedDay); //선택한 day에 맞는 value값 가져옴
   const keys = Object.keys(sessionStorage);
@@ -39,6 +41,39 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
       }
     }
   }, [selectedDay]);
+
+  const postId = sessionStorage.getItem('postId');
+
+  // 수정할 때, Supabase에서 장소 데이터를 불러오기
+  useEffect(() => {
+    if (postId && selectedDay) {
+      const fetchPlaces = async () => {
+        const supabase = createClient();
+        const { data: placesData, error } = await supabase
+          .from('schedule')
+          .select('*')
+          .eq('post_id', postId)
+          .eq('day', selectedDay);
+
+        if (placesData && placesData.length > 0) {
+          // 첫 번째 결과만 사용 (하나의 day에 대한 데이터만 있을 것으로 가정)
+          const placeData = placesData[0];
+          // 사용하기 쉬운 형태로 변환
+          // const combinedPlaces = placeData.map((place: any, index: number) => ({
+          //   places:
+          //   lat: placeData.lat[index],
+          //   long: placeData.long[index]
+          // }));
+
+          //setSelectedPlaces(combinedPlaces);
+        } else {
+          console.log('No data found for the given postId and day');
+        }
+      };
+      fetchPlaces();
+    }
+  }, [selectedDay, postId]);
+
   // 지도 띄우기
   useEffect(() => {
     if (!isScriptLoaded || !position) return;
@@ -132,7 +167,6 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
     mutationFn: savePlaces
   });
   const handlePlaceSave = async () => {
-    const postId = sessionStorage.getItem('postId');
     if (!postId) {
       console.error('Post ID not found');
       return;
@@ -144,6 +178,7 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
         places: selectedPlaces.map((place, index) => ({
           title: place.title,
           category: place.category,
+          roadAddress: place.roadAddress,
           description: descriptions[index]
         })),
         lat: selectedPlaces.map((place) => place.latitude),
