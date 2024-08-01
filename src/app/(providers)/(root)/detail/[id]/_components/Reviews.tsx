@@ -5,8 +5,9 @@ import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { fetchReviews, Review } from '@/utils/supabase/api/detail/reviews';
 import { averageRatings } from '@/utils/detail/averageRating';
-import ReactStars from 'react-rating-stars-component';
 import useAuthStore from '@/zustand/bearsStore';
+import { FaStar } from 'react-icons/fa6';
+import { formatRelativeDate } from '@/utils/detail/formatRelativeDate';
 
 const Reviews = () => {
   const user = useAuthStore((state) => state.user);
@@ -38,7 +39,7 @@ const Reviews = () => {
     <div className="mb-32 flex gap-6">
       <div className="flex flex-col gap-4">
         <div className="text-grayscale-900 flex items-center gap-1 text-lg">
-          <ReactStars count={1} size={24} edit={false} />
+          <FaStar size={24} />
           <h2 className="font-semibold">{averageRating.toFixed(2)}</h2>
           <span className="font-medium">·</span>
           <span className="font-medium">{reviews.length} reviews</span>
@@ -47,12 +48,10 @@ const Reviews = () => {
           {reviews.slice(0, 1).map((review) => (
             <div key={review.id} className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
-                <ReactStars count={1} size={16} value={review.rating} edit={false} />
+                <FaStar size={16} />
                 <h4 className="text-xs font-semibold">{review.rating.toFixed(2)}</h4>
                 <span className="text-xs text-gray-900">{review.user_name}</span>
-                <span className="text-[10px] font-normal text-gray-700">
-                  {new Date(review.created_at).toLocaleDateString()}
-                </span>
+                <span className="text-[10px] font-normal text-gray-700">{formatRelativeDate(review.created_at)}</span>
               </div>
               <p className="line-clamp-3 text-sm font-normal text-gray-700">{review.content}</p>
             </div>
