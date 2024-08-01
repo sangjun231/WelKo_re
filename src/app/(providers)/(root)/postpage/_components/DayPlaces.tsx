@@ -153,7 +153,7 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
       {
         onSuccess: () => {
           setDescriptions({});
-          alert('Saved successfully!');
+          alert('Saved!');
         },
         onError: (error) => {
           console.error('Error saving places:', error);

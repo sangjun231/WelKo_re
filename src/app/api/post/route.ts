@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   const supabase = createClient();
   const data = await request.json();
-  const { name, id, title, content, image, maxPeople, tag, price, selectedPrices }: Partial<Tables<'posts'>> = data;
+  const { name, id, title, content, image, maxPeople, tags, price, selectedPrices }: Partial<Tables<'posts'>> = data;
 
   if (!id) {
     return NextResponse.json({ error: 'Post ID is required' }, { status: 400 });
@@ -75,7 +75,7 @@ export async function PUT(request: NextRequest) {
         content,
         image,
         maxPeople,
-        tag,
+        tags,
         price,
         selectedPrices
       })
@@ -90,5 +90,22 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     console.error('Unexpected error:', error);
     return NextResponse.json({ error: 'Unexpected error occurred' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  const supabase = createClient();
+  const data = await request.json();
+  const { post_id } = data;
+
+  try {
+    const { error: postError } = await supabase.from('posts').delete().eq('id', post_id);
+
+    if (postError) {
+      throw postError;
+    }
+    return NextResponse.json({ message: 'deleted' });
+  } catch (error) {
+    return NextResponse.json({ message: 'Error deleting data', error });
   }
 }

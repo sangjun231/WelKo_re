@@ -15,8 +15,8 @@ const Write = ({ goToStep2 }: { goToStep2: () => void }) => {
   const [image, setImage] = useState<string>('');
   const [maxPeople, setMaxPeople] = useState<number>();
   const [price, setPrice] = useState<number>();
-  const [tag, setTag] = useState<string[]>([]);
-  const tags = [
+  const [tags, setTags] = useState<string[]>([]);
+  const tagData = [
     'Activities', //체험과 액티비티
     'Popular Places', // 유명 핫플레이스
     'With Nature', // 자연과 함께
@@ -57,10 +57,14 @@ const Write = ({ goToStep2 }: { goToStep2: () => void }) => {
   //태그 선택하는 핸들러
   const toggleTag = (item: string, event: React.MouseEvent) => {
     event.preventDefault();
-    if (tag.includes(item)) {
-      setTag(tag.filter((i) => i !== item));
+    if (tags.includes(item)) {
+      setTags(tags.filter((i) => i !== item));
     } else {
-      setTag([...tag, item]);
+      if (tags.length < 4) {
+        setTags([...tags, item]);
+      } else {
+        alert('태그는 최대 4개까지 선택할 수 있습니다.');
+      }
     }
   };
   //포함되는 비용 선택하는 핸들러
@@ -99,11 +103,11 @@ const Write = ({ goToStep2 }: { goToStep2: () => void }) => {
       content,
       image,
       maxPeople,
-      tag,
+      tags,
       price,
       selectedPrices
     });
-    alert('posting success!');
+    alert('Saved!');
     router.replace('/');
     sessionStorage.clear();
   };
@@ -162,10 +166,10 @@ const Write = ({ goToStep2 }: { goToStep2: () => void }) => {
       <div>
         <h1>어떤 투어인가요?</h1>
         <div className="flex flex-wrap gap-2">
-          {tags.map((item) => (
+          {tagData.map((item) => (
             <button
               key={item}
-              className={`rounded-full border px-4 py-2 ${tag.includes(item) ? 'bg-gray-200' : 'bg-white'}`}
+              className={`rounded-full border px-4 py-2 ${tags.includes(item) ? 'bg-gray-200' : 'bg-white'}`}
               onClick={(e) => toggleTag(item, e)}
               type="button"
             >
