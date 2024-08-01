@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { toast } from 'react-toastify';
 import Modal from 'react-modal';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
 interface Payment {
   id: string;
