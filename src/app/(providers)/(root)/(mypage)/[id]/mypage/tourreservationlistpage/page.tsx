@@ -1,17 +1,18 @@
 'use client';
 
-import React from 'react';
-import { useParams } from 'next/navigation';
+import { useSearchParams, useParams } from 'next/navigation';
 import TourReservationList from './_components/TourReservationList';
 
 const TourReservationListPage = () => {
+  const searchParams = useSearchParams();
   const params = useParams();
-  const postId = Array.isArray(params.postId) ? params.postId[0] : params.postId;
+  const userId = Array.isArray(params.id) ? params.id[0] : params.id;
+  const postId = searchParams.get('postId');
 
   return (
     <div>
       <h1>Tour Reservation List Page</h1>
-      {postId ? <TourReservationList postId={postId} /> : <div>No Post ID Provided</div>}
+      {userId && postId ? <TourReservationList userId={userId} postId={postId} /> : <div>No Post ID Provided</div>}
     </div>
   );
 };

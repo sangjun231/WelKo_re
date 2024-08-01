@@ -6,19 +6,17 @@ import React from 'react';
 import { API_MYPAGE_TOURRESERVATIONLIST } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
 
-const fetchReservations = async (postId: string) => {
-  const response = await axios.get(API_MYPAGE_TOURRESERVATIONLIST(postId));
+const fetchReservations = async (userId: string, postId: string) => {
+  const response = await axios.get(API_MYPAGE_TOURRESERVATIONLIST(userId, postId));
   return response.data;
 };
 
-const TourReservationList = ({ postId }: { postId: string }) => {
+const TourReservationList = ({ userId, postId }: { userId: string; postId: string }) => {
   const { data, error, isLoading } = useQuery<Tables<'payments'>[]>({
-    queryKey: ['reservations', postId],
-    queryFn: () => fetchReservations(postId),
-    enabled: !!postId
+    queryKey: ['reservations', userId, postId],
+    queryFn: () => fetchReservations(userId, postId),
+    enabled: !!userId && !!postId
   });
-
-  console.log(data?.user_id);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading reservations</div>;
