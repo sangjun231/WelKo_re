@@ -1,5 +1,5 @@
 'use client';
-import { addMonths, format, startOfDay } from 'date-fns';
+import { addMonths, format } from 'date-fns';
 import React, { useState } from 'react';
 import DaySelect from '../planner/DaySelect';
 
@@ -21,6 +21,16 @@ const PeriodSelector: React.FC<PeriodSelectorProps> = ({ next, startDate, endDat
     next();
   };
 
+  const handleDateChange = (date: Date | null, type: 'start' | 'end') => {
+    if (date) {
+      if (type === 'start') {
+        setStartDate(date); // 선택한 날짜를 그대로 설정
+      } else {
+        setEndDate(date); // 선택한 날짜를 그대로 설정
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col justify-center">
       <div className="my-4 overflow-x-auto sm:max-w-[246px]">
@@ -40,12 +50,12 @@ const PeriodSelector: React.FC<PeriodSelectorProps> = ({ next, startDate, endDat
         selectedMonth={selectedMonth}
         startDate={startDate}
         endDate={endDate}
-        setStartDate={setStartDate}
-        setEndDate={setEndDate}
+        setStartDate={(date) => handleDateChange(date, 'start')}
+        setEndDate={(date) => handleDateChange(date, 'end')}
       />
       <button className="my-4 rounded bg-black p-2 text-white" onClick={handleDateSave}>
         {startDate && endDate
-          ? `${format(startOfDay(startDate), 'yyyy. M. d')} - ${format(startOfDay(endDate), 'M. d')} 선택하기`
+          ? `${format(startDate, 'yyyy. M. d')} - ${format(endDate, 'M. d')} 선택하기`
           : selectedMonth
           ? `${format(selectedMonth, 'yyyy년 MMM')} 선택하기`
           : '날짜 선택하기'}

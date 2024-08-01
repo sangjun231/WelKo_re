@@ -2,24 +2,24 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import ThemeSelector from '../_components/planner/ThemeSelector';
+import TagSelector from '../_components/planner/TagSelector';
 import CitySelector from '../_components/planner/CitySelector';
 import PeriodSelector from '../_components/planner/PeriodSelector';
 
-const themes = ['Activities', 'Famous', 'With Nature', 'Tourist Attraction', 'Shopping', 'Peaceful', 'Mukbang', 'Cultural and Arts', 'K-Drama Location'];
+const tags = ['Activities', 'Famous', 'With Nature', 'Tourist Attraction', 'Shopping', 'Peaceful', 'Mukbang', 'Cultural and Arts', 'K-Drama Location'];
 const cities = ['Seoul', 'Busan', 'Sokcho', 'Gangneung', 'Jeonju', 'Daegu', 'Gyeongju', 'Yeosu', 'Jeju'];
 
 export default function TravelPlanner() {
   const router = useRouter();
   const [activeStep, setActiveStep] = useState<number | null>(1);
-  const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
-  const handleThemeClick = (theme: string) => {
-    setSelectedThemes((prevThemes) =>
-      prevThemes.includes(theme) ? prevThemes.filter((t) => t !== theme) : [...prevThemes, theme]
+  const handleTagClick = (tag: string) => {
+    setSelectedTags((prevTags) =>
+      prevTags.includes(tag) ? prevTags.filter((t) => t !== tag) : [...prevTags, tag]
     );
   };
 
@@ -34,8 +34,8 @@ export default function TravelPlanner() {
   const handleDateSelection = () => {
     const query = new URLSearchParams();
 
-    if (selectedThemes.length > 0) {
-      query.append('theme', selectedThemes.join(','));
+    if (selectedTags.length > 0) {
+      query.append('tags', JSON.stringify(selectedTags));
     }
 
     if (selectedCity) {
@@ -50,7 +50,8 @@ export default function TravelPlanner() {
       query.append('endDate', endDate.toISOString());
     }
 
-    router.push(`/selectedposts?${query.toString()}`);
+    // Use router.push to navigate to the results page with the query parameters
+    router.push(`/results?${query.toString()}`);
   };
 
   const toggleStep = (step: number) => {
@@ -68,14 +69,14 @@ export default function TravelPlanner() {
           step={1}
           activeStep={activeStep}
           toggleStep={toggleStep}
-          title="What tour do you like?"
-          shortTitle="What"
-          selection={selectedThemes.join(', ') || 'Anything'}
+          title="What kind of experiences do you seek?"
+          shortTitle="Tags"
+          selection={selectedTags.join(', ') || 'Anything'}
         >
-          <ThemeSelector
-            selectedThemes={selectedThemes}
-            handleThemeClick={handleThemeClick}
-            themes={themes}
+          <TagSelector
+            selectedTags={selectedTags}
+            handleTagClick={handleTagClick}
+            tags={tags}
             goToNextStep={() => toggleStep(2)}
           />
         </AccordionStep>
@@ -123,7 +124,7 @@ export default function TravelPlanner() {
           onClick={handleDateSelection}
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
         >
-          결과보기
+          Show Results
         </button>
       </div>
     </div>

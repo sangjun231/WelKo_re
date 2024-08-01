@@ -29,26 +29,21 @@ const CitySelector: React.FC<CitySelectorProps> = ({
       }
 
       const { data, error } = await supabase
-        .from('posts')
-        .select('title')
-        .ilike('title', `%${searchQuery}%`);
+        .from('schedule')
+        .select('area')
+        .ilike('area', `%${searchQuery}%`);
 
       if (error) {
         console.error('Error fetching auto-complete results:', error);
       } else {
-        setAutoCompleteResults(data.map((post) => post.title));
+        // Ensure unique results
+        const uniqueResults = Array.from(new Set(data.map((item) => item.area)));
+        setAutoCompleteResults(uniqueResults);
       }
     };
 
     fetchAutoCompleteResults();
   }, [searchQuery]);
-
-  useEffect(() => {
-    // Automatically select city if searchQuery matches an existing city in the list
-    if (searchQuery && cities.includes(searchQuery)) {
-      handleCityClick(searchQuery);
-    }
-  }, [searchQuery, cities, handleCityClick]);
 
   const handleAutoCompleteClick = (result: string) => {
     handleCityClick(result);
@@ -59,11 +54,6 @@ const CitySelector: React.FC<CitySelectorProps> = ({
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
-
-    // Automatically select city if searchQuery matches an existing city in the list
-    if (cities.includes(value)) {
-      handleCityClick(value);
-    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -72,6 +62,7 @@ const CitySelector: React.FC<CitySelectorProps> = ({
     }
   };
 
+  // Filter cities based on search query
   const filteredCities = cities.filter((city) =>
     city.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -101,7 +92,6 @@ const CitySelector: React.FC<CitySelectorProps> = ({
           </div>
         )}
         <div className="flex flex-wrap mb-4">
-          {/* Display filtered cities */}
           {filteredCities.map((city) => (
             <div
               key={city}
@@ -113,7 +103,6 @@ const CitySelector: React.FC<CitySelectorProps> = ({
               {city}
             </div>
           ))}
-          {/* Allow selecting cities not in the list */}
           {searchQuery && !cities.includes(searchQuery) && (
             <div
               className={`cursor-pointer p-2 mb-2 border rounded-full flex-1 min-w-[30%] mx-1 text-center ${
