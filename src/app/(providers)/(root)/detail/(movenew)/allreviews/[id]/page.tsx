@@ -1,13 +1,12 @@
 'use client';
 
 import React from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { fetchReviews, Review } from '@/utils/supabase/api/detail/reviews';
-import { averageRatings } from '@/utils/detail/averageRating';
+import { averageRatings, formatRelativeDate } from '@/utils/detail/functions';
 import { FaStar } from 'react-icons/fa6';
 import BackButton from '@/components/common/Button/BackButton';
-import { formatRelativeDate } from '@/utils/detail/formatRelativeDate';
 
 const AllReviewsPage = () => {
   const params = useParams();
@@ -40,7 +39,7 @@ const AllReviewsPage = () => {
   return (
     <div className="mx-auto max-w-[360px]">
       <div className="mx-auto w-full max-w-[320px]">
-        <div className="mb-8">
+        <div className="my-8">
           <BackButton />
         </div>
         <div className="text-grayscale-900 ml-1 flex items-center gap-1 text-lg font-semibold">

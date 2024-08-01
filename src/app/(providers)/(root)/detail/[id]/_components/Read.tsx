@@ -7,7 +7,7 @@ import usePostStore from '@/zustand/postStore';
 import Likes from './Likes';
 import { GoPeople } from 'react-icons/go';
 import { IoLocationOutline } from 'react-icons/io5';
-import { formatDateRange } from '@/utils/detail/formatDateRange';
+import { formatDateRange } from '@/utils/detail/functions';
 
 export default function Read() {
   const { id } = useParams();

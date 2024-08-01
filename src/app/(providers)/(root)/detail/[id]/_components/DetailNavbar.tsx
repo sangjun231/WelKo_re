@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import useAuthStore from '@/zustand/bearsStore';
-import { formatDateRange } from '@/utils/detail/formatDateRange';
+import { formatDateRange } from '@/utils/detail/functions';
 import usePostStore from '@/zustand/postStore';
 
 const DetailNavbar = () => {

@@ -4,10 +4,9 @@ import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { fetchReviews, Review } from '@/utils/supabase/api/detail/reviews';
-import { averageRatings } from '@/utils/detail/averageRating';
+import { averageRatings, formatRelativeDate } from '@/utils/detail/functions';
 import useAuthStore from '@/zustand/bearsStore';
 import { FaStar } from 'react-icons/fa6';
-import { formatRelativeDate } from '@/utils/detail/formatRelativeDate';
 
 const Reviews = () => {
   const user = useAuthStore((state) => state.user);
