@@ -107,7 +107,7 @@ export const Guide = () => {
   return (
     <div className="flex flex-col gap-6">
       <h2 className="text-grayscale-900 text-lg font-semibold">Contact your guide</h2>
-      <p className="text-grayscale-500 text-xs font-normal">
+      <p className="text-grayscale-500 text-sm font-normal">
         For more information such as the number of people and schedule change, it is recommended to send a message to
         the guide to discuss and check.
       </p>

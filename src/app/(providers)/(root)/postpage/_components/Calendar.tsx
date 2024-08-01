@@ -39,6 +39,7 @@ const Calendar = ({ next }: { next: () => void }) => {
       const dateResponse = await upsertDate(datePostData);
       const postId = dateResponse.data.id;
       sessionStorage.setItem('postId', postId);
+      //sessionStorage.setItem('datePostData', JSON.stringify(datePostData));
       next();
     } catch (error) {
       console.error('Error saving dates:', error);
@@ -75,6 +76,7 @@ const Calendar = ({ next }: { next: () => void }) => {
             ? `${format(selectedMonth, 'yyyy년 MMM')} 선택하기`
             : '날짜 선택하기'}
       </button>
+      <button onClick={next}>next</button>
     </div>
   );
 };

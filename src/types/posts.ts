@@ -8,6 +8,7 @@ export interface Post {
   tag: string[] | null;
   maxPeople: number;
   price: number;
+  selectedPrices: string[] | null;
   startDate: string | null;
   endDate: string | null;
   updated_at?: string | null;
