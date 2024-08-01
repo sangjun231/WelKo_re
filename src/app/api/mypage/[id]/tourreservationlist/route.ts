@@ -11,7 +11,10 @@ export async function GET(request: NextRequest, { params }: { params: { userId: 
 
   try {
     const supabase = createClient();
-    const { data, error } = await supabase.from('payments').select('*').eq('post_id', postId);
+    const { data, error } = await supabase
+      .from('payments')
+      .select('*, users (email , name , avatar), posts (title , image)')
+      .eq('post_id', postId);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
