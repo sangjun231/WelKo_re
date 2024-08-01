@@ -39,17 +39,18 @@ const AddressSearch = ({ prev, selectedDay }: SearchAddressProps) => {
       const response = await axios.get('/api/post/search', {
         params: { query: searchQuery }
       });
-      console.log(response);
 
       const places = response.data.items.map((item: any) => {
         const latitude = parseFloat(item.mapy) / 1e7;
         const longitude = parseFloat(item.mapx) / 1e7;
         return {
           title: item.title,
-          roadAddress: item.roadAddress,
+          roadAddress: item.roadAddress.split(' ').slice(0, 2).join(' '),
           address: item.address,
           latitude: latitude,
-          longitude: longitude
+          longitude: longitude,
+          category: item.category
+          //.split('>')[1]
         };
       });
 
@@ -107,7 +108,6 @@ const AddressSearch = ({ prev, selectedDay }: SearchAddressProps) => {
         <div className="h-3/5 overflow-y-scroll">
           {searchResults.map((place, index) => {
             const cleanHTML = DOMPurify.sanitize(place.title);
-            //const isSelected = selectedSearch.includes(place);
             return (
               <button
                 key={index}
@@ -115,12 +115,10 @@ const AddressSearch = ({ prev, selectedDay }: SearchAddressProps) => {
                 className="flex w-full flex-col border-b p-4 hover:bg-gray-100"
               >
                 <h3 className="font bold" dangerouslySetInnerHTML={{ __html: cleanHTML }} />
-                <p className="text-gray text-xs">{place.roadAddress}</p>
-                {/* {!isSelected && (
-                  <button  className="mt-2 rounded bg-green-500 p-2 text-white">
-                    선택
-                  </button>
-                )} */}
+                <div className="flex text-xs text-gray-400">
+                  <p>{place.category} •&nbsp;</p>
+                  <p className="text-xs text-gray-400">{place.roadAddress}</p>
+                </div>
               </button>
             );
           })}
@@ -136,7 +134,10 @@ const AddressSearch = ({ prev, selectedDay }: SearchAddressProps) => {
               <div key={index} className="flex justify-between border-b p-4 hover:bg-gray-100">
                 <div>
                   <h3 className="font bold" dangerouslySetInnerHTML={{ __html: cleanHTML }} />
-                  <p>{place.roadAddress}</p>
+                  <div className="flex text-xs text-gray-400">
+                    <p>{place.category} •&nbsp;</p>
+                    <p className="text-xs text-gray-400">{place.roadAddress}</p>
+                  </div>
                 </div>
                 <button onClick={() => handlePlaceRemove(place)} className="mt-2 rounded bg-red-500 p-2 text-white">
                   취소

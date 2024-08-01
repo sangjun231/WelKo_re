@@ -29,19 +29,24 @@ const FindPassword = () => {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
+    <div className="flex items-center justify-center md:h-screen md:bg-gray-100">
+      <div className="h-[800px] w-[360px] max-w-md bg-white p-6 md:w-full md:rounded-lg md:shadow-lg">
         <h1 className="text-center text-2xl font-bold">Find Password</h1>
+        <span className="mb-8 mt-3 block text-center text-sm text-[#7D848D]">We’ll send you reset email</span>
         <form onSubmit={handleFindPassword}>
+          <p className="mb-2 font-medium">Email</p>
           <input
             type="email"
-            placeholder="Email"
-            className="mb-4 w-full rounded border border-gray-300 p-2"
+            placeholder="example@google.com"
+            className="mb-3 h-12 w-full rounded-xl bg-[#F7F7F9] p-4"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <button type="submit" className="mt-4 w-full rounded bg-red-500 p-2 text-white hover:bg-red-600">
+          <button
+            type="submit"
+            className="w-full rounded-xl bg-[#B95FAB] px-5 py-3 font-semibold text-white hover:bg-[#b344a2]"
+          >
             Send Reset Email
           </button>
         </form>

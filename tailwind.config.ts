@@ -22,6 +22,9 @@ const config: Config = {
         'grayscale-900': 'var(--Grayscale-900, #141414)',
         'primary-300': 'var(--Primary-300, #B95FAB)'
       },
+      boxShadow: {
+        'custom-navbar': '0px -8px 15px 0px rgba(0, 0, 0, 0.05)'
+      },
       fontFamily: {
         inter: ['Inter', 'sans-serif'],
         montserrat: ['Montserrat', 'sans-serif']

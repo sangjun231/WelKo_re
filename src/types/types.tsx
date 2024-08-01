@@ -27,4 +27,6 @@ export type Place = {
   address: string;
   latitude: number;
   longitude: number;
+  area: string;
+  category: string;
 };
