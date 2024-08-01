@@ -107,29 +107,37 @@ const Map = () => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading map data</div>;
 
+  if (!data) return <div>No data available</div>;
+
   return (
     <div className="flex flex-col text-lg">
       <h2 className="text-grayscale-900 mb-4 font-semibold">Where you’ll tour</h2>
       <div id="map" style={{ width: '100%', height: '300px' }}></div>
       <div className="my-6 flex gap-2 text-xs font-medium">
-        <button
-          onClick={() => setSelectedDay(0)}
-          className={`rounded-3xl px-4 py-2 ${selectedDay === 0 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
-        >
-          Day 1
-        </button>
-        <button
-          onClick={() => setSelectedDay(1)}
-          className={`rounded-3xl px-4 py-2 ${selectedDay === 1 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
-        >
-          Day 2
-        </button>
-        <button
-          onClick={() => setSelectedDay(2)}
-          className={`rounded-3xl px-4 py-2 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
-        >
-          Day 3
-        </button>
+        {data.places.length > 0 && (
+          <button
+            onClick={() => setSelectedDay(0)}
+            className={`rounded-3xl px-4 py-2 ${selectedDay === 0 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+          >
+            Day 1
+          </button>
+        )}
+        {data.places.length > 1 && (
+          <button
+            onClick={() => setSelectedDay(1)}
+            className={`rounded-3xl px-4 py-2 ${selectedDay === 1 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+          >
+            Day 2
+          </button>
+        )}
+        {data.places.length > 2 && (
+          <button
+            onClick={() => setSelectedDay(2)}
+            className={`rounded-3xl px-4 py-2 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+          >
+            Day 3
+          </button>
+        )}
       </div>
 
       <div className="flex flex-col gap-4">
