@@ -1,7 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClient } from '@/utils/supabase/client'; 
+import { createClient } from '@/utils/supabase/client';
+import Image from 'next/image';
 
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState('');
@@ -10,11 +11,12 @@ const ResetPassword = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [showResetForm, setShowResetForm] = useState(false);
   const [resetCode, setResetCode] = useState<string | null>(null);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
   const supabase = createClient();
 
   useEffect(() => {
-    // URL에서 resetCode를 추출
     const url = new URL(window.location.href);
     const code = url.searchParams.get('code');
 
@@ -27,20 +29,24 @@ const ResetPassword = () => {
   }, []);
 
   useEffect(() => {
-    // 인증 상태 변경 감지
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
         setShowResetForm(true);
       }
     });
 
-    // 컴포넌트 언마운트 시 리스너 정리
     return () => {
       if (authListener && typeof (authListener as any).unsubscribe === 'function') {
         (authListener as any).unsubscribe();
       }
     };
   }, [supabase]);
+
+  const validatePassword = (password: string): boolean => {
+    // 최소 하나의 영문자, 하나의 숫자, 하나의 특수 문자를 포함하는지 확인
+    const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regex.test(password);
+  };
 
   const handleResetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -50,58 +56,104 @@ const ResetPassword = () => {
       return;
     }
 
+    if (!validatePassword(newPassword)) {
+      setError(
+        'Password must be at least 8 characters long and include at least one letter, one number, and one special character.'
+      );
+      return;
+    }
+
     if (!resetCode) {
       setError('Reset code is missing.');
       return;
     }
 
     try {
-      // 비밀번호 재설정 요청
       const { data, error: updateError } = await supabase.auth.updateUser({
         password: newPassword
       });
 
       if (updateError) {
-        console.error('Update Error:', updateError.message); // 콘솔에 자세한 오류 메시지 출력
+        console.error('Update Error:', updateError.message);
         setError('Failed to update password. Please try again.');
       } else {
         setMessage('Password updated successfully! You can now log in with your new password.');
         setNewPassword('');
         setConfirmPassword('');
-        router.push('/'); // 홈 페이지로 리디렉션 또는 원하는 페이지로 이동
+        router.push('/');
       }
     } catch (err) {
-      console.error('Unexpected Error:', err); // 콘솔에 자세한 오류 메시지 출력
+      console.error('Unexpected Error:', err);
       setError('An unexpected error occurred. Please try again.');
     }
   };
 
+  const toggleShowNewPassword = () => {
+    setShowNewPassword(!showNewPassword);
+  };
+
+  const toggleShowConfirmPassword = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
+    <div className="flex items-center justify-center md:h-screen md:bg-gray-100">
+      <div className="h-[800px] w-[360px] max-w-md bg-white p-6 md:w-full md:rounded-lg md:shadow-lg">
         {error ? (
           <p className="text-center text-red-500">{error}</p>
         ) : showResetForm ? (
           <>
             <h1 className="text-center text-2xl font-bold">Reset Your Password</h1>
+            <span className="mb-8 mt-3 block text-center text-sm text-[#7D848D]">Please reset your new password</span>
             <form onSubmit={handleResetPassword}>
-              <input
-                type="password"
-                placeholder="New Password"
-                className="mb-4 w-full rounded border border-gray-300 p-2"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-              />
-              <input
-                type="password"
-                placeholder="Confirm Password"
-                className="mb-4 w-full rounded border border-gray-300 p-2"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-              <button type="submit" className="mt-4 w-full rounded bg-red-500 p-2 text-white hover:bg-red-600">
+              <p className="mb-2 font-medium">New Password</p>
+              <div className="relative mb-3 w-full">
+                <input
+                  type={showNewPassword ? 'text' : 'password'}
+                  placeholder="New Password"
+                  className="mb-3 h-12 w-full rounded-xl bg-[#F7F7F9] p-4"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                />
+                <span
+                  className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
+                  onClick={toggleShowNewPassword}
+                >
+                  <Image
+                    src={showNewPassword ? '/icons/tabler-icon-eye-off.svg' : '/icons/tabler-icon-eye.svg'}
+                    alt={showNewPassword ? 'Hide password' : 'Show password'}
+                    width={20}
+                    height={20}
+                  />
+                </span>
+              </div>
+              <p className="mb-2 font-medium">Confirm Password</p>
+              <div className="relative mb-3 w-full">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  placeholder="Confirm Password"
+                  className="h-12 w-full rounded-xl bg-[#F7F7F9] p-4"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+                <span
+                  className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
+                  onClick={toggleShowConfirmPassword}
+                >
+                  <Image
+                    src={showConfirmPassword ? '/icons/tabler-icon-eye-off.svg' : '/icons/tabler-icon-eye.svg'}
+                    alt={showConfirmPassword ? 'Hide password' : 'Show password'}
+                    width={20}
+                    height={20}
+                  />
+                </span>
+              </div>
+              <button
+                type="submit"
+                className="w-full rounded-xl bg-[#B95FAB] px-5 py-3 font-semibold text-white hover:bg-[#b344a2]"
+              >
                 Reset Password
               </button>
             </form>

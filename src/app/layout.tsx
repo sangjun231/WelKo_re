@@ -5,7 +5,6 @@ import './globals.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthSubscriber } from '@/components/common/AuthSubscriber';
-import LogoutButton from '@/components/common/logoutButton';
 
 // const inter = Inter({ subsets: ['latin'] });
 const montserrat = Montserrat({
@@ -30,9 +29,6 @@ export default function HTMLLayout({
     <html lang="ko">
       <AuthSubscriber />
       <body className={montserrat.className}>
-        <header>
-          <LogoutButton />
-        </header>
         {children}
         <ToastContainer />
       </body>

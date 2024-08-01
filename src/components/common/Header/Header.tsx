@@ -2,11 +2,17 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import Search from '../Search/Search';
+import Link from 'next/link';
+import { handleLogout } from '@/utils/supabase/service';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/utils/supabase/client';
 
 function Header() {
-  const [getUser, setGetUser] = useState<boolean>(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const supabase = createClient();
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null); // 로그인 상태 관리
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -20,12 +26,35 @@ function Header() {
     };
   }, []);
 
+  useEffect(() => {
+    const checkSession = async () => {
+      const {
+        data: { session }
+      } = await supabase.auth.getSession();
+      setIsLoggedIn(session !== null);
+    };
+    checkSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsLoggedIn(session !== null);
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [supabase.auth]);
+
+  const logout = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    await handleLogout(router);
+  };
+
   return (
     <>
       <div className="hidden sm:block">
         <div className="flex justify-between">
           <h1>LOGO</h1>
-          {getUser ? (
+          {isLoggedIn ? (
             <div ref={dropdownRef} className="relative mr-5 flex">
               <button className="bg-gray-400 p-2">Writing</button>
               <button
@@ -44,7 +73,10 @@ function Header() {
                       </button>
                     </li>
                     <li>
-                      <button className="block w-full px-4 py-2 text-start text-sm text-black hover:bg-gray-300">
+                      <button
+                        onClick={logout}
+                        className="block w-full px-4 py-2 text-start text-sm text-black hover:bg-gray-300"
+                      >
                         로그아웃
                       </button>
                     </li>
@@ -53,7 +85,9 @@ function Header() {
               )}
             </div>
           ) : (
-            <button onClick={() => setGetUser(!getUser)}>로그인 및 회원가입</button>
+            <Link href="/login">
+              <button>로그인 및 회원가입</button>
+            </Link>
           )}
         </div>
         <Search />
