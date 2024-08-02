@@ -35,7 +35,7 @@ const Reviews = () => {
   }
 
   return (
-    <div className="mb-32 flex gap-6">
+    <div className="mb-32 flex flex-col gap-6">
       <div className="flex flex-col gap-4">
         <div className="text-grayscale-900 flex items-center gap-1 text-lg">
           <FaStar size={24} />
