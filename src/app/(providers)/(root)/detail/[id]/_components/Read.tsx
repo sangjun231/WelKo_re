@@ -63,11 +63,11 @@ export default function Read() {
             <h4 className="ml-1">Max {post.maxPeople}</h4>
           </div>
         </div>
-        <hr className="bg-grayscale-100 my-8 h-[1px] w-full" />
+        <hr className="bg-grayscale-100 mb-6 mt-8 h-[1px] w-full" />
         <div className="text-md text-grayscale-700">
           <p>{post.content}</p>
         </div>
-        <hr className="bg-grayscale-100 my-8 h-[1px] w-full" />
+        <hr className="bg-grayscale-100 mb-6 mt-8 h-[1px] w-full" />
       </div>
     </div>
   );

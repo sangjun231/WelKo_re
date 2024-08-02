@@ -155,7 +155,7 @@ const Map = () => {
           </div>
         ))}
       </div>
-      <hr className="bg-grayscale-100 my-8 h-[1px] w-full" />
+      <hr className="bg-grayscale-100 mb-6 mt-8 h-[1px] w-full" />
     </div>
   );
 };
