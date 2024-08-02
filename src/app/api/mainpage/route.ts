@@ -1,10 +1,10 @@
-import { createClient } from '@/utils/supabase/server';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { createClient } from '@/utils/supabase/server';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function GET(req: NextApiRequest, res: NextApiResponse<any>) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
-  
+
   if (!supabaseUrl || !supabaseKey) {
     return res.status(500).json({ error: 'Supabase configuration missing' });
   }
