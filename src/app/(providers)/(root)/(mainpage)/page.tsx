@@ -1,12 +1,13 @@
 'use client';
 
+import Header from '@/components/common/Header/Header';
 import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import { createClient } from '@/utils/supabase/client';
 import axios from 'axios';
 import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import PostsList from './_components/PostsList';
-import Header from '@/components/common/Header/Header';
 
 export default function Home() {
   const [userId, setUserId] = useState<string | null>(null);
@@ -40,6 +41,18 @@ export default function Home() {
 
     fetchUserId();
   }, [supabase]);
+
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const handleRouteChange = () => {
+      if (!pathname.startsWith('/postpage/')) {
+        sessionStorage.clear();
+      }
+    };
+
+    handleRouteChange();
+  }, [pathname, searchParams]);
 
   return (
     <div>

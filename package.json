@@ -31,6 +31,7 @@
     "react-kakao-maps-sdk": "^1.1.27",
     "react-modal": "^3.16.1",
     "react-rating-stars-component": "^2.2.0",
+    "react-router-dom": "^6.26.0",
     "react-toastify": "^10.0.5",
     "supabase": "^1.187.10",
     "swiper": "^11.1.7",

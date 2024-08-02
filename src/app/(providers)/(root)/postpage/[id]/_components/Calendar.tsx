@@ -1,8 +1,10 @@
 'use client';
+import BackButton from '@/components/common/Button/BackButton';
 import { upsertDate } from '@/utils/post/postData';
 import { createClient } from '@/utils/supabase/client';
 import { addMonths, format, startOfDay } from 'date-fns';
 import { useEffect, useState } from 'react';
+import { PiCalendarDots } from 'react-icons/pi';
 import DaySelect from './DaySelect';
 
 interface CalendarProps {
@@ -16,8 +18,8 @@ const Calendar = ({ next, postId }: CalendarProps) => {
   const [endDate, setEndDate] = useState<Date | null>(null);
 
   const months = Array.from({ length: 12 }, (_, i) => i);
-  const monthLabels = months.map((month) => format(addMonths(new Date(), month), 'MMM yyyy'));
-
+  const monthLabelM = months.map((month) => format(addMonths(new Date(), month), 'MMM'));
+  const monthLabelY = months.map((month) => format(addMonths(new Date(), month), 'yyyy'));
   // 수정할 때
   useEffect(() => {
     if (postId) {
@@ -75,36 +77,52 @@ const Calendar = ({ next, postId }: CalendarProps) => {
   };
 
   return (
-    <div className="flex flex-col justify-center">
-      <div className="my-4 overflow-x-auto sm:max-w-[246px]">
-        <div className="flex flex-nowrap">
+    <div className="m-3 flex flex-col justify-center">
+      <div className="my-7 flex items-center">
+        <BackButton />
+        <h1 className="m-auto text-2xl font-semibold">Make tour</h1>
+      </div>
+
+      <div className="flex flex-col gap-7 rounded-xl border-x-0 border-y-2 border-gray-200 shadow-xl">
+        <h2 className="ml-3 mt-7 text-2xl font-bold">When's your tour?</h2>
+
+        <div className="flex w-[360px] overflow-x-auto">
           {months.map((month, index) => (
             <button
               key={index}
-              className="mr-2 flex h-16 w-16 items-center justify-center rounded border-2 text-black hover:bg-gray-100"
+              className="mx-1 flex h-20 w-[96px] flex-col items-center justify-center rounded-lg border-2 px-12 text-black hover:bg-gray-100"
               onClick={() => setSelectedMonth(addMonths(new Date(), month))}
             >
-              {monthLabels[index]}
+              <PiCalendarDots className="mb-1 size-5 text-grayscale-500" />
+              <p className="flex">
+                <p className="mr-1 text-sm font-semibold">{monthLabelM[index]}</p>
+                <p className="text-sm">{monthLabelY[index]}</p>
+              </p>
             </button>
           ))}
         </div>
+
+        <DaySelect
+          selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
+          startDate={startDate}
+          endDate={endDate}
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
+        />
+
+        <button
+          className="mx-auto h-14 w-[288px] rounded-2xl bg-primary-300 p-2 text-lg text-white"
+          onClick={handleDateSave}
+        >
+          {startDate && endDate
+            ? `${format(startOfDay(startDate), 'yy. M. d')} - ${format(startOfDay(endDate), 'M. d')} Select`
+            : selectedMonth
+              ? `${format(selectedMonth, 'yyyy MMM')} Select`
+              : 'Select'}
+        </button>
+        <button onClick={next}>없앨 버튼</button>
       </div>
-      <DaySelect
-        selectedMonth={selectedMonth}
-        setSelectedMonth={setSelectedMonth}
-        startDate={startDate}
-        endDate={endDate}
-        setStartDate={setStartDate}
-        setEndDate={setEndDate}
-      />
-      <button className="my-4 rounded bg-black p-2 text-white" onClick={handleDateSave}>
-        {startDate && endDate
-          ? `${format(startOfDay(startDate), 'yyyy. M. d')} - ${format(startOfDay(endDate), 'M. d')} 선택하기`
-          : selectedMonth
-            ? `${format(selectedMonth, 'yyyy년 MMM')} 선택하기`
-            : '날짜 선택하기'}
-      </button>
-      <button onClick={next}>next</button>
     </div>
   );
 };

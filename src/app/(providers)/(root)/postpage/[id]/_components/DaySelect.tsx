@@ -11,6 +11,7 @@ import {
   subMonths
 } from 'date-fns';
 import React from 'react';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 interface DaySelectProps {
   selectedMonth: Date;
@@ -73,28 +74,33 @@ const DaySelect: React.FC<DaySelectProps> = ({
 
   return (
     <div className="flex flex-col">
-      <div className="mb-2 flex justify-between text-center font-bold">
-        <button onClick={() => setSelectedMonth(subMonths(selectedMonth, 1))} className="rounded bg-gray-300 px-2 py-1">
-          &lt;
+      <div className="mx-auto mb-2 flex items-center font-bold">
+        <button onClick={() => setSelectedMonth(subMonths(selectedMonth, 1))} className="mr-3">
+          <IoIosArrowBack className="size-7" />
         </button>
-        {format(selectedMonth, 'yyyy년 MMMM')}
-        <button onClick={() => setSelectedMonth(addMonths(selectedMonth, 1))} className="rounded bg-gray-300 px-2 py-1">
-          &gt;
+        {format(selectedMonth, 'MMMM yyyy')}
+        <button onClick={() => setSelectedMonth(addMonths(selectedMonth, 1))} className="ml-3">
+          <IoIosArrowForward className="size-7" />
         </button>
       </div>
 
-      <div className="grid grid-cols-7 gap-1">
+      <div className="grid grid-cols-7 gap-1 text-center">
+        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
+          <div key={index} className="font-medium text-gray-400">
+            {day}
+          </div>
+        ))}
         {daysInCalendar.map((day) => (
           <button
             key={day.toDateString()}
             onClick={() => handleDateClick(day)}
-            className={`rounded-md p-2 ${
+            className={`ml-2 w-10 rounded-full py-2 font-medium ${
               isDateDisabled(day)
                 ? 'cursor-not-allowed bg-gray-200 text-gray-400'
                 : startDate && endDate && day >= startDate && day <= endDate
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-primary-300 text-white'
                   : startDate && day.toDateString() === startDate.toDateString()
-                    ? 'bg-green-500 text-white'
+                    ? 'bg-grayscale-700 text-white'
                     : endDate && day.toDateString() === endDate.toDateString()
                       ? 'bg-red-500 text-white'
                       : 'bg-white text-black'

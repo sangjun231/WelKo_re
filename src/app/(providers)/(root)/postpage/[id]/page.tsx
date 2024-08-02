@@ -9,25 +9,9 @@ import Write from './_components/Write';
 function PostPage() {
   const { id } = useParams();
   const postId = id;
-  // useEffect(()=>{
-  //   handleDateSave();
-  // },[id])
-  // const handleDateSave = async () => {
-  //   const supabase = createClient();
-  //   const {
-  //     data: { user },
-  //     error
-  //   } = await supabase.auth.getUser();
-
-  //  // user?.id === id ? postId = null : id
-
-  //   if (error) {
-  //     console.error('Error getting user:', error);
-  //     return;
-  //   }}
-
   const [step, setStep] = useState(1);
   const [selectedDay, setSelectedDay] = useState<string>('');
+  const [region, setRegion] = useState<string>('');
 
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
@@ -44,10 +28,12 @@ function PostPage() {
           goToStep4={goToStep4}
           selectedDay={selectedDay}
           setSelectedDay={setSelectedDay}
+          region={region}
+          setRegion={setRegion}
         />
       )}
       {step === 3 && <AddressSearch prev={prevStep} selectedDay={selectedDay} />}
-      {step === 4 && <Write goToStep2={goToStep2} />}
+      {step === 4 && <Write goToStep2={goToStep2} region={region} />}
     </div>
   );
 }

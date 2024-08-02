@@ -5,9 +5,12 @@ import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { FaArrowLeft } from 'react-icons/fa';
+import { BiDollar } from 'react-icons/bi';
+import { IoChevronBack } from 'react-icons/io5';
+import { LuUsers } from 'react-icons/lu';
+import { TbPhoto } from 'react-icons/tb';
 
-const Write = ({ goToStep2 }: { goToStep2: () => void }) => {
+const Write = ({ goToStep2, region }: { goToStep2: () => void; region: string }) => {
   const router = useRouter();
   const supabase = createClient();
   const [title, setTitle] = useState<string>('');
@@ -18,16 +21,17 @@ const Write = ({ goToStep2 }: { goToStep2: () => void }) => {
   const [tags, setTags] = useState<string[]>([]);
   const tagData = [
     'Activities', //체험과 액티비티
-    'Popular Places', // 유명 핫플레이스
-    'With Nature', // 자연과 함께
-    'Tourist Spots', // 관광지
-    'Relax and Leisurely', // 한적, 여유
+    'Famous', // 유명 핫플레이스
+    'Nature', // 자연과 함께
+    'Tourist Attraction', // 관광지
+    'Peaceful', // 한적, 여유
     'Shopping', // 쇼핑
-    'Must-Visit Restaurants', // 맛집
-    'Cultural Exploration' // 문화 탐방
+    'Mukbang', // 맛집
+    'Culture/Art', // 문화 탐방
+    'K-Drama Location'
   ];
   const [selectedPrices, setSelectedPrices] = useState<string[]>([]);
-  const prices = ['Accommodation', 'Meals', 'Leisure Activities', 'Transportation'];
+  const prices = ['Room charge', 'Restaurant', 'Ticket', 'Transportation'];
   //순서대로 숙소비, 식사비, 레저비, 교통비
 
   const handleFormConfirm = () => {
@@ -49,6 +53,14 @@ const Write = ({ goToStep2 }: { goToStep2: () => void }) => {
     return true;
   };
 
+  const handleCancel = () => {
+    const userConfirmed = confirm('Do you want to cancel this?');
+    if (!userConfirmed) {
+      return;
+    }
+    router.replace('/');
+  };
+
   //이미지 추가하는 핸들러
   const handleImageAdd = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -59,6 +71,10 @@ const Write = ({ goToStep2 }: { goToStep2: () => void }) => {
       };
       reader.readAsDataURL(file);
     }
+  };
+  //이미지 취소 핸들러
+  const handleImageRemove = () => {
+    setImage('');
   };
   //최대 인원 추가하는 핸들러, value 값을 숫자로 저장하는 핸들러
   const handleMaxPeopleAdd = (event: ChangeEvent<HTMLInputElement>) => {
@@ -139,95 +155,161 @@ const Write = ({ goToStep2 }: { goToStep2: () => void }) => {
   };
 
   return (
-    <form onSubmit={handleSavePost}>
-      <div className="my-4 flex">
-        <button onClick={goToStep2}>
-          <FaArrowLeft className="m-1" />
-        </button>
+    <form onSubmit={handleSavePost} className="m-3">
+      <div className="my-4 flex items-center">
+        <div className="icon-button">
+          <button onClick={goToStep2} className="flex h-full w-full items-center justify-center">
+            <IoChevronBack size={24} />
+          </button>
+        </div>
         <div className="flex-grow text-center">
-          <h1 className="text-lg font-semibold">지역 가져와서- 투어</h1>
+          <h1 className="text-lg font-bold">{region}</h1>
+          <p>날짜</p>
         </div>
-      </div>
-      {/* 제목, 내용 입력 폼 */}
-      <div className="flex flex-col">
-        <label>제목</label>
-        <input
-          className="border"
-          type="text"
-          placeholder="투어 제목을 작성해주세요"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <label>내용</label>
-        <textarea
-          className="h-[150px] resize-none border"
-          placeholder="투어 내용을 작성해주세요"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-      </div>
-      {/* 이미지 등록 */}
-      <div>
-        <div className="flex items-center">
-          <label
-            htmlFor="input-file"
-            className="flex h-[150px] w-[150px] cursor-pointer items-center justify-center border"
-          >
-            <Image src="/icons/upload.png" alt="upload icon" width={70} height={70} />
-          </label>
-          {image && <Image src={image} alt="uploaded" width={150} height={150} className="border p-2" />}
-        </div>
-        <input type="file" id="input-file" onChange={handleImageAdd} className="hidden" />
+        <button className="font-medium text-[#FF7029]" onClick={handleCancel}>
+          Done
+        </button>
       </div>
 
-      {/* 최대 인원 작성 */}
-      <hr className="my-5" />
-      <div>
-        <h1>최대 인원</h1>
-        <input type="number" value={maxPeople} onChange={handleMaxPeopleAdd} min={1} />명
-      </div>
-
-      {/* 투어 태그 선택 */}
-      <hr className="my-5" />
-      <div>
-        <h1>어떤 투어인가요?</h1>
-        <div className="flex flex-wrap gap-2">
-          {tagData.map((item) => (
-            <button
-              key={item}
-              className={`rounded-full border px-4 py-2 ${tags.includes(item) ? 'bg-gray-200' : 'bg-white'}`}
-              onClick={(e) => toggleTag(item, e)}
-              type="button"
+      <div className="flex flex-col gap-5">
+        {/* 제목, 내용 입력 폼 */}
+        <div className="mt-7 flex flex-col items-center gap-5">
+          <div className="w-[320px]">
+            <label className="font-semibold">Tour title</label>
+            <input
+              className="mt-2 h-[48px] w-full rounded-xl bg-grayscale-50 p-4"
+              type="text"
+              placeholder="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+          <div className="w-[320px]">
+            <label className="font-semibold">Introduction</label>
+            <textarea
+              className="mt-2 h-[209px] w-full resize-none rounded-2xl bg-grayscale-50 p-4"
+              placeholder="You can write up to 500 characters.
+            &#10;
+            1. how much you lived in that area?
+            &#10;
+            2. promote the features of your course."
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
+          </div>
+        </div>
+        {/* 이미지 등록 */}
+        <hr className="my-5" />
+        <div>
+          <div className="flex items-center">
+            <label
+              htmlFor="input-file"
+              className="mr-2 flex h-[100px] w-[100px] cursor-pointer items-center justify-center rounded-lg bg-grayscale-50"
             >
-              {item}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* 투어 금액 작성 및 체크박스 선택 */}
-      <hr className="my-5" />
-      <div>
-        <h1>투어 금액</h1>
-        <input type="number" value={price} onChange={handlePriceAdd} min={0} />원
-        <div className="flex flex-wrap">
-          {prices.map((item) => (
-            <label key={item} className="mr-4">
-              <input
-                type="checkbox"
-                checked={selectedPrices.includes(item)}
-                onChange={() => togglePrice(item)}
-                className="mr-2"
-              />
-              {item}
+              <TbPhoto className="h-[28px] w-[28px]" />
             </label>
-          ))}
+            {image && (
+              <div className="relative">
+                <Image
+                  src={image}
+                  alt="uploaded"
+                  width={100}
+                  height={100}
+                  className="bg-grayscale-5 h-[100px] w-[100px] rounded-lg"
+                />
+                <button
+                  className="absolute -right-2 -top-2 rounded-full border-2 border-grayscale-50 bg-white px-2 font-semibold"
+                  onClick={handleImageRemove}
+                >
+                  x
+                </button>
+              </div>
+            )}
+          </div>
+          <input type="file" id="input-file" onChange={handleImageAdd} className="hidden" />
         </div>
-      </div>
 
-      <button type="submit" className="my-4 w-full rounded bg-black p-2 text-white">
-        저장하기
-      </button>
+        {/* 최대 인원 작성 */}
+        <hr className="my-5" />
+        <div>
+          <h1 className="text-xl font-semibold">Maximum people</h1>
+          <div className="flex items-center">
+            <LuUsers className="mr-3 size-8 pt-2" />
+            <input
+              type="number"
+              value={maxPeople}
+              onChange={handleMaxPeopleAdd}
+              placeholder="5"
+              min={1}
+              className="mt-2 h-[48px] w-full rounded-xl bg-grayscale-50 p-4"
+            />
+          </div>
+        </div>
+
+        {/* 투어 태그 선택 */}
+        <hr className="my-5" />
+        <div>
+          <h1 className="text-xl font-semibold">Tour theme</h1>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {tagData.map((item) => (
+              <button
+                key={item}
+                className={`rounded-full px-4 py-2 ${tags.includes(item) ? 'bg-primary-300 text-white' : 'bg-grayscale-50 font-medium text-black'}`}
+                onClick={(e) => toggleTag(item, e)}
+                type="button"
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 투어 금액 체크박스 선택 */}
+        <hr className="my-5" />
+        <div>
+          <h1 className="mb-4 text-xl font-semibold">What this tour offers</h1>
+          <div className="flex w-full flex-col gap-4">
+            {prices.map((item) => (
+              <label key={item} className="flex justify-between">
+                {item}
+                <input
+                  type="checkbox"
+                  checked={selectedPrices.includes(item)}
+                  onChange={() => togglePrice(item)}
+                  className="mr-2 size-6 appearance-none rounded border border-grayscale-100 text-center checked:border-transparent checked:bg-primary-300 checked:before:text-white checked:before:content-['✔']"
+                />
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* 투어 금액 작성 */}
+        <hr className="my-5" />
+        <div>
+          <h1 className="mb-4 flex items-end text-xl">
+            <p className="font-semibold">Tour cost</p>
+            <p className="text-sm">/Person</p>
+          </h1>
+          <div className="flex items-center">
+            <BiDollar className="mr-3 size-8 pt-2" />
+            <input
+              type="number"
+              value={price}
+              onChange={handlePriceAdd}
+              placeholder="50"
+              min={0}
+              className="mt-2 h-[48px] w-full rounded-xl bg-grayscale-50 p-4"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          className="mx-auto my-5 h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-semibold text-white"
+        >
+          Done
+        </button>
+      </div>
     </form>
   );
 };

@@ -8,7 +8,8 @@ import { createClient } from '@/utils/supabase/client';
 import { useMutation } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
 import { useEffect, useState } from 'react';
-import { FaArrowLeft } from 'react-icons/fa';
+import { GrLocation } from 'react-icons/gr';
+import { IoChevronBack } from 'react-icons/io5';
 
 type PlaceProps = {
   next: () => void;
@@ -16,10 +17,11 @@ type PlaceProps = {
   goToStep4: () => void;
   selectedDay: string;
   setSelectedDay: React.Dispatch<React.SetStateAction<string>>;
+  region: string;
+  setRegion: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, setSelectedDay }) => {
-  const [region, setRegion] = useState<string | null>(null);
+const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, setSelectedDay, region, setRegion }) => {
   const [selectedPlaces, setSelectedPlaces] = useState<Place[]>([]); // 선택한 장소 목록
   const handleDaySelect = (day: string) => {
     setSelectedDay(day);
@@ -199,24 +201,30 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
   };
 
   return (
-    <>
-      <div className="flex">
-        <button onClick={prev}>
-          <FaArrowLeft className="m-1" />
-        </button>
+    <div className="m-3 flex flex-col justify-center">
+      <div className="my-7 flex items-center">
+        <div className="icon-button">
+          <button onClick={prev} className="flex h-full w-full items-center justify-center">
+            <IoChevronBack size={24} />
+          </button>
+        </div>
         <div className="flex-grow text-center">
-          <h1 className="text-lg font-bold">장소 추가</h1>
-          <p>날짜별 일정 추가</p>
+          <h1 className="text-lg font-bold">{region}</h1>
+          <p>날짜</p>
         </div>
       </div>
-      <div className="flex justify-between">{region && <p>현재 위치: {region}</p>}</div>
+
+      <div className="flex items-center">
+        <GrLocation className="size-5" /> <p className="ml-2 font-semibold">{region}</p>
+      </div>
 
       <div id="map" style={{ width: '100%', height: '300px' }}></div>
+
       <div>
-        <div className="flex">
+        <div className="mt-3 flex gap-2">
           <div>
             <button
-              className="rounded-full bg-grayscale-50 p-3 hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
+              className="rounded-full bg-grayscale-50 px-4 py-3 font-medium hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
               onClick={() => handleDaySelect('day1')}
             >
               Day 1
@@ -224,13 +232,13 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
           </div>
 
           <button
-            className="rounded-full bg-grayscale-50 p-3 hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
+            className="rounded-full bg-grayscale-50 px-4 py-3 font-medium hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
             onClick={() => handleDaySelect('day2')}
           >
             Day 2
           </button>
           <button
-            className="rounded-full bg-grayscale-50 p-3 hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
+            className="rounded-full bg-grayscale-50 px-4 py-3 font-medium hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
             onClick={() => handleDaySelect('day3')}
           >
             Day 3
@@ -238,15 +246,21 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
         </div>
 
         <hr className="m-3" />
+
         {selectedDay === '' ? (
-          <button className="border-gray cursor-default rounded-full border-2 p-2">Please select a day</button>
+          <p className="p-2 text-center">Please select a day</p>
         ) : (
-          <button className="border-gray rounded-full border-2 p-2" onClick={next}>
-            {selectedDay === 'day1' && 'Day1 Add Address'}
+          <button
+            className="h-[35px] w-[284px] rounded-lg border-2 border-grayscale-100 p-2 font-medium"
+            onClick={next}
+          >
+            Add Place
+            {/* {selectedDay === 'day1' && 'Day1 Add Address'}
             {selectedDay === 'day2' && 'Day2 Add Address'}
-            {selectedDay === 'day3' && 'Day3 Add Address'}
+            {selectedDay === 'day3' && 'Day3 Add Address'}*/}
           </button>
         )}
+
         <div>
           {selectedDay === storedPlacesKey &&
             selectedPlaces.map((place, index) => {
@@ -274,6 +288,7 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
             })}
         </div>
       </div>
+
       {selectedDay === '' ? (
         ''
       ) : (
@@ -284,11 +299,11 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
             {selectedDay === 'day3' && 'Day3 Save'}
           </button>
           <button onClick={goToStep4} className="my-4 w-full rounded bg-black p-2 text-white">
-            write page
+            없앨 버튼
           </button>
         </>
       )}
-    </>
+    </div>
   );
 };
 

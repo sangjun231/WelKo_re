@@ -63,7 +63,11 @@ const AddressSearch = ({ prev, selectedDay }: SearchAddressProps) => {
   const handlePlaceSelect = (place: Place) => {
     setSelectedPlace(place);
     if (!selectedSearch.includes(place)) {
-      setSelectedSearch((prev) => [...prev, place]);
+      if (selectedSearch.length < 4) {
+        setSelectedSearch((prev) => [...prev, place]);
+      } else {
+        alert('You can only select up to 4 places.');
+      }
     }
   };
   // 목록에서 제거 (취소버튼)
