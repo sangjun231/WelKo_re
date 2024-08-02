@@ -153,7 +153,7 @@ export default function ReservationList() {
               <p className="text-[15px]">
                 Payment at: {payment ? new Date(payment.created_at).toLocaleDateString() : 'N/A'}
               </p>
-              <Link href={`/detail/payment/${post.id}`}>
+              <Link href={`/detail/payment/${payment?.id}`}>
                 <p className="text-[15px]">결제 상세보기</p>
               </Link>
             </div>
@@ -177,9 +177,12 @@ export default function ReservationList() {
               </div>
             </Link>
             {status === 'Upcoming Tour' ? (
-              <div className="mt-2 flex space-x-2">
-                <button className="flex-1 rounded-lg border p-2">Change Tour</button>
-                <button className="flex-1 rounded-lg border p-2" onClick={() => handleChat(post)}>
+              <div>
+                <div className="my-2 flex space-x-2">
+                  <button className="flex-1 rounded-lg border p-2">Change Tour</button>
+                  <button className="flex-1 rounded-lg border p-2">Cancel Tour</button>
+                </div>
+                <button className="w-full rounded-lg border p-2" onClick={() => handleChat(post)}>
                   Message Host
                 </button>
               </div>

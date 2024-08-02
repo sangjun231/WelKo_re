@@ -3,7 +3,7 @@
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import React, { useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { API_MYPAGE_POST } from '@/utils/apiConstants';
@@ -11,6 +11,7 @@ import { Tables } from '@/types/supabase';
 
 export default function PostList() {
   const params = useParams();
+  const router = useRouter();
   const userId = Array.isArray(params.id) ? params.id[0] : params.id;
 
   const getPostsData = async () => {
@@ -47,6 +48,10 @@ export default function PostList() {
     const currentDate = new Date();
     const tourEndDate = new Date(endDate);
     return tourEndDate < currentDate ? 'Tour Completed' : 'Upcoming Tour';
+  };
+
+  const handleReservationList = (postId: string) => {
+    router.push(`/${userId}/mypage/tourreservationlistpage?postId=${postId}`);
   };
 
   useEffect(() => {
@@ -94,7 +99,14 @@ export default function PostList() {
               <button className="flex-1 rounded-lg border p-2">Delete Tour</button>
             </div>
             {status === 'Upcoming Tour' && (
-              <button className="mt-2 w-full rounded-lg border p-2">Reservation List</button>
+              <button
+                className="mt-2 w-full rounded-lg border p-2"
+                onClick={() => {
+                  handleReservationList(post.id);
+                }}
+              >
+                Reservation List
+              </button>
             )}
           </div>
         );
