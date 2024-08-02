@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useState, useRef } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import Image from 'next/image';
@@ -7,7 +5,7 @@ import Link from 'next/link';
 
 const supabase = createClient();
 
-const POSTS_PER_PAGE = 10;
+const POSTS_PER_PAGE = 5;
 
 interface Post {
   startDate: any;
@@ -33,26 +31,31 @@ const PostsList = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      setLoading(true);
-      const orderBy = sortOrder === 'latest' ? 'created_at' : 'recommendations';
-      const { data, error } = await supabase
-        .from('posts')
-        .select('*')
-        .order(orderBy, { ascending: false })
-        .range((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE - 1);
+      try {
+        setLoading(true);
+        const orderBy = sortOrder === 'latest' ? 'created_at' : 'recommendations';
+        const { data, error } = await supabase
+          .from('posts')
+          .select('*')
+          .order(orderBy, { ascending: false })
+          .range((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE - 1);
 
-      if (error) {
-        setError('데이터를 가져오는 중 오류가 발생했습니다.');
-        console.error('Error fetching posts:', error);
-      } else {
+        if (error) {
+          throw error;
+        }
+
         if (page === 1) {
           setPosts(data || []);
         } else {
           setPosts(prevPosts => [...prevPosts, ...(data || [])]);
         }
         setHasMore(data && data.length === POSTS_PER_PAGE);
+      } catch (error) {
+        setError('데이터를 가져오는 중 오류가 발생했습니다.');
+        console.error('Error fetching posts:', error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchPosts();
@@ -86,10 +89,7 @@ const PostsList = () => {
     }).format(price);
   };
 
-  // Calculate the item width based on the ref
   const itemWidth = itemRef.current?.offsetWidth || 0;
-
-  // Determine if the prev button should be shown
   const shouldShowPrevButton = posts.length > 0 && currentIndex !== 0;
 
   return (
@@ -101,7 +101,6 @@ const PostsList = () => {
             onClick={handlePrev}
             disabled={currentIndex === 0}
             className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
-            style={{ zIndex: 10 }}
           >
             &lt;
           </button>
@@ -151,7 +150,6 @@ const PostsList = () => {
             onClick={handleNext}
             disabled={currentIndex >= posts.length - 1 && !hasMore}
             className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
-            style={{ zIndex: 10 }}
           >
             &gt;
           </button>
