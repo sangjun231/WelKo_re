@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -39,6 +39,7 @@ type User = {
 };
 
 const ChatList = ({ userId }: ChatListProps) => {
+  const [newMessages, setNewMessages] = useState<{ [key: string]: boolean }>({});
   const router = useRouter();
 
   const fetchPostDetails = async (postId: string): Promise<Post> => {
@@ -93,9 +94,6 @@ const ChatList = ({ userId }: ChatListProps) => {
     enabled: userIds.length > 0
   });
 
-  if (chatPending || postPending || userPending) return <div>Loading...</div>;
-  if (chatError || postError || userError) return <div>Error loading data</div>;
-
   const groupedChats = chatData?.reduce((acc: { [key: string]: Chat }, message) => {
     const chatId = `${message.post_id}-${[message.sender_id, message.receiver_id].sort().join('-')}`;
     if (!acc[chatId]) {
@@ -110,6 +108,24 @@ const ChatList = ({ userId }: ChatListProps) => {
     return acc;
   }, {});
 
+  const handleChatClick = (chat: Chat) => {
+    const receiverId = userId === chat.sender_id ? chat.receiver_id : chat.sender_id;
+    const postDetails = postData?.find((post) => post.id === chat.post_id);
+    const chatId = `${chat.post_id}-${[chat.sender_id, chat.receiver_id].sort().join('-')}`;
+
+    setNewMessages((prev) => ({
+      ...prev,
+      [chatId]: true
+    }));
+
+    router.push(
+      `/${userId}/${receiverId}/chatpage?postId=${chat.post_id}&postTitle=${postDetails?.title}&postImage=${postDetails?.image}`
+    );
+  };
+
+  if (chatPending || postPending || userPending) return <div>Loading...</div>;
+  if (chatError || postError || userError) return <div>Error loading data</div>;
+
   return (
     <div>
       {groupedChats &&
@@ -119,17 +135,11 @@ const ChatList = ({ userId }: ChatListProps) => {
           const senderDetails = userData?.find((user) => user.id === receiverId);
 
           const firstMessage = chat.messages[0];
+          const chatId = `${chat.post_id}-${[chat.sender_id, chat.receiver_id].sort().join('-')}`;
+          const isNewMessage = !newMessages[chatId] && firstMessage.sender_id !== userId;
 
           return (
-            <div
-              className="mb-4"
-              key={index}
-              onClick={() =>
-                router.push(
-                  `/${userId}/${receiverId}/chatpage?postId=${chat.post_id}&postTitle=${postDetails?.title}&postImage=${postDetails?.image}`
-                )
-              }
-            >
+            <div className="mb-4" key={index} onClick={() => handleChatClick(chat)}>
               {postDetails && (
                 <div className="flex items-center">
                   <Image
@@ -154,7 +164,10 @@ const ChatList = ({ userId }: ChatListProps) => {
                   <p>{senderDetails.name}</p>
                 </div>
               )}
-              <p>{firstMessage?.content}</p>
+              <div className="flex justify-between">
+                <p>{firstMessage?.content}</p>
+                {isNewMessage && <span className="text-red-600">New</span>}
+              </div>
               <p>{new Date(firstMessage?.created_at).toLocaleString()}</p>
             </div>
           );

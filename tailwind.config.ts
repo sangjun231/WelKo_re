@@ -21,7 +21,8 @@ const config: Config = {
         'grayscale-700': 'var(--Grayscale-700, #474747)',
         'grayscale-800': 'var(--Grayscale-800, #2E2E2E)',
         'grayscale-900': 'var(--Grayscale-900, #141414)',
-        'primary-300': 'var(--Primary-300, #B95FAB)'
+        'primary-300': 'var(--Primary-300, #B95FAB)',
+        'action-color': '#ED6826'
       },
       boxShadow: {
         'custom-navbar': '0px -8px 15px 0px rgba(0, 0, 0, 0.05)'
