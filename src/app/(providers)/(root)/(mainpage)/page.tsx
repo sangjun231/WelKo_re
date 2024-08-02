@@ -3,10 +3,10 @@
 import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import { createClient } from '@/utils/supabase/client';
 import axios from 'axios';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import PostsList from './_components/PostsList';
-import Header from '@/components/common/Header/Header';
+import Image from 'next/image';  // Import the Image component
+import Search from '@/components/common/Search/Search';
 
 export default function Home() {
   const [userId, setUserId] = useState<string | null>(null);
@@ -42,11 +42,21 @@ export default function Home() {
   }, [supabase]);
 
   return (
-    <div>
-      <Header />
-      <h1>Welcome to Home Page</h1>
-      {userId ? <Link href={`/${userId}/mypage`}>Go to My Page</Link> : <p>Loading...</p>}
-      <PostsList />
+    <div className='relative'>
+      <Image
+        src="/img/img.jpg"
+        alt="Description of the image" 
+        width={800}  
+        height={600} 
+        layout="responsive" 
+      />
+      <div 
+        className='absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl p-4'
+        style={{ height: '20%', top: '80%' }}
+      >
+        <Search />
+        <PostsList />
+      </div>
     </div>
   );
 }

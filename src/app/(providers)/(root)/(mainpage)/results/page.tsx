@@ -13,7 +13,8 @@ interface Post {
   id: string;
   title: string;
   content: string;
-  created_at: string;
+  startDate: string;  // 시작 날짜
+  endDate: string;    // 종료 날짜
   recommendations: number;
   image: string;
   price: number;
@@ -118,6 +119,13 @@ export default function ResultsPage() {
     fetchPosts();
   }, [searchParams]);
 
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(price);
+  };
+
   return (
     <div className="p-4">
       <h2 className="text-xl font-bold mb-4">Related Posts</h2>
@@ -137,11 +145,14 @@ export default function ResultsPage() {
               )}
               <div className="flex flex-col justify-between">
                 <div>
-                  <h3 className="font-bold text-xl">{post.title}</h3>
-                  <p className="text-gray-500">{new Date(post.created_at).toLocaleDateString()}</p>
-                  <p className="text-gray-700">{post.content}</p>
+                  <h3 className="font-bold text-xl line-clamp-1">{post.title}</h3>
+                  <p className="text-gray-500">
+                    {post.startDate && post.endDate
+                      ? `${new Date(post.startDate).toLocaleDateString()} ~ ${new Date(post.endDate).toLocaleDateString()}`
+                      : 'No dates available'}
+                  </p>
                 </div>
-                <div className="text-sm font-bold mt-2">{post.price}</div>
+                <div className="text-sm font-bold mt-2">{formatPrice(post.price)}</div>
               </div>
             </Link>
           </li>

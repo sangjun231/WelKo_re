@@ -58,8 +58,14 @@ export default function TravelPlanner() {
     setActiveStep(activeStep === step ? null : step);
   };
 
+  const goToNextStep = () => {
+    if (activeStep !== null) {
+      setActiveStep(activeStep + 1);
+    }
+  };
+
   return (
-    <div className="p-4">
+    <div className="p-4 pb-16"> {/* Padding bottom added to ensure space for the fixed button */}
       <button onClick={() => router.back()}>
         X
       </button>
@@ -70,14 +76,14 @@ export default function TravelPlanner() {
           activeStep={activeStep}
           toggleStep={toggleStep}
           title="What kind of experiences do you seek?"
-          shortTitle="Tags"
+          shortTitle="What"
           selection={selectedTags.join(', ') || 'Anything'}
         >
           <TagSelector
             selectedTags={selectedTags}
             handleTagClick={handleTagClick}
             tags={tags}
-            goToNextStep={() => toggleStep(2)}
+            goToNextStep={goToNextStep}
           />
         </AccordionStep>
 
@@ -94,7 +100,7 @@ export default function TravelPlanner() {
             handleCityClick={handleCityClick}
             cities={cities}
             goToPreviousStep={() => toggleStep(1)}
-            goToNextStep={() => toggleStep(3)}
+            goToNextStep={goToNextStep}
           />
         </AccordionStep>
 
@@ -118,14 +124,25 @@ export default function TravelPlanner() {
             setEndDate={setEndDate}
           />
         </AccordionStep>
+      </div>
 
-        {/* 결과보기 버튼 추가 */}
-        <button
-          onClick={handleDateSelection}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
-        >
-          Show Results
-        </button>
+      {/* Fixed button at the bottom */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white">
+        {activeStep === 3 ? (
+          <button
+            onClick={handleDateSelection}
+            className="w-full px-4 py-2 bg-black text-white rounded-md"
+          >
+            Search
+          </button>
+        ) : (
+          <button
+            onClick={goToNextStep}
+            className="w-full px-4 py-2 bg-black text-white rounded-md"
+          >
+            Next
+          </button>
+        )}
       </div>
     </div>
   );

@@ -15,8 +15,6 @@ const CitySelector: React.FC<CitySelectorProps> = ({
   selectedCity,
   handleCityClick,
   cities,
-  goToPreviousStep,
-  goToNextStep,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [autoCompleteResults, setAutoCompleteResults] = useState<string[]>([]);
@@ -113,14 +111,6 @@ const CitySelector: React.FC<CitySelectorProps> = ({
               {searchQuery}
             </div>
           )}
-        </div>
-        <div className="flex justify-between">
-          <button onClick={goToPreviousStep} className="px-4 py-2 bg-gray-500 text-white rounded-md">
-            Previous
-          </button>
-          <button onClick={goToNextStep} className="px-4 py-2 bg-blue-500 text-white rounded-md">
-            Next
-          </button>
         </div>
       </div>
     </div>

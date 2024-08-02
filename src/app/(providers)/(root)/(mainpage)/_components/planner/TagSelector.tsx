@@ -24,11 +24,6 @@ const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, handleTagClick,
             </div>
           ))}
         </div>
-        <div className="flex justify-between">
-          <button onClick={goToNextStep} className="px-4 py-2 bg-blue-500 text-white rounded-md">
-            Next
-          </button>
-        </div>
       </div>
     </div>
   );

@@ -1,16 +1,17 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { createClient } from '@/utils/supabase/client';
-import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
 import Image from 'next/image';
 import Link from 'next/link';
 
 const supabase = createClient();
 
-const POSTS_PER_PAGE = 5;
+const POSTS_PER_PAGE = 10;
 
 interface Post {
+  startDate: any;
+  endDate: any;
   id: string;
   title: string;
   content: string;
@@ -27,6 +28,8 @@ const PostsList = () => {
   const [sortOrder, setSortOrder] = useState<string>('latest');
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const itemRef = useRef<HTMLDivElement>(null); // Ref to measure item width
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -59,6 +62,23 @@ const PostsList = () => {
     setPage(prevPage => prevPage + 1);
   };
 
+  const handleNext = () => {
+    if (currentIndex < posts.length - 1) {
+      setCurrentIndex(prevIndex => prevIndex + 1);
+    } else if (hasMore) {
+      loadMorePosts();
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(prevIndex => prevIndex - 1);
+    } else {
+      // Go to the first item in the list
+      setCurrentIndex(0);
+    }
+  };
+
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -66,34 +86,77 @@ const PostsList = () => {
     }).format(price);
   };
 
+  // Calculate the item width based on the ref
+  const itemWidth = itemRef.current?.offsetWidth || 0;
+
+  // Determine if the prev button should be shown
+  const shouldShowPrevButton = posts.length > 0 && currentIndex !== 0;
+
   return (
-    <div className="p-4">
+    <div className="p-4 relative">
       <h2 className="text-xl font-bold mb-4">게시물 목록</h2>
-      <InfiniteScroll loading={loading} hasMore={hasMore} onLoadMore={loadMorePosts}>
-        <ul>
-          {posts.map((post) => (
-            <li key={post.id} className="mb-4 border p-2 rounded-md flex">
-              <Link href={`/detail/${post.id}`} className="flex w-full">
-                {post.image ? (
-                  <Image src={post.image} alt={post.title} width={96} height={96} className="mr-2 w-24" />
-                ) : (
-                  <div className="mr-2 w-24 h-24 bg-gray-200 flex items-center justify-center">
-                    이미지 없음
+      <div className="relative overflow-hidden">
+        {shouldShowPrevButton && (
+          <button
+            onClick={handlePrev}
+            disabled={currentIndex === 0}
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
+            style={{ zIndex: 10 }}
+          >
+            &lt;
+          </button>
+        )}
+        <div className="flex items-center overflow-hidden">
+          <div
+            className="flex space-x-4 transition-transform duration-300"
+            style={{ transform: `translateX(-${currentIndex * itemWidth}px)` }}
+          >
+            {posts.map((post) => (
+              <div
+                key={post.id}
+                className="flex-none w-64 border p-2 rounded-md"
+                ref={itemRef}
+              >
+                <Link href={`/detail/${post.id}`} className="flex flex-col h-full">
+                  {post.image ? (
+                    <div className="flex-none mb-2">
+                      <Image 
+                        src={post.image} 
+                        alt={post.title} 
+                        width={236} 
+                        height={236} 
+                        style={{ width: '236px', height: '236px', objectFit: 'cover' }} 
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-[236px] h-[236px] bg-gray-200 flex items-center justify-center mb-2">
+                      이미지 없음
+                    </div>
+                  )}
+                  <div className="flex flex-col flex-grow">
+                    <h3 className="font-bold text-xl mb-2 line-clamp-1">{post.title}</h3>
+                    <p className="text-gray-500">
+                      {post.startDate && post.endDate
+                        ? `${new Date(post.startDate).toLocaleDateString()} ~ ${new Date(post.endDate).toLocaleDateString()}`
+                        : 'No dates available'}
+                    </p>
+                    <p className="text-gray-700 mb-2 line-clamp-1">{post.content}</p>
+                    <div className="text-sm font-bold mt-auto line-clamp-1">{formatPrice(post.price)}</div>
                   </div>
-                )}
-                <div className="flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-bold text-xl">{post.title}</h3>
-                    <p className="text-gray-500">{new Date(post.created_at).toLocaleDateString()}</p>
-                    <p className="text-gray-700">{post.content}</p>
-                  </div>
-                  <div className="text-sm font-bold mt-2">{formatPrice(post.price)}</div>
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </InfiniteScroll>
+                </Link>
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={handleNext}
+            disabled={currentIndex >= posts.length - 1 && !hasMore}
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-300 p-2 rounded-full z-10"
+            style={{ zIndex: 10 }}
+          >
+            &gt;
+          </button>
+        </div>
+      </div>
       {loading && <div>로딩 중...</div>}
       {error && <div>리스트를 불러오지 못했습니다</div>}
     </div>
