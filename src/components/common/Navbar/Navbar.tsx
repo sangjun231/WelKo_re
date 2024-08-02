@@ -25,7 +25,16 @@ function Navbar() {
     router.push(`/${user?.id}/mypage`);
   };
 
-  const handleLikesClick = () => {
+  const handlePostClick = () => {
+    if (!user) {
+      alert('로그인이 필요한 서비스입니다!!');
+      router.push('/login');
+      return;
+    }
+    router.push(`/postpage`);
+  };
+
+  const handleMypageClick = () => {
     if (!user) {
       alert('로그인이 필요한 서비스입니다!!');
       router.push('/login');
@@ -41,7 +50,7 @@ function Navbar() {
       router.push('/login');
       return;
     }
-    router.push(`/${user?.id}/chatpage`);
+    router.push(`/${user?.id}/chatlistpage`);
   };
 
   // 특정 경로에서 Navbar를 숨기기
@@ -66,23 +75,26 @@ function Navbar() {
           <IoCalendarOutline size={24} />
           <span className="text-[10px]">Reservations</span>
         </div>
-        <Link href="/postpage">
-          <div className="flex flex-col items-center rounded-full shadow-[0px_8px_19px_rgba(0,0,0,0.17)]">
-            <BsFillPlusCircleFill size={50} className="text-primary-300" />
-          </div>
-        </Link>
-        <Link href={`/${user?.id}/chatlistpage`}>
-          <div className="hover:text-primary-300 flex cursor-pointer flex-col items-center space-y-2">
-            <AiOutlineMessage size={24} />
-            <span className="text-[10px]">Messages</span>
-          </div>
-        </Link>
-        <Link href={`/${user?.id}/mypage`}>
-          <div className="hover:text-primary-300 flex cursor-pointer flex-col items-center space-y-2">
-            <BsPersonCircle size={24} />
-            <span className="text-[10px]">Mypage</span>
-          </div>
-        </Link>
+        <div
+          onClick={handlePostClick}
+          className="flex flex-col items-center rounded-full shadow-[0px_8px_19px_rgba(0,0,0,0.17)]"
+        >
+          <BsFillPlusCircleFill size={50} className="text-primary-300" />
+        </div>
+        <div
+          onClick={handleMessagesClick}
+          className="hover:text-primary-300 flex cursor-pointer flex-col items-center space-y-2"
+        >
+          <AiOutlineMessage size={24} />
+          <span className="text-[10px]">Messages</span>
+        </div>
+        <div
+          onClick={handleMypageClick}
+          className="hover:text-primary-300 flex cursor-pointer flex-col items-center space-y-2"
+        >
+          <BsPersonCircle size={24} />
+          <span className="text-[10px]">Mypage</span>
+        </div>
       </div>
     </nav>
   );
