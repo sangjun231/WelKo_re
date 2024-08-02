@@ -86,7 +86,7 @@ export default function PostList() {
                   height={76}
                 />
                 <div className="ml-2 flex flex-col">
-                  <p className="overflow-hidden text-ellipsis whitespace-nowrap text-[15px] font-bold">{post.title}</p>
+                  <p className="line-clamp-1 text-[15px] font-bold">{post.title}</p>
                   <p className="text-[13px]">
                     {post.startDate} - {post.endDate}
                   </p>

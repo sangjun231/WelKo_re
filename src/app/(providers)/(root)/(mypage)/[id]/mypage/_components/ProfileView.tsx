@@ -26,28 +26,28 @@ const ProfileView = ({ userId }: { userId: string }) => {
   }, [userId]);
 
   return (
-    <div>
+    <div className="mt-[20px]">
       {profile ? (
         <div className="flex">
           {profile.avatar && (
             <Image
               src={`${profile.avatar}?${new Date().getTime()}`}
               alt="Profile"
-              width={70}
-              height={70}
+              width={56}
+              height={56}
               className="rounded-full"
             />
           )}
           <div className="ml-4">
             <div className="flex items-center">
-              <p className="text-[20px] font-bold">{profile.name}</p>
+              <p className="text-[18px] font-bold">{profile.name}</p>
               {profile.region ? (
-                <p className="ml-2 text-[13px]">{profile.region}</p>
+                <p className="ml-2 text-[14px]">{profile.region}</p>
               ) : (
-                <p className="ml-2 text-[13px]">Please set the region</p>
+                <p className="ml-2 text-[14px]">Please set the region</p>
               )}
             </div>
-            <button onClick={goToProfilePage} className="mt-2">
+            <button onClick={goToProfilePage} className="mt-2 text-[12px]">
               Edit Profile
             </button>
           </div>
