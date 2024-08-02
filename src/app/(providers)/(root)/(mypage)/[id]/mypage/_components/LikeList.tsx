@@ -36,38 +36,58 @@ export default function LikeList() {
     enabled: !!userId
   });
 
+  const formatPrice = (price: number | null): string => {
+    if (price === null) {
+      return 'N/A';
+    }
+    return `$${price.toLocaleString('en-US')}`;
+  };
+
   useEffect(() => {
     refetch();
   }, [userId, refetch]);
 
-  if (isPending) return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  if (isPending) return <div className="flex items-center justify-center">Loading...</div>;
 
   if (error) {
     return <div className="flex h-screen items-center justify-center">Error: {error.message}</div>;
   }
 
   if (!data || data.length === 0) {
-    return <div className="flex h-screen items-center justify-center">No posts found</div>;
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="gap-[8px]">
+          <p className="text-[14px] font-bold">You don&apos;t have any Wishlist</p>
+          <p className="text-[12px]">When you recieve a new meaasge, it will appear here.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-[360px]">
+    <div className="mt-[20px] max-w-[360px]">
       {data.map((post) => (
-        <div key={post.id} className="relative">
-          <p>{new Date(post.created_at).toLocaleString()}</p>
+        <div key={post.id} className="relative mb-[16px]">
           <Link href={`/detail/${post.id}`}>
             <div className="flex">
               <Image
-                className="mb-[20px] mr-2"
                 src={post.image ?? '/icons/upload.png'}
                 alt={post.title ?? 'Default title'}
-                width={76}
-                height={76}
+                width={80}
+                height={100}
               />
-              <p className="overflow-hidden text-ellipsis whitespace-nowrap text-[14px] font-bold">{post.title}</p>
+              <Like postId={post.id} userId={user.id} />
+              <div className="ml-[8px]">
+                <p className="overflow-hidden text-ellipsis whitespace-nowrap text-[14px] font-bold">{post.title}</p>
+                <p>
+                  {post.startDate && post.endDate
+                    ? `${new Date(post.startDate).toLocaleDateString()} - ${new Date(post.endDate).toLocaleDateString()}`
+                    : 'No date information'}
+                </p>
+                <p className="text-[13px]">{formatPrice(post.price)}/Person</p>
+              </div>
             </div>
           </Link>
-          <Like postId={post.id} userId={user.id} />
         </div>
       ))}
     </div>
