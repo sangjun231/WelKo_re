@@ -10,10 +10,11 @@ import { useParams } from 'next/navigation';
 
 export default function PaymentHistory() {
   const { id } = useParams(); // URL 경로에서 id 파라미터를 가져옴
-  const { setPostId, fetchPost, post } = usePostStore((state) => ({
+  const { setPostId, fetchPost, post, userName } = usePostStore((state) => ({
     setPostId: state.setPostId,
     fetchPost: state.fetchPost,
-    post: state.post
+    post: state.post,
+    userName: state.userName
   }));
   const [paymentData, setPaymentData] = useState<any>(null);
   const [pending, setPending] = useState(true);
@@ -68,6 +69,7 @@ export default function PaymentHistory() {
                   {formatDateRange(post.startDate, post.endDate)}
                 </p>
                 <div className="text-sm font-bold">${post.price.toFixed(2)}</div>
+                작성자 이름: <h2 className="text-sm font-bold">{userName}</h2>
               </div>
             </div>
           </div>
