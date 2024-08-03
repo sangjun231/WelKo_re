@@ -69,38 +69,51 @@ export default function PostList() {
   }
 
   return (
-    <div className="mb-10 max-w-[360px]">
+    <div className="max-w-[360px]">
       {data.map((post) => {
         const status = tourStatus(post.endDate);
 
         return (
-          <div key={post.id} className="mb-4 border-b pb-4">
-            <p className="text-[15px]">{status}</p>
-            <p className="text-[15px]">Created at: {new Date(post.created_at).toLocaleString()}</p>
+          <div key={post.id} className="mb-[10px] border-b-4 pb-[20px]">
+            <div className="mb-[12px] flex justify-between">
+              <div>
+                <p className="text-[15px]">{new Date(post.created_at).toLocaleDateString()}</p>
+                <p className="text-[15px] text-primary-300">{status}</p>
+              </div>
+              <div className="flex gap-[16px]">
+                <button className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]">
+                  <Image src="/icons/tabler-icon-pencil.svg" alt="Edit Tour" width={24} height={24} />
+                </button>
+                <button className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]">
+                  <Image src="/icons/tabler-icon-trash.svg" alt="Delete Tour" width={24} height={24} />
+                </button>
+              </div>
+            </div>
             <Link href={`/detail/${post.id}`}>
-              <div className="flex">
+              <div className="mb-[12px] flex">
                 <Image
                   src={post.image ?? '/icons/upload.png'}
                   alt={post.title ?? 'Default title'}
-                  width={76}
-                  height={76}
+                  width={80}
+                  height={80}
+                  style={{ width: '80px', height: '80px' }}
                 />
-                <div className="ml-2 flex flex-col">
+                <div className="ml-[4px] flex flex-col gap-[4px]">
                   <p className="line-clamp-1 text-[15px] font-bold">{post.title}</p>
                   <p className="text-[13px]">
                     {post.startDate} - {post.endDate}
                   </p>
-                  <p className="text-[13px]">{formatPrice(post.price)}</p>
+                  <p className="text-[13px]">
+                    <span className="font-bold text-primary-300">{formatPrice(post.price)}</span>
+                    /Person
+                  </p>
                 </div>
               </div>
             </Link>
-            <div className="mt-2 flex space-x-2">
-              <button className="flex-1 rounded-lg border p-2">Edit Tour</button>
-              <button className="flex-1 rounded-lg border p-2">Delete Tour</button>
-            </div>
+
             {status === 'Upcoming Tour' && (
               <button
-                className="mt-2 w-full rounded-lg border p-2"
+                className="w-full rounded-lg border p-2 font-bold"
                 onClick={() => {
                   handleReservationList(post.id);
                 }}

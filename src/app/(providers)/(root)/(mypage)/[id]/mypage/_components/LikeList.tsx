@@ -90,7 +90,7 @@ export default function LikeList() {
                     : 'No date information'}
                 </p>
                 <p className="text-[13px]">
-                  <span className="text-primary-300">{formatPrice(post.price)}</span>
+                  <span className="font-bold text-primary-300">{formatPrice(post.price)}</span>
                   /Person
                 </p>
               </div>
