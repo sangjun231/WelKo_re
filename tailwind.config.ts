@@ -16,6 +16,7 @@ const config: Config = {
         'text-color': 'var(--Light-Text-Color, #1B1E28)',
         'grayscale-50': 'var(--Grayscale-50, #F7F7F9)',
         'grayscale-100': 'var(--Grayscale-100, #DFDFE0)',
+        'grayscale-400': 'var(--Grayscale-400, #939394)',
         'grayscale-500': 'var(--Grayscale-500, #7A7A7A)',
         'grayscale-600': 'var(--Grayscale-600, #606061)',
         'grayscale-700': 'var(--Grayscale-700, #474747)',
