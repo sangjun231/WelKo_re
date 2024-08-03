@@ -40,7 +40,7 @@ const ProfileView = ({ userId }: { userId: string }) => {
           )}
           <div className="ml-4">
             <div className="flex items-center">
-              <p className="text-[18px] font-bold">{profile.name}</p>
+              <p className="text-[18px] font-semibold">{profile.name}</p>
               {profile.region ? (
                 <p className="ml-2 text-[14px]">{profile.region}</p>
               ) : (

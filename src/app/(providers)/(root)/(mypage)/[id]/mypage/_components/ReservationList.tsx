@@ -136,7 +136,15 @@ export default function ReservationList() {
   }
 
   if (!posts || posts.length === 0) {
-    return <div className="flex h-screen items-center justify-center">No posts found</div>;
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="gap-[8px]">
+          <Image src="/icons/tabler-icon-calender-month.svg" alt="no reservation" width={44} height={44} />
+          <p className="text-[14px] font-semibold">You don&apos;t have any Reservation</p>
+          <p className="text-[12px]">When you recieve a new meaasge, it will appear here.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -150,18 +158,18 @@ export default function ReservationList() {
           <div key={post.id} className="mb-[10px] border-b-4 pb-[20px]">
             <div className="flex justify-between">
               <div>
-                <p className="text-[14px] text-grayscale-900">
+                <p className="text-[14px] font-semibold text-grayscale-900">
                   {payment ? new Date(payment.created_at).toLocaleDateString() : 'N/A'}
                 </p>
-                <p className="text-[14px] text-primary-300">{status}</p>
+                <p className="text-[14px] font-medium text-primary-300">{status}</p>
               </div>
               <Link className="flex items-center" href={`/detail/payment/${payment?.id}`}>
-                <p className="text-[14px] text-primary-300">Detail</p>
+                <p className="text-[14px] font-semibold text-primary-300">Detail</p>
                 <Image src="/icons/tabler-icon-chevron-right-pr300.svg" alt="Edit Profile" width={16} height={16} />
               </Link>
             </div>
             <Link href={`/detail/${post.id}`}>
-              <div className="flex">
+              <div className="my-[12px] flex">
                 <Image
                   src={post.image ?? '/icons/upload.png'}
                   alt={post.title ?? 'Default title'}
@@ -170,12 +178,12 @@ export default function ReservationList() {
                   style={{ width: '80px', height: '80px' }}
                 />
                 <div className="ml-[4px] flex flex-col gap-[4px]">
-                  <p className="text-primary-900 line-clamp-1 text-[14px] font-bold">{post.title ?? 'No Title'}</p>
+                  <p className="text-primary-900 line-clamp-1 text-[14px] font-semibold">{post.title ?? 'No Title'}</p>
                   <p className="text-[14px] text-grayscale-500">
                     {post.startDate ?? 'No Start Date'} - {post.endDate ?? 'No End Date'}
                   </p>
-                  <p className="text-[13px] text-gray-700">
-                    <span className="text-primary-300">{formatPrice(post.price)}</span>
+                  <p className="text-[13px] font-medium text-gray-700">
+                    <span className="font-semibold text-primary-300">{formatPrice(post.price)}</span>
                     /Person
                   </p>
                 </div>
@@ -183,24 +191,26 @@ export default function ReservationList() {
             </Link>
             {status === 'Upcoming Tour' ? (
               <div>
-                <div className="my-[12px] flex space-x-[8px]">
-                  <button className="flex-1 rounded-lg border p-2 text-[14px] text-grayscale-700">Change Tour</button>
-                  <button className="flex-1 rounded-lg border bg-primary-300 p-2 text-[14px] text-white">
+                <div className="mb-[12px] flex space-x-[8px]">
+                  <button className="flex-1 rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700">
+                    Change Tour
+                  </button>
+                  <button className="flex-1 rounded-lg border bg-primary-300 p-2 text-[14px] font-semibold text-white">
                     Cancel Tour
                   </button>
                 </div>
                 <button
-                  className="w-full rounded-lg border p-2 text-[14px] text-grayscale-700"
+                  className="w-full rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
                   onClick={() => handleChat(post)}
                 >
                   Message Guide
                 </button>
               </div>
             ) : status === 'Refunded' ? (
-              <p className="mt-[12px] w-full text-center text-[14px] text-red-500">Refunded</p>
+              <p className="w-full text-center text-[14px] font-bold text-red-500">Refunded</p>
             ) : (
               <button
-                className="mt-[12px] w-full rounded-lg border p-2 text-[14px] text-grayscale-700"
+                className="w-full rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
                 onClick={() => {
                   handleReviewAction(post.id, review?.id);
                 }}

@@ -57,7 +57,8 @@ export default function LikeList() {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="gap-[8px]">
-          <p className="text-[14px] font-bold">You don&apos;t have any Wishlist</p>
+          <Image src="/icons/tabler-icon-heart.svg" alt="no wishlist" width={44} height={44} />
+          <p className="text-[14px] font-semibold">You don&apos;t have any Wishlist</p>
           <p className="text-[12px]">When you recieve a new meaasge, it will appear here.</p>
         </div>
       </div>
@@ -83,14 +84,14 @@ export default function LikeList() {
             </div>
             <Link href={`/detail/${post.id}`}>
               <div className="ml-[8px] space-y-[4px]">
-                <p className="text-primary-900 line-clamp-1 text-[14px] font-bold">{post.title}</p>
+                <p className="text-primary-900 line-clamp-1 text-[14px] font-semibold">{post.title}</p>
                 <p className="text-[14px] text-grayscale-500">
                   {post.startDate && post.endDate
                     ? `${new Date(post.startDate).toLocaleDateString()} - ${new Date(post.endDate).toLocaleDateString()}`
                     : 'No date information'}
                 </p>
-                <p className="text-[13px] text-grayscale-700">
-                  <span className="font-bold text-primary-300">{formatPrice(post.price)}</span>
+                <p className="text-[13px] font-medium text-grayscale-700">
+                  <span className="font-semibold text-primary-300">{formatPrice(post.price)}</span>
                   /Person
                 </p>
               </div>

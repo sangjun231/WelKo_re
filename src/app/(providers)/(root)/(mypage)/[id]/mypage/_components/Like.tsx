@@ -55,7 +55,7 @@ const Like: React.FC<LikeProps> = ({ postId, userId }) => {
   if (isError) return <div>Error fetching like status</div>;
 
   return (
-    <button className="absolute right-0 top-0 rounded-[24px] bg-grayscale-500 p-[4px]" onClick={handleLike}>
+    <button className="absolute right-0 top-0 rounded-[24px] bg-grayscale-50 p-[4px]" onClick={handleLike}>
       {liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
     </button>
   );

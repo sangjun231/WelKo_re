@@ -63,11 +63,19 @@ const ReviewList = ({ userId }: { userId: string }) => {
   }
 
   if (!posts || posts.length === 0) {
-    return <div className="flex h-screen items-center justify-center">No posts found</div>;
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="gap-[8px]">
+          <Image src="/icons/tabler-icon-pencil.svg" alt="no review" width={44} height={44} />
+          <p className="text-[14px] font-semibold">You don&apos;t have any Review</p>
+          <p className="text-[12px]">When you write a new review, it will appear here.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div>
+    <div className="max-w-[360px]">
       {reviews.length === 0 ? (
         <div>No reviews found</div>
       ) : (
@@ -85,7 +93,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
                     style={{ width: '44px', height: '44px' }}
                   />
                   <div className="ml-[4px] flex flex-col gap-[4px]">
-                    <p className="text-primary-900 line-clamp-1 text-[14px] font-bold">{post.title}</p>
+                    <p className="text-primary-900 line-clamp-1 text-[14px] font-semibold">{post.title}</p>
                     <p className="text-[14px] text-grayscale-500">
                       {post.startDate} -{post.endDate}
                     </p>
@@ -94,18 +102,28 @@ const ReviewList = ({ userId }: { userId: string }) => {
                 <div>
                   <div className="my-[16px] items-start rounded-[16px] border bg-grayscale-50 p-[16px]">
                     <div className="flex items-center">
-                      <Rating count={5} value={review.rating ?? 0} size={24} edit={false} activeColor="#ffd700" />
+                      <Rating count={5} value={review.rating ?? 0} size={16} edit={false} activeColor="#ffd700" />
                       <p className="ml-[4px] text-[13px] text-grayscale-700">
                         {new Date(review.created_at).toLocaleDateString()}
                       </p>
                     </div>
-                    <p className="mt-[12px] text-[14px] text-grayscale-700">{review.content}</p>
+                    <p className="mt-[12px] break-words text-[14px] text-grayscale-700">{review.content}</p>
                   </div>
                   <div className="flex justify-end gap-[16px]">
-                    <button className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]">
+                    <button
+                      className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]"
+                      onClick={() => {
+                        handleEditReview(review.id, post.id);
+                      }}
+                    >
                       <Image src="/icons/tabler-icon-pencil.svg" alt="Edit Review" width={24} height={24} />
                     </button>
-                    <button className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]">
+                    <button
+                      className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]"
+                      onClick={() => {
+                        handleDelete(review.id);
+                      }}
+                    >
                       <Image src="/icons/tabler-icon-trash.svg" alt="Delete Review" width={24} height={24} />
                     </button>
                   </div>

@@ -65,7 +65,15 @@ export default function PostList() {
   }
 
   if (!data || data.length === 0) {
-    return <div className="flex h-screen items-center justify-center">No posts found</div>;
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="gap-[8px]">
+          <Image src="/icons/tabler-icon-sticker-2.svg" alt="no post" width={44} height={44} />
+          <p className="text-[14px] font-semibold">You don&apos;t have any post</p>
+          <p className="text-[12px]">When you recieve a new meaasge, it will appear here.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -77,8 +85,10 @@ export default function PostList() {
           <div key={post.id} className="mb-[10px] border-b-4 pb-[20px]">
             <div className="mb-[12px] flex justify-between">
               <div>
-                <p className="text-[14px] text-grayscale-900">{new Date(post.created_at).toLocaleDateString()}</p>
-                <p className="text-[14px] text-primary-300">{status}</p>
+                <p className="text-[14px] font-semibold text-grayscale-900">
+                  {new Date(post.created_at).toLocaleDateString()}
+                </p>
+                <p className="text-[14px] font-medium text-primary-300">{status}</p>
               </div>
               <div className="flex gap-[16px]">
                 <button className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]">
@@ -99,12 +109,12 @@ export default function PostList() {
                   style={{ width: '80px', height: '80px' }}
                 />
                 <div className="ml-[4px] flex flex-col gap-[4px]">
-                  <p className="text-primary-900 line-clamp-1 text-[14px] font-bold">{post.title}</p>
+                  <p className="text-primary-900 line-clamp-1 text-[14px] font-semibold">{post.title}</p>
                   <p className="text-[14px] text-grayscale-500">
                     {post.startDate} - {post.endDate}
                   </p>
-                  <p className="text-[13px] text-grayscale-700">
-                    <span className="font-bold text-primary-300">{formatPrice(post.price)}</span>
+                  <p className="text-[13px] font-semibold text-grayscale-700">
+                    <span className="font-medium text-primary-300">{formatPrice(post.price)}</span>
                     /Person
                   </p>
                 </div>
@@ -113,7 +123,7 @@ export default function PostList() {
 
             {status === 'Upcoming Tour' && (
               <button
-                className="w-full rounded-lg border p-2 text-[14px] font-bold text-grayscale-700"
+                className="w-full rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
                 onClick={() => {
                   handleReservationList(post.id);
                 }}
