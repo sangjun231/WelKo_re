@@ -3,14 +3,17 @@ import { Place } from '@/types/types';
 import axios from 'axios';
 import DOMPurify from 'dompurify';
 import { useEffect, useState } from 'react';
-import { FaArrowLeft, FaSearch } from 'react-icons/fa';
+import { GrLocation } from 'react-icons/gr';
+import { IoIosSearch } from 'react-icons/io';
+import { IoChevronBack } from 'react-icons/io5';
 
 type SearchAddressProps = {
   prev: () => void;
   selectedDay: string;
+  sequence: number;
 };
 
-const AddressSearch = ({ prev, selectedDay }: SearchAddressProps) => {
+const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
@@ -62,13 +65,13 @@ const AddressSearch = ({ prev, selectedDay }: SearchAddressProps) => {
   // 선택한 장소 목록에 추가 (선택버튼)
   const handlePlaceSelect = (place: Place) => {
     setSelectedPlace(place);
-    if (!selectedSearch.includes(place)) {
-      if (selectedSearch.length < 4) {
-        setSelectedSearch((prev) => [...prev, place]);
-      } else {
-        alert('You can only select up to 4 places.');
-      }
-    }
+    // if (!selectedSearch.includes(place)) {
+    //   if (selectedSearch.length < 4) {
+    //     setSelectedSearch((prev) => [...prev, place]);
+    //   } else {
+    //     alert('You can only select up to 4 places.');
+    //   }
+    // }
   };
   {
     /* 목록에서 제거 (취소버튼)
@@ -78,34 +81,45 @@ const AddressSearch = ({ prev, selectedDay }: SearchAddressProps) => {
   }
   // 세션에 임시저장
   const handlePlaceSave = () => {
-    sessionStorage.setItem(selectedDay, JSON.stringify(selectedSearch));
-    setSelectedSearch([]);
+    let sessionPlaces = sessionStorage.getItem(selectedDay);
+    let places = sessionPlaces ? JSON.parse(sessionPlaces) : [];
+
+    if (places.length <= sequence) {
+      places.length = sequence + 1;
+    }
+    places[sequence] = selectedPlace;
+
+    // 수정된 배열을 세션 스토리지에 다시 저장합니다.
+    sessionStorage.setItem(selectedDay, JSON.stringify(places));
+    // setSelectedSearch([]);
     prev();
   };
+
   const storedPlaces = sessionStorage.getItem(selectedDay);
   const keys = Object.keys(sessionStorage);
   const storedPlacesKey = keys.find((key) => sessionStorage.getItem(key) === storedPlaces);
 
   return (
-    <div className="flex h-screen flex-col">
-      <div className="flex items-center p-4">
-        <button onClick={prev} className="mr-4">
-          <FaArrowLeft />
-        </button>
-        <h1 className="text-lg font-bold">장소 검색</h1>
-      </div>
+    <div className="flex flex-col">
+      <div className="flex">
+        <div className="icon-button">
+          <button onClick={prev} className="flex h-full w-full items-center justify-center">
+            <IoChevronBack size={24} />
+          </button>
+        </div>
 
-      <div className="flex items-center p-4">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="장소 검색..."
-          className="flex-grow rounded-l border p-2"
-        />
-        <button onClick={searchPlaces} className="rounded-r bg-blue-500 p-2 text-white">
-          <FaSearch />
-        </button>
+        <div className="flex h-[48px] items-center rounded-xl bg-grayscale-50 px-2">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={`Select ${selectedDay} Place`}
+            className="h-[48px] w-full bg-grayscale-50 p-4"
+          />
+          <button onClick={searchPlaces}>
+            <IoIosSearch className="size-6 text-grayscale-500" />
+          </button>
+        </div>
       </div>
 
       {searchResults.length === 0 ? (
@@ -118,12 +132,18 @@ const AddressSearch = ({ prev, selectedDay }: SearchAddressProps) => {
               <button
                 key={index}
                 onClick={() => handlePlaceSelect(place)}
-                className="flex w-full flex-col border-b p-4 hover:bg-gray-100"
+                className="flex w-full flex-row border-b p-4 hover:bg-gray-100 active:bg-gray-100"
               >
-                <h3 className="font bold" dangerouslySetInnerHTML={{ __html: cleanHTML }} />
-                <div className="flex text-xs text-gray-400">
-                  <p>{place.category} •&nbsp;</p>
-                  <p className="text-xs text-gray-400">{place.roadAddress}</p>
+                <div className="mr-3 flex size-11 items-center justify-center rounded-lg bg-grayscale-50">
+                  <GrLocation className="size-5" />
+                </div>
+
+                <div className="flex flex-col items-start">
+                  <h3 className="font bold" dangerouslySetInnerHTML={{ __html: cleanHTML }} />
+                  <div className="flex flex-wrap text-xs text-gray-400">
+                    <p>{place.category} •&nbsp;</p>
+                    <p className="text-xs text-gray-400">{place.roadAddress}</p>
+                  </div>
                 </div>
               </button>
             );
@@ -131,7 +151,7 @@ const AddressSearch = ({ prev, selectedDay }: SearchAddressProps) => {
         </div>
       )}
 
-      <h2 className="p-4 text-lg font-bold">선택한 장소들</h2>
+      {/* <h2 className="p-4 text-lg font-bold">선택한 장소들</h2>
       <div className="h-1/5 overflow-y-scroll">
         {(storedPlacesKey === undefined || selectedDay === storedPlacesKey) &&
           selectedSearch.map((place, index) => {
@@ -145,14 +165,20 @@ const AddressSearch = ({ prev, selectedDay }: SearchAddressProps) => {
                     <p className="text-xs text-gray-400">{place.roadAddress}</p>
                   </div>
                 </div>
-                {/*<button onClick={() => handlePlaceRemove(place)} className="mt-2 rounded bg-red-500 p-2 text-white">
+                <button onClick={() => handlePlaceRemove(place)} className="mt-2 rounded bg-red-500 p-2 text-white">
                   취소
-                </button>*/}
+                </button>
               </div>
             );
           })}
-      </div>
-      <button onClick={handlePlaceSave}>Select</button>
+      </div> */}
+
+      <button
+        onClick={handlePlaceSave}
+        className="fixed bottom-28 left-0 right-0 mx-auto my-5 h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-medium text-white"
+      >
+        Select
+      </button>
     </div>
   );
 };

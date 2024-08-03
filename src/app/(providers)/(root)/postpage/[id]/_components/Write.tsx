@@ -1,5 +1,5 @@
 'use client';
-import { updatePostDetails } from '@/utils/post/postData';
+import { upsertDate } from '@/utils/post/postData';
 import { createClient } from '@/utils/supabase/client';
 import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
@@ -10,7 +10,7 @@ import { IoChevronBack } from 'react-icons/io5';
 import { LuUsers } from 'react-icons/lu';
 import { TbPhoto } from 'react-icons/tb';
 
-const Write = ({ goToStep2, region, date }: { goToStep2: () => void; region: string; date: string | null }) => {
+const Write = ({ goToStep2, region }: { goToStep2: () => void; region: string }) => {
   const router = useRouter();
   const supabase = createClient();
   const [title, setTitle] = useState<string>('');
@@ -52,6 +52,9 @@ const Write = ({ goToStep2, region, date }: { goToStep2: () => void; region: str
     }
     return true;
   };
+
+  const startDate = sessionStorage.getItem('startDate');
+  const endDate = sessionStorage.getItem('endDate');
 
   const handleCancel = () => {
     const userConfirmed = confirm('Do you want to cancel this?');
@@ -113,7 +116,7 @@ const Write = ({ goToStep2, region, date }: { goToStep2: () => void; region: str
   };
 
   const addMutation = useMutation({
-    mutationFn: updatePostDetails
+    mutationFn: upsertDate
   });
 
   const handleSavePost = async (e: FormEvent<HTMLFormElement>) => {
@@ -139,6 +142,7 @@ const Write = ({ goToStep2, region, date }: { goToStep2: () => void; region: str
     }
 
     addMutation.mutate({
+      user_id: user?.id,
       name: user?.user_metadata.name,
       id: postId,
       title,
@@ -147,11 +151,12 @@ const Write = ({ goToStep2, region, date }: { goToStep2: () => void; region: str
       maxPeople,
       tags,
       price,
-      selectedPrices
+      selectedPrices,
+      startDate,
+      endDate
     });
     alert('Saved!');
     router.replace('/');
-    sessionStorage.clear();
   };
 
   return (
@@ -164,7 +169,9 @@ const Write = ({ goToStep2, region, date }: { goToStep2: () => void; region: str
         </div>
         <div className="flex-grow text-center">
           <h1 className="text-lg font-bold">{region}</h1>
-          <p>{date}</p>
+          <p>
+            {startDate} - {endDate}
+          </p>
         </div>
         <button className="font-medium text-[#FF7029]" onClick={handleCancel}>
           Done

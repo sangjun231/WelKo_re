@@ -15,41 +15,46 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const supabase = createClient();
   const data = await request.json();
-  const { user_id, startDate, endDate, id }: Partial<Tables<'posts'>> = data;
+  const {
+    user_id,
+    name,
+    id,
+    title,
+    content,
+    image,
+    maxPeople,
+    tags,
+    price,
+    selectedPrices,
+    startDate,
+    endDate
+  }: Partial<Tables<'posts'>> = data;
 
-  if (!user_id) {
+  if (!id) {
     return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
   }
 
   try {
-    // 날짜 삽입 또는 업데이트
-    const { error: upsertError } = await supabase.from('posts').upsert({
+    const { error: insertError } = await supabase.from('posts').insert({
       user_id,
+      name,
+      title,
+      content,
+      image,
+      maxPeople,
+      tags,
+      price,
+      selectedPrices,
       startDate,
-      endDate,
-      id
+      endDate
     });
 
-    if (upsertError) {
-      console.error('Error inserting dates:', upsertError.message);
-      return NextResponse.json({ error: upsertError.message }, { status: 500 });
+    if (insertError) {
+      console.error('Error inserting dates:', insertError.message);
+      return NextResponse.json({ error: insertError.message }, { status: 500 });
     }
 
-    // 삽입된 데이터의 ID 가져오기
-    const { data: insertedData, error: selectError } = await supabase
-      .from('posts')
-      .select('id')
-      .eq('user_id', user_id)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
-
-    if (selectError) {
-      console.error('Error fetching inserted ID:', selectError.message);
-      return NextResponse.json({ error: selectError.message }, { status: 500 });
-    }
-
-    return NextResponse.json(insertedData, { status: 200 });
+    return NextResponse.json({ message: 'Post inserted successfully', operation: 'insert' }, { status: 200 });
   } catch (error) {
     console.error('Unexpected error:', error);
     return NextResponse.json({ error: 'Unexpected error occurred' }, { status: 500 });

@@ -66,7 +66,8 @@ const Calendar = ({ next, postId }: CalendarProps) => {
         //id: postId // postId를 포함하여 기존 데이터를 업데이트};
         const start = format(startOfDay(startDate), 'yy.M.d');
         const end = format(startOfDay(endDate), 'M.d');
-        sessionStorage.setItem('date', `${start} - ${end}`);
+        sessionStorage.setItem('startDate', start);
+        sessionStorage.setItem('endDate', end);
         next();
       } else {
         alert('Please select a date');

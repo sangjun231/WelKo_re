@@ -13,9 +13,9 @@ function PostPage() {
   const [step, setStep] = useState(1);
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [region, setRegion] = useState<string>('');
-  const [date, setDate] = useState<string>('');
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
+  const [sequence, setSequence] = useState<number>(0);
 
   useEffect(() => {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -30,6 +30,8 @@ function PostPage() {
       return;
     }
   }, [user]);
+
+  sessionStorage.setItem('postId', postId as string);
 
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
@@ -48,12 +50,12 @@ function PostPage() {
           setSelectedDay={setSelectedDay}
           region={region}
           setRegion={setRegion}
-          date={date}
-          setDate={setDate}
+          sequence={sequence}
+          setSequence={setSequence}
         />
       )}
-      {step === 3 && <AddressSearch prev={prevStep} selectedDay={selectedDay} />}
-      {step === 4 && <Write goToStep2={goToStep2} region={region} date={date} />}
+      {step === 3 && <AddressSearch prev={prevStep} selectedDay={selectedDay} sequence={sequence} />}
+      {step === 4 && <Write goToStep2={goToStep2} region={region} />}
     </div>
   );
 }
