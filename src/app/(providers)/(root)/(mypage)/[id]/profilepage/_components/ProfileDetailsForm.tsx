@@ -17,19 +17,23 @@ const ProfileDetailsForm = ({ nickname, setNickname, region, userId }: ProfileDe
   };
 
   return (
-    <div className="mt-4">
+    <div className="my-[32px] flex flex-col gap-[24px]">
       <div>
-        <label className="block">nickname</label>
+        <label className="text-[16px] font-medium">Nickname</label>
         <input
-          className="w-full rounded border px-3 py-2 text-black"
+          className="mt-[8px] w-full rounded-2xl border bg-grayscale-50 p-[16px] text-[16px] font-medium"
           type="text"
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
+          placeholder="Write your nickname"
+          defaultValue={''}
+          onBlur={(e) => setNickname(e.target.value)}
         />
       </div>
-      <div className="mt-4">
-        <label className="block">my region</label>
-        <button className="w-full rounded border bg-gray-200 px-3 py-2 text-black" onClick={handleRegionClick}>
+      <div>
+        <label className="text-[16px] font-medium">Location</label>
+        <button
+          className="mt-[8px] w-full rounded-2xl border bg-grayscale-50 p-[16px] text-[16px]"
+          onClick={handleRegionClick}
+        >
           {region || 'Set your region'}
         </button>
       </div>

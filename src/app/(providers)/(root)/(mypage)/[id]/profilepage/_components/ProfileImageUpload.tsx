@@ -42,21 +42,36 @@ const ProfileImageUpload = ({ userId, imageUrl, onImageChange }: ProfileImageUpl
 
   return (
     <div className="flex justify-center">
-      {imageUrl && (
-        <Image
-          className="rounded-full"
-          src={`${imageUrl}?${new Date().getTime()}`}
-          alt="Profile"
-          width={100}
-          height={100}
-        />
-      )}
-      <div className="mt-2">
-        <label className="cursor-pointer rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700">
-          <span>Select File</span>
+      <div className="relative">
+        {imageUrl ? (
+          <Image
+            className="rounded-full"
+            src={`${imageUrl}?${new Date().getTime()}`}
+            alt="Profile"
+            width={96}
+            height={96}
+            style={{ width: '96px', height: '96px' }}
+          />
+        ) : (
+          <Image
+            className="rounded-full"
+            src="/icons/Profile.svg"
+            alt="Profile"
+            width={96}
+            height={96}
+            style={{ width: '96px', height: '96px' }}
+          />
+        )}
+        <label className="absolute right-0 top-0 flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-full bg-[#F7F7F9]">
+          <Image
+            src="/icons/tabler-icon-camera-filled.svg"
+            alt="Select File"
+            width={24}
+            height={24}
+            style={{ width: '24px', height: '24px' }}
+          />
           <input type="file" className="hidden" onChange={handleImageChange} />
         </label>
-        {selectedFile && <span className="ml-2">{selectedFile}</span>}
       </div>
     </div>
   );

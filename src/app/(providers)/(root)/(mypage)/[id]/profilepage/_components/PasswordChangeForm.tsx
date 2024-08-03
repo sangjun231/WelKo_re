@@ -32,7 +32,7 @@ const PasswordChangeForm = ({ userId, email }: PasswordChangeFormProps) => {
   };
 
   return (
-    <form onSubmit={handlePasswordChange} className="mt-4">
+    <form onSubmit={handlePasswordChange} className="">
       <div>
         <input
           className="w-full rounded border px-3 py-2 text-black"
