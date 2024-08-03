@@ -75,30 +75,39 @@ const ReviewList = ({ userId }: { userId: string }) => {
           const review = reviews.find((r) => r.post_id === post.id);
           return (
             review && (
-              <div key={post.id} className="mb-4 border-b pb-4">
+              <div key={post.id} className="mb-[20px]">
                 <div className="flex">
                   <Image
                     src={post.image ?? '/icons/upload.png'}
                     alt={post.title ?? 'Default title'}
                     width={44}
                     height={44}
+                    style={{ width: '44px', height: '44px' }}
                   />
-                  <div className="ml-2 flex flex-col">
-                    <p className="font-bold">{post.title}</p>
-                    <p className="text-[13px]">
+                  <div className="ml-[4px] flex flex-col gap-[4px]">
+                    <p className="text-primary-900 line-clamp-1 text-[14px] font-bold">{post.title}</p>
+                    <p className="text-[14px] text-grayscale-500">
                       {post.startDate} -{post.endDate}
                     </p>
                   </div>
                 </div>
                 <div>
-                  <div className="flex items-center">
-                    <Rating count={5} value={review.rating ?? 0} size={24} edit={false} activeColor="#ffd700" />
-                    <p className="ml-2 text-[13px]">{new Date(review.created_at).toLocaleDateString()}</p>
+                  <div className="my-[16px] items-start rounded-[16px] border bg-grayscale-50 p-[16px]">
+                    <div className="flex items-center">
+                      <Rating count={5} value={review.rating ?? 0} size={24} edit={false} activeColor="#ffd700" />
+                      <p className="ml-[4px] text-[13px] text-grayscale-700">
+                        {new Date(review.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <p className="mt-[12px] text-[14px] text-grayscale-700">{review.content}</p>
                   </div>
-                  <p>{review.content}</p>
-                  <div className="mt-2 flex justify-around">
-                    <button onClick={() => handleEditReview(review.id, post.id)}>Edit</button>
-                    <button onClick={() => handleDelete(review.id)}>Delete</button>
+                  <div className="flex justify-end gap-[16px]">
+                    <button className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]">
+                      <Image src="/icons/tabler-icon-pencil.svg" alt="Edit Review" width={24} height={24} />
+                    </button>
+                    <button className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]">
+                      <Image src="/icons/tabler-icon-trash.svg" alt="Delete Review" width={24} height={24} />
+                    </button>
                   </div>
                 </div>
               </div>
