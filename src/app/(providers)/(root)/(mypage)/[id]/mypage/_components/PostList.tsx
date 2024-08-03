@@ -77,8 +77,8 @@ export default function PostList() {
           <div key={post.id} className="mb-[10px] border-b-4 pb-[20px]">
             <div className="mb-[12px] flex justify-between">
               <div>
-                <p className="text-[15px]">{new Date(post.created_at).toLocaleDateString()}</p>
-                <p className="text-[15px] text-primary-300">{status}</p>
+                <p className="text-[14px] text-grayscale-900">{new Date(post.created_at).toLocaleDateString()}</p>
+                <p className="text-[14px] text-primary-300">{status}</p>
               </div>
               <div className="flex gap-[16px]">
                 <button className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]">
@@ -99,11 +99,11 @@ export default function PostList() {
                   style={{ width: '80px', height: '80px' }}
                 />
                 <div className="ml-[4px] flex flex-col gap-[4px]">
-                  <p className="line-clamp-1 text-[15px] font-bold">{post.title}</p>
-                  <p className="text-[13px]">
+                  <p className="text-primary-900 line-clamp-1 text-[14px] font-bold">{post.title}</p>
+                  <p className="text-[14px] text-grayscale-500">
                     {post.startDate} - {post.endDate}
                   </p>
-                  <p className="text-[13px]">
+                  <p className="text-[13px] text-grayscale-700">
                     <span className="font-bold text-primary-300">{formatPrice(post.price)}</span>
                     /Person
                   </p>
@@ -113,7 +113,7 @@ export default function PostList() {
 
             {status === 'Upcoming Tour' && (
               <button
-                className="w-full rounded-lg border p-2 font-bold"
+                className="w-full rounded-lg border p-2 text-[14px] font-bold text-grayscale-700"
                 onClick={() => {
                   handleReservationList(post.id);
                 }}

@@ -34,10 +34,10 @@ const MyPage = () => {
   return (
     <div className="mx-[20px]">
       <div className="mt-[56px] flex justify-between">
-        <button className="rounded-[24px] bg-grayscale-50" onClick={handleBack}>
+        <button className="rounded-[24px] bg-grayscale-100" onClick={handleBack}>
           <Image src="/icons/tabler-icon-chevron-left.svg" alt="Go Back" width={32} height={32} />
         </button>
-        <p className="text-[18px] font-bold">My Page</p>
+        <p className="text-primary-900 text-[18px] font-bold">My Page</p>
         <button className="text-[14px] text-action-color" onClick={logout}>
           Logout
         </button>

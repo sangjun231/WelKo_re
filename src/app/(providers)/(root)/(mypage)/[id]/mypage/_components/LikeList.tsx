@@ -83,13 +83,13 @@ export default function LikeList() {
             </div>
             <Link href={`/detail/${post.id}`}>
               <div className="ml-[8px] space-y-[4px]">
-                <p className="overflow-hidden text-ellipsis whitespace-nowrap text-[14px] font-bold">{post.title}</p>
-                <p>
+                <p className="text-primary-900 line-clamp-1 text-[14px] font-bold">{post.title}</p>
+                <p className="text-[14px] text-grayscale-500">
                   {post.startDate && post.endDate
                     ? `${new Date(post.startDate).toLocaleDateString()} - ${new Date(post.endDate).toLocaleDateString()}`
                     : 'No date information'}
                 </p>
-                <p className="text-[13px]">
+                <p className="text-[13px] text-grayscale-700">
                   <span className="font-bold text-primary-300">{formatPrice(post.price)}</span>
                   /Person
                 </p>
