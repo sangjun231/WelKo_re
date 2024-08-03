@@ -47,8 +47,9 @@ const ProfileView = ({ userId }: { userId: string }) => {
                 <p className="ml-2 text-[14px]">Please set the region</p>
               )}
             </div>
-            <button onClick={goToProfilePage} className="mt-2 text-[12px]">
+            <button onClick={goToProfilePage} className="mt-2 flex items-center text-[12px]">
               Edit Profile
+              <Image src="/icons/tabler-icon-chevron-right.svg" alt="Edit Profile" width={16} height={16} />
             </button>
           </div>
         </div>
