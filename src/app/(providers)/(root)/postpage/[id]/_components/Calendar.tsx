@@ -1,6 +1,5 @@
 'use client';
 import BackButton from '@/components/common/Button/BackButton';
-import { upsertDate } from '@/utils/post/postData';
 import { createClient } from '@/utils/supabase/client';
 import { addMonths, format, startOfDay } from 'date-fns';
 import { useEffect, useState } from 'react';
@@ -43,44 +42,50 @@ const Calendar = ({ next, postId }: CalendarProps) => {
   }, [postId]);
 
   const handleDateSave = async () => {
-    const supabase = createClient();
-    const {
-      data: { user },
-      error
-    } = await supabase.auth.getUser();
-    if (error) {
-      console.error('Error getting user:', error);
-      return;
-    }
-    const user_id = user?.id as string;
+    // const supabase = createClient();
+    // const {
+    //   data: { user },
+    //   error
+    // } = await supabase.auth.getUser();
+    // if (error) {
+    //   console.error('Error getting user:', error);
+    //   return;
+    // }
+    //const user_id = user?.id as string;
 
-    const formatDateForDB = (date: Date | null) => {
-      return date?.toISOString().split('T')[0];
-    };
+    //const formatDateForDB = (date: Date | null) => {
+    // return date?.toISOString().split('T')[0];};
 
     try {
       // 날짜 저장
-      const datePostData = {
-        user_id,
-        startDate: formatDateForDB(startDate),
-        endDate: formatDateForDB(endDate),
-        id: postId // postId를 포함하여 기존 데이터를 업데이트
-      };
-      const dateResponse = await upsertDate(datePostData);
-      const post_id = dateResponse.data.id;
-      sessionStorage.setItem('postId', post_id);
-      //sessionStorage.setItem('datePostData', JSON.stringify(datePostData));
-      next();
+      if (startDate && endDate) {
+        //const datePostData = {
+        //user_id,
+        //startDate: format(startOfDay(startDate), 'yy. M. d'),
+        //endDate: format(startOfDay(endDate), 'M. d')
+        //id: postId // postId를 포함하여 기존 데이터를 업데이트};
+        const start = format(startOfDay(startDate), 'yy.M.d');
+        const end = format(startOfDay(endDate), 'M.d');
+        sessionStorage.setItem('date', `${start} - ${end}`);
+        next();
+      } else {
+        alert('Please select a date');
+      }
+
+      //const dateResponse = await upsertDate(datePostData);
+      //const post_id = dateResponse.data.id;
+      //sessionStorage.setItem('postId', post_id);
+      //
     } catch (error) {
       console.error('Error saving dates:', error);
     }
   };
 
   return (
-    <div className="m-3 flex flex-col justify-center">
+    <div className="flex flex-col justify-center">
       <div className="my-7 flex items-center">
         <BackButton />
-        <h1 className="m-auto text-2xl font-semibold">Make tour</h1>
+        <h1 className="m-auto text-xl font-semibold">Make tour</h1>
       </div>
 
       <div className="flex flex-col gap-7 rounded-xl border-x-0 border-y-2 border-gray-200 shadow-xl">
@@ -90,7 +95,7 @@ const Calendar = ({ next, postId }: CalendarProps) => {
           {months.map((month, index) => (
             <button
               key={index}
-              className="mx-1 flex h-20 w-[96px] flex-col items-center justify-center rounded-lg border-2 px-12 text-black hover:bg-gray-100"
+              className="mx-1 flex h-20 w-[96px] flex-col items-center justify-center rounded-lg border-2 px-14 text-black hover:bg-gray-100"
               onClick={() => setSelectedMonth(addMonths(new Date(), month))}
             >
               <PiCalendarDots className="mb-1 size-5 text-grayscale-500" />

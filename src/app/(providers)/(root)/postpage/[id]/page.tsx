@@ -1,6 +1,7 @@
 'use client';
-import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import useAuthStore from '@/zustand/bearsStore';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import AddressSearch from './_components/AddressSearch';
 import Calendar from './_components/Calendar';
 import DayPlaces from './_components/DayPlaces';
@@ -12,6 +13,23 @@ function PostPage() {
   const [step, setStep] = useState(1);
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [region, setRegion] = useState<string>('');
+  const [date, setDate] = useState<string>('');
+  const router = useRouter();
+  const user = useAuthStore((state) => state.user);
+
+  useEffect(() => {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!id || !uuidRegex.test(id as string)) {
+      alert('Please enter through the correct path');
+      router.back(); // 유효하지 않은 경우 이전 페이지로 이동
+      return;
+    }
+    if (!user) {
+      alert('Please log in');
+      router.push('/login');
+      return;
+    }
+  }, [user]);
 
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
@@ -30,10 +48,12 @@ function PostPage() {
           setSelectedDay={setSelectedDay}
           region={region}
           setRegion={setRegion}
+          date={date}
+          setDate={setDate}
         />
       )}
       {step === 3 && <AddressSearch prev={prevStep} selectedDay={selectedDay} />}
-      {step === 4 && <Write goToStep2={goToStep2} region={region} />}
+      {step === 4 && <Write goToStep2={goToStep2} region={region} date={date} />}
     </div>
   );
 }

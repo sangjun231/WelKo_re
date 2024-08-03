@@ -10,7 +10,7 @@ import { IoChevronBack } from 'react-icons/io5';
 import { LuUsers } from 'react-icons/lu';
 import { TbPhoto } from 'react-icons/tb';
 
-const Write = ({ goToStep2, region }: { goToStep2: () => void; region: string }) => {
+const Write = ({ goToStep2, region, date }: { goToStep2: () => void; region: string; date: string | null }) => {
   const router = useRouter();
   const supabase = createClient();
   const [title, setTitle] = useState<string>('');
@@ -164,7 +164,7 @@ const Write = ({ goToStep2, region }: { goToStep2: () => void; region: string })
         </div>
         <div className="flex-grow text-center">
           <h1 className="text-lg font-bold">{region}</h1>
-          <p>날짜</p>
+          <p>{date}</p>
         </div>
         <button className="font-medium text-[#FF7029]" onClick={handleCancel}>
           Done

@@ -70,10 +70,12 @@ const AddressSearch = ({ prev, selectedDay }: SearchAddressProps) => {
       }
     }
   };
-  // 목록에서 제거 (취소버튼)
+  {
+    /* 목록에서 제거 (취소버튼)
   const handlePlaceRemove = (place: Place) => {
     setSelectedSearch((prev) => prev.filter((p) => p !== place));
-  };
+  };  */
+  }
   // 세션에 임시저장
   const handlePlaceSave = () => {
     sessionStorage.setItem(selectedDay, JSON.stringify(selectedSearch));
@@ -143,9 +145,9 @@ const AddressSearch = ({ prev, selectedDay }: SearchAddressProps) => {
                     <p className="text-xs text-gray-400">{place.roadAddress}</p>
                   </div>
                 </div>
-                <button onClick={() => handlePlaceRemove(place)} className="mt-2 rounded bg-red-500 p-2 text-white">
+                {/*<button onClick={() => handlePlaceRemove(place)} className="mt-2 rounded bg-red-500 p-2 text-white">
                   취소
-                </button>
+                </button>*/}
               </div>
             );
           })}

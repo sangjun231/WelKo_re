@@ -19,13 +19,26 @@ type PlaceProps = {
   setSelectedDay: React.Dispatch<React.SetStateAction<string>>;
   region: string;
   setRegion: React.Dispatch<React.SetStateAction<string>>;
+  date: string;
+  setDate: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, setSelectedDay, region, setRegion }) => {
+const DayPlaces: React.FC<PlaceProps> = ({
+  next,
+  prev,
+  goToStep4,
+  selectedDay,
+  setSelectedDay,
+  region,
+  setRegion,
+  date,
+  setDate
+}) => {
   const [selectedPlaces, setSelectedPlaces] = useState<Place[]>([]); // 선택한 장소 목록
   const handleDaySelect = (day: string) => {
     setSelectedDay(day);
   };
+
   //지도 관련
   const clientId = process.env.NEXT_PUBLIC_NCP_CLIENT_ID!;
   const isScriptLoaded = useNaverMapScript(clientId);
@@ -37,6 +50,9 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
   const keys = Object.keys(sessionStorage);
   const storedPlacesKey = keys.find((key) => sessionStorage.getItem(key) === storedPlaces);
   useEffect(() => {
+    if (sessionStorage.getItem('date')) {
+      setDate(sessionStorage.getItem('date')!);
+    }
     if (storedPlaces) {
       if (storedPlacesKey === selectedDay) {
         setSelectedPlaces(JSON.parse(storedPlaces));
@@ -210,7 +226,7 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
         </div>
         <div className="flex-grow text-center">
           <h1 className="text-lg font-bold">{region}</h1>
-          <p>날짜</p>
+          <p>{date}</p>
         </div>
       </div>
 
@@ -222,45 +238,37 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
 
       <div>
         <div className="mt-3 flex gap-2">
-          <div>
+          {['day1', 'day2', 'day3'].map((day, index) => (
             <button
+              key={day}
               className="rounded-full bg-grayscale-50 px-4 py-3 font-medium hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
-              onClick={() => handleDaySelect('day1')}
+              onClick={() => handleDaySelect(day)}
             >
-              Day 1
+              {`Day ${index + 1}`}
             </button>
-          </div>
-
-          <button
-            className="rounded-full bg-grayscale-50 px-4 py-3 font-medium hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
-            onClick={() => handleDaySelect('day2')}
-          >
-            Day 2
-          </button>
-          <button
-            className="rounded-full bg-grayscale-50 px-4 py-3 font-medium hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
-            onClick={() => handleDaySelect('day3')}
-          >
-            Day 3
-          </button>
+          ))}
         </div>
-
-        <hr className="m-3" />
 
         {selectedDay === '' ? (
           <p className="p-2 text-center">Please select a day</p>
         ) : (
-          <button
-            className="h-[35px] w-[284px] rounded-lg border-2 border-grayscale-100 p-2 font-medium"
-            onClick={next}
-          >
-            Add Place
-            {/* {selectedDay === 'day1' && 'Day1 Add Address'}
+          [1, 2, 3, 4].map((number, index) => (
+            <div key={index} className="mb-2 flex items-center">
+              <p className="size-6 rounded-full border-2 border-grayscale-50 bg-primary-300 text-center text-white">
+                {number}
+              </p>
+              <button
+                className="h-[35px] w-[284px] rounded-lg border-2 border-grayscale-100 p-2 font-medium"
+                onClick={next}
+              >
+                Add Place
+              </button>
+            </div>
+          ))
+        )}
+        {/* {selectedDay === 'day1' && 'Day1 Add Address'}
             {selectedDay === 'day2' && 'Day2 Add Address'}
             {selectedDay === 'day3' && 'Day3 Add Address'}*/}
-          </button>
-        )}
-
         <div>
           {selectedDay === storedPlacesKey &&
             selectedPlaces.map((place, index) => {
@@ -293,14 +301,15 @@ const DayPlaces: React.FC<PlaceProps> = ({ next, prev, goToStep4, selectedDay, s
         ''
       ) : (
         <>
-          <button onClick={handlePlaceSave} className="my-4 w-full rounded bg-black p-2 text-white">
+          <button
+            onClick={handlePlaceSave}
+            className="mx-auto my-5 h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-semibold text-white"
+          >
             {selectedDay === 'day1' && 'Day1 Save'}
             {selectedDay === 'day2' && 'Day2 Save'}
             {selectedDay === 'day3' && 'Day3 Save'}
           </button>
-          <button onClick={goToStep4} className="my-4 w-full rounded bg-black p-2 text-white">
-            없앨 버튼
-          </button>
+          <button onClick={goToStep4}>없앨 버튼</button>
         </>
       )}
     </div>

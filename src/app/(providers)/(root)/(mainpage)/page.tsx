@@ -5,7 +5,6 @@ import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import { createClient } from '@/utils/supabase/client';
 import axios from 'axios';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import PostsList from './_components/PostsList';
 
@@ -42,17 +41,17 @@ export default function Home() {
     fetchUserId();
   }, [supabase]);
 
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  useEffect(() => {
-    const handleRouteChange = () => {
-      if (!pathname.startsWith('/postpage/')) {
-        sessionStorage.clear();
-      }
-    };
+  // const pathname = usePathname();
+  // const searchParams = useSearchParams();
+  // useEffect(() => {
+  //   const handleRouteChange = () => {
+  //     if (!pathname.startsWith('/postpage/')) {
+  //       sessionStorage.clear();
+  //     }
+  //   };
 
-    handleRouteChange();
-  }, [pathname, searchParams]);
+  //   handleRouteChange();
+  // }, [pathname, searchParams]);
 
   return (
     <div>
