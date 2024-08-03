@@ -40,15 +40,16 @@ const ProfileView = ({ userId }: { userId: string }) => {
           )}
           <div className="ml-4">
             <div className="flex items-center">
-              <p className="text-[18px] font-bold">{profile.name}</p>
+              <p className="text-[18px] font-semibold">{profile.name}</p>
               {profile.region ? (
                 <p className="ml-2 text-[14px]">{profile.region}</p>
               ) : (
                 <p className="ml-2 text-[14px]">Please set the region</p>
               )}
             </div>
-            <button onClick={goToProfilePage} className="mt-2 text-[12px]">
+            <button onClick={goToProfilePage} className="mt-2 flex items-center text-[12px]">
               Edit Profile
+              <Image src="/icons/tabler-icon-chevron-right.svg" alt="Edit Profile" width={16} height={16} />
             </button>
           </div>
         </div>
