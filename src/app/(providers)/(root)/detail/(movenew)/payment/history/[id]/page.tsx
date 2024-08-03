@@ -1,12 +1,13 @@
 'use client';
 
 import React from 'react';
-import PaySuccess from '../_components/PaySuccess';
+import PaymentHistory from '../../_components/PaymentHistory';
+
 
 export default function PaymentPage() {
   return (
     <>
-      <PaySuccess />
+      <PaymentHistory />
     </>
   );
 }
