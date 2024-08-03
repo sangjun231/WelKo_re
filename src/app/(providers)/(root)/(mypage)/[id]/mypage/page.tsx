@@ -27,21 +27,35 @@ const MyPage = () => {
     router.push('/login');
   };
 
+  const buttonClass = (component: string) =>
+    `flex-1 text-center ${selectedComponent === component ? 'text-primary-300 border-primary-300' : 'text-grayscale-500'}`;
+
   return (
     <div className="mx-[20px]">
       <div className="mt-[56px] flex justify-between">
         <button onClick={handleBack}>Go Back</button>
         <p className="text-[18px] font-bold">My Page</p>
-        <button className="text-action-color text-[14px]" onClick={logout}>
+        <button className="text-[14px] text-action-color" onClick={logout}>
           Logout
         </button>
       </div>
       <ProfileView userId={id} />
-      <div className="mb-2 mt-4 flex justify-around">
-        <button onClick={() => setSelectedComponent('Wishlist')}>Wishlist</button>
-        <button onClick={() => setSelectedComponent('Post')}>Post</button>
-        <button onClick={() => setSelectedComponent('Reservation')}>Reservation</button>
-        <button onClick={() => setSelectedComponent('Review')}>Review</button>
+      <div className="my-[20px] flex justify-around">
+        <button className={`border-b ${buttonClass('Wishlist')}`} onClick={() => setSelectedComponent('Wishlist')}>
+          Wishlist
+        </button>
+        <button className={`border-b ${buttonClass('Post')}`} onClick={() => setSelectedComponent('Post')}>
+          Post
+        </button>
+        <button
+          className={`border-b ${buttonClass('Reservation')}`}
+          onClick={() => setSelectedComponent('Reservation')}
+        >
+          Reservation
+        </button>
+        <button className={`border-b ${buttonClass('Review')}`} onClick={() => setSelectedComponent('Review')}>
+          Review
+        </button>
       </div>
       {selectedComponent === 'Wishlist' && <LikeList />}
       {selectedComponent === 'Post' && <PostList />}
