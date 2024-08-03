@@ -7,7 +7,7 @@ const ReviewPage = () => {
   const { id } = useParams() as { id: string };
 
   return (
-    <div>
+    <div className="mx-[20px]">
       <ReviewForm userId={id} />
     </div>
   );
