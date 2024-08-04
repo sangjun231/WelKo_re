@@ -51,9 +51,11 @@ const ChatPage = () => {
           alt={postTitle ?? 'Default title'}
           width={44}
           height={44}
-          style={{width:'44px',height:'44px'}}
+          style={{ width: '44px', height: '44px' }}
         />
-        <p className="text-[14px] font-bold">Title: {postTitle}</p>
+        <div className="mx-auto max-w-[360px]">
+          <p className="line-clamp-1 text-[14px] font-bold">{postTitle}</p>
+        </div>
       </div>
       <Chat postId={postId || ''} senderId={senderId} receiverId={receiverId} />
     </div>

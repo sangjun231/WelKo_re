@@ -13,7 +13,7 @@ export async function GET(request: NextRequest, { params }: { params: { userId: 
     const supabase = createClient();
     const { data, error } = await supabase
       .from('payments')
-      .select('*, users (email , name , avatar), posts (title , image)')
+      .select('*, users (id, email , name , avatar), posts (id, title , image, price, startDate, endDate)')
       .eq('post_id', postId);
 
     if (error) {

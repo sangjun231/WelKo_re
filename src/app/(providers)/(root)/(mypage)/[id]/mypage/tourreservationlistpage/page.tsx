@@ -10,8 +10,7 @@ const TourReservationListPage = () => {
   const postId = searchParams.get('postId');
 
   return (
-    <div>
-      <h1>Tour Reservation List Page</h1>
+    <div className="mx-[20px] mt-[56px]">
       {userId && postId ? <TourReservationList userId={userId} postId={postId} /> : <div>No Post ID Provided</div>}
     </div>
   );
