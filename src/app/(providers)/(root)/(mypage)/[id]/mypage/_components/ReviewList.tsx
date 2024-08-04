@@ -5,18 +5,24 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-
 import Rating from 'react-rating-stars-component';
-import { API_MYPAGE_REVIEWS, API_MYPAGE_POST } from '@/utils/apiConstants';
+import { API_MYPAGE_REVIEWS, API_MYPAGE_POST, API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
 
 const ReviewList = ({ userId }: { userId: string }) => {
   const [reviews, setReviews] = useState<Tables<'reviews'>[]>([]);
+  const [profile, setProfile] = useState<Tables<'users'>>();
   const router = useRouter();
 
   const fetchReviews = async () => {
     const response = await axios.get(API_MYPAGE_REVIEWS(userId));
     setReviews(response.data);
+  };
+
+  const fetchProfile = async () => {
+    const response = await axios.get(API_MYPAGE_PROFILE(userId));
+    const profileData = response.data;
+    setProfile(profileData);
   };
 
   const getPostsData = async () => {
@@ -54,6 +60,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
 
   useEffect(() => {
     fetchReviews();
+    fetchProfile();
   }, [userId]);
 
   if (isPending) return <div className="flex h-screen items-center justify-center">Loading...</div>;
@@ -75,7 +82,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
   }
 
   return (
-    <div className="max-w-[360px]">
+    <div className="mx-auto max-w-[320px]">
       {reviews.length === 0 ? (
         <div>No reviews found</div>
       ) : (
@@ -92,41 +99,38 @@ const ReviewList = ({ userId }: { userId: string }) => {
                     height={44}
                     style={{ width: '44px', height: '44px' }}
                   />
-                  <div className="ml-[4px] flex flex-col gap-[4px]">
-                    <p className="text-primary-900 line-clamp-1 text-[14px] font-semibold">{post.title}</p>
+                  <div className="ml-[4px] flex w-full flex-col gap-[4px]">
+                    <p className="line-clamp-1 text-[14px] font-semibold text-primary-900">{post.title}</p>
                     <p className="text-[14px] text-grayscale-500">
-                      {post.startDate} -{post.endDate}
+                      {post.startDate} - {post.endDate}
                     </p>
                   </div>
                 </div>
-                <div>
-                  <div className="my-[16px] items-start rounded-[16px] border bg-grayscale-50 p-[16px]">
-                    <div className="flex items-center">
-                      <Rating count={5} value={review.rating ?? 0} size={16} edit={false} activeColor="#ffd700" />
-                      <p className="ml-[4px] text-[13px] text-grayscale-700">
-                        {new Date(review.created_at).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <p className="mt-[12px] break-words text-[14px] text-grayscale-700">{review.content}</p>
+                <div className="my-[16px] w-full items-start rounded-[16px] border bg-grayscale-50 p-[16px]">
+                  <div className="flex items-center gap-[8px]">
+                    <Rating count={5} value={review.rating ?? 0} size={16} edit={false} activeColor="#ffd700" />
+                    <p className="text-medium text-[13px]">{profile?.name}</p>
+                    <p className="text-[13px] text-grayscale-700">{new Date(review.created_at).toLocaleDateString()}</p>
                   </div>
-                  <div className="flex justify-end gap-[16px]">
-                    <button
-                      className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]"
-                      onClick={() => {
-                        handleEditReview(review.id, post.id);
-                      }}
-                    >
-                      <Image src="/icons/tabler-icon-pencil.svg" alt="Edit Review" width={24} height={24} />
-                    </button>
-                    <button
-                      className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]"
-                      onClick={() => {
-                        handleDelete(review.id);
-                      }}
-                    >
-                      <Image src="/icons/tabler-icon-trash.svg" alt="Delete Review" width={24} height={24} />
-                    </button>
-                  </div>
+                  <p className="mt-[12px] break-words text-[14px] text-grayscale-700">{review.content}</p>
+                </div>
+                <div className="flex justify-end gap-[16px]">
+                  <button
+                    className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]"
+                    onClick={() => {
+                      handleEditReview(review.id, post.id);
+                    }}
+                  >
+                    <Image src="/icons/tabler-icon-pencil.svg" alt="Edit Review" width={24} height={24} />
+                  </button>
+                  <button
+                    className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]"
+                    onClick={() => {
+                      handleDelete(review.id);
+                    }}
+                  >
+                    <Image src="/icons/tabler-icon-trash.svg" alt="Delete Review" width={24} height={24} />
+                  </button>
                 </div>
               </div>
             )

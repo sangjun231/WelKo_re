@@ -54,23 +54,23 @@ function Navbar() {
   };
 
   // 특정 경로에서 Navbar를 숨기기
-  const excludedRoutes = ['/login', '/postpage'];
+  const excludedRoutes = ['/login', '/postpage', '/chatpage'];
   if (excludedRoutes.includes(pathname) || pathname.startsWith('/detail')) {
     return null;
   }
 
   return (
-    <nav className="text-grayscale-500 border-grayscale-100 flex border-t">
+    <nav className="flex border-t border-grayscale-100 text-grayscale-500">
       <div className="container mx-auto flex items-center justify-between p-8">
         <Link href="/">
-          <div className="hover:text-primary-300 flex flex-col items-center space-y-2">
+          <div className="flex flex-col items-center space-y-2 hover:text-primary-300">
             <RiHome3Line size={24} />
             <span className="text-[10px]">Home</span>
           </div>
         </Link>
         <div
           onClick={handleReservationsClick}
-          className="hover:text-primary-300 flex cursor-pointer flex-col items-center space-y-2"
+          className="flex cursor-pointer flex-col items-center space-y-2 hover:text-primary-300"
         >
           <IoCalendarOutline size={24} />
           <span className="text-[10px]">Reservations</span>
@@ -83,14 +83,14 @@ function Navbar() {
         </div>
         <div
           onClick={handleMessagesClick}
-          className="hover:text-primary-300 flex cursor-pointer flex-col items-center space-y-2"
+          className="flex cursor-pointer flex-col items-center space-y-2 hover:text-primary-300"
         >
           <AiOutlineMessage size={24} />
           <span className="text-[10px]">Messages</span>
         </div>
         <div
           onClick={handleMypageClick}
-          className="hover:text-primary-300 flex cursor-pointer flex-col items-center space-y-2"
+          className="flex cursor-pointer flex-col items-center space-y-2 hover:text-primary-300"
         >
           <BsPersonCircle size={24} />
           <span className="text-[10px]">Mypage</span>
