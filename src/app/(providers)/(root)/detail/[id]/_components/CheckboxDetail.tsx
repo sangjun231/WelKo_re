@@ -29,18 +29,20 @@ export const CheckboxDetail = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-4">
-      <h2 className="text-lg font-semibold">What this tour offers</h2>
-      {offers.map(
-        (offer) =>
-          selectedPrices.includes(offer.label) && (
-            <div key={offer.label} className="flex items-center">
-              {offer.icon}
-              <span className="ml-2 text-sm font-normal">{offer.label}</span>
-            </div>
-          )
-      )}
-      <hr className="bg-grayscale-100 my-8 h-[1px] w-full" />
+    <div className="flex flex-col">
+      <h2 className="mb-4 text-lg font-semibold">What this tour offers</h2>
+      <div className="flex flex-col gap-4">
+        {offers.map(
+          (offer) =>
+            selectedPrices.includes(offer.label) && (
+              <div key={offer.label} className="flex items-center">
+                {offer.icon}
+                <span className="ml-2 text-sm font-normal">{offer.label}</span>
+              </div>
+            )
+        )}
+        <hr className="bg-grayscale-100 mb-6 mt-8 h-[1px] w-full" />
+      </div>
     </div>
   );
 };

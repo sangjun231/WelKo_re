@@ -1,16 +1,20 @@
 'use client';
+import { formatDateRange } from '@/utils/detail/functions';
 import { upsertDate } from '@/utils/post/postData';
 import { createClient } from '@/utils/supabase/client';
 import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { BiDollar } from 'react-icons/bi';
-import { IoChevronBack } from 'react-icons/io5';
+import { IoChevronBack, IoCloseOutline } from 'react-icons/io5';
 import { LuUsers } from 'react-icons/lu';
 import { TbPhoto } from 'react-icons/tb';
 
 const Write = ({ goToStep2, region }: { goToStep2: () => void; region: string }) => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const router = useRouter();
   const supabase = createClient();
   const [title, setTitle] = useState<string>('');
@@ -160,25 +164,25 @@ const Write = ({ goToStep2, region }: { goToStep2: () => void; region: string })
   };
 
   return (
-    <form onSubmit={handleSavePost} className="m-3">
-      <div className="my-4 flex items-center">
-        <div className="icon-button">
-          <button onClick={goToStep2} className="flex h-full w-full items-center justify-center">
-            <IoChevronBack size={24} />
-          </button>
+    <form onSubmit={handleSavePost}>
+      <div className="my-5 flex items-center">
+        <div className="flex w-20 justify-center">
+          <div className="icon-button">
+            <button onClick={goToStep2} className="flex h-full w-full items-center justify-center">
+              <IoChevronBack size={24} />
+            </button>
+          </div>
         </div>
-        <div className="flex-grow text-center">
+        <div className="flex w-[199px] flex-col items-center">
           <h1 className="text-lg font-bold">{region}</h1>
-          <p>
-            {startDate} - {endDate}
-          </p>
+          <p>{formatDateRange(startDate, endDate)}</p>
         </div>
-        <button className="font-medium text-[#FF7029]" onClick={handleCancel}>
+        <button className="flex w-20 justify-center font-medium text-[#FF7029]" onClick={handleCancel}>
           Done
         </button>
       </div>
 
-      <div className="flex flex-col gap-5">
+      <div className="mx-5 flex flex-col gap-5">
         {/* 제목, 내용 입력 폼 */}
         <div className="mt-7 flex flex-col items-center gap-5">
           <div className="w-[320px]">
@@ -225,10 +229,10 @@ const Write = ({ goToStep2, region }: { goToStep2: () => void; region: string })
                   className="bg-grayscale-5 h-[100px] w-[100px] rounded-lg"
                 />
                 <button
-                  className="absolute -right-2 -top-2 rounded-full border-2 border-grayscale-50 bg-white px-2 font-semibold"
+                  className="absolute -right-2 -top-2 flex size-7 items-center justify-center rounded-full border-2 border-grayscale-50 bg-white font-semibold"
                   onClick={handleImageRemove}
                 >
-                  x
+                  <IoCloseOutline size={24} />
                 </button>
               </div>
             )}

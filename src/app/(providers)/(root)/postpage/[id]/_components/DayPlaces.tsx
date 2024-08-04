@@ -3,10 +3,13 @@
 import { useCurrentPosition } from '@/hooks/Map/useCurrentPosition';
 import { useNaverMapScript } from '@/hooks/Map/useNaverMapScript';
 import { Place } from '@/types/types';
+import { formatDateRange } from '@/utils/detail/functions';
 import { savePlaces, translateAddress } from '@/utils/post/postData';
 import { createClient } from '@/utils/supabase/client';
 import { useMutation } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { GrLocation } from 'react-icons/gr';
 import { IoChevronBack } from 'react-icons/io5';
@@ -34,6 +37,9 @@ const DayPlaces: React.FC<PlaceProps> = ({
   sequence,
   setSequence
 }) => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const [selectedPlaces, setSelectedPlaces] = useState<Place[]>([]); // 선택한 장소 목록
   const handleDaySelect = (day: string) => {
     setSelectedDay(day);
@@ -44,6 +50,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
   const startDate = sessionStorage.getItem('startDate');
   const endDate = sessionStorage.getItem('endDate');
   const postId = sessionStorage.getItem('postId');
+  const userId = sessionStorage.getItem('userId');
 
   //지도 관련
   const clientId = process.env.NEXT_PUBLIC_NCP_CLIENT_ID!;
@@ -160,7 +167,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
           validPlaces.forEach(({ place, index }) => {
             // 마커 꾸미기
             const markerContent = `
-      <div class="text-white bg-primary-300 border-2 border-white size-6 rounded-full">${index + 1}</div>
+      <div class="text-white bg-primary-300 border-2 border-white size-6 rounded-full text-center text-sm">${index + 1}</div>
       `;
             // 저장된 장소 마커 생성하기
             new window.naver.maps.Marker({
@@ -259,99 +266,120 @@ const DayPlaces: React.FC<PlaceProps> = ({
     setSequence(index);
     next();
   };
+  const router = useRouter();
+  const handleCancel = () => {
+    const userConfirmed = confirm('Do you want to cancel this?');
+    if (!userConfirmed) {
+      return;
+    }
+    router.replace('/');
+  };
 
   return (
-    <div className="m-3 flex flex-col justify-center">
-      <div className="my-7 flex items-center">
-        <div className="icon-button">
-          <button onClick={prev} className="flex h-full w-full items-center justify-center">
-            <IoChevronBack size={24} />
-          </button>
-        </div>
-        <div className="flex-grow text-center">
-          <h1 className="text-lg font-bold">{region}</h1>
-          <p>
-            {startDate} - {endDate}
-          </p>
-        </div>
-      </div>
-
-      <div className="flex items-center">
-        <GrLocation className="size-5" /> <p className="ml-2 font-semibold">{region}</p>
-      </div>
-
-      <div id="map" style={{ width: '100%', height: '300px' }}></div>
-
-      <div>
-        <div className="mt-3 flex gap-2">
-          {['day1', 'day2', 'day3'].map((day, index) => (
-            <button
-              key={day}
-              className="rounded-full bg-grayscale-50 px-4 py-3 font-medium hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
-              onClick={() => handleDaySelect(day)}
-            >
-              {`Day ${index + 1}`}
+    <div className="flex flex-col justify-center">
+      <div className="my-5 flex items-center">
+        <div className="flex w-20 justify-center">
+          <div className="icon-button">
+            <button onClick={prev} className="flex h-full w-full items-center justify-center">
+              <IoChevronBack size={24} />
             </button>
-          ))}
+          </div>
+        </div>
+
+        <div className="flex w-[199px] flex-col items-center">
+          <h1 className="text-lg font-bold">{region}</h1>
+          <p>{formatDateRange(startDate, endDate)}</p>
+        </div>
+        <button className="flex w-20 justify-center font-medium text-[#FF7029]" onClick={handleCancel}>
+          Done
+        </button>
+      </div>
+
+      <div className="m-5 flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex">
+            <GrLocation className="size-5" />
+            <p className="ml-2 font-semibold">{region}</p>
+          </div>
+
+          <Link
+            href={`/${userId}/profilepage/regionpage`}
+            className="cursor-pointer font-semibold text-grayscale-500 underline"
+          >
+            Change Location
+          </Link>
+        </div>
+
+        <div id="map" style={{ width: '100%', height: '300px' }}></div>
+
+        <div>
+          <div className="mb-4 flex gap-2">
+            {['day1', 'day2', 'day3'].map((day, index) => (
+              <button
+                key={day}
+                className="rounded-full bg-grayscale-50 px-4 py-2 font-medium hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
+                onClick={() => handleDaySelect(day)}
+              >
+                {`Day ${index + 1}`}
+              </button>
+            ))}
+          </div>
+
+          {selectedDay === ''
+            ? ''
+            : [1, 2, 3, 4].map((number, index) => (
+                <div key={index} className="flex flex-col">
+                  <div className="mb-4 flex items-center">
+                    <p className="mr-2 size-6 rounded-full border-2 border-grayscale-50 bg-primary-300 text-center text-sm text-white">
+                      {number}
+                    </p>
+                    <button
+                      className="flex h-[35px] w-[284px] items-center justify-center rounded-lg border-2 border-grayscale-100 p-2 font-medium"
+                      onClick={() => handleAddSequence(index)}
+                    >
+                      Select Place
+                    </button>
+                  </div>
+                  {selectedDay === storedPlacesKey && selectedPlaces[index] && (
+                    <div key={index} className="flex justify-between p-4 hover:bg-gray-100">
+                      <div>
+                        <h3
+                          className="font-bold"
+                          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(selectedPlaces[index].title) }}
+                        />
+                        <div className="flex text-xs text-gray-400">
+                          <p>{selectedPlaces[index].category} •&nbsp;</p>
+                          <p className="text-xs text-gray-400">{selectedPlaces[index].roadAddress}</p>
+                        </div>
+
+                        <hr className="mb-2 border" />
+
+                        <textarea
+                          className="resize-none"
+                          placeholder="Introduce your place."
+                          value={descriptions[index] || ''}
+                          onChange={(e) => handleDescriptionChange(index, e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
         </div>
 
         {selectedDay === '' ? (
-          <p className="p-2 text-center">Please select a day</p>
+          ''
         ) : (
-          [1, 2, 3, 4].map((number, index) => (
-            <div key={index} className="flex flex-col">
-              <div className="mb-2 flex items-center">
-                <p className="size-6 rounded-full border-2 border-grayscale-50 bg-primary-300 text-center text-white">
-                  {number}
-                </p>
-                <button
-                  className="h-[35px] w-[284px] rounded-lg border-2 border-grayscale-100 p-2 font-medium"
-                  onClick={() => handleAddSequence(index)}
-                >
-                  Select Place
-                </button>
-              </div>
-              {selectedDay === storedPlacesKey && selectedPlaces[index] && (
-                <div key={index} className="flex justify-between border-b p-4 hover:bg-gray-100">
-                  <div>
-                    <h3
-                      className="font-bold"
-                      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(selectedPlaces[index].title) }}
-                    />
-                    <div className="flex text-xs text-gray-400">
-                      <p>{selectedPlaces[index].category} •&nbsp;</p>
-                      <p className="text-xs text-gray-400">{selectedPlaces[index].roadAddress}</p>
-                    </div>
-
-                    <hr className="mb-2 border" />
-
-                    <textarea
-                      className="resize-none"
-                      placeholder="Introduce your place."
-                      value={descriptions[index] || ''}
-                      onChange={(e) => handleDescriptionChange(index, e.target.value)}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-          ))
+          <>
+            <button
+              onClick={handlePlaceSave}
+              className="mx-auto h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-semibold text-white"
+            >
+              Next
+            </button>
+          </>
         )}
       </div>
-
-      {selectedDay === '' ? (
-        ''
-      ) : (
-        <>
-          <button
-            onClick={handlePlaceSave}
-            className="mx-auto my-5 h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-semibold text-white"
-          >
-            Next
-          </button>
-          <button onClick={goToStep4}>없앨 버튼</button>
-        </>
-      )}
     </div>
   );
 };

@@ -47,7 +47,7 @@ export default function Home() {
   useEffect(() => {
     const handleRouteChange = () => {
       if (!pathname.startsWith('/postpage/')) {
-        const keysToRemove = ['postId', 'startDate', 'endDate', 'day1', 'day2', 'day3'];
+        const keysToRemove = ['postId', 'startDate', 'endDate', 'day1', 'day2', 'day3', 'userId'];
         keysToRemove.forEach((key) => {
           sessionStorage.removeItem(key);
         });

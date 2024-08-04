@@ -26,7 +26,16 @@ function Navbar() {
     router.push(`/${user?.id}/mypage`);
   };
 
-  const handleLikesClick = () => {
+  const handlePostClick = () => {
+    if (!user) {
+      alert('로그인이 필요한 서비스입니다!!');
+      router.push('/login');
+      return;
+    }
+    router.push(`/postpage/${uuid}`);
+  };
+
+  const handleMypageClick = () => {
     if (!user) {
       alert('로그인이 필요한 서비스입니다!!');
       router.push('/login');
@@ -42,7 +51,7 @@ function Navbar() {
       router.push('/login');
       return;
     }
-    router.push(`/${user?.id}/chatpage`);
+    router.push(`/${user?.id}/chatlistpage`);
   };
 
   const uuid = uuidv4();
@@ -68,23 +77,26 @@ function Navbar() {
           <IoCalendarOutline size={24} />
           <span className="text-[10px]">Reservations</span>
         </div>
-        <Link href={`/postpage/${uuid}`}>
-          <div className="flex flex-col items-center rounded-full shadow-[0px_8px_19px_rgba(0,0,0,0.17)]">
-            <BsFillPlusCircleFill size={50} className="text-primary-300" />
-          </div>
-        </Link>
-        <Link href={`/${user?.id}/chatlistpage`}>
-          <div className="flex cursor-pointer flex-col items-center space-y-2 hover:text-primary-300">
-            <AiOutlineMessage size={24} />
-            <span className="text-[10px]">Messages</span>
-          </div>
-        </Link>
-        <Link href={`/${user?.id}/mypage`}>
-          <div className="flex cursor-pointer flex-col items-center space-y-2 hover:text-primary-300">
-            <BsPersonCircle size={24} />
-            <span className="text-[10px]">Mypage</span>
-          </div>
-        </Link>
+        <div
+          onClick={handlePostClick}
+          className="flex cursor-pointer flex-col items-center rounded-full shadow-[0px_8px_19px_rgba(0,0,0,0.17)]"
+        >
+          <BsFillPlusCircleFill size={50} className="text-primary-300" />
+        </div>
+        <div
+          onClick={handleMessagesClick}
+          className="flex cursor-pointer flex-col items-center space-y-2 hover:text-primary-300"
+        >
+          <AiOutlineMessage size={24} />
+          <span className="text-[10px]">Messages</span>
+        </div>
+        <div
+          onClick={handleMypageClick}
+          className="flex cursor-pointer flex-col items-center space-y-2 hover:text-primary-300"
+        >
+          <BsPersonCircle size={24} />
+          <span className="text-[10px]">Mypage</span>
+        </div>
       </div>
     </nav>
   );

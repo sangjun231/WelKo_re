@@ -42,19 +42,20 @@ const Calendar = ({ next, postId }: CalendarProps) => {
   }, [postId]);
 
   const handleDateSave = async () => {
-    // const supabase = createClient();
-    // const {
-    //   data: { user },
-    //   error
-    // } = await supabase.auth.getUser();
-    // if (error) {
-    //   console.error('Error getting user:', error);
-    //   return;
-    // }
-    //const user_id = user?.id as string;
+    const supabase = createClient();
+    const {
+      data: { user },
+      error
+    } = await supabase.auth.getUser();
+    if (error) {
+      console.error('Error getting user:', error);
+      return;
+    }
+    const userId = user?.id as string;
 
-    //const formatDateForDB = (date: Date | null) => {
-    // return date?.toISOString().split('T')[0];};
+    const formatDateForDB = (date: Date | null) => {
+      return date?.toISOString().split('T')[0];
+    };
 
     try {
       // 날짜 저장
@@ -64,10 +65,11 @@ const Calendar = ({ next, postId }: CalendarProps) => {
         //startDate: format(startOfDay(startDate), 'yy. M. d'),
         //endDate: format(startOfDay(endDate), 'M. d')
         //id: postId // postId를 포함하여 기존 데이터를 업데이트};
-        const start = format(startOfDay(startDate), 'yy.M.d');
-        const end = format(startOfDay(endDate), 'M.d');
+        const start = formatDateForDB(startDate) as string;
+        const end = formatDateForDB(endDate) as string;
         sessionStorage.setItem('startDate', start);
         sessionStorage.setItem('endDate', end);
+        sessionStorage.setItem('userId', userId);
         next();
       } else {
         alert('Please select a date');
@@ -84,19 +86,23 @@ const Calendar = ({ next, postId }: CalendarProps) => {
 
   return (
     <div className="flex flex-col justify-center">
-      <div className="my-7 flex items-center">
-        <BackButton />
-        <h1 className="m-auto text-xl font-semibold">Make tour</h1>
+      {/* 헤더 부분 디자인 */}
+      <div className="my-5 flex items-center">
+        <div className="flex w-20 justify-center">
+          <BackButton />
+        </div>
+
+        <h1 className="flex w-[199px] justify-center text-xl font-semibold">Make tour</h1>
       </div>
 
-      <div className="flex flex-col gap-7 rounded-xl border-x-0 border-y-2 border-gray-200 shadow-xl">
+      <div className="flex flex-col gap-7 rounded-xl border-x-0 border-y-2 border-gray-200 px-5 shadow-xl">
         <h2 className="ml-3 mt-7 text-2xl font-bold">When's your tour?</h2>
 
-        <div className="flex w-[360px] overflow-x-auto">
+        <div className="flex w-[320px] overflow-x-auto">
           {months.map((month, index) => (
             <button
               key={index}
-              className="mx-1 flex h-20 w-[96px] flex-col items-center justify-center rounded-lg border-2 px-14 text-black hover:bg-gray-100"
+              className="mx-1 flex h-[78px] w-[96px] flex-col items-center justify-center rounded-lg border-2 px-[25px] text-black hover:bg-gray-100"
               onClick={() => setSelectedMonth(addMonths(new Date(), month))}
             >
               <PiCalendarDots className="mb-1 size-5 text-grayscale-500" />
@@ -118,7 +124,7 @@ const Calendar = ({ next, postId }: CalendarProps) => {
         />
 
         <button
-          className="mx-auto h-14 w-[288px] rounded-2xl bg-primary-300 p-2 text-lg text-white"
+          className="mx-auto mb-5 h-14 w-[288px] rounded-2xl bg-primary-300 p-2 text-lg text-white"
           onClick={handleDateSave}
         >
           {startDate && endDate
@@ -127,7 +133,6 @@ const Calendar = ({ next, postId }: CalendarProps) => {
               ? `${format(selectedMonth, 'yyyy MMM')} Select`
               : 'Select'}
         </button>
-        <button onClick={next}>없앨 버튼</button>
       </div>
     </div>
   );

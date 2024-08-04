@@ -13,14 +13,18 @@ const config: Config = {
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))'
       },
       colors: {
+        'text-color': 'var(--Light-Text-Color, #1B1E28)',
         'grayscale-50': 'var(--Grayscale-50, #F7F7F9)',
         'grayscale-100': 'var(--Grayscale-100, #DFDFE0)',
+        'grayscale-400': 'var(--Grayscale-400, #939394)',
         'grayscale-500': 'var(--Grayscale-500, #7A7A7A)',
         'grayscale-600': 'var(--Grayscale-600, #606061)',
         'grayscale-700': 'var(--Grayscale-700, #474747)',
         'grayscale-800': 'var(--Grayscale-800, #2E2E2E)',
         'grayscale-900': 'var(--Grayscale-900, #141414)',
-        'primary-300': 'var(--Primary-300, #B95FAB)'
+        'primary-300': 'var(--Primary-300, #B95FAB)',
+        'primary-900': '#21111F',
+        'action-color': '#FF7029'
       },
       boxShadow: {
         'custom-navbar': '0px -8px 15px 0px rgba(0, 0, 0, 0.05)'

@@ -5,7 +5,7 @@ import DOMPurify from 'dompurify';
 import { useEffect, useState } from 'react';
 import { GrLocation } from 'react-icons/gr';
 import { IoIosSearch } from 'react-icons/io';
-import { IoChevronBack } from 'react-icons/io5';
+import { IoChevronBack, IoCloseOutline } from 'react-icons/io5';
 
 type SearchAddressProps = {
   prev: () => void;
@@ -14,6 +14,9 @@ type SearchAddressProps = {
 };
 
 const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
@@ -62,6 +65,15 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
       console.error('Error searching places:', error);
     }
   };
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      searchPlaces();
+    }
+  };
+  const searchValueinit = () => {
+    setSearchQuery('');
+  };
+
   // 선택한 장소 목록에 추가 (선택버튼)
   const handlePlaceSelect = (place: Place) => {
     setSelectedPlace(place);
@@ -101,11 +113,13 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex">
-        <div className="icon-button">
-          <button onClick={prev} className="flex h-full w-full items-center justify-center">
-            <IoChevronBack size={24} />
-          </button>
+      <div className="my-5 mr-5 flex items-center">
+        <div className="flex w-20 justify-center">
+          <div className="icon-button">
+            <button onClick={prev} className="flex h-full w-full items-center justify-center">
+              <IoChevronBack size={24} />
+            </button>
+          </div>
         </div>
 
         <div className="flex h-[48px] items-center rounded-xl bg-grayscale-50 px-2">
@@ -113,12 +127,19 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleKeyPress}
             placeholder={`Select ${selectedDay} Place`}
             className="h-[48px] w-full bg-grayscale-50 p-4"
           />
-          <button onClick={searchPlaces}>
-            <IoIosSearch className="size-6 text-grayscale-500" />
-          </button>
+          {searchQuery ? (
+            <button onClick={searchValueinit}>
+              <IoCloseOutline className="size-6 text-grayscale-500" />
+            </button>
+          ) : (
+            <button onClick={searchPlaces}>
+              <IoIosSearch className="size-6 text-grayscale-500" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -132,7 +153,7 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
               <button
                 key={index}
                 onClick={() => handlePlaceSelect(place)}
-                className="flex w-full flex-row border-b p-4 hover:bg-gray-100 active:bg-gray-100"
+                className="flex w-full flex-row p-4 hover:bg-gray-100 active:bg-gray-100"
               >
                 <div className="mr-3 flex size-11 items-center justify-center rounded-lg bg-grayscale-50">
                   <GrLocation className="size-5" />

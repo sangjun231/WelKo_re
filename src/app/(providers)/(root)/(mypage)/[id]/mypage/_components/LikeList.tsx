@@ -36,38 +36,67 @@ export default function LikeList() {
     enabled: !!userId
   });
 
+  const formatPrice = (price: number | null): string => {
+    if (price === null) {
+      return 'N/A';
+    }
+    return `$${price.toLocaleString('en-US')}`;
+  };
+
   useEffect(() => {
     refetch();
   }, [userId, refetch]);
 
-  if (isPending) return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  if (isPending) return <div className="flex items-center justify-center">Loading...</div>;
 
   if (error) {
     return <div className="flex h-screen items-center justify-center">Error: {error.message}</div>;
   }
 
   if (!data || data.length === 0) {
-    return <div className="flex h-screen items-center justify-center">No posts found</div>;
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="gap-[8px]">
+          <Image src="/icons/tabler-icon-heart.svg" alt="no wishlist" width={44} height={44} />
+          <p className="text-[14px] font-semibold">You don&apos;t have any Wishlist</p>
+          <p className="text-[12px]">When you recieve a new meaasge, it will appear here.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="max-w-[360px]">
       {data.map((post) => (
-        <div key={post.id} className="relative">
-          <p>{new Date(post.created_at).toLocaleString()}</p>
-          <Link href={`/detail/${post.id}`}>
-            <div className="flex">
-              <Image
-                className="mb-[20px] mr-2"
-                src={post.image ?? '/icons/upload.png'}
-                alt={post.title ?? 'Default title'}
-                width={76}
-                height={76}
-              />
-              <p className="overflow-hidden text-ellipsis whitespace-nowrap text-[14px] font-bold">{post.title}</p>
+        <div key={post.id} className="relative mb-[16px]">
+          <div className="flex">
+            <div className="relative">
+              <Link href={`/detail/${post.id}`}>
+                <Image
+                  src={post.image ?? '/icons/upload.png'}
+                  alt={post.title ?? 'Default title'}
+                  width={80}
+                  height={100}
+                  style={{ width: '80px', height: '100px' }}
+                />
+              </Link>
+              <Like postId={post.id} userId={user.id} />
             </div>
-          </Link>
-          <Like postId={post.id} userId={user.id} />
+            <Link href={`/detail/${post.id}`}>
+              <div className="ml-[8px] space-y-[4px]">
+                <p className="text-primary-900 line-clamp-1 text-[14px] font-semibold">{post.title}</p>
+                <p className="text-[14px] text-grayscale-500">
+                  {post.startDate && post.endDate
+                    ? `${new Date(post.startDate).toLocaleDateString()} - ${new Date(post.endDate).toLocaleDateString()}`
+                    : 'No date information'}
+                </p>
+                <p className="text-[13px] font-medium text-grayscale-700">
+                  <span className="font-semibold text-primary-300">{formatPrice(post.price)}</span>
+                  /Person
+                </p>
+              </div>
+            </Link>
+          </div>
         </div>
       ))}
     </div>
