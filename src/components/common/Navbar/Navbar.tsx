@@ -56,7 +56,7 @@ function Navbar() {
 
   const uuid = uuidv4();
   // 특정 경로에서 Navbar를 숨기기
-  const excludedRoutes = ['/login', `/postpage/${uuid}`];
+  const excludedRoutes = ['/login', `/postpage/${uuid}`, '/chatpage'];
   if (excludedRoutes.includes(pathname) || pathname.startsWith('/detail')) {
     return null;
   }

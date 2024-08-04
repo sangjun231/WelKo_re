@@ -10,7 +10,6 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       .from('likes')
       .select('post_id, posts (id, title, content, image, startDate, endDate, price)')
       .eq('user_id', userId);
-    console.log(data);
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }

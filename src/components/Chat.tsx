@@ -49,8 +49,8 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
   }, [senderId, receiverId, postId]);
 
   return (
-    <div className="flex h-screen max-w-[360px] flex-col border border-gray-300 text-[14px]">
-      <div className="overflow-y-auto p-4">
+    <div className="flex h-screen flex-col text-[14px]">
+      <div className="overflow-y-auto">
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -58,30 +58,53 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
           >
             {msg.sender_id !== senderId && msg.sender && (
               <div className="flex items-center">
-                <Image src={msg.sender.avatar} alt="avatar" width={24} height={24} className="mr-2 rounded-full" />
-                <p className="mr-2 text-sm font-bold">{msg.sender.name}</p>
+                <Image
+                  className="mr-2 rounded-full"
+                  src={msg.sender.avatar}
+                  alt="avatar"
+                  width={44}
+                  height={44}
+                  style={{ width: '44px', height: '44px' }}
+                />
+                <p className="text-[13px] font-semibold">{msg.sender.name}</p>
               </div>
             )}
             <div
-              className={`max-w-[240px] break-all rounded p-2 ${msg.sender_id === senderId ? 'bg-green-200' : 'bg-gray-200'}`}
+              className={`mt-[7px] max-w-[240px] break-all px-[8px] py-[12px] ${
+                msg.sender_id === senderId
+                  ? 'bg-primary-50 rounded-br-0 rounded-bl-[16px] rounded-tl-[16px] rounded-tr-[16px]'
+                  : 'rounded-bl-0 rounded-br-[16px] rounded-tl-[16px] rounded-tr-[16px] bg-grayscale-50'
+              }`}
             >
-              <p>{msg.content}</p>
+              <p className="text-[14px]">{msg.content}</p>
             </div>
-            <p className={` ${msg.sender_id === senderId ? 'right-0' : 'left-0'} mt-2 text-[10px] text-gray-500`}>
+            <p
+              className={` ${msg.sender_id === senderId ? 'right-0' : 'left-0'} mt-[4px] text-[10px] text-grayscale-500`}
+            >
               {new Date(msg.created_at).toLocaleString()}
             </p>
           </div>
         ))}
       </div>
-      <div className="flex border-t border-gray-300 p-4">
+      <div className="container mx-auto flex items-center justify-between p-8">
         <input
+          className="flex-1 rounded-[12px] border bg-grayscale-50 p-2 text-[16px]"
           type="text"
+          placeholder="Placeholder text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          className="flex-1 rounded border border-gray-300 p-2"
         />
-        <button onClick={handleSend} className="ml-2 rounded bg-blue-500 p-2 text-white">
-          Send
+        <button
+          className="mx-auto ml-[8px] flex h-[48px] w-[48px] items-center justify-center rounded-[24px] bg-primary-300"
+          onClick={handleSend}
+        >
+          <Image
+            src="/icons/tabler-icon-send.svg"
+            alt="Send"
+            width={24}
+            height={24}
+            style={{ width: '24px', height: '24px' }}
+          />
         </button>
       </div>
     </div>
