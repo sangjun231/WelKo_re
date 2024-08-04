@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { createClient } from '@/utils/supabase/client';
 import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
+import { createClient } from '@/utils/supabase/client';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 const supabase = createClient();
 
@@ -45,7 +45,7 @@ const PostsList = () => {
         if (page === 1) {
           setPosts(data || []);
         } else {
-          setPosts(prevPosts => [...prevPosts, ...(data || [])]);
+          setPosts((prevPosts) => [...prevPosts, ...(data || [])]);
         }
         setHasMore(data && data.length === POSTS_PER_PAGE);
       }
@@ -56,38 +56,36 @@ const PostsList = () => {
   }, [sortOrder, page]);
 
   const loadMorePosts = () => {
-    setPage(prevPage => prevPage + 1);
+    setPage((prevPage) => prevPage + 1);
   };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'USD'
     }).format(price);
   };
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">게시물 목록</h2>
+      <h2 className="mb-4 text-xl font-bold">게시물 목록</h2>
       <InfiniteScroll loading={loading} hasMore={hasMore} onLoadMore={loadMorePosts}>
         <ul>
           {posts.map((post) => (
-            <li key={post.id} className="mb-4 border p-2 rounded-md flex">
+            <li key={post.id} className="mb-4 flex rounded-md border p-2">
               <Link href={`/detail/${post.id}`} className="flex w-full">
                 {post.image ? (
                   <Image src={post.image} alt={post.title} width={96} height={96} className="mr-2 w-24" />
                 ) : (
-                  <div className="mr-2 w-24 h-24 bg-gray-200 flex items-center justify-center">
-                    이미지 없음
-                  </div>
+                  <div className="mr-2 flex h-24 w-24 items-center justify-center bg-gray-200">이미지 없음</div>
                 )}
                 <div className="flex flex-col justify-between">
                   <div>
-                    <h3 className="line-clamp-1 font-bold text-xl">{post.title}</h3>
+                    <h3 className="line-clamp-1 text-xl font-bold">{post.title}</h3>
                     <p className="text-gray-500">{new Date(post.created_at).toLocaleDateString()}</p>
                     <p className="line-clamp-1 text-gray-700">{post.content}</p>
                   </div>
-                  <div className="text-sm font-bold mt-2">{formatPrice(post.price)}</div>
+                  <div className="mt-2 text-sm font-bold">{formatPrice(post.price)}</div>
                 </div>
               </Link>
             </li>

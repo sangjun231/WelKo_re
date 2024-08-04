@@ -1,13 +1,14 @@
 'use client';
 
-import { IoCalendarOutline } from 'react-icons/io5';
-import { RiHome3Line } from 'react-icons/ri';
-import { AiOutlineMessage } from 'react-icons/ai';
-import { BsFillPlusCircleFill, BsPersonCircle } from 'react-icons/bs';
-import Link from 'next/link';
 import useAuthStore from '@/zustand/bearsStore';
 import { useMyPageStore } from '@/zustand/mypageStore';
+import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { AiOutlineMessage } from 'react-icons/ai';
+import { BsFillPlusCircleFill, BsPersonCircle } from 'react-icons/bs';
+import { IoCalendarOutline } from 'react-icons/io5';
+import { RiHome3Line } from 'react-icons/ri';
+import { v4 as uuidv4 } from 'uuid';
 
 function Navbar() {
   const router = useRouter();
@@ -31,7 +32,7 @@ function Navbar() {
       router.push('/login');
       return;
     }
-    router.push(`/postpage`);
+    router.push(`/postpage/${uuid}`);
   };
 
   const handleMypageClick = () => {
@@ -53,8 +54,9 @@ function Navbar() {
     router.push(`/${user?.id}/chatlistpage`);
   };
 
+  const uuid = uuidv4();
   // 특정 경로에서 Navbar를 숨기기
-  const excludedRoutes = ['/login', '/postpage', '/chatpage'];
+  const excludedRoutes = ['/login', `/postpage/${uuid}`, '/chatpage'];
   if (excludedRoutes.includes(pathname) || pathname.startsWith('/detail')) {
     return null;
   }
@@ -77,7 +79,7 @@ function Navbar() {
         </div>
         <div
           onClick={handlePostClick}
-          className="flex flex-col items-center rounded-full shadow-[0px_8px_19px_rgba(0,0,0,0.17)]"
+          className="flex cursor-pointer flex-col items-center rounded-full shadow-[0px_8px_19px_rgba(0,0,0,0.17)]"
         >
           <BsFillPlusCircleFill size={50} className="text-primary-300" />
         </div>

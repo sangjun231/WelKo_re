@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { IoIosArrowRoundUp } from 'react-icons/io';
 
 function UpButton() {
   const [toggleButton, setToggleButton] = useState(false);
@@ -22,8 +23,11 @@ function UpButton() {
 
   return toggleButton ? (
     <div>
-      <button onClick={goToTop} className="fixed bottom-16 right-4 rounded-full bg-blue-500 p-2 text-white shadow-lg">
-        UP
+      <button
+        onClick={goToTop}
+        className="fixed bottom-16 right-4 flex h-11 w-11 items-center justify-center rounded-full border border-black bg-white"
+      >
+        <IoIosArrowRoundUp className="size-8" />
       </button>
     </div>
   ) : null;

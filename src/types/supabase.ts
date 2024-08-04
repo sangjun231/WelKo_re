@@ -274,15 +274,7 @@ export type Database = {
           places?: Json | null
           post_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "schedule_post_id_fkey"
-            columns: ["post_id"]
-            isOneToOne: false
-            referencedRelation: "posts"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       users: {
         Row: {
