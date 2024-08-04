@@ -13,7 +13,7 @@ const MyPage = () => {
   };
 
   return (
-    <div>
+    <div className='mx-[20px] mt-[56px]'>
       <p className="mb-4">ChatListPage</p>
       <button onClick={handleBack}>Go Back</button>
       <div>
