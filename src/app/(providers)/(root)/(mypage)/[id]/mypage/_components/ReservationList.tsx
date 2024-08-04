@@ -148,14 +148,14 @@ export default function ReservationList() {
   }
 
   return (
-    <div className="mb-10 max-w-[360px]">
+    <div className="max-w-[360px]">
       {filteredPosts.map((post) => {
         const payment = paymentsQuery.data?.find((pay) => pay.post_id === post.id);
         const status = payment ? tourStatus(post.endDate, payment.pay_state ?? '') : 'N/A';
         const review = reviews.find((review) => review.post_id === post.id);
 
         return (
-          <div key={post.id} className="mb-[10px] border-b-4 pb-[20px]">
+          <div key={post.id} className="mb-[20px] border-b pb-[20px]">
             <div className="flex justify-between">
               <div>
                 <p className="text-[14px] font-semibold text-grayscale-900">
@@ -178,7 +178,7 @@ export default function ReservationList() {
                   style={{ width: '80px', height: '80px' }}
                 />
                 <div className="ml-[4px] flex flex-col gap-[4px]">
-                  <p className="text-primary-900 line-clamp-1 text-[14px] font-semibold">{post.title ?? 'No Title'}</p>
+                  <p className="line-clamp-1 text-[14px] font-semibold text-primary-900">{post.title ?? 'No Title'}</p>
                   <p className="text-[14px] text-grayscale-500">
                     {post.startDate ?? 'No Start Date'} - {post.endDate ?? 'No End Date'}
                   </p>

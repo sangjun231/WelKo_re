@@ -82,7 +82,7 @@ export default function PostList() {
         const status = tourStatus(post.endDate);
 
         return (
-          <div key={post.id} className="mb-[10px] border-b-4 pb-[20px]">
+          <div key={post.id} className="mb-[20px] border-b pb-[20px]">
             <div className="mb-[12px] flex justify-between">
               <div>
                 <p className="text-[14px] font-semibold text-grayscale-900">
@@ -100,7 +100,7 @@ export default function PostList() {
               </div>
             </div>
             <Link href={`/detail/${post.id}`}>
-              <div className="mb-[12px] flex">
+              <div className="flex">
                 <Image
                   src={post.image ?? '/icons/upload.png'}
                   alt={post.title ?? 'Default title'}
@@ -109,7 +109,7 @@ export default function PostList() {
                   style={{ width: '80px', height: '80px' }}
                 />
                 <div className="ml-[4px] flex flex-col gap-[4px]">
-                  <p className="text-primary-900 line-clamp-1 text-[14px] font-semibold">{post.title}</p>
+                  <p className="line-clamp-1 text-[14px] font-semibold text-primary-900">{post.title}</p>
                   <p className="text-[14px] text-grayscale-500">
                     {post.startDate} - {post.endDate}
                   </p>
@@ -123,7 +123,7 @@ export default function PostList() {
 
             {status === 'Upcoming Tour' && (
               <button
-                className="w-full rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
+                className="mt-[12px] w-full rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
                 onClick={() => {
                   handleReservationList(post.id);
                 }}
