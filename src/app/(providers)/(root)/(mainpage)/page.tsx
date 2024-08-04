@@ -5,7 +5,6 @@ import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import { createClient } from '@/utils/supabase/client';
 import axios from 'axios';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import PostsList from './_components/PostsList';
 
@@ -41,21 +40,6 @@ export default function Home() {
 
     fetchUserId();
   }, [supabase]);
-
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  useEffect(() => {
-    const handleRouteChange = () => {
-      if (!pathname.startsWith('/postpage/')) {
-        const keysToRemove = ['postId', 'startDate', 'endDate', 'day1', 'day2', 'day3', 'userId'];
-        keysToRemove.forEach((key) => {
-          sessionStorage.removeItem(key);
-        });
-      }
-    };
-
-    handleRouteChange();
-  }, [pathname, searchParams]);
 
   return (
     <div>
