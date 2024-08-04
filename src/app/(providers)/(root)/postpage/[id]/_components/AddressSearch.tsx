@@ -72,6 +72,7 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
   };
   const searchValueinit = () => {
     setSearchQuery('');
+    setSearchResults([]);
   };
 
   // 선택한 장소 목록에 추가 (선택버튼)
@@ -131,7 +132,7 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
             placeholder={`Select ${selectedDay} Place`}
             className="h-[48px] w-full bg-grayscale-50 p-4"
           />
-          {searchQuery ? (
+          {searchResults.length > 0 ? (
             <button onClick={searchValueinit}>
               <IoCloseOutline className="size-6 text-grayscale-500" />
             </button>

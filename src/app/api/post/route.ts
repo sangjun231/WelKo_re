@@ -18,7 +18,6 @@ export async function POST(request: NextRequest) {
   const {
     user_id,
     name,
-    id,
     title,
     content,
     image,
@@ -30,31 +29,37 @@ export async function POST(request: NextRequest) {
     endDate
   }: Partial<Tables<'posts'>> = data;
 
-  if (!id) {
+  if (!user_id) {
     return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
   }
 
   try {
-    const { error: insertError } = await supabase.from('posts').insert({
-      user_id,
-      name,
-      title,
-      content,
-      image,
-      maxPeople,
-      tags,
-      price,
-      selectedPrices,
-      startDate,
-      endDate
-    });
+    const { data: insertedData, error: insertError } = await supabase
+      .from('posts')
+      .insert({
+        user_id,
+        name,
+        title,
+        content,
+        image,
+        maxPeople,
+        tags,
+        price,
+        selectedPrices,
+        startDate,
+        endDate
+      })
+      .select();
 
     if (insertError) {
       console.error('Error inserting dates:', insertError.message);
-      return NextResponse.json({ error: insertError.message }, { status: 500 });
+      return NextResponse.json({ error: insertError.message, details: insertError }, { status: 500 });
     }
-
-    return NextResponse.json({ message: 'Post inserted successfully', operation: 'insert' }, { status: 200 });
+    const newPostId = insertedData[0].id;
+    return NextResponse.json(
+      { message: 'Post inserted successfully', operation: 'insert', id: newPostId },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Unexpected error:', error);
     return NextResponse.json({ error: 'Unexpected error occurred' }, { status: 500 });

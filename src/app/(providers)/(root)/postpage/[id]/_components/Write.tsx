@@ -1,6 +1,6 @@
 'use client';
 import { formatDateRange } from '@/utils/detail/functions';
-import { upsertDate } from '@/utils/post/postData';
+import { savePlaces, upsertDate } from '@/utils/post/postData';
 import { createClient } from '@/utils/supabase/client';
 import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
@@ -119,18 +119,35 @@ const Write = ({ goToStep2, region }: { goToStep2: () => void; region: string })
     }
   };
 
-  const addMutation = useMutation({
-    mutationFn: upsertDate
+  // 상세 내용 작성 후(post_id 생성된 후) 장소 저장
+  const addMutationForPost = useMutation({
+    mutationFn: upsertDate,
+    onSuccess: (data) => {
+      const newPostId = data.id;
+      if (newPostId) {
+        handlePlaceSave(newPostId);
+      }
+    },
+    onError: (error) => {
+      console.error('Error saving post:', error);
+    }
+  });
+
+  const addMutationForPlace = useMutation({
+    mutationFn: savePlaces,
+    onSuccess: (data) => {
+      console.log('Places saved successfully:', data);
+      alert('Saved!');
+    },
+    onError: (error) => {
+      console.error('Error saving places:', error);
+      alert('Failed to save places.');
+    }
   });
 
   const handleSavePost = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const postId = sessionStorage.getItem('postId');
 
-    if (!postId) {
-      console.error('Post ID not found');
-      return;
-    }
     const {
       data: { user },
       error
@@ -145,10 +162,9 @@ const Write = ({ goToStep2, region }: { goToStep2: () => void; region: string })
       return;
     }
 
-    addMutation.mutate({
+    addMutationForPost.mutate({
       user_id: user?.id,
       name: user?.user_metadata.name,
-      id: postId,
       title,
       content,
       image,
@@ -159,7 +175,33 @@ const Write = ({ goToStep2, region }: { goToStep2: () => void; region: string })
       startDate,
       endDate
     });
-    alert('Saved!');
+  };
+
+  const handlePlaceSave = async (postId: string) => {
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const key = sessionStorage.key(i);
+      if (key?.startsWith('day')) {
+        const value = JSON.parse(sessionStorage.getItem(key)!);
+        console.log(`Processing ${key}:`, value);
+
+        if (Array.isArray(value) && value.length > 0) {
+          const placeData = {
+            post_id: postId,
+            day: key,
+            places: value.map((place) => ({
+              title: place.title,
+              category: place.category,
+              roadAddress: place.roadAddress,
+              description: place.description
+            })),
+            lat: value.map((place) => place.latitude),
+            long: value.map((place) => place.longitude),
+            area: region
+          };
+          addMutationForPlace.mutate(placeData);
+        }
+      }
+    }
     router.replace('/');
   };
 

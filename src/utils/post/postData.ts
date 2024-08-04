@@ -4,7 +4,7 @@ import axios from 'axios';
 export const upsertDate = async (datePostData: Partial<Tables<'posts'>>) => {
   try {
     const response = await axios.post('/api/post', datePostData);
-    return response;
+    return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error);

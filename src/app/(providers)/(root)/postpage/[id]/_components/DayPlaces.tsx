@@ -4,9 +4,8 @@ import { useCurrentPosition } from '@/hooks/Map/useCurrentPosition';
 import { useNaverMapScript } from '@/hooks/Map/useNaverMapScript';
 import { Place } from '@/types/types';
 import { formatDateRange } from '@/utils/detail/functions';
-import { savePlaces, translateAddress } from '@/utils/post/postData';
+import { translateAddress } from '@/utils/post/postData';
 import { createClient } from '@/utils/supabase/client';
-import { useMutation } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -212,56 +211,6 @@ const DayPlaces: React.FC<PlaceProps> = ({
     }
   };
 
-  //장소 저장 핸들러
-  const addMutation = useMutation({
-    mutationFn: savePlaces
-  });
-
-  const handlePlaceSave = async () => {
-    if (!postId) {
-      console.error('Post ID not found');
-      return;
-    }
-
-    for (let i = 0; i < sessionStorage.length; i++) {
-      const key = sessionStorage.key(i);
-      if (key?.startsWith('day')) {
-        // 'day'로 시작하는 key 값만 처리
-        const value = JSON.parse(sessionStorage.getItem(key)!);
-
-        if (Array.isArray(value) && value.length > 0) {
-          // 유효한 장소 정보만 처리
-          addMutation.mutate(
-            {
-              post_id: postId as string,
-              day: key,
-              places: value.map((place, index) => ({
-                title: place.title,
-                category: place.category,
-                roadAddress: place.roadAddress,
-                description: descriptions[index]
-              })),
-              lat: value.map((place) => place.latitude),
-              long: value.map((place) => place.longitude),
-              area: region
-            },
-            {
-              onSuccess: () => {
-                setDescriptions({});
-                alert('Saved!');
-              },
-              onError: (error) => {
-                console.error('Error saving places:', error);
-                alert('Failed to save.');
-              }
-            }
-          );
-        }
-      }
-    }
-    goToStep4();
-  };
-
   const handleAddSequence = (index: number) => {
     setSequence(index);
     next();
@@ -329,40 +278,44 @@ const DayPlaces: React.FC<PlaceProps> = ({
             ? ''
             : [1, 2, 3, 4].map((number, index) => (
                 <div key={index} className="flex flex-col">
-                  <div className="mb-4 flex items-center">
-                    <p className="mr-2 size-6 rounded-full border-2 border-grayscale-50 bg-primary-300 text-center text-sm text-white">
-                      {number}
-                    </p>
-                    <button
-                      className="flex h-[35px] w-[284px] items-center justify-center rounded-lg border-2 border-grayscale-100 p-2 font-medium"
-                      onClick={() => handleAddSequence(index)}
-                    >
-                      Select Place
-                    </button>
-                  </div>
-                  {selectedDay === storedPlacesKey && selectedPlaces[index] && (
-                    <div key={index} className="flex justify-between p-4 hover:bg-gray-100">
-                      <div>
-                        <h3
-                          className="font-bold"
-                          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(selectedPlaces[index].title) }}
-                        />
-                        <div className="flex text-xs text-gray-400">
-                          <p>{selectedPlaces[index].category} •&nbsp;</p>
-                          <p className="text-xs text-gray-400">{selectedPlaces[index].roadAddress}</p>
-                        </div>
-
-                        <hr className="mb-2 border" />
-
-                        <textarea
-                          className="resize-none"
-                          placeholder="Introduce your place."
-                          value={descriptions[index] || ''}
-                          onChange={(e) => handleDescriptionChange(index, e.target.value)}
-                        />
-                      </div>
+                  <div className="mb-4 flex">
+                    <div className="relative">
+                      <p className="relative z-10 mr-2 size-6 rounded-full border-2 border-grayscale-50 bg-primary-300 text-center text-sm text-white">
+                        {number}
+                      </p>
+                      <div className="absolute left-1/3 h-full w-0.5 -translate-x-1/2 bg-grayscale-100"></div>
                     </div>
-                  )}
+
+                    <div className="rounded-2xl shadow-lg">
+                      <button
+                        className="flex h-[35px] w-[284px] items-center justify-center rounded-lg border-2 border-grayscale-100 p-2 font-medium"
+                        onClick={() => handleAddSequence(index)}
+                      >
+                        Select Place
+                      </button>
+                      {selectedDay === storedPlacesKey && selectedPlaces[index] && (
+                        <div key={index} className="p-4 hover:bg-gray-100">
+                          <h3
+                            className="font-bold"
+                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(selectedPlaces[index].title) }}
+                          />
+                          <div className="flex flex-wrap text-xs text-gray-400">
+                            <p>{selectedPlaces[index].category} •&nbsp;</p>
+                            <p className="text-xs text-gray-400">{selectedPlaces[index].roadAddress}</p>
+                          </div>
+
+                          <hr className="my-2" />
+
+                          <textarea
+                            className="h-full w-full resize-none p-2"
+                            placeholder="Introduce your place."
+                            value={descriptions[index] || ''}
+                            onChange={(e) => handleDescriptionChange(index, e.target.value)}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               ))}
         </div>
@@ -372,7 +325,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
         ) : (
           <>
             <button
-              onClick={handlePlaceSave}
+              onClick={goToStep4}
               className="mx-auto h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-semibold text-white"
             >
               Next
