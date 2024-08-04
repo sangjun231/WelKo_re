@@ -139,36 +139,42 @@ const ChatList = ({ userId }: ChatListProps) => {
           const isNewMessage = !newMessages[chatId] && firstMessage.sender_id !== userId;
 
           return (
-            <div className="mb-4" key={index} onClick={() => handleChatClick(chat)}>
-              {postDetails && (
-                <div className="flex items-center">
+            <div className="mb-[32px]" key={index} onClick={() => handleChatClick(chat)}>
+              {postDetails && senderDetails && (
+                <div className="flex">
                   <Image
-                    className="mr-4"
+                    className="rounded"
                     src={postDetails.image || '/icons/upload.png'}
                     alt={postDetails.title || 'Default name'}
-                    width={40}
-                    height={40}
+                    width={64}
+                    height={64}
+                    style={{ width: '64px', height: '64px' }}
                   />
-                  <p>{postDetails.title}</p>
+                  <div className="ml-[8px] flex w-full flex-col gap-[5px]">
+                    <div className="flex items-center justify-between">
+                      <p className="text-[13px] font-medium">{postDetails.title}</p>
+                      <p className="text-[10px] text-grayscale-500">
+                        {new Date(firstMessage?.created_at).toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-[12px]">{firstMessage?.content}</p>
+                      {isNewMessage && <span className="w-[8px] h-[8px] rounded-full  bg-action-color"></span>}
+                    </div>
+                    <div className="flex">
+                      <Image
+                        className="items-center rounded-full"
+                        src={senderDetails.avatar || '/icons/upload.png'}
+                        alt={senderDetails.name || 'Default name'}
+                        width={16}
+                        height={16}
+                        style={{ width: '16px', height: '16px' }}
+                      />
+                      <p className="ml-[4px] text-[10px] text-grayscale-500">{senderDetails.name}</p>
+                    </div>
+                  </div>
                 </div>
               )}
-              {senderDetails && (
-                <div className="flex items-center">
-                  <Image
-                    className="mr-4"
-                    src={senderDetails.avatar || '/icons/upload.png'}
-                    alt={senderDetails.name || 'Default name'}
-                    width={40}
-                    height={40}
-                  />
-                  <p>{senderDetails.name}</p>
-                </div>
-              )}
-              <div className="flex justify-between">
-                <p>{firstMessage?.content}</p>
-                {isNewMessage && <span className="text-red-600">New</span>}
-              </div>
-              <p>{new Date(firstMessage?.created_at).toLocaleString()}</p>
             </div>
           );
         })}
