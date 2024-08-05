@@ -44,8 +44,6 @@ export default function Home() {
   return (
     <div>
       <Header />
-      <h1>Welcome to Home Page</h1>
-      {userId ? <Link href={`/${userId}/mypage`}>Go to My Page</Link> : <p>Loading...</p>}
       <PostsList />
     </div>
   );

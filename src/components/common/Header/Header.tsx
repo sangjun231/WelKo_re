@@ -61,7 +61,7 @@ function Header() {
         <div className="flex justify-between">
           <h1>LOGO</h1>
           {isLoggedIn ? (
-            <div className="relative mr-5 flex">
+            <div className="relative mr-5 flex gap-3">
               <Link href={`/postpage/${uuid}`}>
                 <button className="flex items-center space-x-2 rounded-md border-l-stone-400">Writing</button>
               </Link>
