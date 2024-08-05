@@ -60,9 +60,13 @@ function Navbar() {
   if (excludedRoutes.includes(pathname) || pathname.startsWith('/detail')) {
     return null;
   }
+  const chatpageRegex = /\/[a-f0-9-]+\/[a-f0-9-]+\/chatpage/;
+  if (chatpageRegex.test(pathname)) {
+    return null;
+  }
 
   return (
-    <nav className="flex border-t border-grayscale-100 text-grayscale-500">
+    <nav className="sticky bottom-0 flex border-t border-grayscale-100 bg-white text-grayscale-500">
       <div className="container mx-auto flex items-center justify-between p-8">
         <Link href="/">
           <div className="flex flex-col items-center space-y-2 hover:text-primary-300">
