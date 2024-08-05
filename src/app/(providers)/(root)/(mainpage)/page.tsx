@@ -4,7 +4,6 @@ import Header from '@/components/common/Header/Header';
 import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import { createClient } from '@/utils/supabase/client';
 import axios from 'axios';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import PostsList from './_components/PostsList';
 
@@ -44,8 +43,6 @@ export default function Home() {
   return (
     <div>
       <Header />
-      <h1>Welcome to Home Page</h1>
-      {userId ? <Link href={`/${userId}/mypage`}>Go to My Page</Link> : <p>Loading...</p>}
       <PostsList />
     </div>
   );
