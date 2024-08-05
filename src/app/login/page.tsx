@@ -1,6 +1,6 @@
 'use client';
 import BackButton from '@/components/common/Button/BackButton';
-import { googleLogin, handleLogin, handleSignUp } from '@/utils/supabase/service';
+import { discordLogin, googleLogin, handleLogin, handleSignUp } from '@/utils/supabase/service';
 import useAuthStore from '@/zustand/bearsStore';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -37,6 +37,11 @@ const AuthForm = () => {
   const onGoogleLogin = async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
     await googleLogin();
+  };
+
+  const onDiscordLogin = async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    e.preventDefault();
+    await discordLogin();
   };
 
   const toggleShowPassword = () => {
@@ -106,14 +111,14 @@ const AuthForm = () => {
         <div className={`absolute left-0 ${isSignUp ? 'mt-[58px]' : 'mt-[214px]'} w-full text-center`}>
           <p className="text-center text-[#707B81]">
             {isSignUp ? 'Already have an account?' : 'Don’t have an account?'}{' '}
-            <button onClick={toggleForm} className="text-[#FF7029] underline">
+            <button onClick={toggleForm} className="font-medium text-[#FF7029] underline">
               {isSignUp ? 'Sign In' : 'Sign Up'}
             </button>
           </p>
 
           {!isSignUp && (
             <p className="absolute mt-4 w-full text-center">
-              <button onClick={goToFindPassword} className="text-[#FF7029] underline">
+              <button onClick={goToFindPassword} className="font-medium text-[#FF7029] underline">
                 Forgot Password?
               </button>
             </p>
@@ -129,11 +134,14 @@ const AuthForm = () => {
                 className="h-[37px] w-[37px]"
               />
             </a>
-            <a href="#" className="mx-1 rounded-full border border-gray-300 p-2">
-              <i className="fab fa-google-plus-g"></i>
-            </a>
-            <a href="#" className="mx-1 rounded-full border border-gray-300 p-2">
-              <i className="fab fa-linkedin-in"></i>
+            <a href="#" onClick={onDiscordLogin} className="mx-1 p-2">
+              <Image
+                src="https://supabase.com/dashboard/img/icons/discord-icon.svg"
+                alt="Discord logo"
+                width={24}
+                height={24}
+                className="h-[37px] w-[37px]"
+              />
             </a>
           </div>
         </div>

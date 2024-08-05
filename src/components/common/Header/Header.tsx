@@ -1,12 +1,12 @@
 'use client';
 
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Search from '../Search/Search';
 import Link from 'next/link';
 import { handleLogout } from '@/utils/supabase/service';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
+import { v4 as uuidv4 } from 'uuid';
 
 function Header() {
   const router = useRouter();
@@ -53,6 +53,8 @@ function Header() {
     return null;
   }
 
+  const uuid = uuidv4();
+
   return (
     <>
       <div className="hidden sm:block">
@@ -60,7 +62,7 @@ function Header() {
           <h1>LOGO</h1>
           {isLoggedIn ? (
             <div className="relative mr-5 flex">
-              <Link href="/postpage">
+              <Link href={`/postpage/${uuid}`}>
                 <button className="flex items-center space-x-2 rounded-md border-l-stone-400">Writing</button>
               </Link>
               <Link href={`/${userId}/mypage`}>
