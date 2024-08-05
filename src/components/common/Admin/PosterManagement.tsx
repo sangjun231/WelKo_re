@@ -13,8 +13,8 @@ interface Post {
   content: string;
   price: number;
   image: string;
-  tag: Array<string>;
-  period: Array<string>;
+  tags: Array<string>;
+
   created_at: string;
   updated_at: string;
   maxPeople: number;
@@ -61,8 +61,8 @@ const PosterManagement = () => {
           content,
           price,
           image,
-          tag,
-          period,
+          tags,
+          
           created_at,
           updated_at,
           maxPeople,
@@ -81,8 +81,8 @@ const PosterManagement = () => {
           content: post.content,
           price: post.price,
           image: post.image,
-          tag: post.tag || [],
-          period: post.period || [],
+          tags: post.tags || [],
+
           created_at: post.created_at,
           updated_at: post.updated_at,
           maxPeople: post.maxPeople,
@@ -139,9 +139,20 @@ const PosterManagement = () => {
   const handleDelete = async () => {
     if (deletePostId) {
       try {
-        const { error } = await supabase.from('posts').delete().eq('id', deletePostId);
-        if (error) throw error;
+        // 관련 결제 데이터의 외래 키를 NULL로 설정
+        const { error: paymentError } = await supabase
+          .from('payments')
+          .update({ post_id: null })
+          .eq('post_id', deletePostId);
 
+        if (paymentError) throw paymentError;
+
+        // 게시글 삭제
+        const { error: postError } = await supabase.from('posts').delete().eq('id', deletePostId);
+
+        if (postError) throw postError;
+
+        // 상태 업데이트
         setPosts(posts.filter((post) => post.id !== deletePostId));
         toast.success('Post deleted successfully');
         setDeletePostId(null);

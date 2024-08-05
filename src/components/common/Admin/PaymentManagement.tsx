@@ -88,9 +88,9 @@ const PaymentManagement = () => {
         total_price: payment.total_price,
         created_at: payment.created_at,
         pay_state: payment.pay_state,
-        user_name: payment.users.name,
-        user_email: payment.users.email,
-        post_title: payment.posts.title
+        user_name: payment.users ? payment.users.name : 'N/A', // 기본값 설정
+        user_email: payment.users ? payment.users.email : 'N/A', // 기본값 설정
+        post_title: payment.posts ? payment.posts.title : 'N/A' // 기본값 설정
       }));
 
       return formattedPayments;

@@ -131,13 +131,32 @@ export const googleLogin = async () => {
     options: {
       redirectTo: 'http://localhost:3000/auth/callback',
       queryParams: {
-        access_type: 'offline',
-        prompt: 'consent'
+        access_type: 'offline'
+        // prompt: 'consent' // 권한 부여 동의 화면 항상 표시
       }
     }
   });
   if (error) {
     console.error('Error during Google login:', error);
+    return;
+  }
+};
+
+// 디스코드로그인
+export const discordLogin = async () => {
+  const supabase = createClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'discord',
+    options: {
+      redirectTo: 'http://localhost:3000/auth/callback',
+      queryParams: {
+        access_type: 'offline'
+        // prompt: 'consent' // 권한 부여 동의 화면 항상 표시
+      }
+    }
+  });
+  if (error) {
+    console.error('Error during Discord login:', error);
     return;
   }
 };
