@@ -8,9 +8,8 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   try {
     const { data, error } = await supabase
       .from('likes')
-      .select('post_id, posts (id, title, content, image, created_at)')
+      .select('post_id, posts (id, title, content, image, startDate, endDate, price)')
       .eq('user_id', userId);
-
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }

@@ -3,11 +3,10 @@
 import React from 'react';
 import PaySuccess from '../_components/PaySuccess';
 
-
-export default function ReservationPage() {
+export default function PaymentPage() {
   return (
     <>
-      <PaySuccess/>
+      <PaySuccess />
     </>
   );
 }

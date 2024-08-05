@@ -7,10 +7,10 @@ import Reviews from './_components/Reviews';
 import { useParams } from 'next/navigation';
 import { CheckboxDetail } from './_components/CheckboxDetail';
 import DetailNavbar from './_components/DetailNavbar';
+import Map from './_components/Map';
 
 export default function DetailPage() {
   const params = useParams();
-  const postId = Array.isArray(params.id) ? params.id[0] : params.id; // URL에서 id를 가져옴
 
   return (
     <>
@@ -18,6 +18,7 @@ export default function DetailPage() {
       <div className="flex w-full justify-center">
         <div className="w-full max-w-[320px]">
           <CheckboxDetail />
+          <Map/>
           <Guide />
           <Reviews />
         </div>

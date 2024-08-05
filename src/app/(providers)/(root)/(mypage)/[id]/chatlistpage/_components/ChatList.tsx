@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -39,6 +39,7 @@ type User = {
 };
 
 const ChatList = ({ userId }: ChatListProps) => {
+  const [newMessages, setNewMessages] = useState<{ [key: string]: boolean }>({});
   const router = useRouter();
 
   const fetchPostDetails = async (postId: string): Promise<Post> => {
@@ -93,9 +94,6 @@ const ChatList = ({ userId }: ChatListProps) => {
     enabled: userIds.length > 0
   });
 
-  if (chatPending || postPending || userPending) return <div>Loading...</div>;
-  if (chatError || postError || userError) return <div>Error loading data</div>;
-
   const groupedChats = chatData?.reduce((acc: { [key: string]: Chat }, message) => {
     const chatId = `${message.post_id}-${[message.sender_id, message.receiver_id].sort().join('-')}`;
     if (!acc[chatId]) {
@@ -110,6 +108,24 @@ const ChatList = ({ userId }: ChatListProps) => {
     return acc;
   }, {});
 
+  const handleChatClick = (chat: Chat) => {
+    const receiverId = userId === chat.sender_id ? chat.receiver_id : chat.sender_id;
+    const postDetails = postData?.find((post) => post.id === chat.post_id);
+    const chatId = `${chat.post_id}-${[chat.sender_id, chat.receiver_id].sort().join('-')}`;
+
+    setNewMessages((prev) => ({
+      ...prev,
+      [chatId]: true
+    }));
+
+    router.push(
+      `/${userId}/${receiverId}/chatpage?postId=${chat.post_id}&postTitle=${postDetails?.title}&postImage=${postDetails?.image}`
+    );
+  };
+
+  if (chatPending || postPending || userPending) return <div>Loading...</div>;
+  if (chatError || postError || userError) return <div>Error loading data</div>;
+
   return (
     <div>
       {groupedChats &&
@@ -119,43 +135,48 @@ const ChatList = ({ userId }: ChatListProps) => {
           const senderDetails = userData?.find((user) => user.id === receiverId);
 
           const firstMessage = chat.messages[0];
+          const chatId = `${chat.post_id}-${[chat.sender_id, chat.receiver_id].sort().join('-')}`;
+          const isNewMessage = !newMessages[chatId] && firstMessage.sender_id !== userId;
 
           return (
-            <div
-              className="mb-4"
-              key={index}
-              onClick={() =>
-                router.push(
-                  `/${userId}/${receiverId}/chatpage?postId=${chat.post_id}&postTitle=${postDetails?.title}&postImage=${postDetails?.image}`
-                )
-              }
-            >
-              {postDetails && (
-                <div className="flex items-center">
+            <div className="mb-[32px] max-w-[360px]" key={index} onClick={() => handleChatClick(chat)}>
+              {postDetails && senderDetails && (
+                <div className="flex">
                   <Image
-                    className="mr-4"
+                    className="rounded"
                     src={postDetails.image || '/icons/upload.png'}
                     alt={postDetails.title || 'Default name'}
-                    width={40}
-                    height={40}
+                    width={64}
+                    height={64}
+                    style={{ width: '64px', height: '64px' }}
                   />
-                  <p>{postDetails.title}</p>
+                  <div className="ml-[8px] flex w-full flex-col gap-[5px]">
+                    <div className="flex items-center justify-between">
+                      <div className="mx-auto max-w-[360px]">
+                        <p className="line-clamp-1 text-[13px] font-medium">{postDetails.title}</p>
+                      </div>
+                      <p className="text-[10px] text-grayscale-500">
+                        {new Date(firstMessage?.created_at).toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-[12px]">{firstMessage?.content}</p>
+                      {isNewMessage && <span className="h-[8px] w-[8px] rounded-full bg-action-color"></span>}
+                    </div>
+                    <div className="flex">
+                      <Image
+                        className="items-center rounded-full"
+                        src={senderDetails.avatar || '/icons/upload.png'}
+                        alt={senderDetails.name || 'Default name'}
+                        width={16}
+                        height={16}
+                        style={{ width: '16px', height: '16px' }}
+                      />
+                      <p className="ml-[4px] text-[10px] text-grayscale-500">{senderDetails.name}</p>
+                    </div>
+                  </div>
                 </div>
               )}
-              {senderDetails && (
-                <div className="flex items-center">
-                  <Image
-                    className="mr-4"
-                    src={senderDetails.avatar || '/icons/upload.png'}
-                    alt={senderDetails.name || 'Default name'}
-                    width={40}
-                    height={40}
-                  />
-                  <p>{senderDetails.name}</p>
-                </div>
-              )}
-              <p>{firstMessage?.content}</p>
-              <p>{new Date(firstMessage?.created_at).toLocaleString()}</p>
             </div>
           );
         })}

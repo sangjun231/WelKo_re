@@ -44,36 +44,37 @@ export type Database = {
       }
       messages: {
         Row: {
-          avatar: string | null
           content: string
           created_at: string | null
           id: number
-          name: string | null
           post_id: string | null
           receiver_id: string
           sender_id: string
         }
         Insert: {
-          avatar?: string | null
           content: string
           created_at?: string | null
           id?: number
-          name?: string | null
           post_id?: string | null
           receiver_id: string
           sender_id: string
         }
         Update: {
-          avatar?: string | null
           content?: string
           created_at?: string | null
           id?: number
-          name?: string | null
           post_id?: string | null
           receiver_id?: string
           sender_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "messages_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "messages_receiver_id_fkey"
             columns: ["receiver_id"]
@@ -95,27 +96,27 @@ export type Database = {
           created_at: string
           id: string
           pay_state: string | null
+          people: number | null
           post_id: string | null
           total_price: number | null
-          user_email: string | null
           user_id: string | null
         }
         Insert: {
           created_at?: string
           id?: string
           pay_state?: string | null
+          people?: number | null
           post_id?: string | null
           total_price?: number | null
-          user_email?: string | null
           user_id?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           pay_state?: string | null
+          people?: number | null
           post_id?: string | null
           total_price?: number | null
-          user_email?: string | null
           user_id?: string | null
         }
         Relationships: [
@@ -144,11 +145,10 @@ export type Database = {
           image: string | null
           maxPeople: number | null
           name: string | null
-          period: Json | null
           price: number | null
           selectedPrices: Json | null
           startDate: string | null
-          tag: Json | null
+          tags: Json | null
           title: string | null
           updated_at: string | null
           user_id: string | null
@@ -161,11 +161,10 @@ export type Database = {
           image?: string | null
           maxPeople?: number | null
           name?: string | null
-          period?: Json | null
           price?: number | null
           selectedPrices?: Json | null
           startDate?: string | null
-          tag?: Json | null
+          tags?: Json | null
           title?: string | null
           updated_at?: string | null
           user_id?: string | null
@@ -178,11 +177,10 @@ export type Database = {
           image?: string | null
           maxPeople?: number | null
           name?: string | null
-          period?: Json | null
           price?: number | null
           selectedPrices?: Json | null
           startDate?: string | null
-          tag?: Json | null
+          tags?: Json | null
           title?: string | null
           updated_at?: string | null
           user_id?: string | null
@@ -276,15 +274,7 @@ export type Database = {
           places?: Json | null
           post_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "schedule_post_id_fkey"
-            columns: ["post_id"]
-            isOneToOne: false
-            referencedRelation: "posts"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       users: {
         Row: {

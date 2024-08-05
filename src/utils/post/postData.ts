@@ -1,10 +1,10 @@
 import { Tables } from '@/types/supabase';
 import axios from 'axios';
-
+//날짜 입력 저장 및 수정
 export const upsertDate = async (datePostData: Partial<Tables<'posts'>>) => {
   try {
     const response = await axios.post('/api/post', datePostData);
-    return response;
+    return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error);
@@ -28,7 +28,7 @@ export const updatePostDetails = async (postDetails: Partial<Tables<'posts'>>) =
     }
   }
 };
-
+// 장소 저장
 export const savePlaces = async (placesDetails: Partial<Tables<'schedule'>>) => {
   try {
     const response = await axios.post('/api/post/search', placesDetails);
@@ -43,6 +43,7 @@ export const savePlaces = async (placesDetails: Partial<Tables<'schedule'>>) => 
   }
 };
 
+//현재 위치 영어로 번역하기
 export const translateAddress = async (text: string) => {
   try {
     const response = await axios.post(

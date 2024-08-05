@@ -15,42 +15,51 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const supabase = createClient();
   const data = await request.json();
-  const { user_id, startDate, endDate }: Partial<Tables<'posts'>> = data;
+  const {
+    user_id,
+    name,
+    title,
+    content,
+    image,
+    maxPeople,
+    tags,
+    price,
+    selectedPrices,
+    startDate,
+    endDate
+  }: Partial<Tables<'posts'>> = data;
 
   if (!user_id) {
     return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
   }
 
   try {
-    // 날짜 삽입
-    const { error: insertError } = await supabase.from('posts').insert({
-      user_id,
-      startDate,
-      endDate
-    });
+    const { data: insertedData, error: insertError } = await supabase
+      .from('posts')
+      .insert({
+        user_id,
+        name,
+        title,
+        content,
+        image,
+        maxPeople,
+        tags,
+        price,
+        selectedPrices,
+        startDate,
+        endDate
+      })
+      .select();
 
     if (insertError) {
       console.error('Error inserting dates:', insertError.message);
-      return NextResponse.json({ error: insertError.message }, { status: 500 });
+      return NextResponse.json({ error: insertError.message, details: insertError }, { status: 500 });
     }
-
-    // 삽입된 데이터의 ID 가져오기
-    const { data: insertedData, error: selectError } = await supabase
-      .from('posts')
-      .select('id')
-      .eq('user_id', user_id)
-      .eq('startDate', startDate)
-      .eq('endDate', endDate)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
-
-    if (selectError) {
-      console.error('Error fetching inserted ID:', selectError.message);
-      return NextResponse.json({ error: selectError.message }, { status: 500 });
-    }
-
-    return NextResponse.json(insertedData, { status: 200 });
+    const newPostId = insertedData[0].id;
+    return NextResponse.json(
+      { message: 'Post inserted successfully', operation: 'insert', id: newPostId },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Unexpected error:', error);
     return NextResponse.json({ error: 'Unexpected error occurred' }, { status: 500 });
@@ -60,7 +69,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   const supabase = createClient();
   const data = await request.json();
-  const { name, id, title, content, image, maxPeople, tag, price, selectedPrices }: Partial<Tables<'posts'>> = data;
+  const { name, id, title, content, image, maxPeople, tags, price, selectedPrices }: Partial<Tables<'posts'>> = data;
 
   if (!id) {
     return NextResponse.json({ error: 'Post ID is required' }, { status: 400 });
@@ -75,7 +84,7 @@ export async function PUT(request: NextRequest) {
         content,
         image,
         maxPeople,
-        tag,
+        tags,
         price,
         selectedPrices
       })
@@ -90,5 +99,22 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     console.error('Unexpected error:', error);
     return NextResponse.json({ error: 'Unexpected error occurred' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  const supabase = createClient();
+  const data = await request.json();
+  const { post_id } = data;
+
+  try {
+    const { error: postError } = await supabase.from('posts').delete().eq('id', post_id);
+
+    if (postError) {
+      throw postError;
+    }
+    return NextResponse.json({ message: 'deleted' });
+  } catch (error) {
+    return NextResponse.json({ message: 'Error deleting data', error });
   }
 }
