@@ -9,11 +9,11 @@ function RootLayout({ children }: PropsWithChildren) {
       <Suspense fallback={<div>Loading...</div>}>
         <RouteChangeHandler />
       </Suspense>
-      <div className="flex flex-1 gap-4">
-        <main className="flex-1">
-          {children}
+      <div className="relative flex-1 gap-4">
+        <main>{children}</main>
+        <div className="absolute z-20">
           <UpButton />
-        </main>
+        </div>
       </div>
       <Navbar />
     </div>

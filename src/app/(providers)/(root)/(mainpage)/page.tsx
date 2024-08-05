@@ -4,7 +4,6 @@ import Header from '@/components/common/Header/Header';
 import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import { createClient } from '@/utils/supabase/client';
 import axios from 'axios';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import PostsList from './_components/PostsList';
 
