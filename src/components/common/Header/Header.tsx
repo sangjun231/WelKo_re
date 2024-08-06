@@ -7,6 +7,7 @@ import { handleLogout } from '@/utils/supabase/service';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { v4 as uuidv4 } from 'uuid';
+import useAuthStore from '@/zustand/bearsStore';
 
 function Header() {
   const router = useRouter();
@@ -14,6 +15,7 @@ function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const { logout } = useAuthStore();
 
   useEffect(() => {
     const checkSession = async () => {
@@ -44,9 +46,9 @@ function Header() {
     };
   }, [supabase.auth]);
 
-  const logout = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const onLogout = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    await handleLogout(router);
+    await logout(router);
   };
 
   if (loading) {
@@ -68,7 +70,7 @@ function Header() {
               <Link href={`/${userId}/mypage`}>
                 <button className="flex items-center space-x-2 rounded-md border-l-stone-400">MyPage</button>
               </Link>
-              <button onClick={logout} className="flex items-center space-x-2 rounded-md border-l-stone-400">
+              <button onClick={onLogout} className="flex items-center space-x-2 rounded-md border-l-stone-400">
                 Logout
               </button>
             </div>
