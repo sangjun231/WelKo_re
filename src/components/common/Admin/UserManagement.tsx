@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { toast } from 'react-toastify';
 import Modal from 'react-modal';
+import Image from 'next/image';
+import ProfileImageUpload from '@/app/(providers)/(root)/(mypage)/[id]/profilepage/_components/ProfileImageUpload';
 
 // 유저 데이터 타입 정의
 interface User {
@@ -12,6 +14,7 @@ interface User {
   name: string;
   created_at: string;
   updated_at: string;
+  avatar: string;
   [key: string]: any; // 추가적인 필드가 있을 경우를 대비한 인덱스 시그니처
 }
 
@@ -21,6 +24,7 @@ const UserManagement = () => {
   const [editUser, setEditUser] = useState<User | null>(null);
   const [editedUser, setEditedUser] = useState<Partial<User>>({});
   const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
@@ -93,12 +97,14 @@ const UserManagement = () => {
   const handleEdit = (user: User) => {
     setEditUser(user);
     setEditedUser({ name: user.name, email: user.email });
+    setAvatarUrl(user.avatar); // 현재 아바타 URL 설정
   };
 
   // 수정된 사용자 저장 핸들러
   const handleSave = async () => {
     if (editUser) {
       try {
+        // 사용자 정보 업데이트
         const { error } = await supabase.from('users').update(editedUser).eq('id', editUser.id);
         if (error) throw error;
 
@@ -116,9 +122,20 @@ const UserManagement = () => {
   const handleDelete = async () => {
     if (deleteUserId) {
       try {
-        const { error } = await supabase.from('users').delete().eq('id', deleteUserId);
-        if (error) throw error;
+        // 관련 결제 데이터의 외래 키를 NULL로 설정
+        const { error: paymentError } = await supabase
+          .from('payments')
+          .update({ user_id: null }) // user_id를 NULL로 업데이트
+          .eq('user_id', deleteUserId);
 
+        if (paymentError) throw paymentError;
+
+        // 사용자 삭제
+        const { error: userError } = await supabase.from('users').delete().eq('id', deleteUserId);
+
+        if (userError) throw userError;
+
+        // 상태 업데이트
         setUsers(users.filter((user) => user.id !== deleteUserId));
         toast.success('User deleted successfully');
         setDeleteUserId(null);
@@ -126,6 +143,12 @@ const UserManagement = () => {
         toast.error(`Failed to delete user: ${(error as Error).message}`);
       }
     }
+  };
+
+  // 아바타 URL 업데이트 핸들러
+  const handleImageChange = (newImageUrl: string) => {
+    setAvatarUrl(newImageUrl);
+    setEditedUser({ ...editedUser, avatar: newImageUrl });
   };
 
   return (
@@ -148,7 +171,30 @@ const UserManagement = () => {
         <tbody>
           {users.map((user) => (
             <tr key={user.id}>
-              <td className="border-b px-4 py-2">{user.name}</td>
+              <td className="border-b px-4 py-2">
+                <div className="flex items-center">
+                  <div className="relative mr-2 h-8 w-8 rounded-full bg-gray-300">
+                    {user.avatar ? (
+                      <Image
+                        src={user.avatar}
+                        alt="avatar"
+                        layout="fill"
+                        objectFit="cover"
+                        className="rounded-full"
+                        onError={({ currentTarget }) => {
+                          currentTarget.src = '/path/to/placeholder-image.png';
+                        }}
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-white">
+                        {/* 대체 이미지의 내용 */}
+                        <span className="text-gray-700">?</span>
+                      </div>
+                    )}
+                  </div>
+                  {user.name}
+                </div>
+              </td>
               <td className="border-b px-4 py-2">{user.email}</td>
               <td className="border-b px-4 py-2">{formatDate(user.created_at)}</td>
               <td className="border-b px-4 py-2">{formatDate(user.updated_at)}</td>
@@ -171,7 +217,7 @@ const UserManagement = () => {
         style={{
           content: {
             width: '300px',
-            height: '300px',
+            height: '400px',
             margin: 'auto',
             padding: '20px',
             textAlign: 'center'
@@ -179,6 +225,13 @@ const UserManagement = () => {
         }}
       >
         <h2 className="mb-4 text-xl">Edit User</h2>
+        <div className="mb-3">
+          <ProfileImageUpload
+            userId={editUser?.id || ''}
+            imageUrl={avatarUrl || ''}
+            onImageChange={handleImageChange}
+          />
+        </div>
         <label className="mb-2 block">
           Name:
           <input

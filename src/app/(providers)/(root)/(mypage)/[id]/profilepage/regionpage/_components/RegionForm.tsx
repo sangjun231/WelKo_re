@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -121,14 +122,36 @@ const RegionForm = () => {
   }, [position]);
 
   return (
-    <>
-      <button onClick={handleBack}>Go Back</button>
-      <div className="mt-4" id="map" style={{ width: '100%', height: '400px' }}></div>
-      {region && <p>현재 위치: {region}</p>}
-      <button className="my-4 rounded bg-black p-2 text-white" onClick={handleSave}>
-        저장하기
-      </button>
-    </>
+    <div className="mt-[56px]">
+      <div className="flex items-center justify-between">
+        <button className="rounded-[24px] bg-grayscale-50" onClick={handleBack}>
+          <Image src="/icons/tabler-icon-chevron-left.svg" alt="Go Back" width={32} height={32} />
+        </button>
+        <p className="text-[18px] font-semibold">Location</p>
+        <button className="text-[14px] font-medium text-action-color" onClick={handleSave}>
+          Done
+        </button>
+      </div>
+      <div className="my-[20px]" id="map" style={{ width: '100%', height: '400px' }}></div>
+      <div>
+        <p className="mb-[8px] text-[16px] font-medium">Location</p>
+        {region ? (
+          <p className="flex items-center justify-between rounded-2xl border bg-grayscale-50 p-[16px] text-[16px]">
+            {region}
+            <span>
+              <Image src="/icons/tabler-icon-location-filled.svg" alt="location" width={32} height={32} />
+            </span>
+          </p>
+        ) : (
+          <p className="text-grayscale-400 flex items-center justify-between rounded-2xl border bg-grayscale-50 p-[16px] text-[16px]">
+            Set your location
+            <span>
+              <Image src="/icons/tabler-icon-location-filled.svg" alt="location" width={32} height={32} />
+            </span>
+          </p>
+        )}
+      </div>
+    </div>
   );
 };
 

@@ -6,7 +6,7 @@ export interface CalendarProps {
 
 function RegionPage() {
   return (
-    <div>
+    <div className="mx-[20px]">
       <RegionForm />
     </div>
   );

@@ -37,7 +37,7 @@ const AllReviewsPage = () => {
   const averageRating: number = averageRatings(reviews || []);
 
   return (
-    <div className="mx-auto max-w-[360px]">
+    <div className="mx-auto mt-12 flex max-w-[360px] flex-col">
       <div className="mx-auto w-full max-w-[320px]">
         <div className="my-8">
           <BackButton />
@@ -50,7 +50,7 @@ const AllReviewsPage = () => {
         </div>
         <div className="mt-5 flex flex-col items-center">
           {reviews.map((review) => (
-            <div key={review.id} className="bg-grayscale-50 mb-4 items-center gap-3 rounded-2xl p-4">
+            <div key={review.id} className="bg-grayscale-50 mb-4 w-full items-center gap-3 rounded-2xl p-4">
               <div className="flex items-center gap-2 pb-2">
                 <FaStar size={16} />
                 <p className="font-semibold">{review.rating.toFixed(2)}</p>

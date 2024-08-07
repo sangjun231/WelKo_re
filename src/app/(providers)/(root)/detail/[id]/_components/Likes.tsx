@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import BackButton from '@/components/common/Button/BackButton';
+import useAuthStore from '@/zustand/bearsStore';
+import usePostStore from '@/zustand/postStore';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import Link from 'next/link';
-import { FaRegHeart, FaHeart } from 'react-icons/fa';
-import { RiHome3Line } from 'react-icons/ri';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import useAuthStore from '@/zustand/bearsStore';
 import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { GoPencil, GoTrash } from 'react-icons/go';
-import BackButton from '@/components/common/Button/BackButton';
-import usePostStore from '@/zustand/postStore';
+import { RiHome3Line } from 'react-icons/ri';
+import { DeletePost } from '../../../postpage/[id]/_components/PostEdit';
 
 const Likes = () => {
   const { id: postId } = useParams<{ id: string }>();
@@ -66,16 +67,20 @@ const Likes = () => {
   if (isPending) return <div>Loading...</div>;
   if (isError) return <div>Error fetching like status</div>;
 
+  const handleDelete = DeletePost();
+
   return (
     <div className="absolute left-0 right-0 top-2 z-10 flex items-center justify-between px-4">
       <BackButton />
       <div className="flex space-x-4">
         {post && post.user_id === user.id && (
           <>
-            <button className="icon-button">
-              <GoPencil size={24} />
-            </button>
-            <button className="icon-button">
+            <Link href={`/postpage/${postId}`}>
+              <button className="icon-button">
+                <GoPencil size={24} />
+              </button>
+            </Link>
+            <button className="icon-button" onClick={() => handleDelete(postId)}>
               <GoTrash size={24} />
             </button>
           </>

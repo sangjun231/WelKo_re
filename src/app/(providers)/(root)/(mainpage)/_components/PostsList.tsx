@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import Image from 'next/image';
 import Link from 'next/link';
+import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
+
 
 const supabase = createClient();
 
@@ -47,7 +49,7 @@ const PostsList = () => {
         if (page === 1) {
           setPosts(data || []);
         } else {
-          setPosts(prevPosts => [...prevPosts, ...(data || [])]);
+          setPosts((prevPosts) => [...prevPosts, ...(data || [])]);
         }
         setHasMore(data && data.length === POSTS_PER_PAGE);
       } catch (error) {
@@ -62,7 +64,7 @@ const PostsList = () => {
   }, [sortOrder, page]);
 
   const loadMorePosts = () => {
-    setPage(prevPage => prevPage + 1);
+    setPage((prevPage) => prevPage + 1);
   };
 
   const handleNext = () => {
@@ -85,7 +87,7 @@ const PostsList = () => {
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'USD'
     }).format(price);
   };
 
@@ -95,6 +97,7 @@ const PostsList = () => {
   return (
     <div className="p-4 relative">
       <h2 className="text-xl font-bold mb-4">게시물 목록</h2>
+      <InfiniteScroll loading={loading} hasMore={hasMore} onLoadMore={loadMorePosts}>
       <div className="relative overflow-hidden">
         {shouldShowPrevButton && (
           <button
@@ -155,10 +158,10 @@ const PostsList = () => {
           </button>
         </div>
       </div>
+      </InfiniteScroll>
       {loading && <div>로딩 중...</div>}
       {error && <div>리스트를 불러오지 못했습니다</div>}
     </div>
   );
 };
-
 export default PostsList;

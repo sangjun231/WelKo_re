@@ -35,7 +35,7 @@ const Reviews = () => {
   }
 
   return (
-    <div className="mb-32 flex gap-6">
+    <div className="mb-32 flex flex-col gap-6">
       <div className="flex flex-col gap-4">
         <div className="text-grayscale-900 flex items-center gap-1 text-lg">
           <FaStar size={24} />
@@ -51,7 +51,7 @@ const Reviews = () => {
         </div>
         {reviews.length > 0 && (
           <>
-            <div className="bg-grayscale-50 gap-3 rounded-2xl p-4">
+            <div className="bg-grayscale-50 my-4 gap-3 rounded-2xl p-4">
               {reviews.slice(0, 1).map((review) => (
                 <div key={review.id} className="flex flex-col gap-2">
                   <div className="flex items-center gap-2">

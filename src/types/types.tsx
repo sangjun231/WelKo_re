@@ -29,4 +29,5 @@ export type Place = {
   longitude: number;
   area: string;
   category: string;
+  description: string;
 };

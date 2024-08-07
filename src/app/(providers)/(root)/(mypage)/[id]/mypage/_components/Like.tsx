@@ -37,8 +37,11 @@ const Like: React.FC<LikeProps> = ({ postId, userId }) => {
     }
   });
 
-  const handleLike = () => {
+  const handleLike = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
+
     if (isLoading) return;
+
     likeMutation.mutate();
   };
 
@@ -52,8 +55,8 @@ const Like: React.FC<LikeProps> = ({ postId, userId }) => {
   if (isError) return <div>Error fetching like status</div>;
 
   return (
-    <button onClick={handleLike} className="absolute right-0 top-0 p-2">
-      {liked ? <FaHeart size={30} color="red" /> : <FaRegHeart size={30} />}
+    <button className="absolute right-0 top-0 rounded-[24px] bg-grayscale-50 p-[4px]" onClick={handleLike}>
+      {liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
     </button>
   );
 };
