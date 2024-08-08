@@ -22,13 +22,19 @@ export const fetchMessages = async (senderId: string, receiverId: string, postId
     return [];
   }
 
+  const uncheckedMessages = data.filter((message) => message.receiver_id === receiverId && !message.is_checked);
+  if (uncheckedMessages.length > 0) {
+    const uncheckedMessageIds = uncheckedMessages.map((message) => message.id);
+    await supabase.from('messages').update({ is_checked: true }).in('id', uncheckedMessageIds);
+  }
+
   return data;
 };
 
 export const sendMessage = async (senderId: string, receiverId: string, content: string, postId: string) => {
   const { data, error } = await supabase
     .from('messages')
-    .insert([{ sender_id: senderId, receiver_id: receiverId, content, post_id: postId }]);
+    .insert([{ sender_id: senderId, receiver_id: receiverId, content, post_id: postId, is_checked: false }]);
 
   if (error) {
     return null;
