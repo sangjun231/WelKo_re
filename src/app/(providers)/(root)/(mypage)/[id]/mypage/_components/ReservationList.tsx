@@ -10,6 +10,7 @@ import { API_MYPAGE_POST, API_MYPAGE_REVIEWS, API_MYPAGE_PAYMENTS } from '@/util
 import { Tables } from '@/types/supabase';
 
 export default function ReservationList() {
+  const { id } = useParams();
   const params = useParams();
   const router = useRouter();
   const userId = Array.isArray(params.id) ? params.id[0] : params.id;
@@ -112,6 +113,19 @@ export default function ReservationList() {
     router.push(`/${userId}/${postAuthorId}/chatpage?${query}`);
   };
 
+  const handleCancelRequest = async () => {
+    try {
+      const response = await axios.post(`/api/detail/payment/${id}`, {
+        reason: 'User requested cancel',
+        requester: 'CUSTOMER'
+      });
+      alert(response.data.message);
+    } catch (error) {
+      console.error('Error requesting cancel:', error);
+      alert('Cancel request failed.');
+    }
+  };
+
   const filteredPosts =
     posts?.filter((post) =>
       paymentsQuery.data?.some((payment) => payment.post_id === post.id && payment.user_id === userId)
@@ -195,7 +209,10 @@ export default function ReservationList() {
                   <button className="flex-1 rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700">
                     Change Tour
                   </button>
-                  <button className="flex-1 rounded-lg border bg-primary-300 p-2 text-[14px] font-semibold text-white">
+                  <button
+                    className="flex-1 rounded-lg border bg-primary-300 p-2 text-[14px] font-semibold text-white"
+                    onClick={handleCancelRequest}
+                  >
                     Cancel Tour
                   </button>
                 </div>

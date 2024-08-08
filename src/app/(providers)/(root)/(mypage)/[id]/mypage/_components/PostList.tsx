@@ -18,10 +18,7 @@ export default function PostList() {
   const getPostsData = async () => {
     try {
       const response = await axios.get(API_MYPAGE_POST(userId));
-      const data: Tables<'posts'>[] = response.data;
-      return data
-        .filter((post) => post.user_id === userId)
-        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(`HTTP error! status: ${error.response?.status}`);
@@ -73,7 +70,7 @@ export default function PostList() {
         <div className="gap-[8px]">
           <Image src="/icons/tabler-icon-sticker-2.svg" alt="no post" width={44} height={44} />
           <p className="text-[14px] font-semibold">You don&apos;t have any post</p>
-          <p className="text-[12px]">When you recieve a new meaasge, it will appear here.</p>
+          <p className="text-[12px]">When you receive a new message, it will appear here.</p>
         </div>
       </div>
     );
@@ -81,7 +78,7 @@ export default function PostList() {
 
   return (
     <div className="max-w-[360px]">
-      {data.map((post) => {
+      {data.map((post: Tables<'posts'>) => {
         const status = tourStatus(post.endDate);
 
         return (
@@ -97,8 +94,10 @@ export default function PostList() {
                 <button className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]">
                   <Image src="/icons/tabler-icon-pencil.svg" alt="Edit Tour" width={24} height={24} />
                 </button>
-                <button className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]"
-                onClick={()=>handleDelete(post.id)}>
+                <button
+                  className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]"
+                  onClick={() => handleDelete(post.id)}
+                >
                   <Image src="/icons/tabler-icon-trash.svg" alt="Delete Tour" width={24} height={24} />
                 </button>
               </div>
