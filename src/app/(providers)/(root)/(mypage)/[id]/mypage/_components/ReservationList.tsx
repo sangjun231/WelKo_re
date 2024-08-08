@@ -175,7 +175,11 @@ export default function ReservationList() {
                 <p className="text-[14px] font-semibold text-grayscale-900">
                   {payment ? new Date(payment.created_at).toLocaleDateString() : 'N/A'}
                 </p>
-                <p className="text-[14px] font-medium text-primary-300">{status}</p>
+                <p
+                  className={`text-[14px] font-medium ${status === 'Upcoming Tour' ? 'text-primary-300' : status === 'Refunded' ? 'text-error-color' : 'text-grayscale-900'}`}
+                >
+                  {status}
+                </p>{' '}
               </div>
               <Link className="flex items-center" href={`/detail/payment/${payment?.id}`}>
                 <p className="text-[14px] font-semibold text-primary-300">Detail</p>
@@ -224,7 +228,12 @@ export default function ReservationList() {
                 </button>
               </div>
             ) : status === 'Refunded' ? (
-              <p className="w-full text-center text-[14px] font-bold text-red-500">Refunded</p>
+              <button
+                className="w-full rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
+                onClick={() => handleChat(post)}
+              >
+                Message Guide
+              </button>
             ) : (
               <button
                 className="w-full rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
