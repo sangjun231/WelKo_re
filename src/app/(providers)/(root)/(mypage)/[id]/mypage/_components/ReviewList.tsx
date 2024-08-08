@@ -69,7 +69,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
     return <div className="flex h-screen items-center justify-center">Error: {error.message}</div>;
   }
 
-  if (!posts || posts.length === 0) {
+  if (!reviews || reviews.length === 0) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="gap-[8px]">
@@ -83,11 +83,10 @@ const ReviewList = ({ userId }: { userId: string }) => {
 
   return (
     <div className="mx-auto max-w-[320px]">
-      {reviews.length === 0 ? (
-        <div>No reviews found</div>
-      ) : (
+      {(
         posts.map((post) => {
           const review = reviews.find((r) => r.post_id === post.id);
+       
           return (
             review && (
               <div key={post.id} className="mb-[20px]">
