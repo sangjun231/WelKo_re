@@ -8,6 +8,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { API_MYPAGE_POST } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
+import { DeletePost } from '@/app/(providers)/(root)/postpage/[id]/_components/PostEdit';
 
 export default function PostList() {
   const params = useParams();
@@ -54,6 +55,8 @@ export default function PostList() {
     router.push(`/${userId}/mypage/tourreservationlistpage?postId=${postId}`);
   };
 
+  const handleDelete = DeletePost();
+
   useEffect(() => {
     refetch();
   }, [userId, refetch]);
@@ -94,7 +97,8 @@ export default function PostList() {
                 <button className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]">
                   <Image src="/icons/tabler-icon-pencil.svg" alt="Edit Tour" width={24} height={24} />
                 </button>
-                <button className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]">
+                <button className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]"
+                onClick={()=>handleDelete(post.id)}>
                   <Image src="/icons/tabler-icon-trash.svg" alt="Delete Tour" width={24} height={24} />
                 </button>
               </div>

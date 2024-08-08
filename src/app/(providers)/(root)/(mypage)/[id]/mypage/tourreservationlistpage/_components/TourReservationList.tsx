@@ -121,7 +121,7 @@ const TourReservationList = ({ userId, postId }: { userId: string; postId: strin
               className="w-full rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
               onClick={() => handleChat(reservation.posts, reservation.users.id)}
             >
-              Message Guide
+              Message Tourist
             </button>
           </div>
         ))}
