@@ -94,7 +94,7 @@ const TourReservationList = ({ userId, postId }: { userId: string; postId: strin
       </div>
       <div>
         {data.map((reservation) => (
-          <div className="my-[16px] border-b pb-[16px]" key={reservation.id}>
+          <div className="my-[20px] border-b pb-[20px]" key={reservation.id}>
             <p className="mb-[16px] text-[14px]">
               <span className="mr-[16px] text-[12px] text-grayscale-500">Number</span> {reservation.id}
             </p>
@@ -112,7 +112,8 @@ const TourReservationList = ({ userId, postId }: { userId: string; postId: strin
               <span className="mr-[16px] text-[12px] text-grayscale-500">Tourist</span> {reservation.people}
             </p>
             <p className="mb-[16px] text-[14px]">
-              <span className="mr-[16px] text-[12px] text-grayscale-500">Amount</span> {reservation.total_price}
+              <span className="mr-[16px] text-[12px] text-grayscale-500">Amount</span>
+              {formatPrice(reservation.total_price)}
             </p>
             <p className="mb-[16px] text-[14px]">
               <span className="mr-[16px] text-[12px] text-grayscale-500">State</span> {reservation.pay_state}
