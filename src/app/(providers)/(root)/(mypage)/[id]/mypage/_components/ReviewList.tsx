@@ -108,7 +108,14 @@ const ReviewList = ({ userId }: { userId: string }) => {
                 </div>
                 <div className="my-[16px] w-full items-start rounded-[16px] border bg-grayscale-50 p-[16px]">
                   <div className="flex items-center gap-[8px]">
-                    <Rating count={5} value={review.rating ?? 0} size={16} edit={false} activeColor="#ffd700" />
+                    <Image
+                      src="/icons/tabler-icon-star-filled.svg"
+                      alt="Star"
+                      width={16}
+                      height={16}
+                      style={{ width: '16px', height: '16px' }}
+                    />
+                    <p className="text-[14px] text-grayscale-900">{review.rating ?? 0}</p>
                     <p className="text-medium text-[13px]">{profile?.name}</p>
                     <p className="text-[13px] text-grayscale-700">{new Date(review.created_at).toLocaleDateString()}</p>
                   </div>
