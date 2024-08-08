@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Rating from 'react-rating-stars-component';
-import { API_MYPAGE_REVIEWS, API_MYPAGE_POST, API_MYPAGE_PROFILE } from '@/utils/apiConstants';
+import { API_MYPAGE_REVIEWS, API_POST, API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
 
 const ReviewList = ({ userId }: { userId: string }) => {
@@ -27,7 +27,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
 
   const getPostsData = async () => {
     try {
-      const response = await axios.get(API_MYPAGE_POST(userId));
+      const response = await axios.get(API_POST());
       const data: Tables<'posts'>[] = response.data;
       return data;
     } catch (error) {

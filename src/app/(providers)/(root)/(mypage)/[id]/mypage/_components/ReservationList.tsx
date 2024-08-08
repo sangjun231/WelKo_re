@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { API_MYPAGE_POST, API_MYPAGE_REVIEWS, API_MYPAGE_PAYMENTS } from '@/utils/apiConstants';
+import { API_POST, API_MYPAGE_REVIEWS, API_MYPAGE_PAYMENTS } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
 
 export default function ReservationList() {
@@ -19,7 +19,7 @@ export default function ReservationList() {
 
   const getPostsData = async () => {
     try {
-      const response = await axios.get(API_MYPAGE_POST(userId));
+      const response = await axios.get(API_POST());
       const data: Tables<'posts'>[] = response.data;
       return data.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     } catch (error) {

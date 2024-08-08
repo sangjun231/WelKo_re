@@ -10,3 +10,5 @@ export const API_MYPAGE_TOURRESERVATIONLIST = (userId: string, postId: string) =
   `/api/mypage/${userId}/tourreservationlist?postId=${postId}`;
 
 export const API_POST_DETAILS = (postId: string) => `/api/mypage/${postId}/chatpost`;
+
+export const API_POST = () => `/api/post`;
