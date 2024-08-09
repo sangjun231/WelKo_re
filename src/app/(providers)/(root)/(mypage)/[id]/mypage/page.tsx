@@ -10,6 +10,7 @@ import ProfileView from './_components/ProfileView';
 import ReviewList from './_components/ReviewList';
 import LikeList from './_components/LikeList';
 import ReservationList from './_components/ReservationList';
+import useAuthStore from '@/zustand/bearsStore';
 
 const MyPage = () => {
   const { id } = useParams() as { id: string };
@@ -17,15 +18,15 @@ const MyPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const selectedComponent = useMyPageStore((state) => state.selectedComponent);
   const setSelectedComponent = useMyPageStore((state) => state.setSelectedComponent);
+  const { logout } = useAuthStore();
 
   const handleBack = () => {
     router.back();
   };
 
-  const logout = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const onLogout = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    await handleLogout(router);
-    router.push('/login');
+    await logout(router);
   };
 
   const buttonClass = (component: string) =>
@@ -38,7 +39,7 @@ const MyPage = () => {
           <Image src="/icons/tabler-icon-chevron-left.svg" alt="Go Back" width={32} height={32} />
         </button>
         <p className="text-[18px] font-semibold text-primary-900">My Page</p>
-        <button className="text-[14px] font-medium text-action-color" onClick={logout}>
+        <button className="text-[14px] font-medium text-action-color" onClick={onLogout}>
           Logout
         </button>
       </div>
