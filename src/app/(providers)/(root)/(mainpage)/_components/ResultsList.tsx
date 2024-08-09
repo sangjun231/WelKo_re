@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import Search from '@/components/common/Search/Search';
 
 interface Post {
   id: string;
@@ -29,13 +30,13 @@ const formatPrice = (price: number) => {
 export default function ResultsList({ posts, loading, error }: ResultsListProps) {
   return (
     <div className="p-4">
-      <h2 className="mb-4 text-xl font-bold">Related Posts</h2>
+      <Search />
       {loading && <div>Loading...</div>}
       {error && <div>{error}</div>}
       {!loading && posts.length === 0 && <div>No posts found</div>}
-      <ul>
+      <ul className="mt-5">
         {posts.map((post) => (
-          <li key={post.id} className="mb-4 flex rounded-md border p-2">
+          <li key={post.id} className="mb-4 flex rounded-md p-2">
             <Link href={`/detail/${post.id}`} className="flex w-full">
               {post.image ? (
                 <Image src={post.image} alt={post.title} width={96} height={96} className="mr-2 w-24" />
@@ -44,14 +45,25 @@ export default function ResultsList({ posts, loading, error }: ResultsListProps)
               )}
               <div className="flex flex-col justify-between">
                 <div>
-                  <h3 className="line-clamp-1 text-xl font-bold">{post.title}</h3>
+                  <h3 className="line-clamp-1 text-sm font-semibold">{post.title}</h3>
                   <p className="text-gray-500">
                     {post.startDate && post.endDate
-                      ? `${new Date(post.startDate).toLocaleDateString()} ~ ${new Date(post.endDate).toLocaleDateString()}`
+                      ? `${new Intl.DateTimeFormat('ko', {
+                          year: '2-digit',
+                          month: 'numeric',
+                          day: 'numeric'
+                        }).format(new Date(post.startDate))} ~ ${new Intl.DateTimeFormat('ko', {
+                          year: '2-digit',
+                          month: 'numeric',
+                          day: 'numeric'
+                        }).format(new Date(post.endDate))}`
                       : 'No dates available'}
                   </p>
                 </div>
-                <div className="mt-2 text-sm font-bold">{formatPrice(post.price)}</div>
+                <div className="mt-2 flex text-sm">
+                  <div className="font-bold text-[#B95FAB]">{formatPrice(post.price)}</div>
+                  <div className="font-medium">/Person</div>
+                </div>
               </div>
             </Link>
           </li>

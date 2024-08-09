@@ -91,15 +91,15 @@ const DaySelect: React.FC<DaySelectProps> = ({
           <button
             key={day.toDateString()}
             onClick={() => handleDateClick(day)}
-            className={`rounded-md p-2 ${
+            className={`rounded-full p-1.5 text-[13px] font-semibold ${
               startDate && day.toDateString() === startDate.toDateString()
-                ? 'bg-blue-500 text-white'
+                ? 'bg-[#B95FAB] text-white'
                 : endDate && day.toDateString() === endDate.toDateString()
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-[#B95FAB] text-white'
                   : isDateInRange(day)
-                    ? 'bg-blue-200 text-black'
+                    ? 'bg-[#B95FAB] text-white'
                     : 'bg-white text-black'
-            } ${isDateDisabled(day) ? 'cursor-not-allowed bg-gray-200 text-gray-400' : 'hover:bg-gray-100'}`}
+            } ${isDateDisabled(day) ? 'cursor-not-allowed bg-gray-200 text-gray-400' : ''}`}
             disabled={isDateDisabled(day)}
           >
             {format(day, 'd')}

@@ -2,6 +2,7 @@
 import { addMonths, format } from 'date-fns';
 import React, { useState } from 'react';
 import DaySelect from '../planner/DaySelect';
+import Image from 'next/image';
 
 interface PeriodSelectorProps {
   next: () => void;
@@ -15,7 +16,14 @@ const PeriodSelector: React.FC<PeriodSelectorProps> = ({ next, startDate, endDat
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
 
   const months = Array.from({ length: 12 }, (_, i) => i);
-  const monthLabels = months.map((month) => format(addMonths(new Date(), month), 'MMM yyyy'));
+
+  // MMM와 yyyy를 분리하여 각각 스타일링할 준비
+  const monthLabels = months.map((month) => {
+    const monthDate = addMonths(new Date(), month);
+    const monthPart = format(monthDate, 'MMM');
+    const yearPart = format(monthDate, 'yyyy');
+    return { monthPart, yearPart };
+  });
 
   const handleDateSave = () => {
     next();
@@ -32,16 +40,26 @@ const PeriodSelector: React.FC<PeriodSelectorProps> = ({ next, startDate, endDat
   };
 
   return (
-    <div className="flex flex-col justify-center px-4">
+    <div className="flex flex-col justify-center">
       <div className="my-4 max-w-full overflow-auto">
-        <div className="flex flex-wrap">
+        <div className="grid grid-cols-3 place-items-center justify-center gap-2">
           {months.map((month, index) => (
             <button
               key={index}
-              className="mr-2 flex h-14 w-14 items-center justify-center rounded border-2 text-black hover:bg-gray-100"
+              className="h-15 mr-2 flex w-20 flex-col items-center justify-center rounded border-2 text-black hover:bg-gray-100"
               onClick={() => setSelectedMonth(addMonths(new Date(), month))}
             >
-              {monthLabels[index]}
+              <Image
+                src="/icons/tabler-icon-calendar-month.svg"
+                alt="Calendar icon"
+                width={24}
+                height={24}
+                className="mb-1"
+              />
+              <div className="flex flex-row items-center">
+                <span className="mr-1 text-[13px] font-semibold">{monthLabels[index].monthPart}</span> {/* MMM 부분 */}
+                <span className="text-[13px] text-[#939394]">{monthLabels[index].yearPart}</span> {/* yyyy 부분 */}
+              </div>
             </button>
           ))}
         </div>
@@ -59,7 +77,7 @@ const PeriodSelector: React.FC<PeriodSelectorProps> = ({ next, startDate, endDat
         onClick={handleDateSave}
       >
         {startDate && endDate
-          ? `${format(startDate, 'yyyy. M. d')} - ${format(endDate, 'M. d')} Search`
+          ? `${format(startDate, 'yy. M. d')} - ${format(endDate, 'M. d')} Search`
           : selectedMonth
             ? `Search`
             : '날짜 선택하기'}

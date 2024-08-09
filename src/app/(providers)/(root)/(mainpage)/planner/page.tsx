@@ -85,7 +85,7 @@ export default function TravelPlanner() {
           activeStep={activeStep}
           toggleStep={toggleStep}
           title="What is your travel style?"
-          shortTitle="What"
+          shortTitle="Travel style"
           selection={selectedTags.join(', ') || 'Anything'}
         >
           <TagSelector
@@ -180,7 +180,7 @@ const AccordionStep: React.FC<AccordionStepProps> = ({
       {activeStep !== step && (
         <button
           onClick={() => toggleStep(step)}
-          className={`w-full px-4 py-2 text-left font-bold ${activeStep === step ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} flex items-center justify-between rounded-md`}
+          className={`w-full px-4 py-2 text-left font-semibold ${activeStep === step ? 'bg-blue-500 text-white' : 'rounded-2xl text-gray-700 shadow-[0_0_10px_#d3d3d3]'} flex items-center justify-between rounded-md`}
         >
           <span>{shortTitle}</span>
           <span>{selection || 'Anything'}</span>
