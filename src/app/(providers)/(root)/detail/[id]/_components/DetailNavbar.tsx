@@ -72,7 +72,7 @@ const DetailNavbar = () => {
   const handlePaymentClick = async () => {
     if (post && user) {
       // 현재 페이지의 URL을 기준으로 redirectUrl 생성
-      const currentUrl = window.location.href;
+      const currentUrl = `${window.location.origin}/detail/payment`;
       const redirectUrl = `${currentUrl}?txId=${crypto.randomUUID().split('-')[0]}`;
       await requestPayment(post, user, totalAmount, handlePaymentSuccess, handlePaymentFailure, redirectUrl);
     }
