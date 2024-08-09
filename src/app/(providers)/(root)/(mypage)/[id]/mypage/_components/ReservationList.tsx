@@ -163,7 +163,7 @@ export default function ReservationList() {
                 </p>
                 <p className="text-[14px] font-medium text-primary-300">{status}</p>
               </div>
-              <Link className="flex items-center" href={`/detail/payment/${payment?.id}`}>
+              <Link className="flex items-center" href={`/detail/payment/history/${payment?.id}`}>
                 <p className="text-[14px] font-semibold text-primary-300">Detail</p>
                 <Image src="/icons/tabler-icon-chevron-right-pr300.svg" alt="Edit Profile" width={16} height={16} />
               </Link>
