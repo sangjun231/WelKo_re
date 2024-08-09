@@ -81,7 +81,7 @@ const PostsList = () => {
                 )}
                 <div className="flex flex-col justify-between">
                   <div>
-                    <h3 className="line-clamp-1 text-xl font-bold">{post.title}</h3>
+                    <h3 className="line-clamp-1 break-all text-xl font-bold">{post.title}</h3>
                     <p className="text-gray-500">{new Date(post.created_at).toLocaleDateString()}</p>
                     <p className="line-clamp-1 text-gray-700">{post.content}</p>
                   </div>

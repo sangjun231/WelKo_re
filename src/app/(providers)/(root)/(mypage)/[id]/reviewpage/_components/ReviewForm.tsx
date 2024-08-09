@@ -18,20 +18,6 @@ const ReviewForm = ({ userId }: { userId: string }) => {
   const id = searchParams.get('id');
   const postId = searchParams.get('post_id');
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    if (id) {
-      await axios.put(API_MYPAGE_REVIEWS(userId), { id, content, rating });
-    } else {
-      await axios.post(API_MYPAGE_REVIEWS(userId), { content, rating, post_id: postId, user_id: userId });
-    }
-    router.back();
-  };
-
-  const handleBack = () => {
-    router.back();
-  };
-
   const fetchReview = async () => {
     if (id) {
       const response = await axios.get(`${API_MYPAGE_REVIEWS(userId)}?id=${id}&post_id=${postId}`);
@@ -52,6 +38,24 @@ const ReviewForm = ({ userId }: { userId: string }) => {
     setPost(postData);
   };
 
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (id) {
+      await axios.put(API_MYPAGE_REVIEWS(userId), { id, content, rating });
+    } else {
+      await axios.post(API_MYPAGE_REVIEWS(userId), { content, rating, post_id: postId, user_id: userId });
+    }
+    router.back();
+  };
+
+  const handleBack = () => {
+    router.back();
+  };
+
+    const ratingChanged = (newRating: number) => {
+    setRating(newRating);
+  };
+
   useEffect(() => {
     fetchReview();
 
@@ -60,9 +64,7 @@ const ReviewForm = ({ userId }: { userId: string }) => {
     }
   }, [id, postId]);
 
-  const ratingChanged = (newRating: number) => {
-    setRating(newRating);
-  };
+
 
   return (
     <div className="mt-[56px]">

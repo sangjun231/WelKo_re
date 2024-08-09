@@ -24,7 +24,7 @@ function UpButton() {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [window.location.pathname]);
+  }, []);
 
   const goToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

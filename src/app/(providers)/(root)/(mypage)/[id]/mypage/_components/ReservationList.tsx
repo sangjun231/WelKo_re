@@ -6,10 +6,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { API_MYPAGE_POST, API_MYPAGE_REVIEWS, API_MYPAGE_PAYMENTS } from '@/utils/apiConstants';
+import { API_POST, API_MYPAGE_REVIEWS, API_MYPAGE_PAYMENTS } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
 
 export default function ReservationList() {
+  const { id } = useParams();
   const params = useParams();
   const router = useRouter();
   const userId = Array.isArray(params.id) ? params.id[0] : params.id;
@@ -18,7 +19,7 @@ export default function ReservationList() {
 
   const getPostsData = async () => {
     try {
-      const response = await axios.get(API_MYPAGE_POST(userId));
+      const response = await axios.get(API_POST());
       const data: Tables<'posts'>[] = response.data;
       return data.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     } catch (error) {
@@ -112,6 +113,19 @@ export default function ReservationList() {
     router.push(`/${userId}/${postAuthorId}/chatpage?${query}`);
   };
 
+  const handleCancelRequest = async () => {
+    try {
+      const response = await axios.post(`/api/detail/payment/${id}`, {
+        reason: 'User requested cancel',
+        requester: 'CUSTOMER'
+      });
+      alert(response.data.message);
+    } catch (error) {
+      console.error('Error requesting cancel:', error);
+      alert('Cancel request failed.');
+    }
+  };
+
   const filteredPosts =
     posts?.filter((post) =>
       paymentsQuery.data?.some((payment) => payment.post_id === post.id && payment.user_id === userId)
@@ -161,9 +175,13 @@ export default function ReservationList() {
                 <p className="text-[14px] font-semibold text-grayscale-900">
                   {payment ? new Date(payment.created_at).toLocaleDateString() : 'N/A'}
                 </p>
-                <p className="text-[14px] font-medium text-primary-300">{status}</p>
+                <p
+                  className={`text-[14px] font-medium ${status === 'Upcoming Tour' ? 'text-primary-300' : status === 'Refunded' ? 'text-error-color' : 'text-grayscale-900'}`}
+                >
+                  {status}
+                </p>{' '}
               </div>
-              <Link className="flex items-center" href={`/detail/payment/${payment?.id}`}>
+              <Link className="flex items-center" href={`/detail/payment/history/${payment?.id}`}>
                 <p className="text-[14px] font-semibold text-primary-300">Detail</p>
                 <Image src="/icons/tabler-icon-chevron-right-pr300.svg" alt="Edit Profile" width={16} height={16} />
               </Link>
@@ -195,7 +213,10 @@ export default function ReservationList() {
                   <button className="flex-1 rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700">
                     Change Tour
                   </button>
-                  <button className="flex-1 rounded-lg border bg-primary-300 p-2 text-[14px] font-semibold text-white">
+                  <button
+                    className="flex-1 rounded-lg border bg-primary-300 p-2 text-[14px] font-semibold text-white"
+                    onClick={handleCancelRequest}
+                  >
                     Cancel Tour
                   </button>
                 </div>
@@ -207,7 +228,12 @@ export default function ReservationList() {
                 </button>
               </div>
             ) : status === 'Refunded' ? (
-              <p className="w-full text-center text-[14px] font-bold text-red-500">Refunded</p>
+              <button
+                className="w-full rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
+                onClick={() => handleChat(post)}
+              >
+                Message Guide
+              </button>
             ) : (
               <button
                 className="w-full rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"

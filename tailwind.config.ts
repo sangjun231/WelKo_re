@@ -26,7 +26,8 @@ const config: Config = {
         'primary-50': '#FFE5FB',
         'primary-300': 'var(--Primary-300, #B95FAB)',
         'primary-900': '#21111F',
-        'action-color': '#FF7029'
+        'action-color': '#FF7029',
+        'error-color': '#FF2D2D'
       },
       boxShadow: {
         'custom-navbar': '0px -8px 15px 0px rgba(0, 0, 0, 0.05)'
