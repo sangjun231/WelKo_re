@@ -8,17 +8,18 @@ interface AuthStore {
   errorMessage: string;
   setUser: (user: any) => void;
   login: (email: string, password: string, router: any) => Promise<void>;
+  logout: (router: any) => Promise<void>;
 }
 
 const useAuthStore = create<AuthStore>((set) => ({
-  user: null, // 초기 사용자 상태는 null
+  user: null,
   isAuthenticated: false,
   errorMessage: '',
   setUser: (user: any) => set({ user, isAuthenticated: !!user }),
+
   login: async (email: string, password: string, router: any): Promise<void> => {
     const supabase = createClient();
 
-    // 클라이언트 사이드 유효성 검사
     if (!email) {
       toast.error('이메일을 입력하세요!');
       return;
@@ -34,8 +35,7 @@ const useAuthStore = create<AuthStore>((set) => ({
     });
 
     if (signInError) {
-      console.error('Sign-in error:', signInError); // 에러 로깅
-      // 에러 메시지에 따라 처리
+      console.error('Sign-in error:', signInError);
       if (signInError.message.toLowerCase().includes('invalid login credentials')) {
         toast.error('잘못된 로그인 자격 증명입니다.');
       } else {
@@ -44,7 +44,22 @@ const useAuthStore = create<AuthStore>((set) => ({
     } else {
       toast.success('로그인 되었습니다.');
       set({ user: data.user, isAuthenticated: true, errorMessage: '' });
-      router.push('/');
+      window.location.href = '/';
+    }
+  },
+
+  logout: async (router: any): Promise<void> => {
+    const supabase = createClient();
+
+    const { error: signOutError } = await supabase.auth.signOut();
+
+    if (signOutError) {
+      console.error('Sign-out error:', signOutError);
+      toast.error('로그아웃 실패');
+    } else {
+      toast.success('로그아웃 되었습니다.');
+      set({ user: null, isAuthenticated: false, errorMessage: '' });
+      window.location.href = '/';
     }
   }
 }));

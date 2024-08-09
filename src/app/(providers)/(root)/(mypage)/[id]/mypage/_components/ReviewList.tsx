@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Rating from 'react-rating-stars-component';
-import { API_MYPAGE_REVIEWS, API_MYPAGE_POST, API_MYPAGE_PROFILE } from '@/utils/apiConstants';
+import { API_MYPAGE_REVIEWS, API_POST, API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
 
 const ReviewList = ({ userId }: { userId: string }) => {
@@ -27,7 +27,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
 
   const getPostsData = async () => {
     try {
-      const response = await axios.get(API_MYPAGE_POST(userId));
+      const response = await axios.get(API_POST());
       const data: Tables<'posts'>[] = response.data;
       return data;
     } catch (error) {
@@ -69,7 +69,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
     return <div className="flex h-screen items-center justify-center">Error: {error.message}</div>;
   }
 
-  if (!posts || posts.length === 0) {
+  if (!reviews || reviews.length === 0) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="gap-[8px]">
@@ -83,11 +83,10 @@ const ReviewList = ({ userId }: { userId: string }) => {
 
   return (
     <div className="mx-auto max-w-[320px]">
-      {reviews.length === 0 ? (
-        <div>No reviews found</div>
-      ) : (
+      {(
         posts.map((post) => {
           const review = reviews.find((r) => r.post_id === post.id);
+       
           return (
             review && (
               <div key={post.id} className="mb-[20px]">
@@ -108,7 +107,14 @@ const ReviewList = ({ userId }: { userId: string }) => {
                 </div>
                 <div className="my-[16px] w-full items-start rounded-[16px] border bg-grayscale-50 p-[16px]">
                   <div className="flex items-center gap-[8px]">
-                    <Rating count={5} value={review.rating ?? 0} size={16} edit={false} activeColor="#ffd700" />
+                    <Image
+                      src="/icons/tabler-icon-star-filled.svg"
+                      alt="Star"
+                      width={16}
+                      height={16}
+                      style={{ width: '16px', height: '16px' }}
+                    />
+                    <p className="text-[14px] text-grayscale-900">{review.rating ?? 0}</p>
                     <p className="text-medium text-[13px]">{profile?.name}</p>
                     <p className="text-[13px] text-grayscale-700">{new Date(review.created_at).toLocaleDateString()}</p>
                   </div>
