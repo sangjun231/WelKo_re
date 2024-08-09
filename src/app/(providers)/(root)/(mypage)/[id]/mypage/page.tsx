@@ -1,10 +1,8 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
 import Image from 'next/image';
 import { useMyPageStore } from '@/zustand/mypageStore';
-import { handleLogout } from '@/utils/supabase/service';
 import PostList from './_components/PostList';
 import ProfileView from './_components/ProfileView';
 import ReviewList from './_components/ReviewList';
@@ -15,7 +13,6 @@ import useAuthStore from '@/zustand/bearsStore';
 const MyPage = () => {
   const { id } = useParams() as { id: string };
   const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const selectedComponent = useMyPageStore((state) => state.selectedComponent);
   const setSelectedComponent = useMyPageStore((state) => state.setSelectedComponent);
   const { logout } = useAuthStore();
