@@ -33,12 +33,12 @@ const PeriodSelector: React.FC<PeriodSelectorProps> = ({ next, startDate, endDat
 
   return (
     <div className="flex flex-col justify-center px-4">
-      <div className="my-4 overflow-auto max-w-full">
+      <div className="my-4 max-w-full overflow-auto">
         <div className="flex flex-wrap">
           {months.map((month, index) => (
             <button
               key={index}
-              className="w-14 h-14 flex items-center justify-center rounded border-2 text-black hover:bg-gray-100 mr-2"
+              className="mr-2 flex h-14 w-14 items-center justify-center rounded border-2 text-black hover:bg-gray-100"
               onClick={() => setSelectedMonth(addMonths(new Date(), month))}
             >
               {monthLabels[index]}
@@ -51,14 +51,18 @@ const PeriodSelector: React.FC<PeriodSelectorProps> = ({ next, startDate, endDat
         startDate={startDate}
         endDate={endDate}
         setStartDate={(date) => handleDateChange(date, 'start')}
-        setEndDate={(date) => handleDateChange(date, 'end')}
+        setEndDate={(date: any) => handleDateChange(date, 'end')}
+        setSelectedMonth={setSelectedMonth}
       />
-      <button className="my-4 rounded bg-black p-2 text-white w-full" onClick={handleDateSave}>
+      <button
+        className="my-4 w-full rounded-2xl bg-[#B95FAB] p-2 text-lg font-semibold text-white"
+        onClick={handleDateSave}
+      >
         {startDate && endDate
-          ? `${format(startDate, 'yyyy. M. d')} - ${format(endDate, 'M. d')} 선택하기`
+          ? `${format(startDate, 'yyyy. M. d')} - ${format(endDate, 'M. d')} Search`
           : selectedMonth
-          ? `${format(selectedMonth, 'yyyy년 MMM')} 선택하기`
-          : '날짜 선택하기'}
+            ? `Search`
+            : '날짜 선택하기'}
       </button>
     </div>
   );

@@ -6,7 +6,17 @@ import TagSelector from '../_components/planner/TagSelector';
 import CitySelector from '../_components/planner/CitySelector';
 import PeriodSelector from '../_components/planner/PeriodSelector';
 
-const tags = ['Activities', 'Famous', 'With Nature', 'Tourist Attraction', 'Shopping', 'Peaceful', 'Mukbang', 'Cultural and Arts', 'K-Drama Location'];
+const tags = [
+  'Activities',
+  'Nature',
+  'Famous',
+  'Tourist Attraction',
+  'Shopping',
+  'Peaceful',
+  'Mukbang',
+  'Cultural/Arts',
+  'K-Drama Location'
+];
 const cities = ['Seoul', 'Busan', 'Sokcho', 'Gangneung', 'Jeonju', 'Daegu', 'Gyeongju', 'Yeosu', 'Jeju'];
 
 export default function TravelPlanner() {
@@ -15,12 +25,10 @@ export default function TravelPlanner() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null); //Date | null
 
   const handleTagClick = (tag: string) => {
-    setSelectedTags((prevTags) =>
-      prevTags.includes(tag) ? prevTags.filter((t) => t !== tag) : [...prevTags, tag]
-    );
+    setSelectedTags((prevTags) => (prevTags.includes(tag) ? prevTags.filter((t) => t !== tag) : [...prevTags, tag]));
   };
 
   const handleCityClick = (city: string) => {
@@ -28,7 +36,9 @@ export default function TravelPlanner() {
   };
 
   const formatDateToShortString = (date: Date | null): string => {
-    return date ? `${date.getFullYear().toString().slice(-2)}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')}` : 'Anything';
+    return date
+      ? `${date.getFullYear().toString().slice(-2)}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')}`
+      : 'Anything';
   };
 
   const handleDateSelection = () => {
@@ -65,17 +75,16 @@ export default function TravelPlanner() {
   };
 
   return (
-    <div className="p-4 pb-16"> {/* Padding bottom added to ensure space for the fixed button */}
-      <button onClick={() => router.back()}>
-        X
-      </button>
-
+    <div className="p-4 pb-16">
+      {' '}
+      {/* Padding bottom added to ensure space for the fixed button */}
+      <button onClick={() => router.back()}>X</button>
       <div className="mt-4">
         <AccordionStep
           step={1}
           activeStep={activeStep}
           toggleStep={toggleStep}
-          title="What kind of experiences do you seek?"
+          title="What is your travel style?"
           shortTitle="What"
           selection={selectedTags.join(', ') || 'Anything'}
         >
@@ -93,7 +102,7 @@ export default function TravelPlanner() {
           toggleStep={toggleStep}
           title="Where to?"
           shortTitle="Where"
-          selection={selectedCity || 'Anything'}
+          selection={selectedCity || 'Anywhere'}
         >
           <CitySelector
             selectedCity={selectedCity}
@@ -108,12 +117,12 @@ export default function TravelPlanner() {
           step={3}
           activeStep={activeStep}
           toggleStep={toggleStep}
-          title="When is your trip?"
+          title="When’s your tour?"
           shortTitle="When"
           selection={
             startDate && endDate
               ? `${formatDateToShortString(startDate)}~${formatDateToShortString(endDate)}`
-              : 'Anything'
+              : 'Any Week'
           }
         >
           <PeriodSelector
@@ -125,9 +134,8 @@ export default function TravelPlanner() {
           />
         </AccordionStep>
       </div>
-
       {/* Fixed button at the bottom */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white">
+      {/* <div className="fixed bottom-0 left-0 right-0 p-4 bg-white">
         {activeStep === 3 ? (
           <button
             onClick={handleDateSelection}
@@ -143,7 +151,7 @@ export default function TravelPlanner() {
             Next
           </button>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }
@@ -165,22 +173,22 @@ const AccordionStep: React.FC<AccordionStepProps> = ({
   title,
   shortTitle,
   selection,
-  children,
+  children
 }) => {
   return (
     <div className="mt-4">
       {activeStep !== step && (
         <button
           onClick={() => toggleStep(step)}
-          className={`w-full text-left px-4 py-2 font-bold ${activeStep === step ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} rounded-md flex justify-between items-center`}
+          className={`w-full px-4 py-2 text-left font-bold ${activeStep === step ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} flex items-center justify-between rounded-md`}
         >
           <span>{shortTitle}</span>
           <span>{selection || 'Anything'}</span>
         </button>
       )}
       {activeStep === step && (
-        <div className="p-4 bg-gray-100 border rounded-md mt-2">
-          <div className="font-bold text-gray-700">{title}</div>
+        <div className="mt-2 rounded-2xl p-4 shadow-[0_0_10px_#d3d3d3]">
+          <div className="mb-[10px] text-[21px] font-bold text-gray-700">{title}</div>
           {children}
         </div>
       )}

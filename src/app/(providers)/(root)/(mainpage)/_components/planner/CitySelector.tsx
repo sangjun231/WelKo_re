@@ -11,11 +11,7 @@ interface CitySelectorProps {
   goToNextStep: () => void;
 }
 
-const CitySelector: React.FC<CitySelectorProps> = ({
-  selectedCity,
-  handleCityClick,
-  cities,
-}) => {
+const CitySelector: React.FC<CitySelectorProps> = ({ selectedCity, handleCityClick, cities }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [autoCompleteResults, setAutoCompleteResults] = useState<string[]>([]);
 
@@ -26,10 +22,7 @@ const CitySelector: React.FC<CitySelectorProps> = ({
         return;
       }
 
-      const { data, error } = await supabase
-        .from('schedule')
-        .select('area')
-        .ilike('area', `%${searchQuery}%`);
+      const { data, error } = await supabase.from('schedule').select('area').ilike('area', `%${searchQuery}%`);
 
       if (error) {
         console.error('Error fetching auto-complete results:', error);
@@ -61,23 +54,21 @@ const CitySelector: React.FC<CitySelectorProps> = ({
   };
 
   // Filter cities based on search query
-  const filteredCities = cities.filter((city) =>
-    city.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredCities = cities.filter((city) => city.toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
     <div>
-      <div className="p-4 bg-gray-100 border rounded-md mt-2">
+      <div>
         <input
           type="text"
           value={searchQuery}
           onChange={handleSearchChange}
           onKeyDown={handleKeyDown}
-          placeholder="Search city"
-          className="w-full p-2 mb-4 border rounded-md"
+          placeholder="Search Your Destination"
+          className="mb-4 w-full rounded-[36px] border bg-gray-100 p-2"
         />
         {autoCompleteResults.length > 0 && (
-          <div className="bg-white border rounded-md p-2 mb-4">
+          <div className="mb-4 rounded-md border bg-white p-2">
             {autoCompleteResults.map((result) => (
               <div
                 key={result}
@@ -89,12 +80,12 @@ const CitySelector: React.FC<CitySelectorProps> = ({
             ))}
           </div>
         )}
-        <div className="flex flex-wrap mb-4">
+        <div className="mb-4 flex flex-wrap">
           {filteredCities.map((city) => (
             <div
               key={city}
-              className={`cursor-pointer p-2 mb-2 border rounded-full flex-1 min-w-[30%] mx-1 text-center ${
-                city === selectedCity ? 'bg-blue-100 border-blue-500' : 'bg-white border-gray-300'
+              className={`mb-2 mr-1 flex min-w-[30%] cursor-pointer justify-center rounded-3xl border px-3 py-2 text-center text-[13px] font-medium ${
+                city === selectedCity ? 'bg-[#B95FAB] text-white' : 'bg-gray-100'
               }`}
               onClick={() => handleCityClick(city)}
             >
@@ -103,8 +94,8 @@ const CitySelector: React.FC<CitySelectorProps> = ({
           ))}
           {searchQuery && !cities.includes(searchQuery) && (
             <div
-              className={`cursor-pointer p-2 mb-2 border rounded-full flex-1 min-w-[30%] mx-1 text-center ${
-                searchQuery === selectedCity ? 'bg-blue-100 border-blue-500' : 'bg-white border-gray-300'
+              className={`mb-2 mr-1 flex min-w-[30%] cursor-pointer justify-center rounded-3xl border px-3 py-2 text-center text-[13px] font-medium ${
+                searchQuery === selectedCity ? 'bg-[#B95FAB] text-white' : 'bg-gray-100'
               }`}
               onClick={() => handleCityClick(searchQuery)}
             >

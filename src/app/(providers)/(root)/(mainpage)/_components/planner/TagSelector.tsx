@@ -10,13 +10,13 @@ interface TagSelectorProps {
 const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, handleTagClick, tags, goToNextStep }) => {
   return (
     <div>
-      <div className="p-4 bg-gray-100 border rounded-md mt-2">
-        <div className="flex flex-wrap mb-4">
+      <div className="mt-2 rounded-md">
+        <div className="flex flex-wrap">
           {tags.map((tag) => (
             <div
               key={tag}
-              className={`cursor-pointer p-2 mb-2 border rounded-full flex-1 min-w-[30%] mx-1 text-center ${
-                selectedTags.includes(tag) ? 'bg-blue-100 border-blue-500' : 'bg-white border-gray-300'
+              className={`mb-2 mr-1 flex min-w-[30%] cursor-pointer justify-center rounded-3xl border px-3 py-2 text-center text-[13px] font-medium ${
+                selectedTags.includes(tag) ? 'bg-[#B95FAB] text-white' : 'bg-gray-100'
               }`}
               onClick={() => handleTagClick(tag)}
             >
