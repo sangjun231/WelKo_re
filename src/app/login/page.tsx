@@ -55,9 +55,9 @@ const AuthForm = () => {
           <BackButton />
         </div>
 
-        <h1 className="mt-[41px] text-center text-2xl font-bold">{isSignUp ? 'Create account' : 'Sign in now'}</h1>
+        <h1 className="mt-[41px] text-center text-2xl font-bold">{isSignUp ? 'Create account' : 'Log in now'}</h1>
         <span className="mb-8 mt-3 block text-center text-sm text-[#7D848D]">
-          {isSignUp ? 'Please sign up to continue Welko' : 'Please sign in to continue Welko'}
+          {isSignUp ? 'Please sign up to continue Welko' : 'Please Log in to continue Welko'}
         </span>
         {isSignUp && <p className="mb-2 font-medium">Email</p>}
         <input
@@ -105,14 +105,14 @@ const AuthForm = () => {
           onClick={isSignUp ? onSignUp : onLogin}
           className="w-full rounded-xl bg-[#B95FAB] px-5 py-3 font-semibold text-white hover:bg-[#b344a2]"
         >
-          {isSignUp ? 'Sign Up' : 'Sign In'}
+          {isSignUp ? 'Sign Up' : 'Log In'}
         </button>
 
         <div className={`absolute left-0 ${isSignUp ? 'mt-[58px]' : 'mt-[214px]'} w-full text-center`}>
           <p className="text-center text-[#707B81]">
             {isSignUp ? 'Already have an account?' : 'Don’t have an account?'}{' '}
             <button onClick={toggleForm} className="font-medium text-[#FF7029] underline">
-              {isSignUp ? 'Sign In' : 'Sign Up'}
+              {isSignUp ? 'Log In' : 'Sign Up'}
             </button>
           </p>
 

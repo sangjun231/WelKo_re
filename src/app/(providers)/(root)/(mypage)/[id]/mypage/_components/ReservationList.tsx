@@ -113,15 +113,15 @@ export default function ReservationList() {
     router.push(`/${userId}/${postAuthorId}/chatpage?${query}`);
   };
 
-  const handleCancelRequest = async () => {
+  const handleCancelRequest = async (paymentId: string) => {
     try {
-      const response = await axios.post(`/api/detail/payment/${id}`, {
+      const response = await axios.post(`/api/detail/payment/${paymentId}`, {
         reason: 'User requested cancel',
         requester: 'CUSTOMER'
       });
       alert(response.data.message);
+      paymentsQuery.refetch();
     } catch (error) {
-      console.error('Error requesting cancel:', error);
       alert('Cancel request failed.');
     }
   };
@@ -215,7 +215,11 @@ export default function ReservationList() {
                   </button>
                   <button
                     className="flex-1 rounded-lg border bg-primary-300 p-2 text-[14px] font-semibold text-white"
-                    onClick={handleCancelRequest}
+                    onClick={() => {
+                      if (payment?.id) {
+                        handleCancelRequest(payment.id);
+                      }
+                    }}
                   >
                     Cancel Tour
                   </button>
