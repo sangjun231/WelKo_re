@@ -15,6 +15,7 @@ type Message = {
   content: string;
   created_at: string;
   post_id: string;
+  is_checked: boolean;
   sender: User;
   receiver: User;
 };
@@ -72,7 +73,7 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
             <div
               className={`mt-[7px] max-w-[240px] break-all px-[8px] py-[12px] ${
                 msg.sender_id === senderId
-                  ? 'bg-primary-50 rounded-br-0 rounded-bl-[16px] rounded-tl-[16px] rounded-tr-[16px]'
+                  ? 'rounded-br-0 rounded-bl-[16px] rounded-tl-[16px] rounded-tr-[16px] bg-primary-50'
                   : 'rounded-bl-0 rounded-br-[16px] rounded-tl-[16px] rounded-tr-[16px] bg-grayscale-50'
               }`}
             >

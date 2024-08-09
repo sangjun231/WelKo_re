@@ -47,6 +47,7 @@ export type Database = {
           content: string
           created_at: string | null
           id: number
+          is_checked: boolean | null
           post_id: string | null
           receiver_id: string
           sender_id: string
@@ -55,6 +56,7 @@ export type Database = {
           content: string
           created_at?: string | null
           id?: number
+          is_checked?: boolean | null
           post_id?: string | null
           receiver_id: string
           sender_id: string
@@ -63,6 +65,7 @@ export type Database = {
           content?: string
           created_at?: string | null
           id?: number
+          is_checked?: boolean | null
           post_id?: string | null
           receiver_id?: string
           sender_id?: string
@@ -274,7 +277,15 @@ export type Database = {
           places?: Json | null
           post_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "schedule_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       users: {
         Row: {

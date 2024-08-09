@@ -1,22 +1,23 @@
-'use client';
-
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { API_MYPAGE_CHATS, API_POST_DETAILS, API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import axios from 'axios';
+import { fetchMessages } from '@/services/chatService';
 
 type ChatListProps = {
   userId: string;
 };
 
 type Message = {
+  id: string;
   sender_id: string;
   receiver_id: string;
   content: string;
   created_at: string;
   post_id: string;
+  is_checked: boolean;
 };
 
 type Chat = {
@@ -108,7 +109,7 @@ const ChatList = ({ userId }: ChatListProps) => {
     return acc;
   }, {});
 
-  const handleChatClick = (chat: Chat) => {
+  const handleChatClick = async (chat: Chat) => {
     const receiverId = userId === chat.sender_id ? chat.receiver_id : chat.sender_id;
     const postDetails = postData?.find((post) => post.id === chat.post_id);
     const chatId = `${chat.post_id}-${[chat.sender_id, chat.receiver_id].sort().join('-')}`;
@@ -117,6 +118,8 @@ const ChatList = ({ userId }: ChatListProps) => {
       ...prev,
       [chatId]: true
     }));
+
+    await fetchMessages(chat.receiver_id, chat.sender_id, chat.post_id);
 
     router.push(
       `/${userId}/${receiverId}/chatpage?postId=${chat.post_id}&postTitle=${postDetails?.title}&postImage=${postDetails?.image}`
@@ -136,7 +139,7 @@ const ChatList = ({ userId }: ChatListProps) => {
 
           const firstMessage = chat.messages[0];
           const chatId = `${chat.post_id}-${[chat.sender_id, chat.receiver_id].sort().join('-')}`;
-          const isNewMessage = !newMessages[chatId] && firstMessage.sender_id !== userId;
+          const isNewMessage = !newMessages[chatId] && firstMessage.sender_id !== userId && !firstMessage.is_checked;
 
           return (
             <div className="mb-[32px] max-w-[360px]" key={index} onClick={() => handleChatClick(chat)}>
