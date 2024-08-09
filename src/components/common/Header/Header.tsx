@@ -76,7 +76,7 @@ function Header() {
             </div>
           ) : (
             <Link href="/login">
-              <button>Sign in or Sign up</button>
+              <button>Log in or Sign up</button>
             </Link>
           )}
         </div>
