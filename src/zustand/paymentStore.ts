@@ -17,7 +17,8 @@ export const requestPayment = async (
   user: any,
   totalAmount: number,
   handlePaymentSuccess: (response: any) => Promise<void>,
-  handlePaymentFailure: (error: any) => Promise<void>
+  handlePaymentFailure: (error: any) => Promise<void>,
+  redirectUrl: string // DetailNavbar에서 전달된 URL
 ) => {
   const totalAmountInCents = totalAmount * 1000;
 
@@ -31,7 +32,7 @@ export const requestPayment = async (
       paymentId: `payment${crypto.randomUUID().split('-')[0]}`, // 고객사 주문 고유 번호
       orderName: post.title, // 주문명
       totalAmount: totalAmountInCents, // 결제 금액 (센트 단위)
-      currency: 'CURRENCY_USD', // 결제 통화
+      currency: 'CURRENCY_KRW', // 결제 통화
       payMethod: 'CARD', // 결제수단 구분코드
       customer: {
         fullName: user?.name || 'Unknown', // 구매자 전체 이름
@@ -61,41 +62,17 @@ export const requestPayment = async (
             }
           },
       locale: 'EN_US',
-      redirectUrl: '' // 이 부분은 빈 문자열로 초기화
+      redirectUrl
     });
 
     if (response?.code != null) {
       await handlePaymentFailure(response);
     } else {
-      // 현재 도메인을 가져와서 redirectUrl 설정
-      const currentOrigin = window.location.origin;
-      const finalRedirectUrl = `${currentOrigin}/detail/payment/${response?.txId}`;
-
-      // 모바일 결제의 경우, 서버에 데이터를 저장하는 로직을 추가
-      if (isMobile) {
-        try {
-          // 결제 완료 후 데이터를 서버에 저장
-          const paymentData = {
-            id: response?.txId,
-            user_id: user.id,
-            post_id: post.id,
-            pay_state: response?.paymentId,
-            total_price: totalAmount
-          };
-
-          await axios.post('/api/detail/payment', paymentData);
-        } catch (error) {
-          console.error('Error saving payment data on mobile:', error);
-          alert('결제 데이터 저장에 실패했습니다.');
-          return;
-        }
-      }
+      // 최종적으로 txId가 포함된 리디렉션 URL을 생성
+      const finalRedirectUrl = `${window.location.origin}/detail/payment/${response?.txId}`;
 
       // 최종적으로 리디렉션 URL을 포함한 성공 처리를 호출
       await handlePaymentSuccess({ ...response, redirectUrl: finalRedirectUrl });
-
-      // 필요에 따라 사용자를 해당 URL로 리디렉션
-      window.location.href = finalRedirectUrl;
     }
   } catch (error) {
     console.error('Payment request error:', error);

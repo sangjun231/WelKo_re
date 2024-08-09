@@ -35,15 +35,11 @@ const DetailNavbar = () => {
           // await axios.post('/api/non-existent-url', paymentData);
 
           // 결제 내역을 서버에 저장
-          console.log('Storing payment data:', paymentData);
-          const result = await axios.post('/api/detail/payment', paymentData);
-          console.log('API response:', result);
+          await axios.post('/api/detail/payment', paymentData);
 
-          // 결제 성공 후 리디렉션할 URL 생성
-          const redirectUrl = `/detail/payment/${response.txId}`;
-          router.push(redirectUrl);
+          const redirectUrl = `${window.location.origin}/detail/payment/${response.txId}`;
+          router.push(redirectUrl); // 성공 후 리디렉션
         } catch (error) {
-          console.error('Error saving payment data:', error);
           try {
             // 결제 데이터 저장 실패 시 자동 환불 처리
             await axios.post(`/api/detail/autocancel`, {
@@ -53,7 +49,6 @@ const DetailNavbar = () => {
             });
             alert('결제 데이터 저장에 실패하여 자동으로 환불 처리되었습니다.');
           } catch (cancelError) {
-            console.error('Auto-cancel error:', cancelError);
             alert('결제 데이터 저장에 실패했으며, 환불 처리에도 실패했습니다. 관리자에게 문의하세요.');
           }
           router.back();
@@ -76,7 +71,10 @@ const DetailNavbar = () => {
 
   const handlePaymentClick = async () => {
     if (post && user) {
-      await requestPayment(post, user, totalAmount, handlePaymentSuccess, handlePaymentFailure);
+      // 현재 페이지의 URL을 기준으로 redirectUrl 생성
+      const currentUrl = window.location.href;
+      const redirectUrl = `${currentUrl}?txId=${crypto.randomUUID().split('-')[0]}`;
+      await requestPayment(post, user, totalAmount, handlePaymentSuccess, handlePaymentFailure, redirectUrl);
     }
   };
 
