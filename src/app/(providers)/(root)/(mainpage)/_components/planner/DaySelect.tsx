@@ -1,12 +1,24 @@
-import React from 'react';
-import { format, isBefore, isAfter, startOfDay, endOfMonth, startOfMonth, endOfWeek, startOfWeek, addMonths, subMonths } from 'date-fns';
+import React, { useEffect, useState } from 'react';
+import {
+  format,
+  isBefore,
+  isAfter,
+  startOfDay,
+  endOfMonth,
+  startOfMonth,
+  endOfWeek,
+  startOfWeek,
+  addMonths,
+  subMonths
+} from 'date-fns';
 
 interface DaySelectProps {
   selectedMonth: Date;
   startDate: Date | null;
   endDate: Date | null;
   setStartDate: (date: Date | null) => void;
-  setEndDate: (date: Date | null) => void;
+  setEndDate: any; //(date: Date | null) => void;
+  setSelectedMonth: (date: Date) => void;
 }
 
 const DaySelect: React.FC<DaySelectProps> = ({
@@ -15,89 +27,84 @@ const DaySelect: React.FC<DaySelectProps> = ({
   endDate,
   setStartDate,
   setEndDate,
+  setSelectedMonth
 }) => {
   const today = startOfDay(new Date());
 
-  // Ensure selectedMonth is a valid Date object
-  if (!(selectedMonth instanceof Date) || isNaN(selectedMonth.getTime())) {
-    return <div>Invalid month selected</div>;
-  }
-
-  // Create dates for the selected month
+  // 현재 달의 시작과 끝을 계산
   const startMonth = startOfMonth(selectedMonth);
   const endMonth = endOfMonth(selectedMonth);
-  
-  // Calculate the start and end dates for the calendar grid
-  const startCalendar = startOfWeek(startMonth, { weekStartsOn: 0 }); // Start from Sunday
+
+  // 달력의 시작과 끝 날짜를 계산
+  const startCalendar = startOfWeek(startMonth, { weekStartsOn: 0 });
   const endCalendar = endOfWeek(endMonth, { weekStartsOn: 0 });
-  
-  // Generate dates for the calendar grid
+
+  // 달력에 표시할 날짜 배열을 생성
   const daysInCalendar = Array.from(
     { length: (endCalendar.getTime() - startCalendar.getTime()) / (1000 * 60 * 60 * 24) + 1 },
     (_, i) => new Date(startCalendar.getFullYear(), startCalendar.getMonth(), startCalendar.getDate() + i)
   );
-  
-  // Check if a date is disabled (before today)
+
+  // 날짜가 비활성화되었는지 확인
   const isDateDisabled = (date: Date) => isBefore(startOfDay(date), today);
+
+  // 날짜가 선택 범위에 포함되는지 확인
+  const isDateInRange = (date: Date) => startDate && endDate && isAfter(date, startDate) && isBefore(date, endDate);
 
   const handleDateClick = (date: Date) => {
     if (isDateDisabled(date)) return;
 
-    if (startDate && endDate) {
+    if (!startDate) {
+      // 시작 날짜가 없는 경우
       setStartDate(date);
-      setEndDate(null);
-    } else if (startDate) {
+      setEndDate(null); // 새 시작 날짜가 설정되면 종료 날짜는 null로 초기화
+    } else if (startDate && !endDate) {
+      // 시작 날짜가 설정되어 있고 종료 날짜가 없는 경우
       if (isAfter(date, startDate)) {
         setEndDate(date);
       } else {
+        // 새로운 시작 날짜가 이전 시작 날짜보다 이른 경우
         setStartDate(date);
         setEndDate(null);
       }
-    } else {
+    } else if (startDate && endDate) {
+      // 시작 날짜와 종료 날짜가 모두 설정된 경우
       setStartDate(date);
+      setEndDate(() => null);
     }
   };
 
   return (
     <div className="flex flex-col">
-      <div className="text-center font-bold mb-2">
-        {format(selectedMonth, 'yyyy년 MMMM')}
+      <div className="mb-2 flex items-center justify-between">
+        <button onClick={() => setSelectedMonth(subMonths(selectedMonth, 1))} className="rounded px-2 py-1">
+          &lt;
+        </button>
+        <div className="text-center text-[13px] font-semibold">{format(selectedMonth, 'MMMM yyyy')}</div>
+        <button onClick={() => setSelectedMonth(addMonths(selectedMonth, 1))} className="rounded px-2 py-1">
+          &gt;
+        </button>
       </div>
+
       <div className="grid grid-cols-7 gap-1">
         {daysInCalendar.map((day) => (
           <button
             key={day.toDateString()}
             onClick={() => handleDateClick(day)}
-            className={`p-2 rounded-md ${
-              isDateDisabled(day)
-                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                : startDate && endDate && day >= startDate && day <= endDate
-                ? 'bg-blue-500 text-white'
-                : startDate && day.toDateString() === startDate.toDateString()
-                ? 'bg-green-500 text-white'
+            className={`rounded-full p-1.5 text-[13px] font-semibold ${
+              startDate && day.toDateString() === startDate.toDateString()
+                ? 'bg-[#B95FAB] text-white'
                 : endDate && day.toDateString() === endDate.toDateString()
-                ? 'bg-red-500 text-white'
-                : 'bg-white text-black'
-            } ${isDateDisabled(day) ? 'cursor-not-allowed' : 'hover:bg-gray-100'}`}
+                  ? 'bg-[#B95FAB] text-white'
+                  : isDateInRange(day)
+                    ? 'bg-[#B95FAB] text-white'
+                    : 'bg-white text-black'
+            } ${isDateDisabled(day) ? 'cursor-not-allowed bg-gray-200 text-gray-400' : ''}`}
             disabled={isDateDisabled(day)}
           >
             {format(day, 'd')}
           </button>
         ))}
-      </div>
-      <div className="flex justify-between mt-2">
-        <button
-          onClick={() => setStartDate(startOfDay(subMonths(selectedMonth, 1)))}
-          className="px-2 py-1 bg-gray-300 rounded"
-        >
-          &lt;
-        </button>
-        <button
-          onClick={() => setStartDate(startOfDay(addMonths(selectedMonth, 1)))}
-          className="px-2 py-1 bg-gray-300 rounded"
-        >
-          &gt;
-        </button>
       </div>
     </div>
   );

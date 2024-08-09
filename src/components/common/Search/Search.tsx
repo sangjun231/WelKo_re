@@ -41,7 +41,7 @@ export default function Search({ initialQuery = '' }: { initialQuery?: string })
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onClick={handleInputClick}
-          placeholder="여행지를 검색해보세요"
+          placeholder="Search your tour"
           className="ml-2 mr-4 w-full rounded-full border-2 border-black px-5 py-4 text-black focus:border-gray-200 focus:bg-gray-200 focus:outline-none"
         />
       </form>
