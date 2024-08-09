@@ -123,17 +123,14 @@ export default function PostList() {
                 </div>
               </div>
             </Link>
-
-            {status === 'Upcoming Tour' && (
-              <button
-                className="mt-[12px] w-full rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
-                onClick={() => {
-                  handleReservationList(post.id);
-                }}
-              >
-                Reservation List
-              </button>
-            )}
+            <button
+              className="mt-[12px] w-full rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
+              onClick={() => {
+                handleReservationList(post.id);
+              }}
+            >
+              Reservation List
+            </button>
           </div>
         );
       })}
