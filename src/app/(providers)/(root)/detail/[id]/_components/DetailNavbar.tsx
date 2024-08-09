@@ -35,12 +35,17 @@ const DetailNavbar = () => {
           // await axios.post('/api/non-existent-url', paymentData);
 
           // 결제 내역을 서버에 저장
-          await axios.post('/api/detail/payment', paymentData);
-          // 결제 완료 페이지로 이동
-          router.push(`/detail/payment/${response.txId}`);
+          console.log('Storing payment data:', paymentData);
+          const result = await axios.post('/api/detail/payment', paymentData);
+          console.log('API response:', result);
+
+          // 결제 성공 후 리디렉션할 URL 생성
+          const redirectUrl = `/detail/payment/${response.txId}`;
+          router.push(redirectUrl);
         } catch (error) {
-          // 결제 실패 처리
+          console.error('Error saving payment data:', error);
           try {
+            // 결제 데이터 저장 실패 시 자동 환불 처리
             await axios.post(`/api/detail/autocancel`, {
               paymentId: response.paymentId,
               reason: 'Data save failed',
@@ -48,6 +53,7 @@ const DetailNavbar = () => {
             });
             alert('결제 데이터 저장에 실패하여 자동으로 환불 처리되었습니다.');
           } catch (cancelError) {
+            console.error('Auto-cancel error:', cancelError);
             alert('결제 데이터 저장에 실패했으며, 환불 처리에도 실패했습니다. 관리자에게 문의하세요.');
           }
           router.back();
@@ -60,7 +66,6 @@ const DetailNavbar = () => {
     [router, user?.id, user?.email, post?.id, totalAmount]
   );
 
-  // 결제 실패 시 호출되는 함수
   const handlePaymentFailure = useCallback(
     async (error: any) => {
       console.error('Payment failed:', error);
@@ -69,10 +74,9 @@ const DetailNavbar = () => {
     [router, post?.id]
   );
 
-  // 결제 요청을 실행하는 함수
-  const handlePaymentClick = () => {
+  const handlePaymentClick = async () => {
     if (post && user) {
-      requestPayment(post, user, totalAmount, handlePaymentSuccess, handlePaymentFailure);
+      await requestPayment(post, user, totalAmount, handlePaymentSuccess, handlePaymentFailure);
     }
   };
 
@@ -88,44 +92,44 @@ const DetailNavbar = () => {
   return (
     <div className="fixed bottom-0 left-0 z-10 w-full bg-white">
       {pathname.includes('reservation') ? (
-        <div className="shadow-custom-navbar border-t-1 border-grayscale-100 mx-auto max-w-[360px] py-4">
+        <div className="border-t-1 mx-auto max-w-[360px] border-grayscale-100 py-4 shadow-custom-navbar">
           <div className="mx-auto flex max-w-[320px] items-center">
             <div className="flex flex-1 flex-col justify-center">
               <div className="flex items-center text-lg">
-                <span className="text-grayscale-900 font-semibold">${totalAmount.toFixed(2)}</span>
-                <span className="text-grayscale-600 font-medium">/Total</span>
+                <span className="font-semibold text-grayscale-900">${totalAmount.toFixed(2)}</span>
+                <span className="font-medium text-grayscale-600">/Total</span>
               </div>
               <div className="flex justify-start">
-                <p className="text-grayscale-900 text-xs font-medium">
+                <p className="text-xs font-medium text-grayscale-900">
                   {formatDateRange(post?.startDate ?? null, post?.endDate ?? null)}
                 </p>
               </div>
             </div>
             <button
               onClick={handlePaymentClick}
-              className="bg-primary-300 w-40 flex-1 rounded-xl py-2 text-base font-semibold text-white"
+              className="w-40 flex-1 rounded-xl bg-primary-300 py-2 text-base font-semibold text-white"
             >
               Confirm and Pay
             </button>
           </div>
         </div>
       ) : (
-        <div className="shadow-custom-navbar border-t-1 border-grayscale-100 mx-auto max-w-[360px] py-4">
+        <div className="border-t-1 mx-auto max-w-[360px] border-grayscale-100 py-4 shadow-custom-navbar">
           <div className="mx-auto flex max-w-[320px] items-center justify-between">
             <div className="flex flex-col justify-center">
               <div className="flex items-center text-lg">
-                <span className="text-primary-300 font-semibold">${post?.price}</span>
-                <span className="text-grayscale-600 font-medium">/Person</span>
+                <span className="font-semibold text-primary-300">${post?.price}</span>
+                <span className="font-medium text-grayscale-600">/Person</span>
               </div>
               <div className="flex justify-start">
-                <p className="text-grayscale-900 text-xs font-medium">
+                <p className="text-xs font-medium text-grayscale-900">
                   {formatDateRange(post?.startDate ?? null, post?.endDate ?? null)}
                 </p>
               </div>
             </div>
             <button
               onClick={handleReserveClick}
-              className="bg-primary-300 w-40 rounded-xl px-4 py-2 text-base font-semibold text-white"
+              className="w-40 rounded-xl bg-primary-300 px-4 py-2 text-base font-semibold text-white"
             >
               Reserve
             </button>
