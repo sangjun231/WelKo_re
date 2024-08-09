@@ -178,7 +178,7 @@ export default function ReservationList() {
                   className={`text-[14px] font-medium ${status === 'Upcoming Tour' ? 'text-primary-300' : status === 'Refunded' ? 'text-error-color' : 'text-grayscale-900'}`}
                 >
                   {status}
-                </p>{' '}
+                </p>
               </div>
               <Link className="flex items-center" href={`/detail/payment/history/${payment?.id}`}>
                 <p className="text-[14px] font-semibold text-primary-300">Detail</p>

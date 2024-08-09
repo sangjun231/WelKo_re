@@ -88,7 +88,11 @@ export default function PostList() {
                 <p className="text-[14px] font-semibold text-grayscale-900">
                   {new Date(post.created_at).toLocaleDateString()}
                 </p>
-                <p className="text-[14px] font-medium text-primary-300">{status}</p>
+                <p
+                  className={`text-[14px] font-medium ${status === 'Upcoming Tour' ? 'text-primary-300' : 'text-grayscale-900'}`}
+                >
+                  {status}
+                </p>
               </div>
               <div className="flex gap-[16px]">
                 <button className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]">
