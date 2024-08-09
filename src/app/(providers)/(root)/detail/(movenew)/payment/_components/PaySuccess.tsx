@@ -58,9 +58,22 @@ export default function PaymentSuccess() {
         requester: 'CUSTOMER'
       });
       alert(response.data.message);
+
+      // 환불 성공 시 마이페이지 예약 확인 부분으로 이동
+      if (response.data.success) {
+        setSelectedComponent('Reservations');
+        router.push(`/${user?.id}/mypage`);
+      }
     } catch (error) {
       console.error('Error requesting cancel:', error);
       alert('Cancel request failed.');
+    }
+  };
+
+  const handleCancelClick = () => {
+    const confirmed = window.confirm('Are you sure you want to cancel the payment? This action cannot be undone.');
+    if (confirmed) {
+      handleCancelRequest();
     }
   };
 
@@ -75,19 +88,19 @@ export default function PaymentSuccess() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
       <div className="mb-5 flex w-full max-w-[300px] flex-col items-center gap-1">
-        <h1 className="text-grayscale-900 mb-2 text-2xl font-semibold">We’re getting your tour!</h1>
-        <p className="text-grayscale-600 text-xs font-normal">The payment has been completed.</p>
+        <h1 className="mb-2 text-2xl font-semibold text-grayscale-900">We’re getting your tour!</h1>
+        <p className="text-xs font-normal text-grayscale-600">The payment has been completed.</p>
       </div>
       <div className="mb-40 flex w-full max-w-[320px] flex-col">
         <div
           onClick={handleReservationsClick}
-          className="bg-primary-300 mb-4 w-full cursor-pointer rounded-xl px-6 py-3 text-center text-white"
+          className="mb-4 w-full cursor-pointer rounded-xl bg-primary-300 px-6 py-3 text-center text-white"
         >
           My Reservation
         </div>
         <Link
           href="/"
-          className="border-primary-300 text-primary-300 mb-4 w-full rounded-xl border px-6 py-3 text-center"
+          className="mb-4 w-full rounded-xl border border-primary-300 px-6 py-3 text-center text-primary-300"
         >
           Back to Home
         </Link>
@@ -95,7 +108,7 @@ export default function PaymentSuccess() {
       <div className="mb-2 text-center text-gray-600">
         Is there a mistake? You can cancel it immediately by pressing the button below
       </div>
-      <button onClick={handleCancelRequest} className="text-grayscale-900 text-sm font-semibold underline">
+      <button onClick={handleCancelClick} className="text-sm font-semibold text-grayscale-900 underline">
         Cancel Now
       </button>
     </div>
