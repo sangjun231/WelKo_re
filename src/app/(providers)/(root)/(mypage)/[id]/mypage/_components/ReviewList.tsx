@@ -8,6 +8,7 @@ import Image from 'next/image';
 import Rating from 'react-rating-stars-component';
 import { API_MYPAGE_REVIEWS, API_POST, API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
+import { formatDateRange } from '@/utils/detail/functions';
 
 const ReviewList = ({ userId }: { userId: string }) => {
   const [reviews, setReviews] = useState<Tables<'reviews'>[]>([]);
@@ -101,7 +102,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
                   <div className="ml-[4px] flex w-full flex-col gap-[4px]">
                     <p className="line-clamp-1 text-[14px] font-semibold text-primary-900">{post.title}</p>
                     <p className="text-[14px] text-grayscale-500">
-                      {post.startDate} - {post.endDate}
+                      {formatDateRange(post.startDate, post.endDate)}
                     </p>
                   </div>
                 </div>

@@ -9,6 +9,7 @@ import Image from 'next/image';
 import useAuthStore from '@/zustand/bearsStore';
 import { Tables } from '@/types/supabase';
 import { API_MYPAGE_LIKES } from '@/utils/apiConstants';
+import { formatDateRange } from '@/utils/detail/functions';
 import Like from './Like';
 
 export default function LikeList() {
@@ -84,12 +85,8 @@ export default function LikeList() {
             </div>
             <Link href={`/detail/${post.id}`}>
               <div className="ml-[8px] space-y-[4px]">
-                <p className="text-primary-900 line-clamp-1 text-[14px] font-semibold">{post.title}</p>
-                <p className="text-[14px] text-grayscale-500">
-                  {post.startDate && post.endDate
-                    ? `${new Date(post.startDate).toLocaleDateString()} - ${new Date(post.endDate).toLocaleDateString()}`
-                    : 'No date information'}
-                </p>
+                <p className="line-clamp-1 text-[14px] font-semibold text-primary-900">{post.title}</p>
+                <p className="text-[14px] text-grayscale-500">{formatDateRange(post.startDate, post.endDate)}</p>
                 <p className="text-[13px] font-medium text-grayscale-700">
                   <span className="font-semibold text-primary-300">{formatPrice(post.price)}</span>
                   /Person

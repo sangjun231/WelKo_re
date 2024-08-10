@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { API_MYPAGE_TOURRESERVATIONLIST } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
 import { useRouter } from 'next/navigation';
+import { formatDateRange } from '@/utils/detail/functions';
 
 const fetchReservations = async (userId: string, postId: string) => {
   const response = await axios.get(API_MYPAGE_TOURRESERVATIONLIST(userId, postId));
@@ -84,7 +85,7 @@ const TourReservationList = ({ userId, postId }: { userId: string; postId: strin
         <div className="ml-[8px]">
           <p className="line-clamp-1 text-[14px] font-semibold">{data[0]?.posts.title}</p>
           <p className="text-[14px] text-grayscale-500">
-            {data[0]?.posts.startDate ?? 'No Start Date'} - {data[0]?.posts.endDate ?? 'No End Date'}
+            {formatDateRange(data[0]?.posts.startDate, data[0]?.posts.endDate)}
           </p>
           <p className="text-[13px] font-medium text-gray-700">
             <span className="font-semibold text-primary-300">{formatPrice(data[0]?.posts.price)}</span>

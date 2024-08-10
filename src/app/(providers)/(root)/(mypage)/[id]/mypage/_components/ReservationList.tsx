@@ -8,6 +8,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { API_POST, API_MYPAGE_REVIEWS, API_MYPAGE_PAYMENTS } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
+import { formatDateRange } from '@/utils/detail/functions';
 
 export default function ReservationList() {
   const params = useParams();
@@ -196,9 +197,7 @@ export default function ReservationList() {
                 />
                 <div className="ml-[4px] flex flex-col gap-[4px]">
                   <p className="line-clamp-1 text-[14px] font-semibold text-primary-900">{post.title ?? 'No Title'}</p>
-                  <p className="text-[14px] text-grayscale-500">
-                    {post.startDate ?? 'No Start Date'} - {post.endDate ?? 'No End Date'}
-                  </p>
+                  <p className="text-[14px] text-grayscale-500">{formatDateRange(post.startDate, post.endDate)} </p>
                   <p className="text-[13px] font-medium text-gray-700">
                     <span className="font-semibold text-primary-300">{formatPrice(post.price)}</span>
                     /Person

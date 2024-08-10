@@ -8,6 +8,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { API_MYPAGE_POST } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
+import { formatDateRange } from '@/utils/detail/functions';
 import { DeletePost } from '@/app/(providers)/(root)/postpage/[id]/_components/PostEdit';
 
 export default function PostList() {
@@ -117,9 +118,7 @@ export default function PostList() {
                 />
                 <div className="ml-[4px] flex flex-col gap-[4px]">
                   <p className="line-clamp-1 text-[14px] font-semibold text-primary-900">{post.title}</p>
-                  <p className="text-[14px] text-grayscale-500">
-                    {post.startDate} - {post.endDate}
-                  </p>
+                  <p className="text-[14px] text-grayscale-500">{formatDateRange(post.startDate, post.endDate)}</p>
                   <p className="text-[13px] font-semibold text-grayscale-700">
                     <span className="font-medium text-primary-300">{formatPrice(post.price)}</span>
                     /Person
