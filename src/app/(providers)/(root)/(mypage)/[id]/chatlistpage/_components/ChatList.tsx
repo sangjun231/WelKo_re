@@ -126,7 +126,24 @@ const ChatList = ({ userId }: ChatListProps) => {
     );
   };
 
+  const formatDate = (created_at: string) => {
+    const messageDate = new Date(created_at);
+    const today = new Date();
+
+    const isToday =
+      messageDate.getDate() === today.getDate() &&
+      messageDate.getMonth() === today.getMonth() &&
+      messageDate.getFullYear() === today.getFullYear();
+
+    if (isToday) {
+      return messageDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    } else {
+      return `${messageDate.getMonth() + 1}.${messageDate.getDate()}`;
+    }
+  };
+
   if (chatPending || postPending || userPending) return <div>Loading...</div>;
+
   if (chatError || postError || userError) return <div>Error loading data</div>;
 
   return (
@@ -157,7 +174,7 @@ const ChatList = ({ userId }: ChatListProps) => {
                     <div className="flex items-center justify-between">
                       <p className="line-clamp-1 text-[13px] font-medium">{postDetails.title}</p>
                       <p className="ml-[8px] flex-shrink-0 text-[10px] text-grayscale-500">
-                        {new Date(firstMessage?.created_at).toLocaleString()}
+                        {formatDate(firstMessage?.created_at)}
                       </p>
                     </div>
                     <div className="flex items-center justify-between">
