@@ -53,7 +53,7 @@ const ReviewForm = ({ userId }: { userId: string }) => {
     router.back();
   };
 
-    const ratingChanged = (newRating: number) => {
+  const ratingChanged = (newRating: number) => {
     setRating(newRating);
   };
 
@@ -80,6 +80,7 @@ const ReviewForm = ({ userId }: { userId: string }) => {
         {post ? (
           <div className="flex">
             <Image
+              className="rounded-[8px]"
               src={post.image ?? '/icons/upload.png'}
               alt={post.title ?? 'Default title'}
               width={44}
@@ -88,9 +89,7 @@ const ReviewForm = ({ userId }: { userId: string }) => {
             />
             <div className="ml-[8px] flex flex-col">
               <p className="text-[14px] font-semibold">{post.title}</p>
-              <p className="text-[14px] text-grayscale-500">
-                {formatDateRange(post.startDate, post.endDate)}
-              </p>
+              <p className="text-[14px] text-grayscale-500">{formatDateRange(post.startDate, post.endDate)}</p>
             </div>
           </div>
         ) : (

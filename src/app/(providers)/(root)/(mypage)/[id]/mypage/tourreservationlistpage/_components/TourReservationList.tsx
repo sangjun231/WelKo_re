@@ -76,6 +76,7 @@ const TourReservationList = ({ userId, postId }: { userId: string; postId: strin
       </div>
       <div className="mt-[24px] flex">
         <Image
+          className="rounded-[8px]"
           src={data[0].posts.image || '/default-image.png'}
           alt={data[0]?.posts.title}
           width={80}

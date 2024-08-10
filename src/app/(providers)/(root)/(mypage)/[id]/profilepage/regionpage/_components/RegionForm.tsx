@@ -152,7 +152,7 @@ const RegionForm = () => {
           Done
         </button>
       </div>
-      <div className="my-[20px]" id="map" style={{ width: '100%', height: '400px' }}></div>
+      <div className="my-[20px] rounded-[16px]" id="map" style={{ width: '100%', height: '400px' }}></div>
       <div>
         <p className="mb-[8px] text-[16px] font-medium">Location</p>
         {region ? (

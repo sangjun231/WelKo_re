@@ -74,6 +74,7 @@ export default function LikeList() {
             <div className="relative">
               <Link href={`/detail/${post.id}`}>
                 <Image
+                  className="rounded-[8px]"
                   src={post.image ?? '/icons/upload.png'}
                   alt={post.title ?? 'Default title'}
                   width={80}

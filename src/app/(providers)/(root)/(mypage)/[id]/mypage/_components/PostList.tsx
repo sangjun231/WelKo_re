@@ -110,6 +110,7 @@ export default function PostList() {
             <Link href={`/detail/${post.id}`}>
               <div className="flex">
                 <Image
+                  className="rounded-[8px]"
                   src={post.image ?? '/icons/upload.png'}
                   alt={post.title ?? 'Default title'}
                   width={80}

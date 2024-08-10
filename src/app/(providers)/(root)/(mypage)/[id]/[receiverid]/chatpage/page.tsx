@@ -46,7 +46,7 @@ const ChatPage = () => {
       </div>
       <div className="flex">
         <Image
-          className="mb-[20px] mr-2"
+          className="mb-[20px] mr-2 rounded-[8px]"
           src={postImage ?? '/icons/upload.png'}
           alt={postTitle ?? 'Default title'}
           width={44}

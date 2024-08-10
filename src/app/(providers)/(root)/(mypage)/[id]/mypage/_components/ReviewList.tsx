@@ -93,6 +93,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
               <div key={post.id} className="mb-[20px]">
                 <div className="flex">
                   <Image
+                    className="rounded-[8px]"
                     src={post.image ?? '/icons/upload.png'}
                     alt={post.title ?? 'Default title'}
                     width={44}

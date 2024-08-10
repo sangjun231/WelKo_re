@@ -142,11 +142,11 @@ const ChatList = ({ userId }: ChatListProps) => {
           const isNewMessage = !newMessages[chatId] && firstMessage.sender_id !== userId && !firstMessage.is_checked;
 
           return (
-            <div className="mb-[32px] max-w-[360px]" key={index} onClick={() => handleChatClick(chat)}>
+            <div className="mb-[32px] w-[360px] overflow-hidden" key={index} onClick={() => handleChatClick(chat)}>
               {postDetails && senderDetails && (
                 <div className="flex">
                   <Image
-                    className="rounded"
+                    className="rounded-[8px]"
                     src={postDetails.image || '/icons/upload.png'}
                     alt={postDetails.title || 'Default name'}
                     width={64}
@@ -155,9 +155,9 @@ const ChatList = ({ userId }: ChatListProps) => {
                   />
                   <div className="ml-[8px] flex w-full flex-col gap-[5px]">
                     <div className="flex items-center justify-between">
-                      <div className="mx-auto max-w-[360px]">
-                        <p className="line-clamp-1 text-[13px] font-medium">{postDetails.title}</p>
-                      </div>
+                      <p className="line-clamp-1 overflow-hidden text-ellipsis text-[13px] font-medium">
+                        {postDetails.title}
+                      </p>
                       <p className="text-[10px] text-grayscale-500">
                         {new Date(firstMessage?.created_at).toLocaleString()}
                       </p>

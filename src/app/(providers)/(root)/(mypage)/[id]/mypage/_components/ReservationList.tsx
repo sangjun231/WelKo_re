@@ -189,6 +189,7 @@ export default function ReservationList() {
             <Link href={`/detail/${post.id}`}>
               <div className="my-[12px] flex">
                 <Image
+                  className="rounded-[8px]"
                   src={post.image ?? '/icons/upload.png'}
                   alt={post.title ?? 'Default title'}
                   width={80}
