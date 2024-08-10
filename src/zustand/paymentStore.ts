@@ -6,7 +6,6 @@ interface PaymentResponse {
   code?: string;
   txId?: string;
   paymentId?: string;
-  // 필요한 다른 필드도 여기에 추가 가능
 }
 
 // Zustand 상태 정의
@@ -43,6 +42,15 @@ export function initiatePayment(
   isMobile: boolean,
   redirectUrl: string
 ): Promise<PaymentResponse | undefined> {
+  console.log('redirectUrl in initiatePayment:', redirectUrl);
+
+  // 결제 트랜잭션 ID를 미리 생성
+  const txId = crypto.randomUUID();
+
+  // txId를 포함한 최종 리디렉션 URL 생성
+  const finalRedirectUrl = `${redirectUrl}/${txId}`;
+  console.log('Final redirect URL:', finalRedirectUrl);
+
   return PortOne.requestPayment({
     storeId: process.env.NEXT_PUBLIC_POSTONE_STORE_ID || '',
     channelKey: process.env.NEXT_PUBLIC_POSTONE_KG_CHANNEL_KEY || '',
@@ -77,7 +85,7 @@ export function initiatePayment(
           }
         },
     locale: 'EN_US',
-    redirectUrl
+    redirectUrl: finalRedirectUrl // 이 부분을 수정
   });
 }
 
@@ -93,6 +101,8 @@ export const requestPayment = async (
   const { setTxId, setPaymentId } = usePaymentStore.getState();
   const totalAmountInCents = totalAmount * 1000;
 
+  console.log('redirectUrl:', redirectUrl); // 이 로그가 잘 출력되는지 확인
+
   // 사용자가 모바일인지 확인
   const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
 
@@ -102,26 +112,30 @@ export const requestPayment = async (
 
     console.log('Payment response:', response);
 
+    // 결제 요청 실패 처리
     if (response?.code != null) {
+      console.error('Payment failed with code:', response.code);
       await handlePaymentFailure(response);
-    } else {
-      const { txId, paymentId } = response || {};
+    } else if (response) {
+      const { txId, paymentId } = response;
+
       console.log('Received txId:', txId);
       console.log('Received paymentId:', paymentId);
 
+      // txId와 paymentId가 없는 경우 예외 처리
       if (!txId || !paymentId) {
-        throw new Error('txId 또는 paymentId가 없습니다.');
+        throw new Error('txId 또는 paymentId가 응답에 포함되지 않았습니다.');
       }
 
       // 전역 상태에 txId와 paymentId 저장
       setTxId(txId);
       setPaymentId(paymentId);
 
-      const finalRedirectUrl = `${redirectUrl}/${txId}`;
-      console.log('Generated URL in PaymentStore:', finalRedirectUrl);
-
-      // 최종적으로 리디렉션 URL을 포함한 성공 처리를 호출
-      await handlePaymentSuccess({ ...response, redirectUrl: finalRedirectUrl });
+      // 성공 시 handlePaymentSuccess 호출
+      await handlePaymentSuccess(response);
+    } else {
+      console.error('Payment response is undefined or null.');
+      alert('결제 응답이 없습니다.');
     }
   } catch (error) {
     console.error('Payment request error:', error);

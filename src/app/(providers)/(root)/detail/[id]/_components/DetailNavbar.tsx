@@ -21,6 +21,7 @@ const DetailNavbar = () => {
 
   const handlePaymentSuccess = useCallback(
     async (response: any) => {
+      console.log('Payment Response:', response);
       if (response.txId && response.paymentId) {
         const paymentData = {
           id: response.txId, // 고유 트랜잭션 ID
@@ -71,7 +72,8 @@ const DetailNavbar = () => {
 
   const handlePaymentClick = async () => {
     if (post && user) {
-      const baseRedirectUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/detail/payment/payment`;
+      const baseRedirectUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/payment/`;
+      console.log('baseRedirectUrl:', baseRedirectUrl);
       await requestPayment(post, user, totalAmount, handlePaymentSuccess, handlePaymentFailure, baseRedirectUrl);
     }
   };
