@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter, useParams } from 'next/navigation';
 import usePostStore from '@/zustand/postStore';
 import axios from 'axios';
 import { useMyPageStore } from '@/zustand/mypageStore';
@@ -8,6 +8,7 @@ import Link from 'next/link';
 
 export default function PaySuccess() {
   const user = useAuthStore((state) => state.user);
+  const { id } = useParams(); // 웹 결제의 경우 id를 사용
   const searchParams = useSearchParams();
   const paymentId = searchParams.get('paymentId');
   const txId = searchParams.get('txId');
@@ -65,7 +66,9 @@ export default function PaySuccess() {
         if (!isDataSaved) {
           await new Promise((resolve) => setTimeout(resolve, 500)); // 0.5초 대기
         }
-        const response = await axios.get(`/api/detail/payment/${txId}`);
+
+        // 모바일 결제는 txId를, 웹 결제는 id를 사용하여 데이터 조회
+        const response = await axios.get(`/api/detail/payment/${txId || id}`);
         setPaymentData(response.data);
         if (response.data && response.data.post_id) {
           fetchPost(response.data.post_id);
@@ -77,10 +80,10 @@ export default function PaySuccess() {
       }
     };
 
-    if (txId) {
+    if (txId || id) {
       fetchPaymentData();
     }
-  }, [txId, fetchPost, isDataSaved]);
+  }, [txId, id, fetchPost, isDataSaved]);
 
   const handleReservationsClick = () => {
     if (!user) {
@@ -94,7 +97,7 @@ export default function PaySuccess() {
 
   const handleCancelRequest = async () => {
     try {
-      const response = await axios.post(`/api/detail/payment/${txId}`, {
+      const response = await axios.post(`/api/detail/payment/${txId || id}`, {
         reason: 'User requested cancel',
         requester: 'CUSTOMER'
       });
