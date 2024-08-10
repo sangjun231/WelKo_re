@@ -153,7 +153,7 @@ const ChatList = ({ userId }: ChatListProps) => {
                     height={64}
                     style={{ width: '64px', height: '64px' }}
                   />
-                  <div className="ml-[8px] flex w-full max-w-[280px] flex-col gap-[5px]">
+                  <div className="ml-[8px] flex w-full flex-col gap-[5px]">
                     <div className="flex items-center justify-between">
                       <p className="line-clamp-1 text-[13px] font-medium">{postDetails.title}</p>
                       <p className="ml-[8px] flex-shrink-0 text-[10px] text-grayscale-500">
