@@ -43,7 +43,6 @@ export default function PaySuccess() {
           pay_state: payment_id,
           total_price
         });
-        console.log('Payment data saved:', response.data);
         setPaymentData(response.data);
         setIsDataSaved(true);
       } catch (error) {

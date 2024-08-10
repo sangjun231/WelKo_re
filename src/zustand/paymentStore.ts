@@ -25,11 +25,9 @@ export const usePaymentStore = create<PaymentState>((set) => ({
   paymentId: null,
   setTotalAmount: (amount) => set({ totalAmount: amount }),
   setTxId: (txId) => {
-    console.log('Setting txId:', txId);
     set({ txId });
   },
   setPaymentId: (paymentId) => {
-    console.log('Setting paymentId:', paymentId);
     set({ paymentId });
   }
 }));
@@ -101,8 +99,6 @@ export const requestPayment = async (
   const { setTxId, setPaymentId } = usePaymentStore.getState();
   const totalAmountInCents = totalAmount * 1000;
 
-  console.log('redirectUrl:', redirectUrl);
-
   // 사용자가 모바일인지 확인
   const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
 
@@ -110,17 +106,12 @@ export const requestPayment = async (
     // 결제 요청 함수 호출
     const response = await initiatePayment(post, user, totalAmountInCents, isMobile, redirectUrl);
 
-    console.log('Payment response:', response);
-
     // 결제 요청 실패 처리
     if (response?.code != null) {
       console.error('Payment failed with code:', response.code);
       await handlePaymentFailure(response);
     } else if (response) {
       const { txId, paymentId } = response;
-
-      console.log('Received txId:', txId);
-      console.log('Received paymentId:', paymentId);
 
       // txId와 paymentId가 없는 경우 예외 처리
       if (!txId || !paymentId) {
