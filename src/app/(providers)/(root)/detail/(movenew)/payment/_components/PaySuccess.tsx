@@ -1,16 +1,18 @@
-'use client';
-
 import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import usePostStore from '@/zustand/postStore';
 import axios from 'axios';
 import { useMyPageStore } from '@/zustand/mypageStore';
 import useAuthStore from '@/zustand/bearsStore';
 import Link from 'next/link';
 
-export default function PaymentSuccess() {
+export default function PaySuccess() {
   const user = useAuthStore((state) => state.user);
-  const { id } = useParams();
+  const searchParams = useSearchParams();
+  const paymentId = searchParams.get('paymentId');
+  const txId = searchParams.get('txId');
+  const postIdFromParams = searchParams.get('postId');
+  const totalAmountFromParams = searchParams.get('totalAmount');
   const router = useRouter();
   const { setPostId, fetchPost, post } = usePostStore((state) => ({
     setPostId: state.setPostId,
@@ -20,26 +22,65 @@ export default function PaymentSuccess() {
   const setSelectedComponent = useMyPageStore((state) => state.setSelectedComponent);
   const [paymentData, setPaymentData] = useState<any>(null);
   const [pending, setPending] = useState(true);
+  const [isDataSaved, setIsDataSaved] = useState(false);
 
   useEffect(() => {
-    const fetchPaymentData = async () => {
+    const savePaymentData = async (
+      id: string,
+      user_id: string,
+      post_id: string,
+      payment_id: string,
+      total_price: number
+    ) => {
       try {
-        const response = await axios.get(`/api/detail/payment/${id}`);
+        if (isDataSaved) return;
+
+        const response = await axios.post('/api/detail/payment', {
+          id,
+          user_id,
+          post_id,
+          pay_state: payment_id,
+          total_price
+        });
+        console.log('Payment data saved:', response.data);
         setPaymentData(response.data);
-        if (response.data && response.data.post_id) {
-          fetchPost(response.data.post_id);
-        }
-        setPending(false);
+        setIsDataSaved(true);
       } catch (error) {
-        console.error('Error fetching payment data:', error);
+        console.error('Error saving payment data:', error);
+      } finally {
         setPending(false);
       }
     };
 
-    if (id) {
+    if (paymentId && txId && postIdFromParams && totalAmountFromParams && !isDataSaved && user?.id) {
+      savePaymentData(txId, user.id, postIdFromParams, paymentId, parseFloat(totalAmountFromParams));
+    } else {
+      setPending(false);
+    }
+  }, [paymentId, txId, postIdFromParams, totalAmountFromParams, user?.id, isDataSaved]);
+
+  useEffect(() => {
+    const fetchPaymentData = async () => {
+      try {
+        if (!isDataSaved) {
+          await new Promise((resolve) => setTimeout(resolve, 500)); // 0.5초 대기
+        }
+        const response = await axios.get(`/api/detail/payment/${txId}`);
+        setPaymentData(response.data);
+        if (response.data && response.data.post_id) {
+          fetchPost(response.data.post_id);
+        }
+      } catch (error) {
+        console.error('Error fetching payment data:', error);
+      } finally {
+        setPending(false);
+      }
+    };
+
+    if (txId) {
       fetchPaymentData();
     }
-  }, [id, fetchPost]);
+  }, [txId, fetchPost, isDataSaved]);
 
   const handleReservationsClick = () => {
     if (!user) {
@@ -53,13 +94,12 @@ export default function PaymentSuccess() {
 
   const handleCancelRequest = async () => {
     try {
-      const response = await axios.post(`/api/detail/payment/${id}`, {
+      const response = await axios.post(`/api/detail/payment/${txId}`, {
         reason: 'User requested cancel',
         requester: 'CUSTOMER'
       });
       alert(response.data.message);
 
-      // 환불 성공 시 마이페이지 예약 확인 부분으로 이동
       if (response.data.success) {
         setSelectedComponent('Reservations');
         router.push(`/${user?.id}/mypage`);

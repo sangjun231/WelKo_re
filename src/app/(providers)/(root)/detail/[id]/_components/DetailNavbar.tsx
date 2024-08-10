@@ -72,8 +72,14 @@ const DetailNavbar = () => {
 
   const handlePaymentClick = async () => {
     if (post && user) {
-      const baseRedirectUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/payment/`;
+      const postId = post.id;
+      const totalAmountFormatted = totalAmount.toString(); // totalAmount를 문자열로 변환
+
+      // baseRedirectUrl에 post_id와 total_amount를 쿼리 파라미터로 추가
+      const baseRedirectUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/payment/payment?postId=${postId}&totalAmount=${totalAmountFormatted}`;
+
       console.log('baseRedirectUrl:', baseRedirectUrl);
+
       await requestPayment(post, user, totalAmount, handlePaymentSuccess, handlePaymentFailure, baseRedirectUrl);
     }
   };

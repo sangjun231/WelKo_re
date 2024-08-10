@@ -25,17 +25,17 @@ export const usePaymentStore = create<PaymentState>((set) => ({
   paymentId: null,
   setTotalAmount: (amount) => set({ totalAmount: amount }),
   setTxId: (txId) => {
-    console.log('Setting txId:', txId); // 로그 추가
+    console.log('Setting txId:', txId);
     set({ txId });
   },
   setPaymentId: (paymentId) => {
-    console.log('Setting paymentId:', paymentId); // 로그 추가
+    console.log('Setting paymentId:', paymentId);
     set({ paymentId });
   }
 }));
 
-// 결제 요청 함수
-export function initiatePayment(
+// 결제 요청 함수 (redirectUrl 수정)
+export async function initiatePayment(
   post: any,
   user: any,
   totalAmountInCents: number,
@@ -44,49 +44,49 @@ export function initiatePayment(
 ): Promise<PaymentResponse | undefined> {
   console.log('redirectUrl in initiatePayment:', redirectUrl);
 
-  // 결제 트랜잭션 ID를 미리 생성
-  const txId = crypto.randomUUID();
-
-  // txId를 포함한 최종 리디렉션 URL 생성
-  const finalRedirectUrl = `${redirectUrl}/${txId}`;
-  console.log('Final redirect URL:', finalRedirectUrl);
-
-  return PortOne.requestPayment({
-    storeId: process.env.NEXT_PUBLIC_POSTONE_STORE_ID || '',
-    channelKey: process.env.NEXT_PUBLIC_POSTONE_KG_CHANNEL_KEY || '',
-    paymentId: `payment${crypto.randomUUID().split('-')[0]}`,
-    orderName: post.title,
-    totalAmount: totalAmountInCents,
-    currency: 'CURRENCY_KRW',
-    payMethod: 'CARD',
-    customer: {
-      fullName: user?.name || 'Unknown',
-      phoneNumber: user?.phone || '010-0000-0000',
-      email: user?.email || 'test@portone.io'
-    },
-    bypass: isMobile
-      ? {
-          inicis_v2: {
-            P_CARD_OPTION: 'selcode=14',
-            P_MNAME: '포트원',
-            P_RESERVED: ['below1000=Y', 'noeasypay=Y', 'global_visa3d=Y', 'apprun_check=Y']
+  try {
+    const response = await PortOne.requestPayment({
+      storeId: process.env.NEXT_PUBLIC_POSTONE_STORE_ID || '',
+      channelKey: process.env.NEXT_PUBLIC_POSTONE_KG_CHANNEL_KEY || '',
+      paymentId: `payment${crypto.randomUUID().split('-')[0]}`,
+      orderName: post.title,
+      totalAmount: totalAmountInCents,
+      currency: 'CURRENCY_KRW',
+      payMethod: 'CARD',
+      customer: {
+        fullName: user?.name || 'Unknown',
+        phoneNumber: user?.phone || '010-0000-0000',
+        email: user?.email || 'test@portone.io'
+      },
+      bypass: isMobile
+        ? {
+            inicis_v2: {
+              P_CARD_OPTION: 'selcode=14',
+              P_MNAME: '포트원',
+              P_RESERVED: ['below1000=Y', 'noeasypay=Y', 'global_visa3d=Y', 'apprun_check=Y']
+            }
           }
-        }
-      : {
-          inicis_v2: {
-            logo_url: 'https://portone.io/assets/portone.87061e94.avif',
-            logo_2nd: 'https://admin.portone.io/assets/img/auth/lock.png',
-            parentemail: 'parentemail',
-            Ini_SSGPAY_MDN: '01012341234',
-            acceptmethod: ['SKIN(#BA68C8)', 'below1000', 'noeasypay'],
-            P_CARD_OPTION: 'selcode=14',
-            P_MNAME: '포트원',
-            P_RESERVED: ['below1000=Y', 'noeasypay=Y']
-          }
-        },
-    locale: 'EN_US',
-    redirectUrl: finalRedirectUrl // 이 부분을 수정
-  });
+        : {
+            inicis_v2: {
+              logo_url: 'https://portone.io/assets/portone.87061e94.avif',
+              logo_2nd: 'https://admin.portone.io/assets/img/auth/lock.png',
+              parentemail: 'parentemail',
+              Ini_SSGPAY_MDN: '01012341234',
+              acceptmethod: ['SKIN(#BA68C8)', 'below1000', 'noeasypay'],
+              P_CARD_OPTION: 'selcode=14',
+              P_MNAME: '포트원',
+              P_RESERVED: ['below1000=Y', 'noeasypay=Y']
+            }
+          },
+      locale: 'EN_US',
+      redirectUrl // 수정된 redirectUrl 사용
+    });
+
+    return response;
+  } catch (error) {
+    console.error('Payment request error:', error);
+    throw new Error('결제 요청 중 오류가 발생했습니다.');
+  }
 }
 
 // 전역 상태를 사용하는 결제 처리 함수
@@ -101,7 +101,7 @@ export const requestPayment = async (
   const { setTxId, setPaymentId } = usePaymentStore.getState();
   const totalAmountInCents = totalAmount * 1000;
 
-  console.log('redirectUrl:', redirectUrl); // 이 로그가 잘 출력되는지 확인
+  console.log('redirectUrl:', redirectUrl);
 
   // 사용자가 모바일인지 확인
   const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
