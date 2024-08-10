@@ -36,6 +36,7 @@ const ProfileView = ({ userId }: { userId: string }) => {
               width={56}
               height={56}
               className="rounded-full"
+              style={{width:'56px', height:'56px'}}
             />
           )}
           <div className="ml-4">

@@ -5,15 +5,15 @@ import { useRouter, usePathname } from 'next/navigation';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
+import { translateAddress } from '@/utils/post/postData'; // 번역 함수 import
 
 const RegionForm = () => {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [position, setPosition] = useState<{ latitude: number; longitude: number } | null>(null);
   const [region, setRegion] = useState<string | null>(null);
+  const [translatedRegion, setTranslatedRegion] = useState<string | null>(null); // 번역된 주소 상태 추가
   const router = useRouter();
   const pathname = usePathname();
-
-  // URL 경로에서 userId 추출
   const userId = pathname.split('/')[1];
 
   const loadNaverMapScript = () => {
@@ -96,11 +96,12 @@ const RegionForm = () => {
   const handleSave = async () => {
     if (region && userId) {
       await axios.put(API_MYPAGE_PROFILE(userId), {
-        region
+        region: translatedRegion || region // 번역된 주소를 저장
       });
       router.replace(`/${userId}/profilepage`);
     }
   };
+
   const handleBack = () => {
     router.replace(`/${userId}/profilepage`);
   };
@@ -121,6 +122,25 @@ const RegionForm = () => {
     }
   }, [position]);
 
+  useEffect(() => {
+    const translateRegionName = async () => {
+      if (region) {
+        try {
+          const translatedAddress = await translateAddress(region);
+          const addressParts = translatedAddress.split(' ');
+          const lastPart = addressParts[addressParts.length - 1];
+          const secondLastPart = addressParts[addressParts.length - 2];
+          const combinedAddress = `${secondLastPart} ${lastPart}`;
+          setTranslatedRegion(`${combinedAddress}, korea`);
+        } catch (error) {
+          toast.error('Failed to translate the region.');
+        }
+      }
+    };
+
+    translateRegionName();
+  }, [region]);
+
   return (
     <div className="mt-[56px]">
       <div className="flex items-center justify-between">
@@ -137,13 +157,13 @@ const RegionForm = () => {
         <p className="mb-[8px] text-[16px] font-medium">Location</p>
         {region ? (
           <p className="flex items-center justify-between rounded-2xl border bg-grayscale-50 p-[16px] text-[16px]">
-            {region}
+            {translatedRegion || 'Loading...'}
             <span>
               <Image src="/icons/tabler-icon-location-filled.svg" alt="location" width={32} height={32} />
             </span>
           </p>
         ) : (
-          <p className="text-grayscale-400 flex items-center justify-between rounded-2xl border bg-grayscale-50 p-[16px] text-[16px]">
+          <p className="flex items-center justify-between rounded-2xl border bg-grayscale-50 p-[16px] text-[16px] text-grayscale-400">
             Set your location
             <span>
               <Image src="/icons/tabler-icon-location-filled.svg" alt="location" width={32} height={32} />
