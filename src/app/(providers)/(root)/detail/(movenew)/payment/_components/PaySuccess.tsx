@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useMyPageStore } from '@/zustand/mypageStore';
 import useAuthStore from '@/zustand/bearsStore';
 import Link from 'next/link';
+import { useAutoCancelHandler } from '@/hooks/Detail/autoCancelHandler';
 
 export default function PaySuccess() {
   const user = useAuthStore((state) => state.user);
@@ -26,6 +27,8 @@ export default function PaySuccess() {
   const [paymentData, setPaymentData] = useState<any>(null);
   const [pending, setPending] = useState(true);
   const [isDataSaved, setIsDataSaved] = useState(false);
+
+  const { handleCancel } = useAutoCancelHandler();
 
   useEffect(() => {
     const savePaymentData = async () => {
@@ -50,19 +53,7 @@ export default function PaySuccess() {
         setIsDataSaved(true);
       } catch (error) {
         console.error('Error saving payment data:', error);
-
-        try {
-          // 결제 데이터 저장 실패 시 자동 환불 처리
-          await axios.post(`/api/detail/autocancel`, {
-            paymentId,
-            reason: 'Data save failed',
-            requester: 'CUSTOMER'
-          });
-          alert('결제 데이터 저장에 실패하여 자동으로 환불 처리되었습니다.');
-        } catch (cancelError) {
-          console.error('Refund failed:', cancelError);
-          alert('결제 데이터 저장에 실패했으며, 환불 처리에도 실패했습니다. 관리자에게 문의하세요.');
-        }
+        await handleCancel(paymentId, router);
         router.push(`/${user?.id}/mypage`);
       } finally {
         setPending(false);

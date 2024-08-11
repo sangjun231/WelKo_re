@@ -7,6 +7,7 @@ import usePostStore from '@/zustand/postStore';
 import usePaymentStore, { requestPayment } from '@/zustand/paymentStore';
 import { formatDateRange } from '@/utils/detail/functions';
 import axios from 'axios';
+import { useAutoCancelHandler } from '@/hooks/Detail/autoCancelHandler';
 
 const DetailNavbar = () => {
   const user = useAuthStore((state) => state.user);
@@ -18,6 +19,8 @@ const DetailNavbar = () => {
   const { totalAmount } = usePaymentStore((state) => ({
     totalAmount: state.totalAmount
   }));
+
+  const { handleCancel } = useAutoCancelHandler();
 
   const handlePaymentSuccess = useCallback(
     async (response: any) => {
@@ -32,8 +35,8 @@ const DetailNavbar = () => {
           total_price: totalAmount // 총 결제 금액
         };
         try {
-          // // 실제로 데이터 저장 요청에 실패시키기 위해 존재하지 않는 URL로 요청을 보냄
-          // await axios.post('/api/non-existent-url', paymentData);
+          // 실제로 데이터 저장 요청에 실패시키기 위해 존재하지 않는 URL로 요청을 보냄
+          await axios.post('/api/non-existent-url', paymentData);
 
           // 결제 내역을 서버에 저장
           await axios.post('/api/detail/payment', paymentData);
@@ -41,18 +44,9 @@ const DetailNavbar = () => {
           const redirectUrl = `${window.location.origin}/detail/payment/${response.txId}`;
           router.push(redirectUrl); // 성공 후 리디렉션
         } catch (error) {
-          try {
-            // 결제 데이터 저장 실패 시 자동 환불 처리
-            await axios.post(`/api/detail/autocancel`, {
-              paymentId: response.paymentId,
-              reason: 'Data save failed',
-              requester: 'CUSTOMER'
-            });
-            alert('결제 데이터 저장에 실패하여 자동으로 환불 처리되었습니다.');
-          } catch (cancelError) {
-            alert('결제 데이터 저장에 실패했으며, 환불 처리에도 실패했습니다. 관리자에게 문의하세요.');
-          }
-          router.back();
+          console.error('Error saving payment data:', error);
+          await handleCancel(response.paymentId, router);
+          router.push(`/${user?.id}/mypage`);
         }
       } else {
         console.error('Invalid payment response:', response);
