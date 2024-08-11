@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useRouter, useParams } from 'next/navigation';
 import usePostStore from '@/zustand/postStore';
@@ -26,34 +28,49 @@ export default function PaySuccess() {
   const [isDataSaved, setIsDataSaved] = useState(false);
 
   useEffect(() => {
-    const savePaymentData = async (
-      id: string,
-      user_id: string,
-      post_id: string,
-      payment_id: string,
-      total_price: number
-    ) => {
+    const savePaymentData = async () => {
       try {
         if (isDataSaved) return;
 
-        const response = await axios.post('/api/detail/payment', {
-          id,
-          user_id,
-          post_id,
-          pay_state: payment_id,
-          total_price
-        });
+        // 결제 데이터를 객체로 묶어서 처리
+        const paymentData = {
+          id: txId,
+          user_id: user?.id,
+          post_id: postIdFromParams,
+          pay_state: paymentId,
+          total_price: parseFloat(totalAmountFromParams || '0')
+        };
+
+        // 실제로 데이터 저장 요청에 실패시키기 위해 존재하지 않는 URL로 요청을 보냄
+        // await axios.post('/api/non-existent-url', paymentData);
+
+        // 결제 내역을 서버에 저장
+        const response = await axios.post('/api/detail/payment', paymentData);
         setPaymentData(response.data);
         setIsDataSaved(true);
       } catch (error) {
         console.error('Error saving payment data:', error);
+
+        try {
+          // 결제 데이터 저장 실패 시 자동 환불 처리
+          await axios.post(`/api/detail/autocancel`, {
+            paymentId,
+            reason: 'Data save failed',
+            requester: 'CUSTOMER'
+          });
+          alert('결제 데이터 저장에 실패하여 자동으로 환불 처리되었습니다.');
+        } catch (cancelError) {
+          console.error('Refund failed:', cancelError);
+          alert('결제 데이터 저장에 실패했으며, 환불 처리에도 실패했습니다. 관리자에게 문의하세요.');
+        }
+        router.push(`/${user?.id}/mypage`);
       } finally {
         setPending(false);
       }
     };
 
     if (paymentId && txId && postIdFromParams && totalAmountFromParams && !isDataSaved && user?.id) {
-      savePaymentData(txId, user.id, postIdFromParams, paymentId, parseFloat(totalAmountFromParams));
+      savePaymentData();
     } else {
       setPending(false);
     }
@@ -124,7 +141,7 @@ export default function PaySuccess() {
   }
 
   if (!paymentData) {
-    return <div>No payment data found.</div>;
+    return <div>Loading...</div>;
   }
 
   return (
