@@ -46,14 +46,14 @@ const ChatPage = () => {
       </div>
       <div className="flex">
         <Image
-          className="mb-[20px] mr-2 rounded-[8px]"
+          className="mb-[20px] rounded-[8px]"
           src={postImage ?? '/icons/upload.png'}
           alt={postTitle ?? 'Default title'}
           width={44}
           height={44}
           style={{ width: '44px', height: '44px' }}
         />
-        <div className="mx-auto max-w-[360px]">
+        <div className="ml-[8px] max-w-[360px]">
           <p className="line-clamp-1 text-[14px] font-bold">{postTitle}</p>
         </div>
       </div>

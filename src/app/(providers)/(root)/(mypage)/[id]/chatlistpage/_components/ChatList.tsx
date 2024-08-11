@@ -63,7 +63,7 @@ const ChatList = ({ userId }: ChatListProps) => {
       const response = await axios.get(API_MYPAGE_CHATS(userId));
       return response.data;
     },
-    refetchInterval: 5000
+    refetchInterval: 1000
   });
 
   const postIds = chatData?.map((chat) => chat.post_id) || [];

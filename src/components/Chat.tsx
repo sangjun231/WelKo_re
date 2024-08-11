@@ -51,7 +51,7 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
 
   return (
     <div className="flex h-screen flex-col text-[14px]">
-      <div className="overflow-y-auto">
+      <div className="mb-[16px] overflow-y-auto border-b">
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -87,7 +87,7 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
           </div>
         ))}
       </div>
-      <div className="container mx-auto flex items-center justify-between p-8">
+      <div className="flex items-center">
         <input
           className="flex-1 rounded-[12px] border bg-grayscale-50 p-2 text-[16px]"
           type="text"
@@ -96,7 +96,7 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
           onChange={(e) => setNewMessage(e.target.value)}
         />
         <button
-          className="mx-auto ml-[8px] flex h-[48px] w-[48px] items-center justify-center rounded-[24px] bg-primary-300"
+          className="ml-[8px] flex h-[36px] w-[36px] items-center justify-center rounded-full bg-primary-300"
           onClick={handleSend}
         >
           <Image
