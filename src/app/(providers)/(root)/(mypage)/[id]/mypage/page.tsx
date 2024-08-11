@@ -30,7 +30,7 @@ const MyPage = () => {
     `flex-1 text-center ${selectedComponent === component ? 'text-primary-300 border-primary-300' : 'text-grayscale-500'}`;
 
   return (
-    <div className="mx-[20px] flex h-screen flex-col overflow-hidden">
+    <div className="mx-[20px] flex flex-col">
       <div className="mt-[56px] flex justify-between">
         <button className="rounded-[24px] bg-grayscale-50" onClick={handleBack}>
           <Image src="/icons/tabler-icon-chevron-left.svg" alt="Go Back" width={32} height={32} />
