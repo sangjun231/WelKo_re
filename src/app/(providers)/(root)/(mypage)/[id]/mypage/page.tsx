@@ -58,12 +58,10 @@ const MyPage = () => {
           Review
         </button>
       </div>
-      <div className="flex h-screen items-center justify-center">
-        {selectedComponent === 'Wishlist' && <LikeList />}
-        {selectedComponent === 'Post' && <PostList />}
-        {selectedComponent === 'Reservation' && <ReservationList />}
-        {selectedComponent === 'Review' && <ReviewList userId={id} />}
-      </div>
+      {selectedComponent === 'Wishlist' && <LikeList />}
+      {selectedComponent === 'Post' && <PostList />}
+      {selectedComponent === 'Reservation' && <ReservationList />}
+      {selectedComponent === 'Review' && <ReviewList userId={id} />}
     </div>
   );
 };

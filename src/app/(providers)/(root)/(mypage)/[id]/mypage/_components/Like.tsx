@@ -64,7 +64,7 @@ const Like: React.FC<LikeProps> = ({ postId, userId }) => {
       }}
     >
       <Image
-        src={liked ? '/icons/tabler-icon-heart-filled.svg' : '/icons/tabler-icon-heart.svg'}
+        src={liked ? '/icons/tabler-icon-heart-filled.svg' : '/icons/tabler-icon-post-heart.svg'}
         alt="heart icon"
         width={24}
         height={24}
