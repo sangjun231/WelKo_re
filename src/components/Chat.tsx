@@ -63,27 +63,27 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
   }, [senderId, receiverId, postId]);
 
   return (
-    <div className="flex h-screen flex-col text-[14px]">
-      <div className="mb-[16px] overflow-y-auto border-b">
+    <div className="flex h-screen flex-col">
+      <div className="flex-grow overflow-y-auto pb-[180px]">
         {Object.entries(groupedMessages).map(([date, msgs]) => (
           <div key={date}>
-            <p className="text-center text-[10px] text-grayscale-500">{date}</p>
+            <p className="mt-[8px] text-center text-[10px] text-grayscale-500">{date}</p>
             {msgs.map((msg) => (
               <div
                 key={msg.id}
-                className={`mb-10 flex flex-col ${msg.sender_id === senderId ? 'items-end' : 'items-start'}`}
+                className={`mb-[16px] mt-[24px] flex flex-col ${msg.sender_id === senderId ? 'items-end' : 'items-start'}`}
               >
                 {msg.sender_id !== senderId && msg.sender && (
                   <div className="flex items-center">
                     <Image
-                      className="mr-2 rounded-full"
+                      className="rounded-full"
                       src={msg.sender.avatar}
                       alt="avatar"
                       width={44}
                       height={44}
                       style={{ width: '44px', height: '44px' }}
                     />
-                    <p className="text-[13px] font-semibold">{msg.sender.name}</p>
+                    <p className="ml-[8px] text-[13px] font-semibold">{msg.sender.name}</p>
                   </div>
                 )}
                 <div className="flex items-end">
@@ -95,10 +95,10 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
                     {format(new Date(msg.created_at), 'HH:mm')}
                   </p>
                   <div
-                    className={`mt-[7px] max-w-[240px] break-all px-[8px] py-[12px] ${
+                    className={`max-w-[240px] break-all px-[8px] py-[12px] ${
                       msg.sender_id === senderId
                         ? 'rounded-br-0 rounded-bl-[16px] rounded-tl-[16px] rounded-tr-[16px] bg-primary-50'
-                        : 'rounded-bl-0 rounded-br-[16px] rounded-tl-[16px] rounded-tr-[16px] bg-grayscale-50'
+                        : 'rounded-bl-0 ml-[56px] rounded-br-[16px] rounded-tl-[16px] rounded-tr-[16px] bg-grayscale-50'
                     }`}
                   >
                     <p className="text-[14px]">{msg.content}</p>
@@ -109,7 +109,7 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
           </div>
         ))}
       </div>
-      <div className="flex items-center">
+      <div className="sticky bottom-0 flex items-center border-t bg-white pb-[16px] pt-[16px]">
         <input
           className="h-[48px] flex-1 rounded-[16px] border bg-grayscale-50 p-[16px] text-[16px]"
           type="text"
