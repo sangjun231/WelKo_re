@@ -89,14 +89,14 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
       </div>
       <div className="flex items-center">
         <input
-          className="flex-1 rounded-[12px] border bg-grayscale-50 p-2 text-[16px]"
+          className="h-[48px] flex-1 rounded-[16px] border bg-grayscale-50 p-[16px] text-[16px]"
           type="text"
           placeholder="Placeholder text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
         />
         <button
-          className="ml-[8px] flex h-[36px] w-[36px] items-center justify-center rounded-full bg-primary-300"
+          className="ml-[12px] flex h-[48px] w-[48px] items-center justify-center rounded-full bg-primary-300"
           onClick={handleSend}
         >
           <Image
