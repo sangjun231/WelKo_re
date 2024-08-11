@@ -146,6 +146,18 @@ const ChatList = ({ userId }: ChatListProps) => {
 
   if (chatError || postError || userError) return <div>Error loading data</div>;
 
+  if (!postData || postData?.length === 0) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="gap-[8px]">
+          <Image src="/icons/Group-348.svg" alt="no chat" width={44} height={44} />
+          <p className="text-[14px] font-semibold">You don&apos;t have any messages</p>
+          <p className="text-[12px]">When you receive a new message, it will appear here.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       {groupedChats &&
