@@ -30,7 +30,7 @@ const MyPage = () => {
     `flex-1 text-center ${selectedComponent === component ? 'text-primary-300 border-primary-300' : 'text-grayscale-500'}`;
 
   return (
-    <div className="mx-[20px]">
+    <div className="mx-[20px] flex h-screen flex-col overflow-hidden">
       <div className="mt-[56px] flex justify-between">
         <button className="rounded-[24px] bg-grayscale-50" onClick={handleBack}>
           <Image src="/icons/tabler-icon-chevron-left.svg" alt="Go Back" width={32} height={32} />
@@ -58,10 +58,12 @@ const MyPage = () => {
           Review
         </button>
       </div>
-      {selectedComponent === 'Wishlist' && <LikeList />}
-      {selectedComponent === 'Post' && <PostList />}
-      {selectedComponent === 'Reservation' && <ReservationList />}
-      {selectedComponent === 'Review' && <ReviewList userId={id} />}
+      <div className="flex h-screen items-center justify-center">
+        {selectedComponent === 'Wishlist' && <LikeList />}
+        {selectedComponent === 'Post' && <PostList />}
+        {selectedComponent === 'Reservation' && <ReservationList />}
+        {selectedComponent === 'Review' && <ReviewList userId={id} />}
+      </div>
     </div>
   );
 };

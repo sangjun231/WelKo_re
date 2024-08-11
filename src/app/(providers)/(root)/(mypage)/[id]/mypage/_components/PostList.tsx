@@ -68,10 +68,11 @@ export default function PostList() {
   if (!data || data.length === 0) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="gap-[8px]">
+        <div className="flex flex-col items-center justify-center gap-[8px]">
           <Image src="/icons/tabler-icon-sticker-2.svg" alt="no post" width={44} height={44} />
           <p className="text-[14px] font-semibold">You don&apos;t have any post</p>
-          <p className="text-[12px]">When you receive a new message, it will appear here.</p>
+          <p className="text-[12px]">When you receive a new message,</p>
+          <p className="text-[12px]">it will appear here.</p>
         </div>
       </div>
     );

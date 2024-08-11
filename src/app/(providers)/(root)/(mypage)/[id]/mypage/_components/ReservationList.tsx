@@ -152,10 +152,11 @@ export default function ReservationList() {
   if (!posts || posts.length === 0) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="gap-[8px]">
+        <div className="flex flex-col items-center justify-center gap-[8px]">
           <Image src="/icons/tabler-icon-calender-month.svg" alt="no reservation" width={44} height={44} />
           <p className="text-[14px] font-semibold">You don&apos;t have any Reservation</p>
-          <p className="text-[12px]">When you recieve a new meaasge, it will appear here.</p>
+          <p className="text-[12px]">When you recieve a new meaasge,</p>
+          <p className="text-[12px]">it will appear here.</p>
         </div>
       </div>
     );
