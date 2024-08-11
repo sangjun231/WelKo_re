@@ -64,7 +64,7 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
 
   return (
     <div className="flex h-screen flex-col">
-      <div className="flex-grow overflow-y-auto pb-[180px]">
+      <div className="overflow-y-auto pb-[180px]">
         {Object.entries(groupedMessages).map(([date, msgs]) => (
           <div key={date}>
             <p className="mt-[8px] text-center text-[10px] text-grayscale-500">{date}</p>

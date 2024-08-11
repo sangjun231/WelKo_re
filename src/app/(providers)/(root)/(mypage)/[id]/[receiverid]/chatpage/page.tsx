@@ -37,7 +37,7 @@ const ChatPage = () => {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-      <div className="mx-[20px] mt-[56px] flex-none">
+      <div className="mx-[20px] mt-[56px]">
         <div className="relative my-[20px] flex items-center justify-between">
           <button className="rounded-[24px] bg-grayscale-50" onClick={handleBack}>
             <Image src="/icons/tabler-icon-chevron-left.svg" alt="Go Back" width={32} height={32} />
@@ -58,8 +58,6 @@ const ChatPage = () => {
             <p className="line-clamp-1 text-[14px] font-bold">{postTitle}</p>
           </div>
         </div>
-      </div>
-      <div className="mx-[20px] flex-grow">
         <Chat postId={postId || ''} senderId={senderId} receiverId={receiverId} />
       </div>
     </div>
