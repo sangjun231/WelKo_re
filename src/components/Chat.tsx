@@ -90,7 +90,7 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
                   <p
                     className={`${
                       msg.sender_id === senderId ? 'mr-[8px]' : 'order-1 ml-[8px]'
-                    } mt-[4px] text-[10px] text-grayscale-500`}
+                    } text-[10px] text-grayscale-500`}
                   >
                     {format(new Date(msg.created_at), 'HH:mm')}
                   </p>
