@@ -6,9 +6,10 @@ import axios from 'axios';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { FaHeart, FaRegHeart } from 'react-icons/fa';
-import { GoPencil, GoTrash } from 'react-icons/go';
-import { RiHome3Line } from 'react-icons/ri';
+import WriteBtn from '/public/icons/tabler-icon-pencil.svg';
+import DeleteBtn from '/public/icons/tabler-icon-trash.svg';
+import LikeBtn from '/public/icons/tabler-icon-heart.svg';
+import IconHome from '/public/icons/navbar_icons/icon_home.svg';
 import { DeletePost } from '../../../postpage/[id]/_components/PostEdit';
 
 const Likes = () => {
@@ -77,22 +78,22 @@ const Likes = () => {
           <>
             <Link href={`/postpage/${postId}`}>
               <button className="icon-button">
-                <GoPencil size={24} />
+                <WriteBtn alt="WritePencil" width={24} height={24} />
               </button>
             </Link>
             <button className="icon-button" onClick={() => handleDelete(postId)}>
-              <GoTrash size={24} />
+              <DeleteBtn alt="DeleteBtn" width={24} height={24} />
             </button>
           </>
         )}
         <div>
           <button onClick={handleLike} className="icon-button">
-            {liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
+            {liked ? <LikeBtn size={24} color="red" fill="red" /> : <LikeBtn size={24} />}
           </button>
         </div>
         <Link href="/">
           <button className="icon-button">
-            <RiHome3Line size={24} />
+            <IconHome alt="Home" width={24} height={24} />
           </button>
         </Link>
       </div>
