@@ -15,7 +15,7 @@ const FindPassword = () => {
     e.preventDefault();
     try {
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'http://localhost:3000/resetPassword' // vercel 할떄 바꿔야함
+        redirectTo: 'https://welko.vercel.app/resetPassword' // vercel 할떄 바꿔야함
       });
 
       if (error) {

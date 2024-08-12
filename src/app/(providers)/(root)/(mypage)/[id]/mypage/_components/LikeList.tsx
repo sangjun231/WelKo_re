@@ -69,8 +69,8 @@ export default function LikeList() {
 
   return (
     <div className="max-w-[360px]">
-      {data.map((post) => (
-        <div key={post.id} className="relative mb-[16px]">
+      {data.map((post, index) => (
+        <div key={`${post.id}-${index}`} className="relative mb-[16px]">
           <div className="flex">
             <div className="relative">
               <Link href={`/detail/${post.id}`}>
