@@ -5,9 +5,9 @@ import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import usePostStore from '@/zustand/postStore';
 import Likes from './Likes';
-import { GoPeople } from 'react-icons/go';
-import { IoLocationOutline } from 'react-icons/io5';
 import { formatDateRange } from '@/utils/detail/functions';
+import IconLocation from '/public/icons/detail_icons/icon_location.svg';
+import IconPeoples from '/public/icons/detail_icons/icon_peoples.svg';
 
 export default function DetailImg() {
   const { id } = useParams();
@@ -50,24 +50,24 @@ export default function DetailImg() {
               </li>
             ))}
           </ul>
-          <h1 className="text-grayscale-900 text-xl font-semibold">{post.title}</h1>
-          <p className="text-grayscale-500 text-xl font-normal"> {formatDateRange(post.startDate, post.endDate)}</p>
+          <h1 className="text-xl font-semibold text-grayscale-900">{post.title}</h1>
+          <p className="text-xl font-normal text-grayscale-500"> {formatDateRange(post.startDate, post.endDate)}</p>
           <div className="flex text-lg">
-            <span className="text-primary-300 font-semibold">${post.price}</span>
-            <span className="text-grayscale-600 font-medium">/Person</span>
+            <span className="font-semibold text-primary-300">${post.price}</span>
+            <span className="font-medium text-grayscale-600">/Person</span>
           </div>
-          <div className="text-grayscale-900 flex text-sm font-semibold">
-            <IoLocationOutline size={20} />
+          <div className="flex text-sm font-semibold text-grayscale-900">
+            <IconLocation alt="Location" width={24} height={24} />
             <h4 className="ml-1 mr-8">Gyeongju</h4>
-            <GoPeople size={20} />
+            <IconPeoples alt="Max Peoples" width={24} height={24} />
             <h4 className="ml-1">Max {post.maxPeople}</h4>
           </div>
         </div>
-        <hr className="bg-grayscale-100 mb-6 mt-8 h-[1px] w-full" />
+        <hr className="mb-6 mt-8 h-[1px] w-full bg-grayscale-100" />
         <div className="text-md text-grayscale-700">
           <p>{post.content}</p>
         </div>
-        <hr className="bg-grayscale-100 mb-6 mt-8 h-[1px] w-full" />
+        <hr className="mb-6 mt-8 h-[1px] w-full bg-grayscale-100" />
       </div>
     </div>
   );
