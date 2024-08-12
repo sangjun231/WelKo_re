@@ -35,8 +35,8 @@ const Reviews = () => {
   }
 
   return (
-    <div className="mb-32 flex flex-col gap-6">
-      <div className="flex flex-col gap-4">
+    <div className="mb-32 flex flex-col">
+      <div className="flex flex-col">
         <div className="flex items-center gap-1 text-lg text-grayscale-900">
           <IconStar alt="Reviews Star" width={24} height={24} />
           {reviews.length > 0 ? (

@@ -37,23 +37,23 @@ const AllReviewsPage = () => {
   const averageRating: number = averageRatings(reviews || []);
 
   return (
-    <div className="mx-auto mt-12 flex max-w-[360px] flex-col">
+    <div className="mx-auto mt-2 flex max-w-[360px] flex-col">
       <div className="mx-auto w-full max-w-[320px]">
-        <div className="my-8">
+        <div className="mb-8">
           <BackButton />
         </div>
-        <div className="ml-1 flex items-center gap-1 text-lg font-semibold text-grayscale-900">
+        <div className="ml-1 flex items-center gap-1 text-lg text-grayscale-900">
           <IconStar alt="Reviews Star" width={24} height={24} />
           <h2 className="flex font-semibold">{averageRating.toFixed(2)}</h2>
-          <span className="flex font-medium">·</span>
-          <span className="flex font-medium">{reviews.length} reviews</span>
+          <span className="flex font-normal">·</span>
+          <span className="flex font-normal">{reviews.length} reviews</span>
         </div>
         <div className="mt-5 flex flex-col items-center">
           {reviews.map((review) => (
-            <div key={review.id} className="mb-4 w-full items-center gap-3 rounded-2xl bg-grayscale-50 p-4">
+            <div key={review.id} className="mb-5 w-full items-center gap-3 rounded-2xl bg-grayscale-50 p-4">
               <div className="flex items-center gap-2 pb-2">
                 <IconStar alt="Reviews Star" width={16} height={16} />
-                <p className="font-semibold">{review.rating.toFixed(2)}</p>
+                <p className="text-xs font-semibold">{review.rating.toFixed(2)}</p>
                 <p className="text-xs font-medium">{review.user_name}</p>
                 <p className="text-[10px] font-normal">{formatRelativeDate(review.created_at)}</p>
               </div>
