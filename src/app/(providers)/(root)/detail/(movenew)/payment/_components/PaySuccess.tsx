@@ -116,7 +116,7 @@ export default function PaySuccess() {
       }
     } catch (error) {
       console.error('Error requesting cancel:', error);
-      alert('Cancel request failed.');
+      alert('하루가 지나서 환불이 불가능어쩌고저쩌고.');
     }
   };
 

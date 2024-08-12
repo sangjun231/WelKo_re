@@ -40,9 +40,7 @@ const DetailNavbar = () => {
 
           // 결제 내역을 서버에 저장
           await axios.post('/api/detail/payment', paymentData);
-
-          const redirectUrl = `${window.location.origin}/detail/payment/${response.txId}`;
-          router.push(redirectUrl); // 성공 후 리디렉션
+          router.push(`/detail/payment/${response.txId}`);
         } catch (error) {
           console.error('Error saving payment data:', error);
           await handleCancel(response.paymentId, router);
@@ -68,7 +66,6 @@ const DetailNavbar = () => {
     if (post && user) {
       const postId = post.id;
       const totalAmountFormatted = totalAmount.toString(); // totalAmount를 문자열로 변환
-
       // baseRedirectUrl에 post_id와 total_amount를 쿼리 파라미터로 추가
       const baseRedirectUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/payment/payment?postId=${postId}&totalAmount=${totalAmountFormatted}`;
       await requestPayment(post, user, totalAmount, handlePaymentSuccess, handlePaymentFailure, baseRedirectUrl);
