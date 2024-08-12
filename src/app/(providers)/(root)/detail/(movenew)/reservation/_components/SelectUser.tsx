@@ -28,28 +28,26 @@ const SelectUser = () => {
 
   return (
     <div className="mt-6 flex flex-col">
-      <div className="mb-6 gap-2">
-        <h3 className="text-text-color text-base font-medium">How many tourists?</h3>
+      <div className="mb-5 gap-2">
+        <h3 className="text-base font-medium text-text-color">How many tourists?</h3>
         <input
           type="number"
-          className="bg-grayscale-50 my-2 w-full rounded-xl px-4 py-2"
+          className="my-2 w-full rounded-xl bg-grayscale-50 px-4 py-3"
           min="1"
           value={numPersons}
           onChange={handleNumPersonsChange}
         />
-        <p className="text-grayscale-500 text-[10px]">
+        <p className="text-[10px] text-grayscale-500">
           If you exceed the number of people booked, your reservation may be canceled. Please contact the guide first.
         </p>
       </div>
-      <div className="mb-6 gap-2">
-        <h3 className="text-text-color text-base font-medium">Nickname/email</h3>
-        <div className="bg-grayscale-50 my-2 w-full rounded-xl px-4 py-2">
-          {user ? user.email : '로그인 정보가 없습니다.'}
-        </div>
+      <div className="mb-5 gap-2">
+        <h3 className="text-base font-medium text-text-color">Nickname/email</h3>
+        <div className="my-2 w-full rounded-xl bg-grayscale-100 px-4 py-3">{user.email}</div>
       </div>
-      <div className="mb-6">
-        <h3 className="text-text-color mb-1 text-base font-medium">Cancellation Policy</h3>
-        <p className="text-grayscale-500 text-xs font-normal">
+      <div className="m6-5">
+        <h3 className="mb-1 text-base font-medium text-text-color">Cancellation Policy</h3>
+        <p className="text-xs font-normal text-grayscale-500">
           Before you book, make sure you&apos;re comfortable with
           <u className="text-grayscale-900">this guide&apos;s cancellation policy.</u> If you want a refund, click the
           Request for a <u className="text-grayscale-900">refund button</u> and you will get a refund right away. The
