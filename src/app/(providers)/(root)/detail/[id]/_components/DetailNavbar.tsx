@@ -99,7 +99,7 @@ const DetailNavbar = () => {
             </div>
             <button
               onClick={handlePaymentClick}
-              className="w-40 flex-1 rounded-xl bg-primary-300 py-2 text-base font-semibold text-white"
+              className="w-40 flex-1 rounded-xl bg-primary-300 px-5 py-3 text-base font-medium text-white"
             >
               Confirm and Pay
             </button>

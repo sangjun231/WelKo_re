@@ -51,7 +51,7 @@ const SelectPost = () => {
       </div>
       <div className="flex w-full space-x-4">
         <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden">
-          <Image src={post.image} alt={post.title} fill style={{ objectFit: 'cover' }} className="rounded" />
+          <Image src={post.image} alt={post.title} fill style={{ objectFit: 'cover' }} className="rounded-lg" />
           <button onClick={handleLike} className="absolute right-2 top-3">
             {liked ? (
               <LikeBtn width={20} height={20} color="red" fill="red" />
