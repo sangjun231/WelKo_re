@@ -4,10 +4,11 @@ import useAuthStore from '@/zustand/bearsStore';
 import { useMyPageStore } from '@/zustand/mypageStore';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { AiOutlineMessage } from 'react-icons/ai';
 import { BsFillPlusCircleFill, BsPersonCircle } from 'react-icons/bs';
-import { IoCalendarOutline } from 'react-icons/io5';
 import IconHome from '/public/icons/navbar_icons/icon_home.svg';
+import IconReservation from '/public/icons/navbar_icons/icon_reservation.svg';
+import IconMessage from '/public/icons/navbar_icons/icon_message.svg';
+import IconMypage from '/public/icons/navbar_icons/icon_mypage.svg';
 
 function Navbar() {
   const router = useRouter();
@@ -72,7 +73,7 @@ function Navbar() {
           onClick={handleReservationsClick}
           className="flex cursor-pointer flex-col items-center space-y-2 hover:text-primary-300"
         >
-          <IoCalendarOutline size={24} />
+          <IconReservation alt="Reservation" width={24} />
           <span className="text-[10px]">Reservations</span>
         </div>
         <div
@@ -85,14 +86,14 @@ function Navbar() {
           onClick={handleMessagesClick}
           className="flex cursor-pointer flex-col items-center space-y-2 hover:text-primary-300"
         >
-          <AiOutlineMessage size={24} />
+          <IconMessage alt="Message" width={24} />
           <span className="text-[10px]">Messages</span>
         </div>
         <div
           onClick={handleMypageClick}
           className="flex cursor-pointer flex-col items-center space-y-2 hover:text-primary-300"
         >
-          <BsPersonCircle size={24} />
+          <IconMypage alt="Mypage" width={24} />
           <span className="text-[10px]">Mypage</span>
         </div>
       </div>
