@@ -8,9 +8,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { API_POST, API_MYPAGE_REVIEWS, API_MYPAGE_PAYMENTS } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
+import { formatDateRange } from '@/utils/detail/functions';
 
 export default function ReservationList() {
-  const { id } = useParams();
   const params = useParams();
   const router = useRouter();
   const userId = Array.isArray(params.id) ? params.id[0] : params.id;
@@ -152,10 +152,11 @@ export default function ReservationList() {
   if (!posts || posts.length === 0) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="gap-[8px]">
-          <Image src="/icons/tabler-icon-calender-month.svg" alt="no reservation" width={44} height={44} />
+        <div className="flex flex-col items-center justify-center gap-[8px]">
+          <Image src="/icons/tabler-icon-calendar-month.svg" alt="no reservation" width={44} height={44} />
           <p className="text-[14px] font-semibold">You don&apos;t have any Reservation</p>
-          <p className="text-[12px]">When you recieve a new meaasge, it will appear here.</p>
+          <p className="text-[12px]">When you recieve a new meaasge,</p>
+          <p className="text-[12px]">it will appear here.</p>
         </div>
       </div>
     );
@@ -179,7 +180,7 @@ export default function ReservationList() {
                   className={`text-[14px] font-medium ${status === 'Upcoming Tour' ? 'text-primary-300' : status === 'Refunded' ? 'text-error-color' : 'text-grayscale-900'}`}
                 >
                   {status}
-                </p>{' '}
+                </p>
               </div>
               <Link className="flex items-center" href={`/detail/payment/history/${payment?.id}`}>
                 <p className="text-[14px] font-semibold text-primary-300">Detail</p>
@@ -189,17 +190,16 @@ export default function ReservationList() {
             <Link href={`/detail/${post.id}`}>
               <div className="my-[12px] flex">
                 <Image
+                  className="rounded-[8px]"
                   src={post.image ?? '/icons/upload.png'}
                   alt={post.title ?? 'Default title'}
                   width={80}
                   height={80}
                   style={{ width: '80px', height: '80px' }}
                 />
-                <div className="ml-[4px] flex flex-col gap-[4px]">
+                <div className="ml-[8px] flex flex-col gap-[4px]">
                   <p className="line-clamp-1 text-[14px] font-semibold text-primary-900">{post.title ?? 'No Title'}</p>
-                  <p className="text-[14px] text-grayscale-500">
-                    {post.startDate ?? 'No Start Date'} - {post.endDate ?? 'No End Date'}
-                  </p>
+                  <p className="text-[14px] text-grayscale-500">{formatDateRange(post.startDate, post.endDate)} </p>
                   <p className="text-[13px] font-medium text-gray-700">
                     <span className="font-semibold text-primary-300">{formatPrice(post.price)}</span>
                     /Person

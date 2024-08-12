@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import Image from 'next/image';
 import usePostStore from '@/zustand/postStore';
 import { useEffect, useState } from 'react';
@@ -52,7 +51,7 @@ export default function PaymentHistory() {
       alert(response.data.message);
     } catch (error) {
       console.error('Error requesting cancel:', error);
-      alert('Cancel request failed.');
+      alert('하루가 지나서 환불이 불가능어쩌고저쩌고.');
     }
   };
 
@@ -89,7 +88,7 @@ export default function PaymentHistory() {
               <Image src={post.image} alt={post.title} width={96} height={96} className="mr-2 w-24" />
               <div className="">
                 <h2 className="text-xl font-bold">{post.title}</h2>
-                <p className="text-grayscale-500 text-xl font-normal">
+                <p className="text-xl font-normal text-grayscale-500">
                   {formatDateRange(post.startDate, post.endDate)}
                 </p>
                 <div className="text-sm">${post.price.toFixed(2)}</div>

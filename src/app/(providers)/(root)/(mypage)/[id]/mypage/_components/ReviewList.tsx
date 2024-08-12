@@ -8,6 +8,7 @@ import Image from 'next/image';
 import Rating from 'react-rating-stars-component';
 import { API_MYPAGE_REVIEWS, API_POST, API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
+import { formatDateRange } from '@/utils/detail/functions';
 
 const ReviewList = ({ userId }: { userId: string }) => {
   const [reviews, setReviews] = useState<Tables<'reviews'>[]>([]);
@@ -72,10 +73,11 @@ const ReviewList = ({ userId }: { userId: string }) => {
   if (!reviews || reviews.length === 0) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="gap-[8px]">
+        <div className="flex flex-col items-center justify-center gap-[8px]">
           <Image src="/icons/tabler-icon-pencil.svg" alt="no review" width={44} height={44} />
           <p className="text-[14px] font-semibold">You don&apos;t have any Review</p>
-          <p className="text-[12px]">When you write a new review, it will appear here.</p>
+          <p className="text-[12px]">When you write a new review,</p>
+          <p className="text-[12px]">it will appear here.</p>
         </div>
       </div>
     );
@@ -97,11 +99,9 @@ const ReviewList = ({ userId }: { userId: string }) => {
                   height={44}
                   style={{ width: '44px', height: '44px' }}
                 />
-                <div className="ml-[4px] flex w-full flex-col gap-[4px]">
+                <div className="ml-[8px] flex w-full flex-col gap-[4px]">
                   <p className="line-clamp-1 text-[14px] font-semibold text-primary-900">{post.title}</p>
-                  <p className="text-[14px] text-grayscale-500">
-                    {post.startDate} - {post.endDate}
-                  </p>
+                  <p className="text-[14px] text-grayscale-500">{formatDateRange(post.startDate, post.endDate)}</p>
                 </div>
               </div>
               <div className="my-[16px] w-full items-start rounded-[16px] border bg-grayscale-50 p-[16px]">

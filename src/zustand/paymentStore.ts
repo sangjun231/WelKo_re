@@ -1,58 +1,132 @@
 import { create } from 'zustand';
 import * as PortOne from '@portone/browser-sdk/v2';
 
-interface PaymentState {
-  totalAmount: number;
-  setTotalAmount: (amount: number) => void;
+// PaymentResponse 타입 수동 정의
+interface PaymentResponse {
+  code?: string;
+  txId?: string;
+  paymentId?: string;
 }
 
-const usePaymentStore = create<PaymentState>((set) => ({
+// Zustand 상태 정의
+interface PaymentState {
+  totalAmount: number;
+  txId: string | null;
+  paymentId: string | null;
+  setTotalAmount: (amount: number) => void;
+  setTxId: (txId: string) => void;
+  setPaymentId: (paymentId: string) => void;
+}
+
+// Zustand 스토어 생성
+export const usePaymentStore = create<PaymentState>((set) => ({
   totalAmount: 0,
-  setTotalAmount: (amount) => set({ totalAmount: amount })
+  txId: null,
+  paymentId: null,
+  setTotalAmount: (amount) => set({ totalAmount: amount }),
+  setTxId: (txId) => {
+    set({ txId });
+  },
+  setPaymentId: (paymentId) => {
+    set({ paymentId });
+  }
 }));
 
+// 결제 요청 함수 (redirectUrl 수정)
+export async function initiatePayment(
+  post: any,
+  user: any,
+  totalAmountInCents: number,
+  isMobile: boolean,
+  redirectUrl: string
+): Promise<PaymentResponse | undefined> {
+  console.log('redirectUrl in initiatePayment:', redirectUrl);
+
+  try {
+    const response = await PortOne.requestPayment({
+      storeId: process.env.NEXT_PUBLIC_POSTONE_STORE_ID || '',
+      channelKey: process.env.NEXT_PUBLIC_POSTONE_KG_CHANNEL_KEY || '',
+      paymentId: `payment${crypto.randomUUID().split('-')[0]}`,
+      orderName: post.title,
+      totalAmount: totalAmountInCents,
+      currency: 'CURRENCY_KRW',
+      payMethod: 'CARD',
+      customer: {
+        fullName: user?.name || 'Unknown',
+        phoneNumber: user?.phone || '010-0000-0000',
+        email: user?.email || 'test@portone.io'
+      },
+      bypass: isMobile
+        ? {
+            inicis_v2: {
+              P_CARD_OPTION: 'selcode=14',
+              P_MNAME: '포트원',
+              P_RESERVED: ['below1000=Y', 'noeasypay=Y', 'global_visa3d=Y', 'apprun_check=Y']
+            }
+          }
+        : {
+            inicis_v2: {
+              logo_url: 'https://portone.io/assets/portone.87061e94.avif',
+              logo_2nd: 'https://admin.portone.io/assets/img/auth/lock.png',
+              parentemail: 'parentemail',
+              Ini_SSGPAY_MDN: '01012341234',
+              acceptmethod: ['SKIN(#BA68C8)', 'below1000', 'noeasypay'],
+              P_CARD_OPTION: 'selcode=14',
+              P_MNAME: '포트원',
+              P_RESERVED: ['below1000=Y', 'noeasypay=Y']
+            }
+          },
+      locale: 'EN_US',
+      redirectUrl // 수정된 redirectUrl 사용
+    });
+
+    return response;
+  } catch (error) {
+    console.error('Payment request error:', error);
+    throw new Error('결제 요청 중 오류가 발생했습니다.');
+  }
+}
+
+// 전역 상태를 사용하는 결제 처리 함수
 export const requestPayment = async (
   post: any,
   user: any,
   totalAmount: number,
   handlePaymentSuccess: (response: any) => Promise<void>,
-  handlePaymentFailure: (error: any) => Promise<void>
+  handlePaymentFailure: (error: any) => Promise<void>,
+  redirectUrl: string // DetailNavbar에서 전달된 URL
 ) => {
-  const totalAmountInCents = totalAmount * 100;
-  try {
-    const response = await PortOne.requestPayment({
-      storeId: process.env.NEXT_PUBLIC_POSTONE_STORE_ID || '', // 포트원에서 발급받은 스토어 ID
-      channelKey: process.env.NEXT_PUBLIC_POSTONE_KG_CHANNEL_KEY || '', // 포트원에서 발급받은 채널 키
-      paymentId: `payment${crypto.randomUUID().split('-')[0]}`, // 고객사 주문 고유 번호
-      orderName: post.title, // 주문명
-      totalAmount: totalAmountInCents, // 결제 금액 (센트 단위)
-      currency: 'CURRENCY_USD', // 결제 통화
-      payMethod: 'CARD', // 결제수단 구분코드
-      customer: {
-        fullName: user?.name || 'Unknown', // 구매자 전체 이름
-        phoneNumber: user?.phone || '010-0000-0000', // 구매자 연락처
-        email: user?.email || 'test@portone.io' // 구매자 이메일
-      },
-      bypass: {
-        inicis_v2: {
-          logo_url: 'https://portone.io/assets/portone.87061e94.avif', // 결제창에 삽입할 메인 로고 URL
-          logo_2nd: 'https://admin.portone.io/assets/img/auth/lock.png', // 결제창에 삽입할 서브 로고 URL
-          parentemail: 'parentemail', // 보호자 이메일 주소
-          Ini_SSGPAY_MDN: '01012341234', // SSGPAY 결제 요청 시 PUSH 전송 휴대폰 번호
-          acceptmethod: ['SKIN(#BA68C8)', 'below1000', 'noeasypay'], // 결제창 색상 및 1000원 미만 결제 허용 옵션
-          P_CARD_OPTION: 'selcode=14', // 카드 옵션
-          P_MNAME: '포트원', // 결제 페이지에 표시될 가맹점 이름
-          P_RESERVED: ['below1000=Y', 'noeasypay=Y'] // 1000원 미만 결제 허용 옵션 및 간편 결제 미노출 옵션
-        }
-      },
-      locale: 'EN_US' // 결제 페이지의 언어 설정
-    });
+  const { setTxId, setPaymentId } = usePaymentStore.getState();
+  const totalAmountInCents = totalAmount * 1000;
 
-    // 결제 요청 후 받은 응답에 코드가 있는 경우 결제 실패로 간주
+  // 사용자가 모바일인지 확인
+  const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
+
+  try {
+    // 결제 요청 함수 호출
+    const response = await initiatePayment(post, user, totalAmountInCents, isMobile, redirectUrl);
+
+    // 결제 요청 실패 처리
     if (response?.code != null) {
+      console.error('Payment failed with code:', response.code);
       await handlePaymentFailure(response);
-    } else {
+    } else if (response) {
+      const { txId, paymentId } = response;
+
+      // txId와 paymentId가 없는 경우 예외 처리
+      if (!txId || !paymentId) {
+        throw new Error('txId 또는 paymentId가 응답에 포함되지 않았습니다.');
+      }
+
+      // 전역 상태에 txId와 paymentId 저장
+      setTxId(txId);
+      setPaymentId(paymentId);
+
+      // 성공 시 handlePaymentSuccess 호출
       await handlePaymentSuccess(response);
+    } else {
+      console.error('Payment response is undefined or null.');
+      alert('결제 응답이 없습니다.');
     }
   } catch (error) {
     console.error('Payment request error:', error);

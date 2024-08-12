@@ -22,7 +22,7 @@ interface PostAndPlacesData {
   places: PlaceData[];
 }
 
-const Map = () => {
+const ScheduleMap = () => {
   const clientId = process.env.NEXT_PUBLIC_NCP_CLIENT_ID!;
   const isScriptLoaded = useNaverMapScript(clientId);
   const [mapInstance, setMapInstance] = useState<any>(null);
@@ -160,4 +160,4 @@ const Map = () => {
   );
 };
 
-export default Map;
+export default ScheduleMap;

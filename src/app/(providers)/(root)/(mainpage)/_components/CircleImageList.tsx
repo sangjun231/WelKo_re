@@ -20,7 +20,11 @@ export default function CircleImageList() {
   return (
     <div className="mt-[16px] flex justify-around bg-white p-4">
       {locations.map((location) => (
-        <div key={location.name} className="flex flex-col items-center" onClick={() => handleClick(location.name)}>
+        <div
+          key={location.name}
+          className="flex cursor-pointer flex-col items-center"
+          onClick={() => handleClick(location.name)}
+        >
           <Image
             src={location.src}
             alt={location.name}
