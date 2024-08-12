@@ -85,15 +85,14 @@ const ReviewList = ({ userId }: { userId: string }) => {
 
   return (
     <div className="mx-auto max-w-[320px]">
-      {posts.map((post) => {
+      {posts.map((post, index) => {
         const review = reviews.find((r) => r.post_id === post.id);
 
         return (
           review && (
-            <div key={post.id} className="mb-[20px]">
+            <div key={`${post.id}-${index}`} className="mb-[20px]">
               <div className="flex">
                 <Image
-                  className="rounded-[8px]"
                   src={post.image ?? '/icons/upload.png'}
                   alt={post.title ?? 'Default title'}
                   width={44}

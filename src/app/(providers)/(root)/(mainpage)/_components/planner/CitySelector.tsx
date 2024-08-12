@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/utils/supabase/client';
+import Image from 'next/image';
 
 const supabase = createClient();
 
@@ -59,14 +60,23 @@ const CitySelector: React.FC<CitySelectorProps> = ({ selectedCity, handleCityCli
   return (
     <div>
       <div>
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          onKeyDown={handleKeyDown}
-          placeholder="Search Your Destination"
-          className="mb-4 w-full rounded-[36px] border bg-gray-100 p-2"
-        />
+        <div className="relative mb-4">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            onKeyDown={handleKeyDown}
+            placeholder="Search Your Destination"
+            className="w-full rounded-[36px] border bg-gray-100 p-2 pl-4"
+          />
+          <Image
+            src="/icons/search.png"
+            alt="Search icon"
+            width={20}
+            height={20}
+            className="absolute right-4 top-1/2 -translate-y-1/2 transform"
+          />
+        </div>
         {autoCompleteResults.length > 0 && (
           <div className="mb-4 rounded-md border bg-white p-2">
             {autoCompleteResults.map((result) => (

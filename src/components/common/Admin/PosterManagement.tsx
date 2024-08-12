@@ -180,8 +180,8 @@ const PosterManagement = () => {
           </tr>
         </thead>
         <tbody>
-          {posts.map((post) => (
-            <tr key={post.id}>
+          {posts.map((post, index) => (
+            <tr key={`${post.id}-${index}`}>
               <td className="border-b px-4 py-2">{post.user_name}</td>
               <td className="border-b px-4 py-2">{post.title}</td>
               <td className="border-b px-4 py-2">{formatDate(post.created_at)}</td>

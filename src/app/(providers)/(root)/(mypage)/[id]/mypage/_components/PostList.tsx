@@ -80,11 +80,11 @@ export default function PostList() {
 
   return (
     <div className="max-w-[360px]">
-      {data.map((post: Tables<'posts'>) => {
+      {data.map((post: Tables<'posts'>, index) => {
         const status = tourStatus(post.endDate);
 
         return (
-          <div key={post.id} className="mb-[20px] border-b pb-[20px]">
+          <div key={`${post.id}-${index}`} className="mb-[20px] border-b pb-[20px]">
             <div className="mb-[12px] flex justify-between">
               <div>
                 <p className="text-[14px] font-semibold text-grayscale-900">

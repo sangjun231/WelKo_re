@@ -147,7 +147,7 @@ const ScheduleMap = () => {
               {index + 1}
             </div>
             <div className="flex w-full flex-col gap-1 rounded-lg border bg-white px-4 py-3 shadow-lg">
-              <h2 className="text-sm font-semibold">{place.title.replace(/<\/?[^>]+(>|$)/g, '')}</h2>
+              <h2 className="text-sm font-semibold">{place.title ? place.title.replace(/<\/?[^>]+(>|$)/g, '') : ''}</h2>
               <p className="text-xs text-gray-500">{place.category}</p>
               <hr className="my-2 h-[1px] w-full bg-grayscale-100" />
               <p className="text-xs font-normal text-gray-700">{place.description}</p>
