@@ -102,7 +102,7 @@ const DaySelect: React.FC<DaySelectProps> = ({
                   : startDate && endDate && day >= startDate && day <= endDate
                     ? 'bg-primary-300 text-white'
                     : startDate && day.toDateString() === startDate.toDateString()
-                      ? 'bg-grayscale-700 text-white'
+                      ? 'bg-primary-300 text-white'
                       : endDate && day.toDateString() === endDate.toDateString()
                         ? 'bg-red-500 text-white'
                         : 'bg-white text-black'

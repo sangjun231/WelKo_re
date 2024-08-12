@@ -78,20 +78,7 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
   // 선택한 장소 목록에 추가 (선택버튼)
   const handlePlaceSelect = (place: Place) => {
     setSelectedPlace(place);
-    // if (!selectedSearch.includes(place)) {
-    //   if (selectedSearch.length < 4) {
-    //     setSelectedSearch((prev) => [...prev, place]);
-    //   } else {
-    //     alert('You can only select up to 4 places.');
-    //   }
-    // }
   };
-  {
-    /* 목록에서 제거 (취소버튼)
-  const handlePlaceRemove = (place: Place) => {
-    setSelectedSearch((prev) => prev.filter((p) => p !== place));
-  };  */
-  }
   // 세션에 임시저장
   const handlePlaceSave = () => {
     let sessionPlaces = sessionStorage.getItem(selectedDay);
@@ -172,29 +159,6 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
           })}
         </div>
       )}
-
-      {/* <h2 className="p-4 text-lg font-bold">선택한 장소들</h2>
-      <div className="h-1/5 overflow-y-scroll">
-        {(storedPlacesKey === undefined || selectedDay === storedPlacesKey) &&
-          selectedSearch.map((place, index) => {
-            const cleanHTML = DOMPurify.sanitize(place.title);
-            return (
-              <div key={index} className="flex justify-between border-b p-4 hover:bg-gray-100">
-                <div>
-                  <h3 className="font bold" dangerouslySetInnerHTML={{ __html: cleanHTML }} />
-                  <div className="flex text-xs text-gray-400">
-                    <p>{place.category} •&nbsp;</p>
-                    <p className="text-xs text-gray-400">{place.roadAddress}</p>
-                  </div>
-                </div>
-                <button onClick={() => handlePlaceRemove(place)} className="mt-2 rounded bg-red-500 p-2 text-white">
-                  취소
-                </button>
-              </div>
-            );
-          })}
-      </div> */}
-
       <button
         onClick={handlePlaceSave}
         className="fixed bottom-28 left-0 right-0 mx-auto my-5 h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-medium text-white"

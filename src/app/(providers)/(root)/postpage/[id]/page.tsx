@@ -3,8 +3,8 @@ import useAuthStore from '@/zustand/bearsStore';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import AddressSearch from './_components/AddressSearch';
-import Calendar from './_components/Calendar';
-import DayPlaces from './_components/DayPlaces';
+import Calendar from './_components/calendar/Calendar';
+import DayPlaces from './_components/dayplaces/DayPlaces';
 import Write from './_components/Write';
 
 function PostPage() {
@@ -18,6 +18,7 @@ function PostPage() {
   const [sequence, setSequence] = useState<number>(0);
 
   useEffect(() => {
+    sessionStorage.setItem('postId', postId as string);
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!id || !uuidRegex.test(id as string)) {
       alert('Please enter through the correct path');
@@ -29,9 +30,7 @@ function PostPage() {
       router.push('/login');
       return;
     }
-  }, [user]);
-
-  sessionStorage.setItem('postId', postId as string);
+  }, [user, id, router]);
 
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);

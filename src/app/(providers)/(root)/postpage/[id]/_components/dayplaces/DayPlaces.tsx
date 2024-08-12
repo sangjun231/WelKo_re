@@ -36,15 +36,34 @@ const DayPlaces: React.FC<PlaceProps> = ({
   sequence,
   setSequence
 }) => {
+  const [days, setDays] = useState<string[]>([]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    const startDateString = sessionStorage.getItem('startDate');
+    const endDateString = sessionStorage.getItem('endDate');
+
+    if (startDateString && endDateString) {
+      const startDate = new Date(startDateString);
+      const endDate = new Date(endDateString);
+      const dayArray: string[] = [];
+
+      let currentDate = new Date(startDate);
+      let dayCount = 1;
+
+      while (currentDate <= endDate) {
+        dayArray.push(`Day ${dayCount}`);
+        currentDate.setDate(currentDate.getDate() + 1);
+        dayCount++;
+      }
+
+      setDays(dayArray);
+    }
   }, []);
+
   const [selectedPlaces, setSelectedPlaces] = useState<Place[]>([]); // 선택한 장소 목록
   const handleDaySelect = (day: string) => {
     setSelectedDay(day);
-  };
-  const handleSequenceSelect = () => {
-    setSequence(sequence);
   };
   const startDate = sessionStorage.getItem('startDate');
   const endDate = sessionStorage.getItem('endDate');
@@ -67,7 +86,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
         setSelectedPlaces(JSON.parse(storedPlaces));
       }
     }
-  }, [selectedDay]);
+  }, [selectedDay, storedPlaces, storedPlacesKey]);
 
   // 수정할 때, Supabase에서 장소 데이터를 불러오기
   useEffect(() => {
@@ -79,7 +98,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
           .select('*')
           .eq('post_id', postId)
           .eq('day', selectedDay);
-
+        console.log(placesData);
         if (placesData && placesData.length > 0) {
           // 첫 번째 결과만 사용 (하나의 day에 대한 데이터만 있을 것으로 가정)
           const placeData = placesData[0];
@@ -153,7 +172,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
         markers.forEach((marker) => marker.setMap(null));
         setMarkers([]);
 
-        // 유효한 장소만 필터링하고 원래 인덱스를 기억합니다.
+        // 유효한 장소만 필터링하고 원래 인덱스를 기억하기
         const validPlaces = selectedPlaces
           .map((place, index) => (place ? { place, index } : null))
           .filter((item) => item !== null);
@@ -263,13 +282,13 @@ const DayPlaces: React.FC<PlaceProps> = ({
 
         <div>
           <div className="mb-4 flex gap-2">
-            {['day1', 'day2', 'day3'].map((day, index) => (
+            {days.map((day, index) => (
               <button
-                key={day}
-                className="rounded-full bg-grayscale-50 px-4 py-2 font-medium hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
+                key={index}
+                className="rounded-full bg-grayscale-50 px-4 py-2 text-sm font-medium hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
                 onClick={() => handleDaySelect(day)}
               >
-                {`Day ${index + 1}`}
+                {day}
               </button>
             ))}
           </div>

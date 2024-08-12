@@ -1,17 +1,14 @@
 'use client';
 
-import React from 'react';
-import Image from 'next/image';
-import usePostStore from '@/zustand/postStore';
-import { formatDateRange } from '@/utils/detail/functions';
 import BackButton from '@/components/common/Button/BackButton';
+import { formatDateRange } from '@/utils/detail/functions';
+import usePostStore from '@/zustand/postStore';
+import Image from 'next/image';
 
 const SelectPost = () => {
   const { post } = usePostStore((state) => ({
     post: state.post
   }));
-
-  if (!post) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
   // 가격을 포맷하는 함수
   const formatPrice = (price: number) => {
@@ -20,6 +17,8 @@ const SelectPost = () => {
       currency: 'USD'
     }).format(price);
   };
+
+  if (!post) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
   return (
     <div className="mt-12 flex flex-col items-center gap-2">
@@ -32,10 +31,10 @@ const SelectPost = () => {
         <Image src={post.image} alt={post.title} width={80} height={80} className="rounded" />
         <div>
           <h4 className="line-clamp-1 text-sm font-semibold">{post.title}</h4>
-          <p className="text-grayscale-500 text-sm font-normal">{formatDateRange(post.startDate, post.endDate)}</p>
+          <p className="text-sm font-normal text-grayscale-500">{formatDateRange(post.startDate, post.endDate)}</p>
           <div className="flex items-center text-xs">
-            <span className="text-primary-300 font-semibold">{formatPrice(post.price)}</span>
-            <span className="text-grayscale-600 font-medium">/Person</span>
+            <span className="font-semibold text-primary-300">{formatPrice(post.price)}</span>
+            <span className="font-medium text-grayscale-600">/Person</span>
           </div>
         </div>
       </div>

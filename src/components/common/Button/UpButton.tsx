@@ -1,33 +1,40 @@
 'use client';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { IoIosArrowRoundUp } from 'react-icons/io';
 
 function UpButton() {
   const [toggleButton, setToggleButton] = useState(false);
   const [buttonPosition, setButtonPosition] = useState('bottom-32 right-3');
+  const pathname = usePathname();
 
   const handleScroll = () => {
-    const { scrollY } = window;
-    scrollY > 200 ? setToggleButton(true) : setToggleButton(false);
+    if (typeof window !== 'undefined') {
+      const { scrollY } = window;
+      scrollY > 200 ? setToggleButton(true) : setToggleButton(false);
+    }
   };
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
+    if (typeof window !== 'undefined') {
+      if (pathname.startsWith('/detail')) {
+        setButtonPosition('bottom-20 right-3'); // detail 페이지에서의 위치
+      } else {
+        setButtonPosition('bottom-32 right-3'); // 기본 위치
+      }
 
-    const pathname = window.location.pathname;
-    if (pathname.startsWith('/detail')) {
-      setButtonPosition('bottom-20 right-3'); // detail 페이지에서의 위치
-    } else {
-      setButtonPosition('bottom-32 right-3'); // 기본 위치
+      window.addEventListener('scroll', handleScroll);
+
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+      };
     }
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [window.location.pathname]);
+  }, [pathname]);
 
   const goToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return toggleButton ? (
@@ -39,4 +46,5 @@ function UpButton() {
     </button>
   ) : null;
 }
+
 export default UpButton;

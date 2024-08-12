@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
 import { useNaverMapScript } from '@/hooks/Map/useNaverMapScript';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 interface Place {
   title: string;
@@ -111,7 +111,7 @@ const Map = () => {
 
   return (
     <div className="flex flex-col text-lg">
-      <h2 className="text-grayscale-900 mb-4 font-semibold">Where you’ll tour</h2>
+      <h2 className="mb-4 font-semibold text-grayscale-900">Where you’ll tour</h2>
       <div id="map" style={{ width: '100%', height: '300px' }}></div>
       <div className="my-6 flex gap-2 text-xs font-medium">
         {data.places.length > 0 && (
@@ -143,19 +143,19 @@ const Map = () => {
       <div className="flex flex-col gap-4">
         {data?.places[selectedDay].places.map((place, index) => (
           <div key={index} className="place-item flex items-start">
-            <div className="number-circle bg-primary-300 mr-3 flex h-6 w-6 items-center justify-center rounded-full text-sm font-medium text-white">
+            <div className="number-circle mr-3 flex h-6 w-6 items-center justify-center rounded-full bg-primary-300 text-sm font-medium text-white">
               {index + 1}
             </div>
             <div className="flex w-full flex-col gap-1 rounded-lg border bg-white px-4 py-3 shadow-lg">
               <h2 className="text-sm font-semibold">{place.title.replace(/<\/?[^>]+(>|$)/g, '')}</h2>
               <p className="text-xs text-gray-500">{place.category}</p>
-              <hr className="bg-grayscale-100 my-2 h-[1px] w-full" />
+              <hr className="my-2 h-[1px] w-full bg-grayscale-100" />
               <p className="text-xs font-normal text-gray-700">{place.description}</p>
             </div>
           </div>
         ))}
       </div>
-      <hr className="bg-grayscale-100 mb-6 mt-8 h-[1px] w-full" />
+      <hr className="mb-6 mt-8 h-[1px] w-full bg-grayscale-100" />
     </div>
   );
 };
