@@ -118,7 +118,7 @@ export default function PostList() {
                   height={80}
                   style={{ width: '80px', height: '80px' }}
                 />
-                <div className="ml-[4px] flex flex-col gap-[4px]">
+                <div className="ml-[8px] flex flex-col gap-[4px]">
                   <p className="line-clamp-1 text-[14px] font-semibold text-primary-900">{post.title}</p>
                   <p className="text-[14px] text-grayscale-500">{formatDateRange(post.startDate, post.endDate)}</p>
                   <p className="text-[13px] font-semibold text-grayscale-700">

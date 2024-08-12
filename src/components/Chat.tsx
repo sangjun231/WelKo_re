@@ -83,7 +83,7 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
                       height={44}
                       style={{ width: '44px', height: '44px' }}
                     />
-                    <p className="ml-[8px] text-[13px] font-semibold">{msg.sender.name}</p>
+                    <p className="ml-[12px] text-[13px] font-semibold">{msg.sender.name}</p>
                   </div>
                 )}
                 <div className="flex items-end">

@@ -39,8 +39,14 @@ const ChatPage = () => {
     <div className="flex h-screen flex-col overflow-hidden">
       <div className="mx-[20px] mt-[56px]">
         <div className="relative my-[20px] flex items-center justify-between">
-          <button className="rounded-[24px] bg-grayscale-50" onClick={handleBack}>
-            <Image src="/icons/tabler-icon-chevron-left.svg" alt="Go Back" width={32} height={32} />
+          <button className="flex justify-center items-center h-[32px] w-[32px] rounded-full bg-grayscale-50" onClick={handleBack}>
+            <Image
+              src="/icons/tabler-icon-chevron-left.svg"
+              alt="Go Back"
+              width={24}
+              height={24}
+              style={{ width: '24px', height: '24px' }}
+            />
           </button>
           <p className="absolute left-1/2 -translate-x-1/2 transform text-[18px] font-semibold">Message</p>
           <div className="w-8"></div>

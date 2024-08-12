@@ -67,7 +67,7 @@ function Navbar() {
 
   return (
     <nav className="sticky bottom-0 flex border-t border-grayscale-100 bg-white text-grayscale-500">
-      <div className="container mx-auto flex items-center justify-between p-8">
+      <div className="container mx-auto flex items-center justify-between">
         <Link href="/">
           <div className="flex flex-col items-center space-y-2 hover:text-primary-300">
             <RiHome3Line size={24} />

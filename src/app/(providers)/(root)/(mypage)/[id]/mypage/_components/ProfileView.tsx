@@ -36,19 +36,19 @@ const ProfileView = ({ userId }: { userId: string }) => {
               width={56}
               height={56}
               className="rounded-full"
-              style={{width:'56px', height:'56px'}}
+              style={{ width: '56px', height: '56px' }}
             />
           )}
-          <div className="ml-4">
-            <div className="flex items-center">
-              <p className="text-[18px] font-semibold">{profile.name}</p>
+          <div className="ml-[12px]">
+            <div className="flex">
+              <p className="text-[18px] font-semibold leading-none">{profile.name}</p>
               {profile.region ? (
-                <p className="ml-2 text-[14px]">{profile.region}</p>
+                <p className="ml-[8px] text-[12px]">{profile.region}</p>
               ) : (
-                <p className="ml-2 text-[14px]">Please set the region</p>
+                <p className="ml-[8px] text-[12px]">Please set the region</p>
               )}
             </div>
-            <button onClick={goToProfilePage} className="mt-2 flex items-center text-[12px]">
+            <button onClick={goToProfilePage} className="mt-[8px] flex items-center text-[12px]">
               Edit Profile
               <Image src="/icons/tabler-icon-chevron-right.svg" alt="Edit Profile" width={16} height={16} />
             </button>

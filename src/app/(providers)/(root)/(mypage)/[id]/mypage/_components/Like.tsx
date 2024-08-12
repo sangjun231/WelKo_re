@@ -56,10 +56,9 @@ const Like: React.FC<LikeProps> = ({ postId, userId }) => {
 
   return (
     <button
-      className="absolute right-0 top-0 rounded-[24px]"
+      className="absolute right-[4px] top-[8px] rounded-[24px] backdrop-blur-[10px]"
       onClick={handleLike}
       style={{
-        backdropFilter: 'blur(10%)',
         backgroundColor: 'rgba(255, 255, 255, 0.10)'
       }}
     >

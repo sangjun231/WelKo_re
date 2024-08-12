@@ -100,7 +100,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
                   height={44}
                   style={{ width: '44px', height: '44px' }}
                 />
-                <div className="ml-[4px] flex w-full flex-col gap-[4px]">
+                <div className="ml-[8px] flex w-full flex-col gap-[4px]">
                   <p className="line-clamp-1 text-[14px] font-semibold text-primary-900">{post.title}</p>
                   <p className="text-[14px] text-grayscale-500">{formatDateRange(post.startDate, post.endDate)}</p>
                 </div>

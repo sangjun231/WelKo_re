@@ -32,9 +32,15 @@ const MyPage = () => {
   return (
     <div className="mx-[20px] flex flex-col">
       <div className="mt-[56px] flex justify-between">
-        <button className="rounded-[24px] bg-grayscale-50" onClick={handleBack}>
-          <Image src="/icons/tabler-icon-chevron-left.svg" alt="Go Back" width={32} height={32} />
-        </button>
+          <button className="flex justify-center items-center h-[32px] w-[32px] rounded-full bg-grayscale-50" onClick={handleBack}>
+            <Image
+              src="/icons/tabler-icon-chevron-left.svg"
+              alt="Go Back"
+              width={24}
+              height={24}
+              style={{ width: '24px', height: '24px' }}
+            />
+          </button>
         <p className="text-[18px] font-semibold text-primary-900">My Page</p>
         <button className="text-[14px] font-medium text-action-color" onClick={onLogout}>
           Logout

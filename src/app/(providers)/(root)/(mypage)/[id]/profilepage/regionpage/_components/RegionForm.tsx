@@ -131,7 +131,7 @@ const RegionForm = () => {
           const lastPart = addressParts[addressParts.length - 1];
           const secondLastPart = addressParts[addressParts.length - 2];
           const combinedAddress = `${secondLastPart} ${lastPart}`;
-          setTranslatedRegion(`${combinedAddress}, korea`);
+          setTranslatedRegion(`${lastPart}, Korea`);
         } catch (error) {
           toast.error('Failed to translate the region.');
         }
