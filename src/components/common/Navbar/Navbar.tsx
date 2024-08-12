@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { AiOutlineMessage } from 'react-icons/ai';
 import { BsFillPlusCircleFill, BsPersonCircle } from 'react-icons/bs';
 import { IoCalendarOutline } from 'react-icons/io5';
-import { RiHome3Line } from 'react-icons/ri';
+import IconHome from '/public/icons/navbar_icons/icon_home.svg';
 
 function Navbar() {
   const router = useRouter();
@@ -64,7 +64,7 @@ function Navbar() {
       <div className="container mx-auto flex items-center justify-between p-8">
         <Link href="/">
           <div className="flex flex-col items-center space-y-2 hover:text-primary-300">
-            <RiHome3Line size={24} />
+            <IconHome alt="Home" width={24} />
             <span className="text-[10px]">Home</span>
           </div>
         </Link>
