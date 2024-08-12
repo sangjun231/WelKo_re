@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Rating from 'react-rating-stars-component';
 import { API_POST_DETAILS, API_MYPAGE_REVIEWS } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
+import { formatDateRange } from '@/utils/detail/functions';
 
 const ReviewForm = ({ userId }: { userId: string }) => {
   const [review, setReview] = useState<Tables<'reviews'>>();
@@ -52,7 +53,7 @@ const ReviewForm = ({ userId }: { userId: string }) => {
     router.back();
   };
 
-    const ratingChanged = (newRating: number) => {
+  const ratingChanged = (newRating: number) => {
     setRating(newRating);
   };
 
@@ -63,8 +64,6 @@ const ReviewForm = ({ userId }: { userId: string }) => {
       fetchPost(postId);
     }
   }, [id, postId]);
-
-
 
   return (
     <div className="mt-[56px]">
@@ -81,6 +80,7 @@ const ReviewForm = ({ userId }: { userId: string }) => {
         {post ? (
           <div className="flex">
             <Image
+              className="rounded-[8px]"
               src={post.image ?? '/icons/upload.png'}
               alt={post.title ?? 'Default title'}
               width={44}
@@ -89,10 +89,7 @@ const ReviewForm = ({ userId }: { userId: string }) => {
             />
             <div className="ml-[8px] flex flex-col">
               <p className="text-[14px] font-semibold">{post.title}</p>
-              <p className="text-[14px] text-grayscale-500">
-                {post.startDate ? new Date(post.startDate).toLocaleDateString() : 'No start date available'} -
-                {post.endDate ? new Date(post.endDate).toLocaleDateString() : 'No end date available'}
-              </p>
+              <p className="text-[14px] text-grayscale-500">{formatDateRange(post.startDate, post.endDate)}</p>
             </div>
           </div>
         ) : (

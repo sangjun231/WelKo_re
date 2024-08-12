@@ -3,7 +3,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { FaRegHeart, FaHeart } from 'react-icons/fa';
+import Image from 'next/image';
 import { API_MYPAGE_LIKES } from '@/utils/apiConstants';
 
 type LikeProps = {
@@ -55,8 +55,20 @@ const Like: React.FC<LikeProps> = ({ postId, userId }) => {
   if (isError) return <div>Error fetching like status</div>;
 
   return (
-    <button className="absolute right-0 top-0 rounded-[24px] bg-grayscale-50 p-[4px]" onClick={handleLike}>
-      {liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
+    <button
+      className="absolute right-[4px] top-[8px] rounded-[24px] backdrop-blur-[10px]"
+      onClick={handleLike}
+      style={{
+        backgroundColor: 'rgba(255, 255, 255, 0.10)'
+      }}
+    >
+      <Image
+        src={liked ? '/icons/tabler-icon-heart-filled.svg' : '/icons/tabler-icon-post-heart.svg'}
+        alt="heart icon"
+        width={24}
+        height={24}
+        style={{ width: '24px', height: '24px' }}
+      />
     </button>
   );
 };
