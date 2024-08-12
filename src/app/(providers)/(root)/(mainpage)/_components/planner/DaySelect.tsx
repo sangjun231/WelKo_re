@@ -86,12 +86,12 @@ const DaySelect: React.FC<DaySelectProps> = ({
         </button>
       </div>
 
-      <div className="grid grid-cols-7 gap-1">
+      <div className="grid grid-cols-7 gap-2">
         {daysInCalendar.map((day) => (
           <button
             key={day.toDateString()}
             onClick={() => handleDateClick(day)}
-            className={`rounded-full p-1.5 text-[13px] font-semibold ${
+            className={`flex h-[24px] w-[24px] items-center justify-center rounded-full p-1.5 text-[13px] font-semibold ${
               startDate && day.toDateString() === startDate.toDateString()
                 ? 'bg-[#B95FAB] text-white'
                 : endDate && day.toDateString() === endDate.toDateString()

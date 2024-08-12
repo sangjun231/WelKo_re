@@ -163,13 +163,13 @@ export default function ReservationList() {
 
   return (
     <div className="max-w-[360px]">
-      {filteredPosts.map((post) => {
+      {filteredPosts.map((post, index) => {
         const payment = paymentsQuery.data?.find((pay) => pay.post_id === post.id);
         const status = payment ? tourStatus(post.endDate, payment.pay_state ?? '') : 'N/A';
         const review = reviews.find((review) => review.post_id === post.id);
 
         return (
-          <div key={post.id} className="mb-[20px] border-b pb-[20px]">
+          <div key={`${post.id}-${index}`} className="mb-[20px] border-b pb-[20px]">
             <div className="flex justify-between">
               <div>
                 <p className="text-[14px] font-semibold text-grayscale-900">

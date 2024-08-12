@@ -67,8 +67,8 @@ export default function LikeList() {
 
   return (
     <div className="max-w-[360px]">
-      {data.map((post) => (
-        <div key={post.id} className="relative mb-[16px]">
+      {data.map((post, index) => (
+        <div key={`${post.id}-${index}`} className="relative mb-[16px]">
           <div className="flex">
             <div className="relative">
               <Link href={`/detail/${post.id}`}>
@@ -84,7 +84,7 @@ export default function LikeList() {
             </div>
             <Link href={`/detail/${post.id}`}>
               <div className="ml-[8px] space-y-[4px]">
-                <p className="text-primary-900 line-clamp-1 text-[14px] font-semibold">{post.title}</p>
+                <p className="line-clamp-1 text-[14px] font-semibold text-primary-900">{post.title}</p>
                 <p className="text-[14px] text-grayscale-500">
                   {post.startDate && post.endDate
                     ? `${new Date(post.startDate).toLocaleDateString()} - ${new Date(post.endDate).toLocaleDateString()}`
