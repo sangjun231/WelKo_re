@@ -9,7 +9,7 @@ import { GoPeople } from 'react-icons/go';
 import { IoLocationOutline } from 'react-icons/io5';
 import { formatDateRange } from '@/utils/detail/functions';
 
-export default function Read() {
+export default function DetailImg() {
   const { id } = useParams();
   const postId = Array.isArray(id) ? id[0] : id;
   const { setPostId, post, fetchPost } = usePostStore((state) => ({

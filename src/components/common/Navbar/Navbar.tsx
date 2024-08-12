@@ -7,8 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { AiOutlineMessage } from 'react-icons/ai';
 import { BsFillPlusCircleFill, BsPersonCircle } from 'react-icons/bs';
 import { IoCalendarOutline } from 'react-icons/io5';
-import { RiHome3Line } from 'react-icons/ri';
-import { v4 as uuidv4 } from 'uuid';
+import IconHome from '/public/icons/navbar_icons/icon_home.svg';
 
 function Navbar() {
   const router = useRouter();
@@ -22,7 +21,7 @@ function Navbar() {
       router.push('/login');
       return;
     }
-    setSelectedComponent('Reservations');
+    setSelectedComponent('Reservation');
     router.push(`/${user?.id}/mypage`);
   };
 
@@ -32,17 +31,7 @@ function Navbar() {
       router.push('/login');
       return;
     }
-    router.push(`/postpage/${uuid}`);
-  };
-
-  const handleMypageClick = () => {
-    if (!user) {
-      alert('로그인이 필요한 서비스입니다!!');
-      router.push('/login');
-      return;
-    }
-    setSelectedComponent('likes');
-    router.push(`/${user?.id}/mypage`);
+    router.push(`/postpage`);
   };
 
   const handleMessagesClick = () => {
@@ -54,14 +43,19 @@ function Navbar() {
     router.push(`/${user?.id}/chatlistpage`);
   };
 
-  const uuid = uuidv4();
+  const handleMypageClick = () => {
+    if (!user) {
+      alert('로그인이 필요한 서비스입니다!!');
+      router.push('/login');
+      return;
+    }
+    setSelectedComponent('Wishlist');
+    router.push(`/${user?.id}/mypage`);
+  };
+
   // 특정 경로에서 Navbar를 숨기기
-  const excludedRoutes = ['/login', `/postpage/${uuid}`, `/chatpage`];
+  const excludedRoutes = ['/login', `/postpage`, `/chatpage`];
   if (excludedRoutes.includes(pathname) || pathname.startsWith('/detail')) {
-    return null;
-  }
-  const chatpageRegex = /\/[a-f0-9-]+\/[a-f0-9-]+\/chatpage/;
-  if (chatpageRegex.test(pathname)) {
     return null;
   }
 
@@ -70,7 +64,7 @@ function Navbar() {
       <div className="container mx-auto flex items-center justify-between">
         <Link href="/">
           <div className="flex flex-col items-center space-y-2 hover:text-primary-300">
-            <RiHome3Line size={24} />
+            <IconHome alt="Home" width={24} />
             <span className="text-[10px]">Home</span>
           </div>
         </Link>
