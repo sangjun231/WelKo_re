@@ -18,7 +18,7 @@ export default function PaySuccess() {
   const postIdFromParams = searchParams.get('postId');
   const totalAmountFromParams = searchParams.get('totalAmount');
   const router = useRouter();
-  const { setPostId, fetchPost, post } = usePostStore((state) => ({
+  const { fetchPost } = usePostStore((state) => ({
     setPostId: state.setPostId,
     fetchPost: state.fetchPost,
     post: state.post
@@ -128,10 +128,6 @@ export default function PaySuccess() {
   };
 
   if (pending) {
-    return <div>Loading...</div>;
-  }
-
-  if (!paymentData) {
     return <div>Loading...</div>;
   }
 
