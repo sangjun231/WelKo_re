@@ -35,26 +35,28 @@ export default function DetailImg() {
         <Image
           src={post.image}
           alt={post.title}
-          layout="fill" // 이미지가 부모 컨테이너에 맞춰지도록 설정
-          objectFit="cover" // 이미지를 커버 모드로 설정
+          layout="fill"
+          objectFit="cover"
           className="mb-[20px] h-[300px] w-[360px]"
         />
         <Likes />
       </div>
-      <div className="max-w-[320px] gap-8">
-        <div className="mt-6 flex flex-col items-start gap-6">
-          <ul className="flex max-w-[320px] flex-wrap items-start gap-2">
-            {tags.map((tag, index) => (
-              <li key={index} className="select-button gap-1 text-[13px]">
-                {tag}
-              </li>
-            ))}
-          </ul>
-          <h1 className="text-xl font-semibold text-grayscale-900">{post.title}</h1>
-          <p className="text-xl font-normal text-grayscale-500"> {formatDateRange(post.startDate, post.endDate)}</p>
-          <div className="flex text-lg">
-            <span className="font-semibold text-primary-300">${post.price}</span>
-            <span className="font-medium text-grayscale-600">/Person</span>
+      <div className="max-w-[320px]">
+        <div className="mt-6 flex flex-col items-start gap-8">
+          <div className="flex flex-col gap-4">
+            <ul className="flex max-w-[320px] flex-wrap items-start gap-2">
+              {tags.map((tag, index) => (
+                <li key={index} className="select-button gap-1 text-[13px]">
+                  {tag}
+                </li>
+              ))}
+            </ul>
+            <h1 className="text-xl font-semibold text-grayscale-900">{post.title}</h1>
+            <p className="text-xl text-grayscale-500"> {formatDateRange(post.startDate, post.endDate)}</p>
+            <div className="flex text-lg">
+              <span className="font-semibold text-primary-300">${post.price}</span>
+              <span className="font-medium text-grayscale-600">/Person</span>
+            </div>
           </div>
           <div className="flex text-sm font-semibold text-grayscale-900">
             <IconLocation alt="Location" width={24} height={24} />
@@ -64,7 +66,7 @@ export default function DetailImg() {
           </div>
         </div>
         <hr className="mb-6 mt-8 h-[1px] w-full bg-grayscale-100" />
-        <div className="text-md text-grayscale-700">
+        <div className="text-sm text-grayscale-700">
           <p>{post.content}</p>
         </div>
         <hr className="mb-6 mt-8 h-[1px] w-full bg-grayscale-100" />

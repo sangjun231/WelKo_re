@@ -8,7 +8,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import WriteBtn from '/public/icons/tabler-icon-pencil.svg';
 import DeleteBtn from '/public/icons/tabler-icon-trash.svg';
-import LikeBtn from '/public/icons/tabler-icon-heart.svg';
+import LikeBtn from '/public/icons/detail_icons/icon_like.svg';
 import IconHome from '/public/icons/navbar_icons/icon_home.svg';
 import { DeletePost } from '../../../postpage/[id]/_components/PostEdit';
 
@@ -88,7 +88,7 @@ const Likes = () => {
         )}
         <div>
           <button onClick={handleLike} className="icon-button">
-            {liked ? <LikeBtn size={24} color="red" fill="red" /> : <LikeBtn size={24} />}
+            {liked ? <LikeBtn width={24} height={24} color="red" fill="red" /> : <LikeBtn width={24} height={24} />}
           </button>
         </div>
         <Link href="/">
