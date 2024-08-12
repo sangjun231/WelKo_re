@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { TbBed, TbTicket, TbBus } from 'react-icons/tb';
-import { PiForkKnife } from 'react-icons/pi';
 import usePostStore from '@/zustand/postStore';
 import { useParams } from 'next/navigation';
+import IconRoom from '/public/icons/detail_icons/icon_room_charge.svg';
+import IconRestaurant from '/public/icons/detail_icons/icon_restaurant.svg';
+import IconTicket from '/public/icons/detail_icons/icon_ticket.svg';
+import IconTransportation from '/public/icons/detail_icons/icon_transportation.svg';
 
 export const CheckboxDetail = () => {
   const { id: postId } = useParams<{ id: string }>();
@@ -22,10 +24,10 @@ export const CheckboxDetail = () => {
   const selectedPrices = post.selectedPrices || [];
 
   const offers = [
-    { label: 'Room charge', icon: <TbBed size={24} /> },
-    { label: 'Restaurant', icon: <PiForkKnife size={24} /> },
-    { label: 'Ticket', icon: <TbTicket size={24} /> },
-    { label: 'Transportation', icon: <TbBus size={24} /> }
+    { label: 'Room charge', icon: <IconRoom alt="Room charge" width={24} height={24} /> },
+    { label: 'Restaurant', icon: <IconRestaurant alt="Restaurant" width={24} height={24} /> },
+    { label: 'Ticket', icon: <IconTicket alt="Ticket" width={24} height={24} /> },
+    { label: 'Transportation', icon: <IconTransportation alt="Transportation" width={24} height={24} /> }
   ];
 
   return (
@@ -41,7 +43,7 @@ export const CheckboxDetail = () => {
               </div>
             )
         )}
-        <hr className="bg-grayscale-100 mb-6 mt-8 h-[1px] w-full" />
+        <hr className="mb-6 mt-8 h-[1px] w-full bg-grayscale-100" />
       </div>
     </div>
   );
