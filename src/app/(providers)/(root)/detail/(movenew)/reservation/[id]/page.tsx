@@ -8,8 +8,8 @@ import DetailNavbar from '../../../[id]/_components/DetailNavbar';
 export default function ReservationPage() {
   return (
     <>
-      <div className="flex w-full justify-center">
-        <div className="mobile:max-w-80 web:max-w-[1264px] w-full">
+      <div className="web:max-w-[1440px] flex w-full max-w-[360px] justify-center">
+        <div className="web:max-w-[1200px] w-full max-w-[320px] p-8">
           <SelectPost />
           <SelectUser />
         </div>
