@@ -37,8 +37,6 @@ export default function ResultsContent() {
     let query = supabase.from('posts').select('*').order('created_at', { ascending: false });
 
     if (selectedCity) {
-      console.log('Selected City:', selectedCity);
-
       // schedule 테이블에서 선택된 도시와 일치하는 post_id 가져오기
       const { data: scheduleData, error: scheduleError } = await supabase
         .from('schedule')
@@ -52,22 +50,16 @@ export default function ResultsContent() {
         return;
       }
 
-      console.log('Schedule Data:', scheduleData);
-
       if (!scheduleData || scheduleData.length === 0) {
-        console.log(`No schedules found for city: ${selectedCity}`);
         setPosts([]); // No posts if no schedules found
         setLoading(false);
         return;
       }
 
       const postIds = scheduleData.map((schedule) => schedule.post_id);
-      console.log('Post IDs:', postIds);
 
       if (postIds.length > 0) {
         query = query.in('id', postIds);
-      } else {
-        console.log('No post IDs found, skipping query.in');
       }
     }
 

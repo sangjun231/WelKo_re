@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Search from '../Search/Search';
 import Link from 'next/link';
-import { handleLogout } from '@/utils/supabase/service';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { v4 as uuidv4 } from 'uuid';

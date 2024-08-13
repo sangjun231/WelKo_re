@@ -21,11 +21,11 @@ const useAuthStore = create<AuthStore>((set) => ({
     const supabase = createClient();
 
     if (!email) {
-      toast.error('이메일을 입력하세요!');
+      toast.error('Please Enter your email!');
       return;
     }
     if (!password) {
-      toast.error('비밀번호를 입력하세요!');
+      toast.error('Please enter your password!');
       return;
     }
 
@@ -37,12 +37,12 @@ const useAuthStore = create<AuthStore>((set) => ({
     if (signInError) {
       console.error('Sign-in error:', signInError);
       if (signInError.message.toLowerCase().includes('invalid login credentials')) {
-        toast.error('잘못된 로그인 자격 증명입니다.');
+        toast.error('Invalid login credentials');
       } else {
         set({ errorMessage: signInError.message });
       }
     } else {
-      toast.success('로그인 되었습니다.');
+      toast.success('Login successful');
       set({ user: data.user, isAuthenticated: true, errorMessage: '' });
       window.location.href = '/';
     }
@@ -55,9 +55,9 @@ const useAuthStore = create<AuthStore>((set) => ({
 
     if (signOutError) {
       console.error('Sign-out error:', signOutError);
-      toast.error('로그아웃 실패');
+      toast.error('Failed to log out');
     } else {
-      toast.success('로그아웃 되었습니다.');
+      toast.success('Logout successful');
       set({ user: null, isAuthenticated: false, errorMessage: '' });
       window.location.href = '/';
     }
