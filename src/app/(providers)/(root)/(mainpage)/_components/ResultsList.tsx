@@ -3,7 +3,6 @@ import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Search from '@/components/common/Search/Search';
 import Link from 'next/link';
-import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
 
 interface Post {
   id: string;
