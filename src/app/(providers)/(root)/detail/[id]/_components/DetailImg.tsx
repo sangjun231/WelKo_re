@@ -36,8 +36,9 @@ export default function DetailImg() {
           src={post.image}
           alt={post.title}
           fill
+          priority
           style={{ objectFit: 'cover' }}
-          className="relative mb-[20px] h-[300px] w-[360px]"
+          className="relative mb-[20px]"
         />
         <Likes />
       </div>
