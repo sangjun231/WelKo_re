@@ -144,8 +144,8 @@ const PostsList = () => {
                       <Image
                         src={post.image}
                         alt={post.title}
-                        layout="fill"
-                        objectFit="cover"
+                        fill
+                        style={{ objectFit: 'cover' }}
                         className="rounded-2xl"
                       />
                     </div>
