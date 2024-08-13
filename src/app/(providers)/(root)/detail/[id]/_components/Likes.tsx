@@ -1,3 +1,5 @@
+'use client';
+
 import BackButton from '@/components/common/Button/BackButton';
 import useAuthStore from '@/zustand/bearsStore';
 import { useLikeStore } from '@/zustand/likeStore';
