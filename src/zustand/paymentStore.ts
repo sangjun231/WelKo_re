@@ -100,7 +100,7 @@ export const requestPayment = async (
   const totalAmountInCents = totalAmount * 1000;
 
   // 사용자가 모바일인지 확인
-  const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
+  const isMobile = window.innerWidth <= 768 || /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   try {
     // 결제 요청 함수 호출
