@@ -43,18 +43,20 @@ const Likes = () => {
     <div className="absolute left-0 right-0 top-2 z-10 flex items-center justify-between px-4">
       <BackButton />
       <div className="flex space-x-4">
-        {post && post.user_id === user.id && (
-          <>
-            <Link href={`/postpage/${postId}`}>
-              <button className="icon-button">
-                <WriteBtn alt="WritePencil" width={24} height={24} />
+        {post &&
+          user &&
+          post.user_id === user.id && ( // user가 존재하는지 확인
+            <>
+              <Link href={`/postpage/${postId}`}>
+                <button className="icon-button">
+                  <WriteBtn alt="WritePencil" width={24} height={24} />
+                </button>
+              </Link>
+              <button className="icon-button" onClick={() => handleDelete(postId)}>
+                <DeleteBtn alt="DeleteBtn" width={24} height={24} />
               </button>
-            </Link>
-            <button className="icon-button" onClick={() => handleDelete(postId)}>
-              <DeleteBtn alt="DeleteBtn" width={24} height={24} />
-            </button>
-          </>
-        )}
+            </>
+          )}
         <div>
           <button onClick={handleLike} className="icon-button">
             {liked ? <LikeBtn width={24} height={24} color="red" fill="red" /> : <LikeBtn width={24} height={24} />}
