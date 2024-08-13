@@ -59,7 +59,11 @@ const Likes = () => {
           )}
         <div>
           <button onClick={handleLike} className="icon-button">
-            {liked ? <LikeBtn width={24} height={24} color="red" fill="red" /> : <LikeBtn width={24} height={24} />}
+            {liked ? (
+              <LikeBtn width={24} height={24} color="#141414" fill="#141414" />
+            ) : (
+              <LikeBtn width={24} height={24} />
+            )}
           </button>
         </div>
         <Link href="/">
