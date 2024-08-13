@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import usePostStore from '@/zustand/postStore';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { formatDate, formatDateRange } from '@/utils/detail/functions';
 import { useParams } from 'next/navigation';
@@ -10,10 +11,13 @@ import LikeBtn from '/public/icons/tabler-icon-post-heart.svg';
 import ExitBtn from '/public/icons/tabler-icon-x.svg';
 import { useLikeStore } from '@/zustand/likeStore';
 import useAuthStore from '@/zustand/bearsStore';
+import { useMyPageStore } from '@/zustand/mypageStore';
 
 export default function PaymentHistory() {
   const { id } = useParams(); // URL 경로에서 id 파라미터를 가져옴
+  const router = useRouter();
   const user = useAuthStore((state) => state.user);
+  const setSelectedComponent = useMyPageStore((state) => state.setSelectedComponent);
   const { fetchPost, post } = usePostStore((state) => ({
     fetchPost: state.fetchPost,
     post: state.post
@@ -36,6 +40,11 @@ export default function PaymentHistory() {
     if (post?.id && user?.id) {
       toggleLike(post.id, user.id);
     }
+  };
+
+  const handleExitClick = () => {
+    setSelectedComponent('Reservation');
+    router.push(`/${user?.id}/mypage`);
   };
 
   useEffect(() => {
@@ -69,20 +78,12 @@ export default function PaymentHistory() {
     return <div>No payment data found.</div>;
   }
 
-  if (pending) {
-    return <div>Loading...</div>;
-  }
-
-  if (!paymentData) {
-    return <div>No payment data found.</div>;
-  }
-
   const postPrice = post?.price ?? 0; // post.price가 undefined일 경우 0을 사용
   const numberOfPeople = postPrice > 0 ? paymentData.total_price / postPrice : 'N/A';
 
   return (
     <div className="mt-2 flex max-w-[320px] flex-col">
-      <button className="icon-button my-2">
+      <button className="icon-button my-2" onClick={handleExitClick}>
         <ExitBtn width={24} height={24} />
       </button>
       {post && (
