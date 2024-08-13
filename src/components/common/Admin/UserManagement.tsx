@@ -178,8 +178,8 @@ const UserManagement = () => {
                       <Image
                         src={user.avatar}
                         alt="avatar"
-                        layout="fill"
-                        objectFit="cover"
+                        fill
+                        style={{ objectFit: 'cover' }}
                         className="rounded-full"
                         onError={({ currentTarget }) => {
                           currentTarget.src = '/path/to/placeholder-image.png';

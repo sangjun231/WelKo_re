@@ -49,7 +49,13 @@ const BestPostsList = () => {
             <Link href={`/detail/${post.id}`} className="flex h-full flex-col">
               {post.image ? (
                 <div className="relative mb-2 overflow-hidden rounded-2xl" style={{ width: '100%', height: '150px' }}>
-                  <Image src={post.image} alt={post.title} layout="fill" objectFit="cover" className="rounded-2xl" />
+                  <Image
+                    src={post.image}
+                    alt={post.title}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    className="rounded-2xl"
+                  />
                 </div>
               ) : (
                 <div className="mb-2 flex h-[236px] w-full items-center justify-center bg-gray-200">이미지 없음</div>
