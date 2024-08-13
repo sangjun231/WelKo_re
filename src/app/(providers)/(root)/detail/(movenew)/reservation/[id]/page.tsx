@@ -9,7 +9,7 @@ export default function ReservationPage() {
   return (
     <>
       <div className="flex w-full justify-center">
-        <div className="w-full max-w-[320px]">
+        <div className="mobile:max-w-80 web:max-w-[1264px] w-full">
           <SelectPost />
           <SelectUser />
         </div>

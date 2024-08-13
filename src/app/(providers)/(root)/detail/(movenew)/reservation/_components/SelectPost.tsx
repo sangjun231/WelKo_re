@@ -43,9 +43,9 @@ const SelectPost = () => {
   if (!post) return <div className="flex items-center justify-center">Loading...</div>;
 
   return (
-    <div className="mt-2 flex flex-col items-center gap-2">
+    <div className="mobile:mt-2 mobile:flex mobile:flex-col mobile:items-center mobile:gap-2 web:mt-[20px] web:flex web:flex-row web:justify-between">
       <div className="mb-4 flex w-full items-center justify-between py-4">
-        <BackButton />
+        <BackButton className="web:hidden" />
         <h2 className="flex-grow text-center text-lg font-semibold">Pay</h2>
         <div className="w-8"></div>
       </div>
