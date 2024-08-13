@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { API_POST, API_MYPAGE_REVIEWS, API_MYPAGE_PAYMENTS } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
 import { formatDateRange } from '@/utils/detail/functions';
+import usePostStore from '@/zustand/postStore';
 
 export default function ReservationList() {
   const params = useParams();
@@ -16,6 +17,12 @@ export default function ReservationList() {
   const userId = Array.isArray(params.id) ? params.id[0] : params.id;
 
   const [reviews, setReviews] = useState<Tables<'reviews'>[]>([]);
+
+  const { fetchPost, setPostId } = usePostStore((state) => ({
+    post: state.post,
+    fetchPost: state.fetchPost,
+    setPostId: state.setPostId
+  }));
 
   const getPostsData = async () => {
     try {
@@ -111,6 +118,29 @@ export default function ReservationList() {
       postImage: post.image || ''
     }).toString();
     router.push(`/${userId}/${postAuthorId}/chatpage?${query}`);
+  };
+
+  // 예약 변경 로직
+  const handleChangeTour = async (paymentId: string, postId: string) => {
+    const confirmed = window.confirm('정말 예약을 변경하시겠습니까?');
+    if (confirmed) {
+      try {
+        const response = await axios.post(`/api/detail/payment/${paymentId}`, {
+          reason: 'User requested cancel',
+          requester: 'CUSTOMER'
+        });
+        alert('전액 환불되셨습니다!');
+
+        if (response.data.data.pay_state === 'cancel') {
+          setPostId(postId);
+          await fetchPost(postId); // 해당 게시물을 가져오는 로직
+          router.push(`/detail/reservation/${postId}`);
+        }
+      } catch (error) {
+        console.error('Error requesting cancel:', error);
+        alert('하루가 지나서 환불이 불가능합니다.');
+      }
+    }
   };
 
   const handleCancelRequest = async (paymentId: string) => {
@@ -210,9 +240,13 @@ export default function ReservationList() {
             {status === 'Upcoming Tour' ? (
               <div>
                 <div className="mb-[12px] flex space-x-[8px]">
-                  <button className="flex-1 rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700">
+                  <button
+                    className="flex-1 rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
+                    onClick={() => handleChangeTour(payment?.id ?? '', post?.id ?? '')} // paymentId와 postId 전달
+                  >
                     Change Tour
                   </button>
+
                   <button
                     className="flex-1 rounded-lg border bg-primary-300 p-2 text-[14px] font-semibold text-white"
                     onClick={() => {

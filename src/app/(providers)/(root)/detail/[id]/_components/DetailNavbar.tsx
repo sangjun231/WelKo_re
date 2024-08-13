@@ -36,7 +36,7 @@ const DetailNavbar = () => {
         };
         try {
           // 실제로 데이터 저장 요청에 실패시키기 위해 존재하지 않는 URL로 요청을 보냄
-          await axios.post('/api/non-existent-url', paymentData);
+          // await axios.post('/api/non-existent-url', paymentData);
 
           // 결제 내역을 서버에 저장
           await axios.post('/api/detail/payment', paymentData);
@@ -99,7 +99,7 @@ const DetailNavbar = () => {
             </div>
             <button
               onClick={handlePaymentClick}
-              className="w-40 flex-1 rounded-xl bg-primary-300 py-2 text-base font-semibold text-white"
+              className="w-40 flex-1 rounded-xl bg-primary-300 px-5 py-3 text-base font-medium text-white"
             >
               Confirm and Pay
             </button>
