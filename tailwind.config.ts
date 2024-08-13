@@ -10,7 +10,7 @@ const config: Config = {
     extend: {
       screens: {
         mobile: '480px',
-        web: '481px'
+        web: '768px'
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
