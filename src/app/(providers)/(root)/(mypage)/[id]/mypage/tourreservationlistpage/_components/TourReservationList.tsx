@@ -97,31 +97,31 @@ const TourReservationList = ({ userId, postId }: { userId: string; postId: strin
       <div>
         {data.map((reservation) => (
           <div className="my-[20px] border-b pb-[20px]" key={reservation.id}>
-            <div className="mb-[16px] flex text-[14px]">
+            <div className="mb-[16px] flex flex-col gap-[8px] text-[14px]">
               <span className="min-w-[80px] text-[12px] text-grayscale-500">Number</span>
               <span className="flex-grow text-left">{reservation.id}</span>
             </div>
-            <div className="mb-[16px] flex text-[14px]">
+            <div className="mb-[16px] flex flex-col gap-[8px] text-[14px]">
               <span className="min-w-[80px] text-[12px] text-grayscale-500">Nickname</span>
               <span className="flex-grow text-left">{reservation.users.name}</span>
             </div>
-            <div className="mb-[16px] flex text-[14px]">
+            <div className="mb-[16px] flex flex-col gap-[8px] text-[14px]">
               <span className="min-w-[80px] text-[12px] text-grayscale-500">Email</span>
               <span className="flex-grow text-left">{reservation.users.email}</span>
             </div>
-            <div className="mb-[16px] flex text-[14px]">
+            <div className="mb-[16px] flex flex-col gap-[8px] text-[14px]">
               <span className="min-w-[80px] text-[12px] text-grayscale-500">Date</span>
               <span className="flex-grow text-left">{new Date(reservation.created_at).toLocaleString()}</span>
             </div>
-            <div className="mb-[16px] flex text-[14px]">
+            <div className="mb-[16px] flex flex-col gap-[8px] text-[14px]">
               <span className="min-w-[80px] text-[12px] text-grayscale-500">Tourist</span>
               <span className="flex-grow text-left">{reservation.people}</span>
             </div>
-            <div className="mb-[16px] flex text-[14px]">
+            <div className="mb-[16px] flex flex-col gap-[8px] text-[14px]">
               <span className="min-w-[80px] text-[12px] text-grayscale-500">Amount</span>
               <span className="flex-grow text-left">{formatPrice(reservation.total_price)}</span>
             </div>
-            <div className="mb-[16px] flex text-[14px]">
+            <div className="mb-[16px] flex flex-col gap-[8px] text-[14px]">
               <span className="min-w-[80px] text-[12px] text-grayscale-500">State</span>
               <span className="flex-grow text-left">{reservation.pay_state}</span>
             </div>
