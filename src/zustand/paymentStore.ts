@@ -38,12 +38,13 @@ export async function initiatePayment(
   user: any,
   totalAmountInCents: number,
   isMobile: boolean,
-  redirectUrl: string
+  redirectUrl?: string // redirectUrl을 선택적 매개변수로 변경
 ): Promise<PaymentResponse | undefined> {
   console.log('redirectUrl in initiatePayment:', redirectUrl);
 
   try {
-    const response = await PortOne.requestPayment({
+    // 기본 결제 옵션 설정
+    const paymentOptions: any = {
       storeId: process.env.NEXT_PUBLIC_POSTONE_STORE_ID || '',
       channelKey: process.env.NEXT_PUBLIC_POSTONE_KG_CHANNEL_KEY || '',
       paymentId: `payment${crypto.randomUUID().split('-')[0]}`,
@@ -56,29 +57,40 @@ export async function initiatePayment(
         phoneNumber: user?.phone || '010-0000-0000',
         email: user?.email || 'test@portone.io'
       },
-      bypass: isMobile
-        ? {
-            inicis_v2: {
-              P_CARD_OPTION: 'selcode=14',
-              P_MNAME: '포트원',
-              P_RESERVED: ['below1000=Y', 'noeasypay=Y', 'global_visa3d=Y', 'apprun_check=Y']
-            }
-          }
-        : {
-            inicis_v2: {
-              logo_url: 'https://portone.io/assets/portone.87061e94.avif',
-              logo_2nd: 'https://admin.portone.io/assets/img/auth/lock.png',
-              parentemail: 'parentemail',
-              Ini_SSGPAY_MDN: '01012341234',
-              acceptmethod: ['SKIN(#BA68C8)', 'below1000', 'noeasypay'],
-              P_CARD_OPTION: 'selcode=14',
-              P_MNAME: '포트원',
-              P_RESERVED: ['below1000=Y', 'noeasypay=Y']
-            }
-          },
-      locale: 'EN_US',
-      redirectUrl // 수정된 redirectUrl 사용
-    });
+      locale: 'EN_US'
+    };
+
+    // 모바일 환경인 경우
+    if (isMobile) {
+      paymentOptions.bypass = {
+        inicis_v2: {
+          P_CARD_OPTION: 'selcode=14',
+          P_MNAME: '포트원',
+          P_RESERVED: ['below1000=Y', 'noeasypay=Y', 'global_visa3d=Y', 'apprun_check=Y']
+        }
+      };
+      if (redirectUrl) {
+        paymentOptions.redirectUrl = redirectUrl;
+      }
+    }
+    // 웹 환경인 경우
+    else {
+      paymentOptions.bypass = {
+        inicis_v2: {
+          logo_url: 'https://portone.io/assets/portone.87061e94.avif',
+          logo_2nd: 'https://admin.portone.io/assets/img/auth/lock.png',
+          parentemail: 'parentemail',
+          Ini_SSGPAY_MDN: '01012341234',
+          acceptmethod: ['SKIN(#BA68C8)', 'below1000', 'noeasypay'],
+          P_CARD_OPTION: 'selcode=14',
+          P_MNAME: '포트원',
+          P_RESERVED: ['below1000=Y', 'noeasypay=Y']
+        }
+      };
+    }
+
+    // 결제 요청 실행
+    const response = await PortOne.requestPayment(paymentOptions);
 
     return response;
   } catch (error) {
