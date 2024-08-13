@@ -27,7 +27,7 @@ const MyPage = () => {
   };
 
   const buttonClass = (component: string) =>
-    `flex-1 text-center ${selectedComponent === component ? 'text-primary-300 border-primary-300' : 'text-grayscale-500'}`;
+    `flex-1 text-center ${selectedComponent === component ? 'text-primary-300 border-primary-300 font-semibold' : 'text-grayscale-500'}`;
 
   return (
     <div className="mx-[20px] flex flex-col">
@@ -50,7 +50,7 @@ const MyPage = () => {
         </button>
       </div>
       <ProfileView userId={id} />
-      <div className="my-[20px] flex justify-around font-medium">
+      <div className="my-[20px] flex justify-around text-[13px] font-medium">
         <button className={`border-b ${buttonClass('Wishlist')}`} onClick={() => setSelectedComponent('Wishlist')}>
           Wishlist
         </button>

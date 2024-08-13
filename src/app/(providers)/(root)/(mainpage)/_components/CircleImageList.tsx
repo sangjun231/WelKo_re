@@ -2,10 +2,10 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 const locations = [
-  { name: 'Busan', src: '/img/busan.png' },
-  { name: 'Seoul', src: '/img/seoul.png' },
-  { name: 'Chuncheon', src: '/img/chuncheon.png' },
-  { name: 'Jeju', src: '/img/jeju.png' }
+  { name: 'Busan', src: '/img/Busan.jpeg' },
+  { name: 'Seoul', src: '/img/Seoul.jpeg' },
+  { name: 'Chuncheon', src: '/img/Chuncheon.jpeg' },
+  { name: 'Jeju', src: '/img/Jeju.jpeg' }
 ];
 
 export default function CircleImageList() {
@@ -18,7 +18,7 @@ export default function CircleImageList() {
   };
 
   return (
-    <div className="mt-[16px] flex justify-around bg-white p-4">
+    <div className="my-[40px] flex justify-around bg-white">
       {locations.map((location) => (
         <div
           key={location.name}

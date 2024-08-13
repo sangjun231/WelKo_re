@@ -128,11 +128,11 @@ const PostsList = () => {
   }, []);
 
   return (
-    <div className="relative p-4">
-      <h2 className="mb-2 text-xl font-bold">New Tour</h2>
+    <div className="relative">
+      <h2 className="mb-5 text-xl font-bold">New Tour</h2>
       <InfiniteScroll loading={loading} hasMore={hasMore} onLoadMore={loadMorePosts}>
         <div className="relative overflow-hidden" ref={scrollContainerRef}>
-          <div className="flex space-x-4">
+          <div className="flex space-x-1">
             {posts.map((post, index) => (
               <div key={`${post.id}-${index}`} className="w-64 flex-none rounded-md">
                 <Link href={`/detail/${post.id}`} className="flex h-full flex-col">
@@ -144,8 +144,8 @@ const PostsList = () => {
                       <Image
                         src={post.image}
                         alt={post.title}
-                        layout="fill"
-                        objectFit="cover"
+                        fill
+                        style={{ objectFit: 'cover' }}
                         className="rounded-2xl"
                       />
                     </div>

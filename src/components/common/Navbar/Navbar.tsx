@@ -9,12 +9,14 @@ import IconReservation from '/public/icons/navbar_icons/icon_reservation.svg';
 import IconPlus from '/public/icons/navbar_icons/icon_plus.svg';
 import IconMessage from '/public/icons/navbar_icons/icon_message.svg';
 import IconMypage from '/public/icons/navbar_icons/icon_mypage.svg';
+import { v4 as uuidv4 } from 'uuid';
 
 function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
   const user = useAuthStore((state) => state.user);
   const setSelectedComponent = useMyPageStore((state) => state.setSelectedComponent);
+  const uuid = uuidv4();
 
   const handleReservationsClick = () => {
     if (!user) {
@@ -32,7 +34,7 @@ function Navbar() {
       router.push('/login');
       return;
     }
-    router.push(`/postpage`);
+    router.push(`/postpage/${uuid}`);
   };
 
   const handleMessagesClick = () => {
@@ -55,8 +57,12 @@ function Navbar() {
   };
 
   // 특정 경로에서 Navbar를 숨기기
-  const excludedRoutes = ['/login', `/postpage`, `/chatpage`];
+  const excludedRoutes = ['/login', `/postpage/${uuid}`, `/chatpage`];
   if (excludedRoutes.includes(pathname) || pathname.startsWith('/detail')) {
+    return null;
+  }
+  const chatpageRegex = /\/[a-f0-9-]+\/[a-f0-9-]+\/chatpage/;
+  if (chatpageRegex.test(pathname)) {
     return null;
   }
 
