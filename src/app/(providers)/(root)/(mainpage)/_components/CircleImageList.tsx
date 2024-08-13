@@ -18,7 +18,7 @@ export default function CircleImageList() {
   };
 
   return (
-    <div className="mt-[16px] flex justify-around bg-white p-4">
+    <div className="mb-[40px] mt-[40px] flex justify-around bg-white">
       {locations.map((location) => (
         <div
           key={location.name}

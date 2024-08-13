@@ -26,7 +26,7 @@ export default function TravelPlanner() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null); //Date | null
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   const handleTagClick = (tag: string) => {
     setSelectedTags((prevTags) => (prevTags.includes(tag) ? prevTags.filter((t) => t !== tag) : [...prevTags, tag]));
@@ -61,7 +61,6 @@ export default function TravelPlanner() {
       query.append('endDate', endDate.toISOString());
     }
 
-    // Use router.push to navigate to the results page with the query parameters
     router.push(`/results?${query.toString()}`);
   };
 
@@ -139,24 +138,6 @@ export default function TravelPlanner() {
           />
         </AccordionStep>
       </div>
-      {/* Fixed button at the bottom */}
-      {/* <div className="fixed bottom-0 left-0 right-0 p-4 bg-white">
-        {activeStep === 3 ? (
-          <button
-            onClick={handleDateSelection}
-            className="w-full px-4 py-2 bg-black text-white rounded-md"
-          >
-            Search
-          </button>
-        ) : (
-          <button
-            onClick={goToNextStep}
-            className="w-full px-4 py-2 bg-black text-white rounded-md"
-          >
-            Next
-          </button>
-        )}
-      </div> */}
     </div>
   );
 }

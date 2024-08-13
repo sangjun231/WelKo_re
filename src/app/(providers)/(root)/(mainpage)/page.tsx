@@ -4,6 +4,7 @@ import Header from '@/components/common/Header/Header';
 import PostsList from './_components/PostsList';
 import Image from 'next/image';
 import CircleImageList from './_components/CircleImageList';
+import BestPostsList from './_components/BestPostsList';
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
         <Header />
         <CircleImageList />
         <PostsList />
+        <BestPostsList />
       </div>
     </div>
   );
