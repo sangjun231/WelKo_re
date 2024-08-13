@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <div className="relative">
       <Image
-        src="/img/img.jpg"
+        src="/img/img.jpeg"
         alt="Description of the image"
         width={800}
         height={600}
