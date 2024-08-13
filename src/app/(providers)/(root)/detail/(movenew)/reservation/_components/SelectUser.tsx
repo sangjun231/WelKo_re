@@ -40,6 +40,7 @@ const SelectUser = () => {
           type="number"
           className="my-2 w-full rounded-xl bg-grayscale-50 px-4 py-3"
           min="1"
+          placeholder="ex) 3"
           value={numPersons === '' ? '' : numPersons}
           onChange={handleNumPersonsChange}
         />
