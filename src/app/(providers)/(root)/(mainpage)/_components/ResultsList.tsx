@@ -1,6 +1,8 @@
-import Link from 'next/link';
+'use client';
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Search from '@/components/common/Search/Search';
+import Link from 'next/link';
 
 interface Post {
   id: string;
@@ -27,13 +29,44 @@ const formatPrice = (price: number) => {
   }).format(price);
 };
 
+const formatDate = (date: Date | null): string => {
+  if (!date) return '';
+  const year = date.getFullYear().toString().slice(-2);
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}.${month}.${day}`;
+};
+
 export default function ResultsList({ posts, loading, error }: ResultsListProps) {
+  const searchParams = useSearchParams();
+  const tags = searchParams.get('tags') ? JSON.parse(searchParams.get('tags') as string) : [];
+  const city = searchParams.get('city') || '';
+  const startDate = searchParams.get('startDate') ? new Date(searchParams.get('startDate') as string) : null;
+  const endDate = searchParams.get('endDate') ? new Date(searchParams.get('endDate') as string) : null;
+
+  const formatTags = () => {
+    if (tags.length === 0) return 'Any Tag';
+    return tags.length > 1 ? `${tags[0]} + ${tags.length - 1}` : tags[0];
+  };
+
+  const selection = [
+    formatTags(),
+    `${city || 'Any City'} ・ ${startDate && endDate ? `${formatDate(startDate)} ~ ${formatDate(endDate)}` : 'Any Date'}`
+  ].join('\n');
+
   return (
     <div className="p-4">
-      <Search />
+      <Search initialQuery={selection} style={{ paddingTop: '8px', lineHeight: '20px', fontWeight: 500 }} />
       {loading && <div>Loading...</div>}
       {error && <div>{error}</div>}
-      {!loading && posts.length === 0 && <div>No posts found</div>}
+      {!loading && posts.length === 0 && (
+        <div className="flex min-h-[400px] flex-col items-center justify-center gap-2 text-center">
+          <Image src="/icons/tabler-icon-list-search.svg" alt="search list image" width={44} height={44} />
+          <div className="text-sm font-semibold">No posts found</div>
+          <div className="w-[213px] text-xs font-normal">Try to search by changing the date and region</div>
+        </div>
+      )}
+
       <ul className="mt-5">
         {posts.map((post, index) => (
           <li key={`${post.id}-${index}`} className="flex rounded-md p-2">
