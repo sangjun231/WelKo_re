@@ -76,6 +76,7 @@ const SelectPost = () => {
             </div>
           </div>
         </div>
+        <div className="web:block mx-4 hidden"></div>
         {/* 모바일에서 숨기고, 웹에서만 보이는 Cancellation Policy */}
         <div className="web:block hidden flex-1">
           <h3 className="text-xl font-medium text-text-color">Cancellation Policy</h3>
