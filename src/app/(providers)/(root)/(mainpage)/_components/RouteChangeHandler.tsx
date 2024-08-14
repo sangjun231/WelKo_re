@@ -10,7 +10,14 @@ export default function RouteChangeHandler() {
   useEffect(() => {
     const handleRouteChange = () => {
       if (typeof window !== 'undefined' && !pathname.startsWith('/postpage/')) {
-        const keysToRemove = ['postId', 'startDate', 'endDate', 'day1', 'day2', 'day3', 'userId'];
+        const keysToRemove = ['postId', 'startDate', 'endDate', 'userId'];
+
+        for (let i = 0; i < sessionStorage.length; i++) {
+          const key = sessionStorage.key(i);
+          if (key && key.startsWith('Day')) {
+            keysToRemove.push(key);
+          }
+        }
         keysToRemove.forEach((key) => {
           sessionStorage.removeItem(key);
         });

@@ -37,21 +37,24 @@ const DayPlaces: React.FC<PlaceProps> = ({
   setSequence
 }) => {
   const [days, setDays] = useState<string[]>([]);
+  const [editDay, setEditDay] = useState('');
+  const startDate = sessionStorage.getItem('startDate');
+  const endDate = sessionStorage.getItem('endDate');
+  const postId = sessionStorage.getItem('postId');
+  const userId = sessionStorage.getItem('userId');
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    const startDateString = sessionStorage.getItem('startDate');
-    const endDateString = sessionStorage.getItem('endDate');
 
-    if (startDateString && endDateString) {
-      const startDate = new Date(startDateString);
-      const endDate = new Date(endDateString);
+    if (startDate && endDate) {
+      const startDateString = new Date(startDate);
+      const endDateString = new Date(endDate);
       const dayArray: string[] = [];
 
-      let currentDate = new Date(startDate);
+      let currentDate = new Date(startDateString);
       let dayCount = 1;
 
-      while (currentDate <= endDate) {
+      while (currentDate <= endDateString) {
         dayArray.push(`Day ${dayCount}`);
         currentDate.setDate(currentDate.getDate() + 1);
         dayCount++;
@@ -65,10 +68,6 @@ const DayPlaces: React.FC<PlaceProps> = ({
   const handleDaySelect = (day: string) => {
     setSelectedDay(day);
   };
-  const startDate = sessionStorage.getItem('startDate');
-  const endDate = sessionStorage.getItem('endDate');
-  const postId = sessionStorage.getItem('postId');
-  const userId = sessionStorage.getItem('userId');
 
   //지도 관련
   const clientId = process.env.NEXT_PUBLIC_NCP_CLIENT_ID!;
@@ -95,23 +94,27 @@ const DayPlaces: React.FC<PlaceProps> = ({
         const supabase = createClient();
         const { data: placesData, error } = await supabase
           .from('schedule')
-          .select('*')
+          .select('places, lat, long, area')
           .eq('post_id', postId)
-          .eq('day', selectedDay);
+          .eq('day', selectedDay)
+          .single();
         console.log(placesData);
-        if (placesData && placesData.length > 0) {
-          // 첫 번째 결과만 사용 (하나의 day에 대한 데이터만 있을 것으로 가정)
-          const placeData = placesData[0];
-          // 사용하기 쉬운 형태로 변환
-          // const combinedPlaces = placeData.map((place: any, index: number) => ({
-          //   places:
-          //   lat: placeData.lat[index],
-          //   long: placeData.long[index]
-          // }));
+        //if (placesData && placesData.length > 0) {
+        // 첫 번째 결과만 사용 (하나의 day에 대한 데이터만 있을 것으로 가정)
+        // const placeData = placesData[0];
+        // 사용하기 쉬운 형태로 변환
+        // const combinedPlaces = placeData.map((place: any, index: number) => ({
+        //   places:
+        //   lat: placeData.lat[index],
+        //   long: placeData.long[index]
+        // }));
 
-          //setSelectedPlaces(combinedPlaces);
-        } else {
-          console.log('No data found for the given postId and day');
+        //setSelectedPlaces(combinedPlaces);
+        // } else {
+        //   console.log('No data found for the given postId and day');
+        // }
+        if (error) {
+          console.error('Error fetching data:', error);
         }
       };
       fetchPlaces();

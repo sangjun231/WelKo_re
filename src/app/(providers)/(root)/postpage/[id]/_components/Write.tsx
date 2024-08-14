@@ -180,9 +180,8 @@ const Write = ({ goToStep2, region }: { goToStep2: () => void; region: string })
   const handlePlaceSave = async (postId: string) => {
     for (let i = 0; i < sessionStorage.length; i++) {
       const key = sessionStorage.key(i);
-      if (key?.startsWith('day')) {
+      if (key?.startsWith('Day ')) {
         const value = JSON.parse(sessionStorage.getItem(key)!);
-        console.log(`Processing ${key}:`, value);
 
         if (Array.isArray(value) && value.length > 0) {
           const placeData = {
