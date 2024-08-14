@@ -52,26 +52,26 @@ const Likes = ({ isWeb }: WebProps) => {
             <>
               <Link href={`/postpage/${postId}`}>
                 <button className="icon-button">
-                  <WriteBtn alt="WritePencil" width={isWeb ? 44 : 24} height={isWeb ? 44 : 24} />
+                  <WriteBtn alt="WritePencil" width={isWeb ? 32 : 24} height={isWeb ? 32 : 24} />
                 </button>
               </Link>
               <button className="icon-button" onClick={() => handleDelete(postId)}>
-                <DeleteBtn alt="DeleteBtn" width={isWeb ? 44 : 24} height={isWeb ? 44 : 24} />
+                <DeleteBtn alt="DeleteBtn" width={isWeb ? 32 : 24} height={isWeb ? 32 : 24} />
               </button>
             </>
           )}
         <div>
           <button onClick={handleLike} className="icon-button">
             {liked ? (
-              <LikeBtn width={isWeb ? 44 : 24} height={isWeb ? 44 : 24} color="#141414" fill="#141414" />
+              <LikeBtn width={isWeb ? 32 : 24} height={isWeb ? 32 : 24} color="#141414" fill="#141414" />
             ) : (
-              <LikeBtn width={isWeb ? 44 : 24} height={isWeb ? 44 : 24} />
+              <LikeBtn width={isWeb ? 32 : 24} height={isWeb ? 32 : 24} />
             )}
           </button>
         </div>
         <Link href="/">
           <button className="icon-button web:hidden">
-            <IconHome alt="Home" width={isWeb ? 44 : 24} height={isWeb ? 44 : 24} />
+            <IconHome alt="Home" width={24} height={24} />
           </button>
         </Link>
       </div>

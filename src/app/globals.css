@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .icon-button {
-  @apply web:h-20 web:w-20 flex h-8 w-8 items-center justify-center rounded-full border border-grayscale-50 bg-grayscale-50;
+  @apply web:h-14 web:w-14 flex h-8 w-8 items-center justify-center rounded-full border border-grayscale-50 bg-grayscale-50;
 }
 
 .select-button {
