@@ -12,10 +12,9 @@ import DeleteBtn from '/public/icons/tabler-icon-trash.svg';
 import LikeBtn from '/public/icons/detail_icons/icon_like.svg';
 import IconHome from '/public/icons/navbar_icons/icon_home.svg';
 import { DeletePost } from '../../../postpage/[id]/_components/PostEdit';
-import { useWebStore } from '@/zustand/webStateStore';
+import { WebProps } from '@/types/webstate';
 
-const Likes = () => {
-  const { isWeb, setIsWeb } = useWebStore();
+const Likes = ({ isWeb }: WebProps) => {
   const { id: postId } = useParams<{ id: string }>();
   const user = useAuthStore((state) => state.user);
   const { post } = usePostStore((state) => ({
@@ -42,20 +41,6 @@ const Likes = () => {
   };
 
   const handleDelete = DeletePost();
-
-  // 화면 크기에 따라 isWeb 상태 업데이트
-  useEffect(() => {
-    const handleResize = () => {
-      setIsWeb(window.innerWidth >= 768);
-    };
-
-    handleResize(); // 초기 로드 시 한 번 실행
-    window.addEventListener('resize', handleResize); // 화면 크기 변경 시마다 실행
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [setIsWeb]);
 
   return (
     <div className="absolute left-0 right-0 top-2 z-10 flex items-center justify-between px-4">
