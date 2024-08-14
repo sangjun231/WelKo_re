@@ -67,7 +67,7 @@ function Navbar() {
   }
 
   return (
-    <nav className="sticky bottom-0 flex border-t border-grayscale-100 bg-white text-grayscale-500">
+    <nav className="web:hidden sticky bottom-0 flex border-t border-grayscale-100 bg-white text-grayscale-500">
       <div className="container mx-auto flex items-center justify-between p-[15px]">
         <Link href="/">
           <div className="flex flex-col items-center gap-1 hover:text-primary-300">
