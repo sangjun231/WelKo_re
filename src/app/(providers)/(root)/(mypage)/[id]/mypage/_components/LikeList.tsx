@@ -68,28 +68,27 @@ export default function LikeList() {
   }
 
   return (
-    <div>
+    <div className="web:grid-cols-4 web:gap-[40px] grid">
       {data.map((post, index) => (
         <div key={`${post.id}-${index}`} className="relative mb-[16px]">
-          <div className="flex">
-            <div className="relative">
+          <div className="web:flex-col web:gap-[16px] flex">
+            <div className="web:max-w-[286px] relative">
               <Link href={`/detail/${post.id}`}>
                 <Image
-                  className="rounded-[8px]"
+                  className="web:rounded-[16px] web:w-[286px] web:h-[286px] h-[100px] w-[80px] rounded-[8px]"
                   src={post.image ?? '/icons/upload.png'}
                   alt={post.title ?? 'Default title'}
                   width={80}
                   height={100}
-                  style={{ width: '80px', height: '100px' }}
                 />
               </Link>
               <Like postId={post.id} userId={user.id} />
             </div>
             <Link href={`/detail/${post.id}`}>
-              <div className="ml-[8px] space-y-[4px]">
-                <p className="line-clamp-1 text-[14px] font-semibold text-primary-900">{post.title}</p>
-                <p className="text-[14px] text-grayscale-500">{formatDateRange(post.startDate, post.endDate)}</p>
-                <p className="text-[13px] font-medium text-grayscale-700">
+              <div className="mobile:ml-[8px] web:gap-[8px] flex flex-col gap-[4px]">
+                <p className="line-clamp-1 web:text-[18px] text-[14px] font-semibold text-primary-900">{post.title}</p>
+                <p className="web:text-[16px] text-[14px] text-grayscale-500">{formatDateRange(post.startDate, post.endDate)}</p>
+                <p className="web:text-[16px] text-[13px] font-medium text-grayscale-700">
                   <span className="font-semibold text-primary-300">{formatPrice(post.price)}</span>
                   /Person
                 </p>
