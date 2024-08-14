@@ -120,7 +120,6 @@ export default function ReservationList() {
     router.push(`/${userId}/${postAuthorId}/chatpage?${query}`);
   };
 
-  // 예약 변경 로직
   const handleChangeTour = async (paymentId: string, postId: string) => {
     const confirmed = window.confirm('정말 예약을 변경하시겠습니까?');
     if (confirmed) {
@@ -133,7 +132,7 @@ export default function ReservationList() {
 
         if (response.data.data.pay_state === 'cancel') {
           setPostId(postId);
-          await fetchPost(postId); // 해당 게시물을 가져오는 로직
+          await fetchPost(postId);
           router.push(`/detail/reservation/${postId}`);
         }
       } catch (error) {
@@ -242,7 +241,7 @@ export default function ReservationList() {
                 <div className="mb-[12px] flex space-x-[8px]">
                   <button
                     className="flex-1 rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
-                    onClick={() => handleChangeTour(payment?.id ?? '', post?.id ?? '')} // paymentId와 postId 전달
+                    onClick={() => handleChangeTour(payment?.id ?? '', post?.id ?? '')}
                   >
                     Change Tour
                   </button>

@@ -5,13 +5,13 @@ import { useRouter, usePathname } from 'next/navigation';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
-import { translateAddress } from '@/utils/post/postData'; // 번역 함수 import
+import { translateAddress } from '@/utils/post/postData';
 
 const RegionForm = () => {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [position, setPosition] = useState<{ latitude: number; longitude: number } | null>(null);
   const [region, setRegion] = useState<string | null>(null);
-  const [translatedRegion, setTranslatedRegion] = useState<string | null>(null); // 번역된 주소 상태 추가
+  const [translatedRegion, setTranslatedRegion] = useState<string | null>(null);
   const router = useRouter();
   const pathname = usePathname();
   const userId = pathname.split('/')[1];
@@ -96,7 +96,7 @@ const RegionForm = () => {
   const handleSave = async () => {
     if (region && userId) {
       await axios.put(API_MYPAGE_PROFILE(userId), {
-        region: translatedRegion || region // 번역된 주소를 저장
+        region: translatedRegion || region
       });
       router.replace(`/${userId}/profilepage`);
     }
