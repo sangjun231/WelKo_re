@@ -31,14 +31,14 @@ export default function DetailImg() {
 
   return (
     <div className="flex w-full flex-col items-center">
-      <div className="relative h-[300px] w-full">
+      <div className="web:h-[850px] relative min-h-[300px] w-full">
         <Image
           src={post.image}
           alt={post.title}
-          fill
           priority
-          style={{ objectFit: 'cover' }}
-          className="relative mb-[20px]"
+          fill
+          className="bottom-0 left-0 right-0 top-0 object-cover"
+          sizes="100vw"
         />
         <Likes />
       </div>

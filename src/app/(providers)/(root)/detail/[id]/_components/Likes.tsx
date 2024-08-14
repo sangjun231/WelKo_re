@@ -85,7 +85,7 @@ const Likes = () => {
           </button>
         </div>
         <Link href="/">
-          <button className="icon-button">
+          <button className="icon-button web:hidden">
             <IconHome alt="Home" width={isWeb ? 44 : 24} height={isWeb ? 44 : 24} />
           </button>
         </Link>
