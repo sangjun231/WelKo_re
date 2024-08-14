@@ -32,7 +32,7 @@ export default function DetailImg({ isWeb }: WebProps) {
 
   return (
     <div className="flex w-full flex-col items-center">
-      <div className="web:h-[850px] relative h-[300px] w-full">
+      <div className="web:h-[640px] relative h-[300px] w-full">
         <Image
           src={post.image}
           alt={post.title}
@@ -44,7 +44,7 @@ export default function DetailImg({ isWeb }: WebProps) {
         <Likes isWeb={isWeb} />
       </div>
       <div className="web:mx-[88px] mx-5">
-        <div className="web:mt-10 mt-6 flex flex-col gap-8">
+        <div className="web:mt-10 web:gap-20 mt-6 flex flex-col gap-8">
           <div className="web:gap-10 flex flex-col gap-4">
             <ul className="flex flex-wrap gap-2">
               {tags.map((tag, index) => (
@@ -62,9 +62,9 @@ export default function DetailImg({ isWeb }: WebProps) {
           </div>
           <div className="web:text-2xl flex text-sm font-semibold text-grayscale-900">
             <IconLocation alt="Location" width={isWeb ? 37 : 24} height={isWeb ? 37 : 24} />
-            <h4 className="ml-1 mr-8">Gyeongju</h4>
+            <h4 className="web:ml-2 web:mr-11 ml-1 mr-8">Gyeongju</h4>
             <IconPeoples alt="Max Peoples" width={isWeb ? 37 : 24} height={isWeb ? 37 : 24} />
-            <h4 className="ml-1">Max {post.maxPeople}</h4>
+            <h4 className="web:ml-2 web:mr-11 ml-1">Max {post.maxPeople}</h4>
           </div>
         </div>
         <hr className="web:my-20 mb-6 mt-8 h-[1px] w-full bg-grayscale-100" />
