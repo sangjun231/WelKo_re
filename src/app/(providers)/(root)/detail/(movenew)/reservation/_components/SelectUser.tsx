@@ -12,44 +12,51 @@ const SelectUser = () => {
     totalAmount: state.totalAmount,
     setTotalAmount: state.setTotalAmount
   }));
-  const [numPersons, setNumPersons] = useState(1);
+
+  const [numPersons, setNumPersons] = useState<number | string>(1);
 
   useEffect(() => {
     if (post) {
-      setTotalAmount(post.price * numPersons);
+      const num = typeof numPersons === 'string' ? parseFloat(numPersons) : numPersons;
+      setTotalAmount(post.price * num);
     }
   }, [numPersons, post, setTotalAmount]);
 
   // 예약 인원 입력 필드 변경 시 호출되는 함수
   const handleNumPersonsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value, 10);
-    setNumPersons(value > 0 ? value : 1); // 최소 예약 인원은 1명
+    const value = e.target.value;
+
+    // 빈 문자열은 그대로 상태에 반영하고, 숫자만 업데이트
+    if (value === '' || /^\d+$/.test(value)) {
+      setNumPersons(value === '' ? '' : parseFloat(value));
+    }
   };
 
   return (
     <div className="mt-6 flex flex-col">
-      <div className="mb-6 gap-2">
-        <h3 className="text-text-color text-base font-medium">How many tourists?</h3>
+      <div className="mb-5 gap-2">
+        <h3 className="text-base font-medium text-text-color">How many tourists?</h3>
         <input
           type="number"
-          className="bg-grayscale-50 my-2 w-full rounded-xl px-4 py-2"
+          className="my-2 w-full rounded-xl bg-grayscale-50 px-4 py-3"
           min="1"
-          value={numPersons}
+          placeholder="ex) 3"
+          value={numPersons === '' ? '' : numPersons}
           onChange={handleNumPersonsChange}
         />
-        <p className="text-grayscale-500 text-[10px]">
+        <p className="text-[10px] text-grayscale-500">
           If you exceed the number of people booked, your reservation may be canceled. Please contact the guide first.
         </p>
       </div>
-      <div className="mb-6 gap-2">
-        <h3 className="text-text-color text-base font-medium">Nickname/email</h3>
-        <div className="bg-grayscale-50 my-2 w-full rounded-xl px-4 py-2">
+      <div className="mb-5 gap-2">
+        <h3 className="text-base font-medium text-text-color">Nickname/email</h3>
+        <div className="my-2 w-full rounded-xl bg-grayscale-100 px-4 py-3">
           {user ? user.email : '로그인 정보가 없습니다.'}
         </div>
       </div>
-      <div className="mb-6">
-        <h3 className="text-text-color mb-1 text-base font-medium">Cancellation Policy</h3>
-        <p className="text-grayscale-500 text-xs font-normal">
+      <div className="m6-5">
+        <h3 className="mb-1 text-base font-medium text-text-color">Cancellation Policy</h3>
+        <p className="text-xs font-normal text-grayscale-500">
           Before you book, make sure you&apos;re comfortable with
           <u className="text-grayscale-900">this guide&apos;s cancellation policy.</u> If you want a refund, click the
           Request for a <u className="text-grayscale-900">refund button</u> and you will get a refund right away. The

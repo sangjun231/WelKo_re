@@ -22,7 +22,7 @@ interface PostAndPlacesData {
   places: PlaceData[];
 }
 
-const Map = () => {
+const ScheduleMap = () => {
   const clientId = process.env.NEXT_PUBLIC_NCP_CLIENT_ID!;
   const isScriptLoaded = useNaverMapScript(clientId);
   const [mapInstance, setMapInstance] = useState<any>(null);
@@ -139,15 +139,21 @@ const Map = () => {
           </button>
         )}
       </div>
-
       <div className="flex flex-col gap-4">
         {data?.places[selectedDay].places.map((place, index) => (
-          <div key={index} className="place-item flex items-start">
-            <div className="number-circle mr-3 flex h-6 w-6 items-center justify-center rounded-full bg-primary-300 text-sm font-medium text-white">
-              {index + 1}
+          <div key={index} className="relative flex items-start">
+            <div className="flex flex-col items-center">
+              <div className="z-10 flex h-6 w-6 items-center justify-center rounded-full bg-primary-300 text-sm font-medium text-white">
+                {index + 1}
+              </div>
+              {index !== data.places[selectedDay].places.length - 1 ? (
+                <div className="absolute top-6 h-[calc(100%)] w-px bg-grayscale-100"></div>
+              ) : (
+                <div className="absolute top-6 h-[calc(100%-1rem)] w-px bg-grayscale-100"></div>
+              )}
             </div>
-            <div className="flex w-full flex-col gap-1 rounded-lg border bg-white px-4 py-3 shadow-lg">
-              <h2 className="text-sm font-semibold">{place.title.replace(/<\/?[^>]+(>|$)/g, '')}</h2>
+            <div className="ml-3 flex w-full flex-col gap-1 rounded-lg bg-white px-4 py-3 shadow-custom-box">
+              <h2 className="text-sm font-semibold">{place.title ? place.title.replace(/<\/?[^>]+(>|$)/g, '') : ''}</h2>
               <p className="text-xs text-gray-500">{place.category}</p>
               <hr className="my-2 h-[1px] w-full bg-grayscale-100" />
               <p className="text-xs font-normal text-gray-700">{place.description}</p>
@@ -160,4 +166,4 @@ const Map = () => {
   );
 };
 
-export default Map;
+export default ScheduleMap;

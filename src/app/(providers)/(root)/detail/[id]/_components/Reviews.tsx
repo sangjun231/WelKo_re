@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchReviews, Review } from '@/utils/supabase/api/detail/reviews';
 import { averageRatings, formatRelativeDate } from '@/utils/detail/functions';
 import useAuthStore from '@/zustand/bearsStore';
-import { FaStar } from 'react-icons/fa6';
+import IconStar from '/public/icons/tabler-icon-star-filled.svg';
 
 const Reviews = () => {
   const user = useAuthStore((state) => state.user);
@@ -35,10 +35,10 @@ const Reviews = () => {
   }
 
   return (
-    <div className="mb-32 flex flex-col gap-6">
-      <div className="flex flex-col gap-4">
-        <div className="text-grayscale-900 flex items-center gap-1 text-lg">
-          <FaStar size={24} />
+    <div className="mb-32 flex flex-col">
+      <div className="flex flex-col">
+        <div className="flex items-center gap-1 text-lg text-grayscale-900">
+          <IconStar alt="Reviews Star" width={24} height={24} />
           {reviews.length > 0 ? (
             <>
               <h2 className="font-semibold">{averageRating.toFixed(2)}</h2>
@@ -51,11 +51,11 @@ const Reviews = () => {
         </div>
         {reviews.length > 0 && (
           <>
-            <div className="bg-grayscale-50 my-4 gap-3 rounded-2xl p-4">
+            <div className="my-4 gap-3 rounded-2xl bg-grayscale-50 p-4">
               {reviews.slice(0, 1).map((review) => (
                 <div key={review.id} className="flex flex-col gap-2">
                   <div className="flex items-center gap-2">
-                    <FaStar size={16} />
+                    <IconStar alt="Reviews Star" width={16} height={16} />
                     <h4 className="text-xs font-semibold">{review.rating.toFixed(2)}</h4>
                     <span className="text-xs text-gray-900">{review.user_name}</span>
                     <span className="text-[10px] font-normal text-gray-700">

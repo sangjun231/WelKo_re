@@ -82,8 +82,8 @@ const PostsList = () => {
       {error && <div>{error}</div>}
       {!loading && posts.length === 0 && <div>관련된 게시물이 없습니다.</div>}
       <ul>
-        {posts.map((post) => (
-          <li key={post.id} className="mb-4 flex rounded-md border p-2">
+        {posts.map((post, index) => (
+          <li key={`${post.id}-${index}`} className="mb-4 flex rounded-md border p-2">
             <Link href={`/detail/${post.id}`} className="flex w-full">
               {post.image ? (
                 <Image src={post.image} alt={post.title} width={96} height={96} className="mr-2 w-24" />

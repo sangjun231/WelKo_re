@@ -1,16 +1,16 @@
-'use client';
-
-import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
+import { useEffect, useState, useRef } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
 
 const supabase = createClient();
-
 const POSTS_PER_PAGE = 5;
+const MAX_POSTS = 10; // 최대 포스트 개수
 
 interface Post {
+  startDate: string;
+  endDate: string;
   id: string;
   title: string;
   content: string;
@@ -20,6 +20,16 @@ interface Post {
   price: number;
 }
 
+const formatDate = (date: string) => {
+  return new Intl.DateTimeFormat('ko', {
+    year: '2-digit',
+    month: '2-digit',
+    day: '2-digit'
+  })
+    .format(new Date(date))
+    .replace(/\//g, '.');
+};
+
 const PostsList = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -28,35 +38,50 @@ const PostsList = () => {
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
 
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef<boolean>(false);
+  const startX = useRef<number>(0);
+  const scrollLeft = useRef<number>(0);
+
   useEffect(() => {
     const fetchPosts = async () => {
-      setLoading(true);
-      const orderBy = sortOrder === 'latest' ? 'created_at' : 'recommendations';
-      const { data, error } = await supabase
-        .from('posts')
-        .select('*')
-        .order(orderBy, { ascending: false })
-        .range((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE - 1);
+      try {
+        setLoading(true);
+        const orderBy = sortOrder === 'latest' ? 'created_at' : 'recommendations';
+        const { data, error } = await supabase
+          .from('posts')
+          .select('*')
+          .order(orderBy, { ascending: false })
+          .range((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE - 1);
 
-      if (error) {
+        if (error) {
+          throw error;
+        }
+
+        const newPosts = data || [];
+        const totalPosts = posts.length + newPosts.length;
+
+        if (totalPosts >= MAX_POSTS) {
+          setPosts((prevPosts) => [...prevPosts, ...newPosts.slice(0, MAX_POSTS - prevPosts.length)]);
+          setHasMore(false); // 더 이상 포스트를 로드하지 않음
+        } else {
+          setPosts((prevPosts) => [...prevPosts, ...newPosts]);
+        }
+      } catch (error) {
         setError('데이터를 가져오는 중 오류가 발생했습니다.');
         console.error('Error fetching posts:', error);
-      } else {
-        if (page === 1) {
-          setPosts(data || []);
-        } else {
-          setPosts((prevPosts) => [...prevPosts, ...(data || [])]);
-        }
-        setHasMore(data && data.length === POSTS_PER_PAGE);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchPosts();
   }, [sortOrder, page]);
 
   const loadMorePosts = () => {
-    setPage((prevPage) => prevPage + 1);
+    if (!loading && hasMore) {
+      setPage((prevPage) => prevPage + 1);
+    }
   };
 
   const formatPrice = (price: number) => {
@@ -66,34 +91,87 @@ const PostsList = () => {
     }).format(price);
   };
 
+  useEffect(() => {
+    const handleTouchStart = (e: TouchEvent) => {
+      if (scrollContainerRef.current) {
+        isDragging.current = true;
+        startX.current = e.touches[0].clientX - scrollContainerRef.current.getBoundingClientRect().left;
+        scrollLeft.current = scrollContainerRef.current.scrollLeft;
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (isDragging.current && scrollContainerRef.current) {
+        e.preventDefault(); // prevent default to avoid scrolling while dragging
+        const x = e.touches[0].clientX - scrollContainerRef.current.getBoundingClientRect().left;
+        const walk = (x - startX.current) * 2; // Scroll speed factor
+        scrollContainerRef.current.scrollLeft = scrollLeft.current - walk;
+      }
+    };
+
+    const handleTouchEnd = () => {
+      isDragging.current = false;
+    };
+
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener('touchstart', handleTouchStart, { passive: false });
+      container.addEventListener('touchmove', handleTouchMove, { passive: false });
+      container.addEventListener('touchend', handleTouchEnd);
+
+      return () => {
+        container.removeEventListener('touchstart', handleTouchStart);
+        container.removeEventListener('touchmove', handleTouchMove);
+        container.removeEventListener('touchend', handleTouchEnd);
+      };
+    }
+  }, []);
+
   return (
-    <div className="p-4">
-      <h2 className="mb-4 text-xl font-bold">게시물 목록</h2>
+    <div className="relative">
+      <h2 className="mb-5 text-xl font-bold">New Tour</h2>
       <InfiniteScroll loading={loading} hasMore={hasMore} onLoadMore={loadMorePosts}>
-        <ul>
-          {posts.map((post) => (
-            <li key={post.id} className="mb-4 flex rounded-md border p-2">
-              <Link href={`/detail/${post.id}`} className="flex w-full">
-                {post.image ? (
-                  <Image src={post.image} alt={post.title} width={96} height={96} className="mr-2 w-24" />
-                ) : (
-                  <div className="mr-2 flex h-24 w-24 items-center justify-center bg-gray-200">이미지 없음</div>
-                )}
-                <div className="flex flex-col justify-between">
-                  <div>
-                    <h3 className="line-clamp-1 text-xl font-bold">{post.title}</h3>
-                    <p className="text-gray-500">{new Date(post.created_at).toLocaleDateString()}</p>
-                    <p className="line-clamp-1 text-gray-700">{post.content}</p>
+        <div className="relative overflow-hidden" ref={scrollContainerRef}>
+          <div className="flex space-x-1">
+            {posts.map((post, index) => (
+              <div key={`${post.id}-${index}`} className="w-64 flex-none rounded-md">
+                <Link href={`/detail/${post.id}`} className="flex h-full flex-col">
+                  {post.image ? (
+                    <div
+                      className="relative mb-2 flex-none overflow-hidden rounded-2xl"
+                      style={{ width: '236px', height: '236px' }}
+                    >
+                      <Image
+                        src={post.image}
+                        alt={post.title}
+                        fill
+                        style={{ objectFit: 'cover' }}
+                        className="rounded-2xl"
+                      />
+                    </div>
+                  ) : (
+                    <div className="mb-2 flex h-[236px] w-[236px] items-center justify-center rounded-2xl bg-gray-200">
+                      이미지 없음
+                    </div>
+                  )}
+                  <div className="flex flex-grow flex-col">
+                    <h3 className="mb-2 line-clamp-1 text-base font-semibold">{post.title}</h3>
+                    <p className="text-gray-500">
+                      {post.startDate && post.endDate
+                        ? `${formatDate(post.startDate)} ~ ${formatDate(post.endDate)}`
+                        : 'No dates available'}
+                    </p>
+                    <div className="mt-2 flex text-sm">
+                      <div className="mt-auto line-clamp-1 font-bold text-[#B95FAB]">{formatPrice(post.price)}</div>
+                      <div className="font-medium">/Person</div>
+                    </div>
                   </div>
-                  <div className="mt-2 text-sm font-bold">{formatPrice(post.price)}</div>
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
       </InfiniteScroll>
-      {loading && <div>로딩 중...</div>}
-      {error && <div>리스트를 불러오지 못했습니다</div>}
     </div>
   );
 };

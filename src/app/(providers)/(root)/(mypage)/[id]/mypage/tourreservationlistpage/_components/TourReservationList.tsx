@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { API_MYPAGE_TOURRESERVATIONLIST } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
 import { useRouter } from 'next/navigation';
+import { formatDateRange } from '@/utils/detail/functions';
 
 const fetchReservations = async (userId: string, postId: string) => {
   const response = await axios.get(API_MYPAGE_TOURRESERVATIONLIST(userId, postId));
@@ -75,6 +76,7 @@ const TourReservationList = ({ userId, postId }: { userId: string; postId: strin
       </div>
       <div className="mt-[24px] flex">
         <Image
+          className="rounded-[8px]"
           src={data[0].posts.image || '/default-image.png'}
           alt={data[0]?.posts.title}
           width={80}
@@ -84,7 +86,7 @@ const TourReservationList = ({ userId, postId }: { userId: string; postId: strin
         <div className="ml-[8px]">
           <p className="line-clamp-1 text-[14px] font-semibold">{data[0]?.posts.title}</p>
           <p className="text-[14px] text-grayscale-500">
-            {data[0]?.posts.startDate ?? 'No Start Date'} - {data[0]?.posts.endDate ?? 'No End Date'}
+            {formatDateRange(data[0]?.posts.startDate, data[0]?.posts.endDate)}
           </p>
           <p className="text-[13px] font-medium text-gray-700">
             <span className="font-semibold text-primary-300">{formatPrice(data[0]?.posts.price)}</span>
@@ -94,34 +96,40 @@ const TourReservationList = ({ userId, postId }: { userId: string; postId: strin
       </div>
       <div>
         {data.map((reservation) => (
-          <div className="my-[16px] border-b pb-[16px]" key={reservation.id}>
-            <p className="mb-[16px] text-[14px]">
-              <span className="mr-[16px] text-[12px] text-grayscale-500">Number</span> {reservation.id}
-            </p>
-            <p className="mb-[16px] text-[14px]">
-              <span className="mr-[16px] text-[12px] text-grayscale-500">Nickname</span> {reservation.users.name}
-            </p>
-            <p className="mb-[16px] text-[14px]">
-              <span className="mr-[16px] text-[12px] text-grayscale-500">Email</span> {reservation.users.email}
-            </p>
-            <p className="mb-[16px] text-[14px]">
-              <span className="mr-[16px] text-[12px] text-grayscale-500">Date</span>
-              {new Date(reservation.created_at).toLocaleString()}
-            </p>
-            <p className="mb-[16px] text-[14px]">
-              <span className="mr-[16px] text-[12px] text-grayscale-500">Tourist</span> {reservation.people}
-            </p>
-            <p className="mb-[16px] text-[14px]">
-              <span className="mr-[16px] text-[12px] text-grayscale-500">Amount</span> {reservation.total_price}
-            </p>
-            <p className="mb-[16px] text-[14px]">
-              <span className="mr-[16px] text-[12px] text-grayscale-500">State</span> {reservation.pay_state}
-            </p>
+          <div className="my-[20px] border-b pb-[20px]" key={reservation.id}>
+            <div className="mb-[16px] flex flex-col gap-[8px] text-[14px]">
+              <span className="min-w-[80px] text-[12px] text-grayscale-500">Number</span>
+              <span className="flex-grow text-left">{reservation.id}</span>
+            </div>
+            <div className="mb-[16px] flex flex-col gap-[8px] text-[14px]">
+              <span className="min-w-[80px] text-[12px] text-grayscale-500">Nickname</span>
+              <span className="flex-grow text-left">{reservation.users.name}</span>
+            </div>
+            <div className="mb-[16px] flex flex-col gap-[8px] text-[14px]">
+              <span className="min-w-[80px] text-[12px] text-grayscale-500">Email</span>
+              <span className="flex-grow text-left">{reservation.users.email}</span>
+            </div>
+            <div className="mb-[16px] flex flex-col gap-[8px] text-[14px]">
+              <span className="min-w-[80px] text-[12px] text-grayscale-500">Date</span>
+              <span className="flex-grow text-left">{new Date(reservation.created_at).toLocaleString()}</span>
+            </div>
+            <div className="mb-[16px] flex flex-col gap-[8px] text-[14px]">
+              <span className="min-w-[80px] text-[12px] text-grayscale-500">Tourist</span>
+              <span className="flex-grow text-left">{reservation.people}</span>
+            </div>
+            <div className="mb-[16px] flex flex-col gap-[8px] text-[14px]">
+              <span className="min-w-[80px] text-[12px] text-grayscale-500">Amount</span>
+              <span className="flex-grow text-left">{formatPrice(reservation.total_price)}</span>
+            </div>
+            <div className="mb-[16px] flex flex-col gap-[8px] text-[14px]">
+              <span className="min-w-[80px] text-[12px] text-grayscale-500">State</span>
+              <span className="flex-grow text-left">{reservation.pay_state}</span>
+            </div>
             <button
               className="w-full rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
               onClick={() => handleChat(reservation.posts, reservation.users.id)}
             >
-              Message Guide
+              Message Tourist
             </button>
           </div>
         ))}

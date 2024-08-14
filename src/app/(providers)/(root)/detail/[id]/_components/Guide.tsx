@@ -61,8 +61,6 @@ export const Guide = () => {
   const fetchCustomerUser = async () => {
     const { data, error } = await supabase.auth.getUser();
 
-    if (error) throw new Error(error.message);
-
     if (data.user) {
       const userId = data.user.id;
       const response = await axios.get(API_MYPAGE_PROFILE(userId));
@@ -106,14 +104,16 @@ export const Guide = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <h2 className="text-grayscale-900 text-lg font-semibold">Contact your guide</h2>
-      <p className="text-grayscale-500 text-sm font-normal">
-        For more information such as the number of people and schedule change, it is recommended to send a message to
-        the guide to discuss and check.
-      </p>
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold text-grayscale-900">Contact your guide</h2>
+        <p className="text-sm font-normal text-grayscale-500">
+          For more information such as the number of people and schedule change, it is recommended to send a message to
+          the guide to discuss and check.
+        </p>
+      </div>
+      <div className="flex flex-col gap-4">
         {user && (
-          <>
+          <div className="flex flex-row items-center gap-2">
             <Image
               src={user.avatar}
               alt={`${user.name}의 아바타`}
@@ -121,20 +121,20 @@ export const Guide = () => {
               height={56}
               className="mr-2 h-14 w-14 rounded-full object-cover"
             />
-            <div className="gap-3">
+            <div className="flex flex-col gap-1">
               <h4 className="text-lg font-semibold">{user.name}</h4>
               <h5 className="text-sm font-normal">Seoul, Korea</h5>
             </div>
-          </>
+          </div>
         )}
+        <button
+          className="rounded-2xl border border-grayscale-800 px-5 py-3 text-base font-semibold text-grayscale-700"
+          onClick={handleChat}
+        >
+          Message Host
+        </button>
       </div>
-      <button
-        className="border-grayscale-800 rounded-2xl border px-5 py-3 text-base font-semibold"
-        onClick={handleChat}
-      >
-        Message Host
-      </button>
-      <hr className="bg-grayscale-100 mb-6 mt-8 h-[1px] w-full" />
+      <hr className="mb-6 mt-3 h-[1px] w-full bg-grayscale-100" />
     </div>
   );
 };

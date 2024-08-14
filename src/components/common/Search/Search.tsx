@@ -3,7 +3,12 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-export default function Search({ initialQuery = '' }: { initialQuery?: string }) {
+interface SearchProps {
+  initialQuery?: string;
+  style?: React.CSSProperties;
+}
+
+export default function Search({ initialQuery = '', style = {} }: SearchProps) {
   const [query, setQuery] = useState(initialQuery);
   const router = useRouter();
 
@@ -11,40 +16,29 @@ export default function Search({ initialQuery = '' }: { initialQuery?: string })
     setQuery(initialQuery);
   }, [initialQuery]);
 
-  const handleSearch = async (event: React.FormEvent) => {
-    event.preventDefault();
-    if (query.length < 1) {
-      alert('검색어를 입력해주세요.');
-      return;
-    }
-    router.push(`/search?keyword=${encodeURIComponent(query)}`);
-  };
-
   const handleInputClick = () => {
     router.push('/planner');
   };
 
   return (
     <div className="relative mx-auto w-full max-w-md">
-      <form onSubmit={handleSearch}>
-        <button type="submit">
-          <Image
-            src="/icons/search.png"
-            alt="Search icon"
-            width={20}
-            height={20}
-            className="absolute right-6 top-1/2 transform"
-          />
-        </button>
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onClick={handleInputClick}
-          placeholder="여행지를 검색해보세요"
-          className="ml-2 mr-4 w-full rounded-full border-2 border-black px-5 py-4 text-black focus:border-gray-200 focus:bg-gray-200 focus:outline-none"
+      <button type="submit">
+        <Image
+          src="/icons/search.png"
+          alt="Search icon"
+          width={20}
+          height={20}
+          className="absolute right-6 top-1/2 transform"
         />
-      </form>
+      </button>
+      <textarea
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        onClick={handleInputClick}
+        placeholder="Search your tour in KOREA"
+        className="mr-4 h-[56px] w-full resize-none overflow-hidden rounded-full border-2 border-black px-5 py-4 text-[12px] text-black focus:border-gray-200 focus:bg-gray-200 focus:outline-none"
+        style={style}
+      />
     </div>
   );
 }

@@ -1,49 +1,56 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
 import Image from 'next/image';
 import { useMyPageStore } from '@/zustand/mypageStore';
-import { handleLogout } from '@/utils/supabase/service';
 import PostList from './_components/PostList';
 import ProfileView from './_components/ProfileView';
 import ReviewList from './_components/ReviewList';
 import LikeList from './_components/LikeList';
 import ReservationList from './_components/ReservationList';
+import useAuthStore from '@/zustand/bearsStore';
 
 const MyPage = () => {
   const { id } = useParams() as { id: string };
   const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const selectedComponent = useMyPageStore((state) => state.selectedComponent);
   const setSelectedComponent = useMyPageStore((state) => state.setSelectedComponent);
+  const { logout } = useAuthStore();
 
   const handleBack = () => {
     router.back();
   };
 
-  const logout = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const onLogout = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    await handleLogout(router);
-    router.push('/login');
+    await logout(router);
   };
 
   const buttonClass = (component: string) =>
-    `flex-1 text-center ${selectedComponent === component ? 'text-primary-300 border-primary-300' : 'text-grayscale-500'}`;
+    `flex-1 text-center ${selectedComponent === component ? 'text-primary-300 border-primary-300 font-semibold' : 'text-grayscale-500'}`;
 
   return (
-    <div className="mx-[20px]">
-      <div className="mt-[56px] flex justify-between">
-        <button className="rounded-[24px] bg-grayscale-50" onClick={handleBack}>
-          <Image src="/icons/tabler-icon-chevron-left.svg" alt="Go Back" width={32} height={32} />
+    <div className="mx-[20px] flex flex-col">
+      <div className="mt-[8px] flex justify-between">
+        <button
+          className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-grayscale-50"
+          onClick={handleBack}
+        >
+          <Image
+            src="/icons/tabler-icon-chevron-left.svg"
+            alt="Go Back"
+            width={24}
+            height={24}
+            style={{ width: '24px', height: '24px' }}
+          />
         </button>
         <p className="text-[18px] font-semibold text-primary-900">My Page</p>
-        <button className="text-[14px] font-medium text-action-color" onClick={logout}>
+        <button className="text-[14px] font-medium text-action-color" onClick={onLogout}>
           Logout
         </button>
       </div>
       <ProfileView userId={id} />
-      <div className="my-[20px] flex justify-around font-medium">
+      <div className="my-[20px] flex justify-around text-[13px] font-medium">
         <button className={`border-b ${buttonClass('Wishlist')}`} onClick={() => setSelectedComponent('Wishlist')}>
           Wishlist
         </button>

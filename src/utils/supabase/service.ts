@@ -73,28 +73,30 @@ export const handleSignUp = async (
   const supabase = createClient();
 
   if (!email || !password || !name) {
-    return toast.error('빈칸을 모두 채워주세요!');
+    return toast.error('Please fill in all the blanks!');
   }
 
   // 클라이언트 사이드 유효성 검사
   if (!validateEmail(email)) {
-    return toast.error('유효한 이메일 주소를 입력하세요!(꼭 .com 으로 끝나는 이메일이어야 합니다!)');
+    return toast.error('Please enter a valid email address!');
   }
   if (!validatePassword(password)) {
-    return toast.error('비밀번호는 최소 8자 이상, 영문자, 숫자, 특수 문자를 포함해야 합니다!');
+    return toast.error(
+      'Password must contain at least 8 characters, English characters, numbers, and special characters!'
+    );
   }
 
   // 이메일과 닉네임 중복 체크
   const { data: emailExist, error: emailError } = await supabase.from('users').select('id').eq('email', email).single();
 
   if (emailExist) {
-    return toast.error('이미 사용 중인 이메일입니다!');
+    return toast.error('This email is already in use!');
   }
 
   const { data: nameExist, error: nameError } = await supabase.from('users').select('id').eq('name', name).single();
 
   if (nameExist) {
-    return toast.error('이미 사용 중인 닉네임입니다!');
+    return toast.error('This nickname is already in use!');
   }
 
   const { data, error } = await supabase.auth.signUp({
@@ -110,18 +112,18 @@ export const handleSignUp = async (
   if (error) {
     setError(error.message);
   } else {
-    toast.success('회원가입 성공!');
+    toast.success('Successfully signed up for membership!');
     router.push('/');
   }
 };
 
 // 로그아웃
-export const handleLogout = async (router: any) => {
-  const supabase = createClient();
-  await supabase.auth.signOut();
-  toast.success('로그아웃 되었습니다.');
-  router.push('/');
-};
+// export const handleLogout = async (router: any) => {
+//   const supabase = createClient();
+//   await supabase.auth.signOut();
+//   toast.success('로그아웃 되었습니다.');
+//   router.push('/');
+// };
 
 // 구글로그인
 export const googleLogin = async () => {
@@ -129,7 +131,7 @@ export const googleLogin = async () => {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: 'http://localhost:3000/auth/callback',
+      redirectTo: 'https://welko.vercel.app/auth/callback',
       queryParams: {
         access_type: 'offline'
         // prompt: 'consent' // 권한 부여 동의 화면 항상 표시
@@ -148,7 +150,7 @@ export const discordLogin = async () => {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'discord',
     options: {
-      redirectTo: 'http://localhost:3000/auth/callback',
+      redirectTo: 'https://welko.vercel.app/auth/callback',
       queryParams: {
         access_type: 'offline'
         // prompt: 'consent' // 권한 부여 동의 화면 항상 표시

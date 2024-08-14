@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/utils/supabase/client';
+import Image from 'next/image';
 
 const supabase = createClient();
 
@@ -11,13 +12,7 @@ interface CitySelectorProps {
   goToNextStep: () => void;
 }
 
-const CitySelector: React.FC<CitySelectorProps> = ({
-  selectedCity,
-  handleCityClick,
-  cities,
-  goToPreviousStep,
-  goToNextStep,
-}) => {
+const CitySelector: React.FC<CitySelectorProps> = ({ selectedCity, handleCityClick, cities }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [autoCompleteResults, setAutoCompleteResults] = useState<string[]>([]);
 
@@ -28,27 +23,19 @@ const CitySelector: React.FC<CitySelectorProps> = ({
         return;
       }
 
-      const { data, error } = await supabase
-        .from('posts')
-        .select('title')
-        .ilike('title', `%${searchQuery}%`);
+      const { data, error } = await supabase.from('schedule').select('area').ilike('area', `%${searchQuery}%`);
 
       if (error) {
         console.error('Error fetching auto-complete results:', error);
       } else {
-        setAutoCompleteResults(data.map((post) => post.title));
+        // Ensure unique results
+        const uniqueResults = Array.from(new Set(data.map((item) => item.area)));
+        setAutoCompleteResults(uniqueResults);
       }
     };
 
     fetchAutoCompleteResults();
   }, [searchQuery]);
-
-  useEffect(() => {
-    // Automatically select city if searchQuery matches an existing city in the list
-    if (searchQuery && cities.includes(searchQuery)) {
-      handleCityClick(searchQuery);
-    }
-  }, [searchQuery, cities, handleCityClick]);
 
   const handleAutoCompleteClick = (result: string) => {
     handleCityClick(result);
@@ -59,11 +46,6 @@ const CitySelector: React.FC<CitySelectorProps> = ({
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
-
-    // Automatically select city if searchQuery matches an existing city in the list
-    if (cities.includes(value)) {
-      handleCityClick(value);
-    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -72,23 +54,31 @@ const CitySelector: React.FC<CitySelectorProps> = ({
     }
   };
 
-  const filteredCities = cities.filter((city) =>
-    city.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Filter cities based on search query
+  const filteredCities = cities.filter((city) => city.toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
     <div>
-      <div className="p-4 bg-gray-100 border rounded-md mt-2">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          onKeyDown={handleKeyDown}
-          placeholder="Search city"
-          className="w-full p-2 mb-4 border rounded-md"
-        />
+      <div>
+        <div className="relative mb-4">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            onKeyDown={handleKeyDown}
+            placeholder="Search Your Destination"
+            className="w-full rounded-[36px] border bg-gray-100 p-2 pl-4"
+          />
+          <Image
+            src="/icons/search.png"
+            alt="Search icon"
+            width={20}
+            height={20}
+            className="absolute right-4 top-1/2 -translate-y-1/2 transform"
+          />
+        </div>
         {autoCompleteResults.length > 0 && (
-          <div className="bg-white border rounded-md p-2 mb-4">
+          <div className="mb-4 rounded-md border bg-white p-2">
             {autoCompleteResults.map((result) => (
               <div
                 key={result}
@@ -100,38 +90,28 @@ const CitySelector: React.FC<CitySelectorProps> = ({
             ))}
           </div>
         )}
-        <div className="flex flex-wrap mb-4">
-          {/* Display filtered cities */}
+        <div className="mb-4 flex flex-wrap">
           {filteredCities.map((city) => (
             <div
               key={city}
-              className={`cursor-pointer p-2 mb-2 border rounded-full flex-1 min-w-[30%] mx-1 text-center ${
-                city === selectedCity ? 'bg-blue-100 border-blue-500' : 'bg-white border-gray-300'
+              className={`mb-2 mr-1 flex min-w-[30%] cursor-pointer justify-center rounded-3xl border px-3 py-2 text-center text-[13px] font-medium ${
+                city === selectedCity ? 'bg-[#B95FAB] text-white' : 'bg-gray-100'
               }`}
               onClick={() => handleCityClick(city)}
             >
               {city}
             </div>
           ))}
-          {/* Allow selecting cities not in the list */}
           {searchQuery && !cities.includes(searchQuery) && (
             <div
-              className={`cursor-pointer p-2 mb-2 border rounded-full flex-1 min-w-[30%] mx-1 text-center ${
-                searchQuery === selectedCity ? 'bg-blue-100 border-blue-500' : 'bg-white border-gray-300'
+              className={`mb-2 mr-1 flex min-w-[30%] cursor-pointer justify-center rounded-3xl border px-3 py-2 text-center text-[13px] font-medium ${
+                searchQuery === selectedCity ? 'bg-[#B95FAB] text-white' : 'bg-gray-100'
               }`}
               onClick={() => handleCityClick(searchQuery)}
             >
               {searchQuery}
             </div>
           )}
-        </div>
-        <div className="flex justify-between">
-          <button onClick={goToPreviousStep} className="px-4 py-2 bg-gray-500 text-white rounded-md">
-            Previous
-          </button>
-          <button onClick={goToNextStep} className="px-4 py-2 bg-blue-500 text-white rounded-md">
-            Next
-          </button>
         </div>
       </div>
     </div>

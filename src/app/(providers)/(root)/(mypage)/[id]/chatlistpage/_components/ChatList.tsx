@@ -1,22 +1,23 @@
-'use client';
-
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { API_MYPAGE_CHATS, API_POST_DETAILS, API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import axios from 'axios';
+import { fetchMessages } from '@/services/chatService';
 
 type ChatListProps = {
   userId: string;
 };
 
 type Message = {
+  id: string;
   sender_id: string;
   receiver_id: string;
   content: string;
   created_at: string;
   post_id: string;
+  is_checked: boolean;
 };
 
 type Chat = {
@@ -62,7 +63,7 @@ const ChatList = ({ userId }: ChatListProps) => {
       const response = await axios.get(API_MYPAGE_CHATS(userId));
       return response.data;
     },
-    refetchInterval: 5000
+    refetchInterval: 1000
   });
 
   const postIds = chatData?.map((chat) => chat.post_id) || [];
@@ -108,7 +109,7 @@ const ChatList = ({ userId }: ChatListProps) => {
     return acc;
   }, {});
 
-  const handleChatClick = (chat: Chat) => {
+  const handleChatClick = async (chat: Chat) => {
     const receiverId = userId === chat.sender_id ? chat.receiver_id : chat.sender_id;
     const postDetails = postData?.find((post) => post.id === chat.post_id);
     const chatId = `${chat.post_id}-${[chat.sender_id, chat.receiver_id].sort().join('-')}`;
@@ -118,13 +119,45 @@ const ChatList = ({ userId }: ChatListProps) => {
       [chatId]: true
     }));
 
+    await fetchMessages(chat.receiver_id, chat.sender_id, chat.post_id);
+
     router.push(
       `/${userId}/${receiverId}/chatpage?postId=${chat.post_id}&postTitle=${postDetails?.title}&postImage=${postDetails?.image}`
     );
   };
 
+  const formatDate = (created_at: string) => {
+    const messageDate = new Date(created_at);
+    const today = new Date();
+
+    const isToday =
+      messageDate.getDate() === today.getDate() &&
+      messageDate.getMonth() === today.getMonth() &&
+      messageDate.getFullYear() === today.getFullYear();
+
+    if (isToday) {
+      return messageDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    } else {
+      return `${messageDate.getMonth() + 1}.${messageDate.getDate()}`;
+    }
+  };
+
   if (chatPending || postPending || userPending) return <div>Loading...</div>;
+
   if (chatError || postError || userError) return <div>Error loading data</div>;
+
+  if (!chatData || chatData?.length === 0) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="flex flex-col items-center justify-center gap-[8px]">
+          <Image src="/icons/Group-348.svg" alt="no chat" width={44} height={44} />
+          <p className="text-[14px] font-semibold">You don&apos;t have any messages</p>
+          <p className="text-[12px]">When you receive a new message,</p>
+          <p className="text-[12px]">it will appear here.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -136,14 +169,14 @@ const ChatList = ({ userId }: ChatListProps) => {
 
           const firstMessage = chat.messages[0];
           const chatId = `${chat.post_id}-${[chat.sender_id, chat.receiver_id].sort().join('-')}`;
-          const isNewMessage = !newMessages[chatId] && firstMessage.sender_id !== userId;
+          const isNewMessage = !newMessages[chatId] && firstMessage.sender_id !== userId && !firstMessage.is_checked;
 
           return (
             <div className="mb-[32px] max-w-[360px]" key={index} onClick={() => handleChatClick(chat)}>
               {postDetails && senderDetails && (
                 <div className="flex">
                   <Image
-                    className="rounded"
+                    className="rounded-[8px]"
                     src={postDetails.image || '/icons/upload.png'}
                     alt={postDetails.title || 'Default name'}
                     width={64}
@@ -152,11 +185,9 @@ const ChatList = ({ userId }: ChatListProps) => {
                   />
                   <div className="ml-[8px] flex w-full flex-col gap-[5px]">
                     <div className="flex items-center justify-between">
-                      <div className="mx-auto max-w-[360px]">
-                        <p className="line-clamp-1 text-[13px] font-medium">{postDetails.title}</p>
-                      </div>
-                      <p className="text-[10px] text-grayscale-500">
-                        {new Date(firstMessage?.created_at).toLocaleString()}
+                      <p className="line-clamp-1 text-[13px] font-medium">{postDetails.title}</p>
+                      <p className="ml-[8px] flex-shrink-0 text-[10px] text-grayscale-500">
+                        {formatDate(firstMessage?.created_at)}
                       </p>
                     </div>
                     <div className="flex items-center justify-between">

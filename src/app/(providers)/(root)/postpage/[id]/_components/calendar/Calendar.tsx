@@ -90,7 +90,7 @@ const Calendar = ({ next, postId }: CalendarProps) => {
       <div className="flex flex-col gap-7 rounded-xl border-x-0 border-y-2 border-gray-200 px-5 shadow-xl">
         <h2 className="ml-3 mt-7 text-2xl font-bold">When&apos;s your tour?</h2>
 
-        <div className="flex w-[320px] overflow-x-auto">
+        <div className="no-scrollbar flex w-[320px] overflow-x-auto">
           {months.map((month, index) => (
             <button
               key={index}
