@@ -65,7 +65,7 @@ const SelectPost = () => {
             </button>
           </div>
 
-          <div className="web:gap-2 flex flex-col gap-1">
+          <div className="web:gap-2 web:mb-[137px] flex flex-col gap-1">
             <h4 className="web:text-lg web:font-semibold line-clamp-1 text-sm font-semibold">{post.title}</h4>
             <p className="web:text-base text-sm font-normal text-grayscale-500">
               {formatDateRange(post.startDate, post.endDate)}
@@ -76,7 +76,7 @@ const SelectPost = () => {
             </div>
           </div>
         </div>
-        <div className="web:block mx-4 hidden"></div>
+        <div className="web:block mx-20 hidden"></div>
         {/* 모바일에서 숨기고, 웹에서만 보이는 Cancellation Policy */}
         <div className="web:block hidden flex-1">
           <h3 className="text-xl font-medium text-text-color">Cancellation Policy</h3>

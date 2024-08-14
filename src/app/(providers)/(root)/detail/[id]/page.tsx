@@ -12,7 +12,7 @@ export default function DetailPage() {
   return (
     <>
       <DetailImg />
-      <div className="flex w-full justify-center">
+      <div className="web:relative flex w-full justify-center">
         <div className="w-full max-w-[320px]">
           <CheckboxDetail />
           <ScheduleMap />
