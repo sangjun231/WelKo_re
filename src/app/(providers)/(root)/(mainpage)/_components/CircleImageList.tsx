@@ -2,10 +2,10 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 const locations = [
-  { name: 'Busan', src: '/img/busan.jpeg' },
-  { name: 'Seoul', src: '/img/seoul.jpeg' },
-  { name: 'Chuncheon', src: '/img/chuncheon.jpeg' },
-  { name: 'Jeju', src: '/img/jeju.jpeg' }
+  { name: 'Busan', src: '/img/Busan.jpeg' },
+  { name: 'Seoul', src: '/img/Seoul.jpeg' },
+  { name: 'Chuncheon', src: '/img/Chuncheon.jpeg' },
+  { name: 'Jeju', src: '/img/Jeju.jpeg' }
 ];
 
 export default function CircleImageList() {

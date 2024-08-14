@@ -50,7 +50,7 @@ const AuthForm = () => {
 
   return (
     <div className="flex items-center justify-center md:h-screen md:bg-gray-100">
-      <div className="h-[800px] w-[360px] max-w-md bg-white px-5 md:w-full md:rounded-lg md:p-6 md:shadow-lg">
+      <div className="h-[800px] w-full max-w-md bg-white px-5 md:w-full md:rounded-lg md:p-6 md:shadow-lg">
         <div className="mt-2 flex h-[44px] items-center pb-[16px] pt-3.5 md:hidden">
           <BackButton />
         </div>
@@ -103,7 +103,7 @@ const AuthForm = () => {
 
         <button
           onClick={isSignUp ? onSignUp : onLogin}
-          className="w-full rounded-xl bg-[#B95FAB] px-5 py-3 font-semibold text-white hover:bg-[#b344a2]"
+          className="w-full rounded-xl bg-[#B95FAB] px-5 py-3 font-semibold text-white hover:bg-[#A14092]"
         >
           {isSignUp ? 'Sign Up' : 'Log In'}
         </button>

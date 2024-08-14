@@ -36,7 +36,7 @@ export default function Search({ initialQuery = '', style = {} }: SearchProps) {
         onChange={(e) => setQuery(e.target.value)}
         onClick={handleInputClick}
         placeholder="Search your tour in KOREA"
-        className="mr-4 h-[56px] w-full overflow-hidden rounded-full border-2 border-black px-5 py-4 text-[12px] text-black focus:border-gray-200 focus:bg-gray-200 focus:outline-none"
+        className="mr-4 h-[56px] w-full resize-none overflow-hidden rounded-full border-2 border-black px-5 py-4 text-[12px] text-black focus:border-gray-200 focus:bg-gray-200 focus:outline-none"
         style={style}
       />
     </div>
