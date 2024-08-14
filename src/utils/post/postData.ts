@@ -1,9 +1,9 @@
 import { Tables } from '@/types/supabase';
 import axios from 'axios';
-//날짜 입력 저장 및 수정
-export const upsertDate = async (datePostData: Partial<Tables<'posts'>>) => {
+// 일정 저장
+export const insertPostDetails = async (postDetails: Partial<Tables<'posts'>>) => {
   try {
-    const response = await axios.post('/api/post', datePostData);
+    const response = await axios.post('/api/post', postDetails);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -14,7 +14,7 @@ export const upsertDate = async (datePostData: Partial<Tables<'posts'>>) => {
     }
   }
 };
-
+// 일정 세부사항 수정
 export const updatePostDetails = async (postDetails: Partial<Tables<'posts'>>) => {
   try {
     const response = await axios.put('/api/post', postDetails);
@@ -32,6 +32,20 @@ export const updatePostDetails = async (postDetails: Partial<Tables<'posts'>>) =
 export const savePlaces = async (placesDetails: Partial<Tables<'schedule'>>) => {
   try {
     const response = await axios.post('/api/post/search', placesDetails);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(error);
+      throw new Error(`HTTP error! status: ${error.response?.status}`);
+    } else {
+      throw new Error('An unknown error occurred');
+    }
+  }
+};
+// 장소 수정
+export const updatePlaces = async (placesDetails: Partial<Tables<'schedule'>>) => {
+  try {
+    const response = await axios.put('/api/post/search', placesDetails);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

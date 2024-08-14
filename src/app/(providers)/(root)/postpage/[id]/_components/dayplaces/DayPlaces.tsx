@@ -23,6 +23,7 @@ type PlaceProps = {
   setRegion: React.Dispatch<React.SetStateAction<string>>;
   sequence: number;
   setSequence: React.Dispatch<React.SetStateAction<number>>;
+  postId: string;
 };
 
 const DayPlaces: React.FC<PlaceProps> = ({
@@ -34,13 +35,12 @@ const DayPlaces: React.FC<PlaceProps> = ({
   region,
   setRegion,
   sequence,
-  setSequence
+  setSequence,
+  postId
 }) => {
   const [days, setDays] = useState<string[]>([]);
-  const [editDay, setEditDay] = useState('');
   const startDate = sessionStorage.getItem('startDate');
   const endDate = sessionStorage.getItem('endDate');
-  const postId = sessionStorage.getItem('postId');
   const userId = sessionStorage.getItem('userId');
 
   useEffect(() => {
@@ -99,29 +99,34 @@ const DayPlaces: React.FC<PlaceProps> = ({
         const supabase = createClient();
         const { data: placesData, error } = await supabase
           .from('schedule')
-          .select('places, lat, long, area')
-          .eq('post_id', postId)
-          .eq('day', selectedDay)
-          .single();
+          .select('places, lat, long, area, day')
+          .eq('post_id', postId);
 
         if (error) {
           console.error('Error fetching data:', error);
+          return;
         }
 
-        if (placesData && Array.isArray(placesData.places)) {
-          //사용하기 쉬운 형태로 변환
-          const combinedPlaces: Place[] = placesData.places.map((place: any, index: number) => ({
-            title: place.title,
-            category: place.category,
-            roadAddress: place.roadAddress,
-            description: place.description,
-            latitude: placesData.lat[index],
-            longitude: placesData.long[index],
-            area: placesData.area
-          }));
+        if (placesData && Array.isArray(placesData)) {
+          // 모든 데이터를 순회하면서 day별로 sessionStorage에 저장합니다.
+          placesData.forEach((dayData: any) => {
+            if (dayData && Array.isArray(dayData.places)) {
+              // 데이터를 변환하여 사용하기 쉬운 형태로 만듭니다.
+              const combinedPlaces: Place[] = dayData.places.map((place: any, index: number) => ({
+                title: place.title,
+                category: place.category,
+                roadAddress: place.roadAddress,
+                description: place.description,
+                latitude: dayData.lat[index],
+                longitude: dayData.long[index],
+                area: dayData.area
+              }));
 
-          setSelectedPlaces(combinedPlaces);
-          sessionStorage.setItem(selectedDay, JSON.stringify(combinedPlaces));
+              // 각 day에 해당하는 데이터를 sessionStorage에 저장합니다.
+              setSelectedPlaces(combinedPlaces);
+              sessionStorage.setItem(dayData.day, JSON.stringify(combinedPlaces));
+            }
+          });
         } else {
           console.log('No data found for the given postId and day');
         }

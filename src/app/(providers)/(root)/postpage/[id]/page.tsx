@@ -51,10 +51,11 @@ function PostPage() {
           setRegion={setRegion}
           sequence={sequence}
           setSequence={setSequence}
+          postId={postId as string}
         />
       )}
       {step === 3 && <AddressSearch prev={prevStep} selectedDay={selectedDay} sequence={sequence} />}
-      {step === 4 && <Write goToStep2={goToStep2} region={region} />}
+      {step === 4 && <Write goToStep2={goToStep2} region={region} postId={postId as string} />}
     </div>
   );
 }
