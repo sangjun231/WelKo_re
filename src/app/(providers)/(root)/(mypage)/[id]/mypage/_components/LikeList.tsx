@@ -68,7 +68,7 @@ export default function LikeList() {
   }
 
   return (
-    <div className="max-w-[360px]">
+    <div>
       {data.map((post, index) => (
         <div key={`${post.id}-${index}`} className="relative mb-[16px]">
           <div className="flex">

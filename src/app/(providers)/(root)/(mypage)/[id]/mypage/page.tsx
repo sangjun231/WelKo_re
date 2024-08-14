@@ -63,7 +63,7 @@ const MyPage = () => {
         >
           Reservation
         </button>
-        <button className={`border-b ${buttonClass('Review')}`} onClick={() => setSelectedComponent('Review')}>
+        <button className={`border-b ${buttonClass('Review')} mx-auto max-w-[320px]`} onClick={() => setSelectedComponent('Review')}>
           Review
         </button>
       </div>

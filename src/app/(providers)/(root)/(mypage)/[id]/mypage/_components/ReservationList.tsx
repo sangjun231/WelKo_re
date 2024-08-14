@@ -192,7 +192,7 @@ export default function ReservationList() {
   }
 
   return (
-    <div className="max-w-[360px]">
+    <div>
       {filteredPosts.map((post, index) => {
         const payment = paymentsQuery.data?.find((pay) => pay.post_id === post.id);
         const status = payment ? tourStatus(post.endDate, payment.pay_state ?? '') : 'N/A';

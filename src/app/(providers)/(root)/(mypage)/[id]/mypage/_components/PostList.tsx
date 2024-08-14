@@ -79,7 +79,7 @@ export default function PostList() {
   }
 
   return (
-    <div className="max-w-[360px]">
+    <div>
       {data.map((post: Tables<'posts'>, index) => {
         const status = tourStatus(post.endDate);
 

@@ -84,7 +84,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
   }
 
   return (
-    <div className="mx-auto max-w-[320px]">
+    <div>
       {posts.map((post, index) => {
         const review = reviews.find((r) => r.post_id === post.id);
 
