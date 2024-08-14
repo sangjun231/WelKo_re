@@ -89,7 +89,12 @@ const DayPlaces: React.FC<PlaceProps> = ({
 
   // 수정할 때, Supabase에서 장소 데이터를 불러오기
   useEffect(() => {
-    if (postId && selectedDay) {
+    const storedPlaces = sessionStorage.getItem(selectedDay);
+
+    if (storedPlaces) {
+      // 이미 저장된 데이터가 있으면 해당 데이터를 사용
+      setSelectedPlaces(JSON.parse(storedPlaces));
+    } else if (postId && selectedDay) {
       const fetchPlaces = async () => {
         const supabase = createClient();
         const { data: placesData, error } = await supabase
@@ -98,23 +103,27 @@ const DayPlaces: React.FC<PlaceProps> = ({
           .eq('post_id', postId)
           .eq('day', selectedDay)
           .single();
-        console.log(placesData);
-        //if (placesData && placesData.length > 0) {
-        // 첫 번째 결과만 사용 (하나의 day에 대한 데이터만 있을 것으로 가정)
-        // const placeData = placesData[0];
-        // 사용하기 쉬운 형태로 변환
-        // const combinedPlaces = placeData.map((place: any, index: number) => ({
-        //   places:
-        //   lat: placeData.lat[index],
-        //   long: placeData.long[index]
-        // }));
 
-        //setSelectedPlaces(combinedPlaces);
-        // } else {
-        //   console.log('No data found for the given postId and day');
-        // }
         if (error) {
           console.error('Error fetching data:', error);
+        }
+
+        if (placesData && Array.isArray(placesData.places)) {
+          //사용하기 쉬운 형태로 변환
+          const combinedPlaces: Place[] = placesData.places.map((place: any, index: number) => ({
+            title: place.title,
+            category: place.category,
+            roadAddress: place.roadAddress,
+            description: place.description,
+            latitude: placesData.lat[index],
+            longitude: placesData.long[index],
+            area: placesData.area
+          }));
+
+          setSelectedPlaces(combinedPlaces);
+          sessionStorage.setItem(selectedDay, JSON.stringify(combinedPlaces));
+        } else {
+          console.log('No data found for the given postId and day');
         }
       };
       fetchPlaces();
