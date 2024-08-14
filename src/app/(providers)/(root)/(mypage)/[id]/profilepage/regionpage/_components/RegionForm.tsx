@@ -156,7 +156,7 @@ const RegionForm = () => {
       <div>
         <p className="mb-[8px] text-[16px] font-medium">Location</p>
         {region ? (
-          <p className="flex items-center justify-between rounded-2xl border bg-grayscale-50 p-[16px] text-[16px]">
+          <p className="flex items-center justify-between rounded-2xl border bg-grayscale-50 p-[16px] text-[16px] text-grayscale-900">
             {translatedRegion || 'Loading...'}
             <span>
               <Image src="/icons/tabler-icon-location-filled.svg" alt="location" width={32} height={32} />

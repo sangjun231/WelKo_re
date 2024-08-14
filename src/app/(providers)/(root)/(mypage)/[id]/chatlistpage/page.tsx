@@ -27,11 +27,13 @@ const MyPage = () => {
             style={{ width: '24px', height: '24px' }}
           />
         </button>
-        <p className="absolute left-1/2 -translate-x-1/2 transform text-[18px] font-semibold">Message</p>
+        <p className="absolute left-1/2 -translate-x-1/2 transform text-[18px] font-semibold text-primary-900">
+          Message
+        </p>
         <div className="w-8"></div>
       </div>
       <div className="flex items-center justify-center">
-        <div className="web:py-[88px] web:px-[40px] web:max-w-[560px] web:border">
+        <div className="web:max-w-[560px] web:border web:px-[40px] web:py-[88px]">
           <ChatList userId={id} />
         </div>
       </div>

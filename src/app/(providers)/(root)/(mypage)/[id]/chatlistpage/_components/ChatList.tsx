@@ -151,9 +151,9 @@ const ChatList = ({ userId }: ChatListProps) => {
       <div className="flex h-screen items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-[8px]">
           <Image src="/icons/Group-348.svg" alt="no chat" width={44} height={44} />
-          <p className="text-[14px] font-semibold">You don&apos;t have any messages</p>
-          <p className="text-[12px]">When you receive a new message,</p>
-          <p className="text-[12px]">it will appear here.</p>
+          <p className="text-[14px] font-semibold text-grayscale-900">You don&apos;t have any messages</p>
+          <p className="text-[12px] text-grayscale-600">When you receive a new message,</p>
+          <p className="text-[12px] text-grayscale-600">it will appear here.</p>
         </div>
       </div>
     );
@@ -185,13 +185,13 @@ const ChatList = ({ userId }: ChatListProps) => {
                   />
                   <div className="ml-[8px] flex w-full flex-col gap-[5px]">
                     <div className="flex items-center justify-between">
-                      <p className="line-clamp-1 text-[13px] font-medium">{postDetails.title}</p>
+                      <p className="line-clamp-1 text-[13px] font-medium text-primary-900">{postDetails.title}</p>
                       <p className="ml-[8px] flex-shrink-0 text-[10px] text-grayscale-500">
                         {formatDate(firstMessage?.created_at)}
                       </p>
                     </div>
                     <div className="flex items-center justify-between">
-                      <p className="text-[12px]">{firstMessage?.content}</p>
+                      <p className="text-[12px] text-grayscale-900">{firstMessage?.content}</p>
                       {isNewMessage && <span className="h-[8px] w-[8px] rounded-full bg-action-color"></span>}
                     </div>
                     <div className="flex">

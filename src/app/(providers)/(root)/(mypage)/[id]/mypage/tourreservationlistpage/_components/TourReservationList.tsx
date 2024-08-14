@@ -71,7 +71,9 @@ const TourReservationList = ({ userId, postId }: { userId: string; postId: strin
         <button className="rounded-[24px] bg-grayscale-50" onClick={handleBack}>
           <Image src="/icons/tabler-icon-chevron-left.svg" alt="Go Back" width={32} height={32} />
         </button>
-        <p className="absolute left-1/2 -translate-x-1/2 transform text-[18px] font-semibold">Reservation List</p>
+        <p className="absolute left-1/2 -translate-x-1/2 transform text-[18px] font-semibold text-primary-900">
+          Reservation List
+        </p>
         <div className="w-8"></div>
       </div>
       <div className="mt-[24px] flex">
@@ -84,7 +86,7 @@ const TourReservationList = ({ userId, postId }: { userId: string; postId: strin
           style={{ width: '80px', height: '80px' }}
         />
         <div className="ml-[8px]">
-          <p className="line-clamp-1 text-[14px] font-semibold">{data[0]?.posts.title}</p>
+          <p className="line-clamp-1 text-[14px] font-semibold text-primary-900">{data[0]?.posts.title}</p>
           <p className="text-[14px] text-grayscale-500">
             {formatDateRange(data[0]?.posts.startDate, data[0]?.posts.endDate)}
           </p>

@@ -71,7 +71,7 @@ const ReviewForm = ({ userId }: { userId: string }) => {
         <button className="rounded-[24px] bg-grayscale-50" onClick={handleBack}>
           <Image src="/icons/tabler-icon-chevron-left.svg" alt="Go Back" width={32} height={32} />
         </button>
-        <p className="absolute left-1/2 -translate-x-1/2 transform text-[18px] font-semibold">
+        <p className="absolute left-1/2 -translate-x-1/2 transform text-[18px] font-semibold text-primary-900">
           {id ? 'Edit Review' : 'New Review'}
         </p>
         <div className="w-8"></div>
@@ -88,7 +88,7 @@ const ReviewForm = ({ userId }: { userId: string }) => {
               style={{ width: '44px', height: '44px' }}
             />
             <div className="ml-[8px] flex flex-col">
-              <p className="text-[14px] font-semibold">{post.title}</p>
+              <p className="text-[14px] font-semibold text-primary-900">{post.title}</p>
               <p className="text-[14px] text-grayscale-500">{formatDateRange(post.startDate, post.endDate)}</p>
             </div>
           </div>
@@ -99,7 +99,7 @@ const ReviewForm = ({ userId }: { userId: string }) => {
       <form onSubmit={handleSubmit}>
         <Rating key={rating} count={5} value={rating} onChange={ratingChanged} size={24} activeColor="#ffd700" />
         <textarea
-          className="mt-[20px] h-[225px] w-full resize-none rounded-2xl border bg-grayscale-50 p-[16px] text-[14px]"
+          className="mt-[20px] h-[225px] w-full resize-none rounded-2xl border bg-grayscale-50 p-[16px] text-[14px] text-grayscale-900"
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="You can write up to 500 characters"

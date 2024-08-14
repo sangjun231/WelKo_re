@@ -79,7 +79,7 @@ const ProfileForm = ({ userId }: { userId: string }) => {
             <button className="rounded-[24px] bg-grayscale-50" onClick={handleBack}>
               <Image src="/icons/tabler-icon-chevron-left.svg" alt="Go Back" width={32} height={32} />
             </button>
-            <p className="text-[18px] font-semibold">Edit Profile</p>
+            <p className="text-[18px] font-semibold text-primary-900">Edit Profile</p>
             <button className="text-[14px] font-medium text-action-color" onClick={handleProfileUpdate}>
               Done
             </button>

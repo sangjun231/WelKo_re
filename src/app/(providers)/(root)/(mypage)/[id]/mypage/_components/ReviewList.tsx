@@ -75,9 +75,9 @@ const ReviewList = ({ userId }: { userId: string }) => {
       <div className="flex h-screen items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-[8px]">
           <Image src="/icons/tabler-icon-pencil.svg" alt="no review" width={44} height={44} />
-          <p className="text-[14px] font-semibold">You don&apos;t have any Review</p>
-          <p className="text-[12px]">When you write a new review,</p>
-          <p className="text-[12px]">it will appear here.</p>
+          <p className="text-grayscale-900 text-[14px] font-semibold">You don&apos;t have any Review</p>
+          <p className="text-[12px] text-grayscale-600">When you write a new review,</p>
+          <p className="text-[12px] text-grayscale-600">it will appear here.</p>
         </div>
       </div>
     );
