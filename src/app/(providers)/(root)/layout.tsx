@@ -5,7 +5,7 @@ import RouteChangeHandler from './(mainpage)/_components/RouteChangeHandler';
 
 function RootLayout({ children }: PropsWithChildren) {
   return (
-    <div id="root" className="web:max-w-[1440px] mx-auto flex min-h-screen max-w-[360px] flex-col">
+    <div id="root" className="web:max-w-[1440px] mx-auto flex min-h-screen w-full flex-col">
       <Suspense fallback={<div>Loading...</div>}>
         <RouteChangeHandler />
       </Suspense>
