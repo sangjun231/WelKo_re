@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClient } from '@/utils/supabase/client'; // Supabase 클라이언트 인스턴스 가정
+import { createClient } from '@/utils/supabase/client';
 import BackButton from '@/components/common/Button/BackButton';
 
 const FindPassword = () => {
@@ -15,14 +15,14 @@ const FindPassword = () => {
     e.preventDefault();
     try {
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'https://welko.vercel.app/resetPassword' // vercel 할떄 바꿔야함
+        redirectTo: 'https://welko.vercel.app/resetPassword'
       });
 
       if (error) {
         setError('Failed to send reset email. Please try again.');
       } else {
         setMessage('Password reset email sent! Please check your inbox.');
-        setEmail(''); // Clear email input
+        setEmail('');
       }
     } catch (err) {
       setError('An unexpected error occurred. Please try again.');
@@ -31,7 +31,7 @@ const FindPassword = () => {
 
   return (
     <div className="flex items-center justify-center md:h-screen md:bg-gray-100">
-      <div className="h-[800px] w-[360px] max-w-md bg-white px-5 md:w-full md:rounded-lg md:p-6 md:shadow-lg">
+      <div className="h-[800px] w-full max-w-md bg-white px-5 md:w-full md:rounded-lg md:p-6 md:shadow-lg">
         <div className="mt-2 flex h-[44px] items-center pb-[16px] pt-3.5 md:hidden">
           <BackButton />
         </div>
@@ -49,13 +49,13 @@ const FindPassword = () => {
           />
           <button
             type="submit"
-            className="w-full rounded-xl bg-[#B95FAB] px-5 py-3 font-semibold text-white hover:bg-[#b344a2]"
+            className="w-full rounded-xl bg-[#B95FAB] px-5 py-3 font-semibold text-white hover:bg-[#A14092]"
           >
             Send Reset Email
           </button>
         </form>
-        {message && <p className="mt-4 text-center text-green-500">{message}</p>}
-        {error && <p className="mt-4 text-center text-red-500">{error}</p>}
+        {message && <p className="mt-4 text-center text-[#0A84FF]">{message}</p>}
+        {error && <p className="mt-4 text-center text-[#FF2D2D]">{error}</p>}
       </div>
     </div>
   );
