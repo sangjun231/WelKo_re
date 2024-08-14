@@ -6,7 +6,7 @@ import usePostStore from '@/zustand/postStore';
 import { formatDateRange } from '@/utils/detail/functions';
 import BackButton from '@/components/common/Button/BackButton';
 import useAuthStore from '@/zustand/bearsStore';
-import LikeBtn from '/public/icons/tabler-icon-post-heart.svg';
+import LikeBtn from '/public/icons/detail_icons/icon_like.svg';
 import { useLikeStore } from '@/zustand/likeStore';
 import { useWebStore } from '@/zustand/webStateStore';
 
@@ -71,7 +71,7 @@ const SelectPost = () => {
             <Image src={post.image} alt={post.title} fill style={{ objectFit: 'cover' }} className="rounded-lg" />
             <button
               onClick={handleLike}
-              className="absolute right-1 top-2 rounded-full bg-[rgba(255,255,255,0.10)] p-0.5 backdrop-blur-[10px]"
+              className="web:p-2 absolute right-2 top-2 rounded-full bg-[rgba(255,255,255,0.10)] p-0.5 backdrop-blur-[10px]"
             >
               {liked ? (
                 <LikeBtn width={isWeb ? 24 : 20} height={isWeb ? 24 : 20} color="#FF7029" fill="#FF7029" />
@@ -97,7 +97,7 @@ const SelectPost = () => {
         <div className="web:block mx-6 hidden"></div>
         {/* 모바일에서 숨기고, 웹에서만 보이는 Cancellation Policy */}
         <div className="web:block hidden flex-1">
-          <h3 className="text-xl font-medium text-text-color">Cancellation Policy</h3>
+          <h3 className="mb-6 text-xl font-medium text-text-color">Cancellation Policy</h3>
           <p className="text-base font-normal text-grayscale-500">
             Before you book, make sure you&apos;re comfortable with
             <u className="text-grayscale-900"> this guide&apos;s cancellation policy.</u> If you want a refund, click
