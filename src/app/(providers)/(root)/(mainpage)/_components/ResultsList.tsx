@@ -3,6 +3,8 @@ import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Search from '@/components/common/Search/Search';
 import Link from 'next/link';
+import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
+import { useEffect, useState } from 'react';
 
 interface Post {
   id: string;
@@ -44,6 +46,19 @@ export default function ResultsList({ posts, loading, error }: ResultsListProps)
   const startDate = searchParams.get('startDate') ? new Date(searchParams.get('startDate') as string) : null;
   const endDate = searchParams.get('endDate') ? new Date(searchParams.get('endDate') as string) : null;
 
+  const [displayedPosts, setDisplayedPosts] = useState<Post[]>([]);
+  const [page, setPage] = useState(1); // 페이지 상태
+
+  useEffect(() => {
+    // 페이지가 변경될 때마다 10개의 포스터를 추가로 보여줌
+    const loadMorePosts = () => {
+      const newPosts = posts.slice((page - 1) * 10, page * 10);
+      setDisplayedPosts((prev) => [...prev, ...newPosts]);
+    };
+
+    loadMorePosts();
+  }, [page, posts]);
+
   const formatTags = () => {
     if (tags.length === 0) return 'Any Tag';
     return tags.length > 1 ? `${tags[0]} + ${tags.length - 1}` : tags[0];
@@ -57,8 +72,6 @@ export default function ResultsList({ posts, loading, error }: ResultsListProps)
   return (
     <div className="p-4">
       <Search initialQuery={selection} style={{ paddingTop: '8px', lineHeight: '20px', fontWeight: 500 }} />
-      {loading && <div>Loading...</div>}
-      {error && <div>{error}</div>}
       {!loading && posts.length === 0 && (
         <div className="flex min-h-[400px] flex-col items-center justify-center gap-2 text-center">
           <Image src="/icons/tabler-icon-list-search.svg" alt="search list image" width={44} height={44} />
@@ -67,47 +80,53 @@ export default function ResultsList({ posts, loading, error }: ResultsListProps)
         </div>
       )}
 
-      <ul className="mt-5">
-        {posts.map((post, index) => (
-          <li key={`${post.id}-${index}`} className="flex rounded-md p-2">
-            <Link href={`/detail/${post.id}`} className="flex w-full">
-              {post.image ? (
-                <Image
-                  src={post.image}
-                  alt={post.title}
-                  width={96}
-                  height={96}
-                  className="mr-2 h-[100px] w-[80px] rounded-lg"
-                />
-              ) : (
-                <div className="mr-2 flex h-24 w-24 items-center justify-center bg-gray-200">No Image</div>
-              )}
-              <div className="flex flex-col">
-                <div>
-                  <h3 className="line-clamp-1 text-sm font-semibold">{post.title}</h3>
-                  <p className="mt-1 text-gray-500">
-                    {post.startDate && post.endDate
-                      ? `${new Intl.DateTimeFormat('ko', {
-                          year: '2-digit',
-                          month: 'numeric',
-                          day: 'numeric'
-                        }).format(new Date(post.startDate))} ~ ${new Intl.DateTimeFormat('ko', {
-                          year: '2-digit',
-                          month: 'numeric',
-                          day: 'numeric'
-                        }).format(new Date(post.endDate))}`
-                      : 'No dates available'}
-                  </p>
+      <InfiniteScroll
+        loading={loading}
+        hasMore={displayedPosts.length < posts.length}
+        onLoadMore={() => setPage((prev) => prev + 1)}
+      >
+        <ul className="mt-5">
+          {displayedPosts.map((post, index) => (
+            <li key={`${post.id}-${index}`} className="flex rounded-md p-2">
+              <Link href={`/detail/${post.id}`} className="flex w-full">
+                {post.image ? (
+                  <Image
+                    src={post.image}
+                    alt={post.title}
+                    width={96}
+                    height={96}
+                    className="mr-2 h-[80px] w-[80px] rounded-lg"
+                  />
+                ) : (
+                  <div className="mr-2 flex h-24 w-24 items-center justify-center bg-gray-200">No Image</div>
+                )}
+                <div className="flex flex-col">
+                  <div>
+                    <h3 className="line-clamp-1 text-sm font-semibold">{post.title}</h3>
+                    <p className="mt-1 tracking-[-0.1em] text-gray-500">
+                      {post.startDate && post.endDate
+                        ? `${new Intl.DateTimeFormat('ko', {
+                            year: '2-digit',
+                            month: 'numeric',
+                            day: 'numeric'
+                          }).format(new Date(post.startDate))} ~ ${new Intl.DateTimeFormat('ko', {
+                            year: '2-digit',
+                            month: 'numeric',
+                            day: 'numeric'
+                          }).format(new Date(post.endDate))}`
+                        : 'No dates available'}
+                    </p>
+                  </div>
+                  <div className="mt-1 flex text-sm">
+                    <div className="font-bold text-[#B95FAB]">{formatPrice(post.price)}</div>
+                    <div className="font-medium">/Person</div>
+                  </div>
                 </div>
-                <div className="mt-1 flex text-sm">
-                  <div className="font-bold text-[#B95FAB]">{formatPrice(post.price)}</div>
-                  <div className="font-medium">/Person</div>
-                </div>
-              </div>
-            </Link>
-          </li>
-        ))}
-      </ul>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </InfiniteScroll>
     </div>
   );
 }

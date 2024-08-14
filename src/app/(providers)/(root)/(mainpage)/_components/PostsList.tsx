@@ -155,13 +155,13 @@ const PostsList = () => {
                     </div>
                   )}
                   <div className="flex flex-grow flex-col">
-                    <h3 className="mb-2 line-clamp-1 text-base font-semibold">{post.title}</h3>
-                    <p className="text-gray-500">
+                    <h3 className="mb-1 line-clamp-1 text-base font-semibold">{post.title}</h3>
+                    <p className="tracking-[-0.1em] text-gray-500">
                       {post.startDate && post.endDate
                         ? `${formatDate(post.startDate)} ~ ${formatDate(post.endDate)}`
                         : 'No dates available'}
                     </p>
-                    <div className="mt-2 flex text-sm">
+                    <div className="mt-1 flex text-sm">
                       <div className="mt-auto line-clamp-1 font-bold text-[#B95FAB]">{formatPrice(post.price)}</div>
                       <div className="font-medium">/Person</div>
                     </div>
