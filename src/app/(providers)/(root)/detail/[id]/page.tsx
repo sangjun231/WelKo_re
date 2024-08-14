@@ -14,11 +14,11 @@ export default function DetailPage() {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsWeb(window.innerWidth >= 769); 
+      setIsWeb(window.innerWidth >= 769);
     };
 
-    handleResize(); 
-    window.addEventListener('resize', handleResize); 
+    handleResize();
+    window.addEventListener('resize', handleResize);
 
     return () => window.removeEventListener('resize', handleResize);
   }, [setIsWeb]);
@@ -27,8 +27,8 @@ export default function DetailPage() {
     <>
       <DetailImg isWeb={isWeb} />
       <div className="flex w-full justify-center">
-        <div className="web:mx-[88px] w-full">
-          <CheckboxDetail />
+        <div className="web:mx-[88px] mx-5 w-full">
+          <CheckboxDetail isWeb={isWeb} />
           <ScheduleMap />
           <Guide />
           <Reviews />
