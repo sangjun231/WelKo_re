@@ -99,7 +99,7 @@ const DetailNavbar = () => {
             </div>
             <button
               onClick={handlePaymentClick}
-              className="web:px-6 web:py-4 web:text-xl flex flex-1 items-center justify-center rounded-xl bg-primary-300 px-5 py-3 text-base font-semibold text-white"
+              className="web:px-6 web:py-4 web:text-xl flex max-w-[480px] flex-1 items-center justify-center rounded-xl bg-primary-300 px-5 py-3 text-base font-semibold text-white"
             >
               Confirm and Pay
             </button>
@@ -121,7 +121,7 @@ const DetailNavbar = () => {
             </div>
             <button
               onClick={handleReserveClick}
-              className="web:px-6 web:py-4 web:text-xl flex flex-1 items-center justify-center rounded-xl bg-primary-300 px-5 py-3 text-base font-semibold text-white"
+              className="web:px-6 web:py-4 web:text-xl flex max-w-[480px] flex-1 items-center justify-center rounded-xl bg-primary-300 px-5 py-3 text-base font-semibold text-white"
             >
               Reserve
             </button>
