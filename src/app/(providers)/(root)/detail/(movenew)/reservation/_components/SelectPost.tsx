@@ -8,8 +8,10 @@ import BackButton from '@/components/common/Button/BackButton';
 import useAuthStore from '@/zustand/bearsStore';
 import LikeBtn from '/public/icons/tabler-icon-post-heart.svg';
 import { useLikeStore } from '@/zustand/likeStore';
+import { useWebStore } from '@/zustand/webStateStore';
 
 const SelectPost = () => {
+  const { isWeb, setIsWeb } = useWebStore();
   const { post } = usePostStore((state) => ({
     post: state.post
   }));
@@ -40,6 +42,20 @@ const SelectPost = () => {
     }).format(price);
   };
 
+  // 화면 크기에 따라 isWeb 상태 업데이트
+  useEffect(() => {
+    const handleResize = () => {
+      setIsWeb(window.innerWidth >= 768);
+    };
+
+    handleResize(); // 초기 로드 시 한 번 실행
+    window.addEventListener('resize', handleResize); // 화면 크기 변경 시마다 실행
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [setIsWeb]);
+
   if (!post) return <div className="flex items-center justify-center">Loading...</div>;
 
   return (
@@ -58,15 +74,17 @@ const SelectPost = () => {
               className="absolute right-1 top-2 rounded-full bg-[rgba(255,255,255,0.10)] p-0.5 backdrop-blur-[10px]"
             >
               {liked ? (
-                <LikeBtn width={20} height={20} color="#FF7029" fill="#FF7029" />
+                <LikeBtn width={isWeb ? 24 : 20} height={isWeb ? 24 : 20} color="#FF7029" fill="#FF7029" />
               ) : (
-                <LikeBtn width={20} height={20} color="white" />
+                <LikeBtn width={isWeb ? 24 : 20} height={isWeb ? 24 : 20} color="white" />
               )}
             </button>
           </div>
 
           <div className="web:gap-2 web:mb-[137px] flex flex-col gap-1">
-            <h4 className="web:text-lg web:font-semibold line-clamp-1 text-sm font-semibold">{post.title}</h4>
+            <h4 className="web:text-lg web:font-semibold web:line-clamp-2 line-clamp-1 text-sm font-semibold">
+              {post.title}
+            </h4>
             <p className="web:text-base text-sm font-normal text-grayscale-500">
               {formatDateRange(post.startDate, post.endDate)}
             </p>
@@ -76,7 +94,7 @@ const SelectPost = () => {
             </div>
           </div>
         </div>
-        <div className="web:block mx-20 hidden"></div>
+        <div className="web:block mx-6 hidden"></div>
         {/* 모바일에서 숨기고, 웹에서만 보이는 Cancellation Policy */}
         <div className="web:block hidden flex-1">
           <h3 className="text-xl font-medium text-text-color">Cancellation Policy</h3>
