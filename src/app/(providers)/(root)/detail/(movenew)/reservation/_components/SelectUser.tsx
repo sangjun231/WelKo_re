@@ -33,9 +33,9 @@ const SelectUser = () => {
   };
 
   return (
-    <div className="mt-6 flex flex-col">
-      <div className="mb-5 gap-2">
-        <h3 className="text-base font-medium text-text-color">How many tourists?</h3>
+    <div className="web:mt-20 web:space-between mt-6 flex w-full flex-col">
+      <div className="web:mb-20 web:w-1/2 mb-5 gap-2">
+        <h3 className="web:text-xl text-base font-medium text-text-color">How many tourists?</h3>
         <input
           type="number"
           className="my-2 w-full rounded-xl bg-grayscale-50 px-4 py-3"
@@ -44,21 +44,21 @@ const SelectUser = () => {
           value={numPersons === '' ? '' : numPersons}
           onChange={handleNumPersonsChange}
         />
-        <p className="text-[10px] text-grayscale-500">
+        <p className="web:mt-6 web:text-base text-[10px] text-grayscale-500">
           If you exceed the number of people booked, your reservation may be canceled. Please contact the guide first.
         </p>
       </div>
-      <div className="mb-5 gap-2">
-        <h3 className="text-base font-medium text-text-color">Nickname/email</h3>
-        <div className="my-2 w-full rounded-xl bg-grayscale-100 px-4 py-3">
+      <div className="mobile:gap-2 mb-5">
+        <h3 className="web:text-xl web:mb-5 text-base font-medium text-text-color">Nickname/email</h3>
+        <div className="web:w-1/2 my-2 w-full rounded-xl bg-grayscale-100 px-4 py-3">
           {user ? user.email : '로그인 정보가 없습니다.'}
         </div>
       </div>
-      <div className="m6-5">
-        <h3 className="mb-1 text-base font-medium text-text-color">Cancellation Policy</h3>
-        <p className="text-xs font-normal text-grayscale-500">
+      <div className="web:hidden mb-5">
+        <h3 className="web:text-xl web:mb-5 mb-1 text-base font-medium text-text-color">Cancellation Policy</h3>
+        <p className="web:text-base text-xs font-normal text-grayscale-500">
           Before you book, make sure you&apos;re comfortable with
-          <u className="text-grayscale-900">this guide&apos;s cancellation policy.</u> If you want a refund, click the
+          <u className="text-grayscale-900"> this guide&apos;s cancellation policy.</u> If you want a refund, click the
           Request for a <u className="text-grayscale-900">refund button</u> and you will get a refund right away. The
           refund amount will be refunded before 12 o&apos;clock on the same day. You can cancel it for free up to two
           days after payment. After that, there will be a <u className="text-grayscale-900">cancellation penalty.</u>
