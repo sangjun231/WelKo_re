@@ -172,7 +172,7 @@ const ChatList = ({ userId }: ChatListProps) => {
           const isNewMessage = !newMessages[chatId] && firstMessage.sender_id !== userId && !firstMessage.is_checked;
 
           return (
-            <div className="mb-[32px] max-w-[360px]" key={index} onClick={() => handleChatClick(chat)}>
+            <div className="mb-[32px]" key={index} onClick={() => handleChatClick(chat)}>
               {postDetails && senderDetails && (
                 <div className="flex">
                   <Image
