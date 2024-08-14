@@ -12,7 +12,13 @@ interface CitySelectorProps {
   goToNextStep: () => void;
 }
 
-const CitySelector: React.FC<CitySelectorProps> = ({ selectedCity, handleCityClick, cities }) => {
+const CitySelector: React.FC<CitySelectorProps> = ({
+  selectedCity,
+  handleCityClick,
+  cities,
+  goToPreviousStep,
+  goToNextStep
+}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [autoCompleteResults, setAutoCompleteResults] = useState<string[]>([]);
 
@@ -28,7 +34,6 @@ const CitySelector: React.FC<CitySelectorProps> = ({ selectedCity, handleCityCli
       if (error) {
         console.error('Error fetching auto-complete results:', error);
       } else {
-        // Ensure unique results
         const uniqueResults = Array.from(new Set(data.map((item) => item.area)));
         setAutoCompleteResults(uniqueResults);
       }
@@ -41,6 +46,7 @@ const CitySelector: React.FC<CitySelectorProps> = ({ selectedCity, handleCityCli
     handleCityClick(result);
     setSearchQuery(result);
     setAutoCompleteResults([]);
+    goToNextStep(); // Move to the next step when a city is selected
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +60,11 @@ const CitySelector: React.FC<CitySelectorProps> = ({ selectedCity, handleCityCli
     }
   };
 
-  // Filter cities based on search query
+  const handleClearSearch = () => {
+    setSearchQuery(''); // Clear the search input
+    setAutoCompleteResults([]); // Clear the autocomplete results
+  };
+
   const filteredCities = cities.filter((city) => city.toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
@@ -69,13 +79,24 @@ const CitySelector: React.FC<CitySelectorProps> = ({ selectedCity, handleCityCli
             placeholder="Search Your Destination"
             className="w-full rounded-[36px] border bg-gray-100 p-2 pl-4"
           />
-          <Image
-            src="/icons/search.png"
-            alt="Search icon"
-            width={20}
-            height={20}
-            className="absolute right-4 top-1/2 -translate-y-1/2 transform"
-          />
+          {searchQuery ? (
+            <Image
+              src="/icons/tabler-icon-x.svg"
+              alt="Clear search"
+              width={20}
+              height={20}
+              className="absolute right-4 top-1/2 -translate-y-1/2 transform cursor-pointer"
+              onClick={handleClearSearch}
+            />
+          ) : (
+            <Image
+              src="/icons/search.png"
+              alt="Search icon"
+              width={20}
+              height={20}
+              className="absolute right-4 top-1/2 -translate-y-1/2 transform"
+            />
+          )}
         </div>
         {autoCompleteResults.length > 0 && (
           <div className="mb-4 rounded-md border bg-white p-2">
@@ -97,7 +118,10 @@ const CitySelector: React.FC<CitySelectorProps> = ({ selectedCity, handleCityCli
               className={`mb-2 mr-1 flex min-w-[30%] cursor-pointer justify-center rounded-3xl border px-3 py-2 text-center text-[13px] font-medium ${
                 city === selectedCity ? 'bg-[#B95FAB] text-white' : 'bg-gray-100'
               }`}
-              onClick={() => handleCityClick(city)}
+              onClick={() => {
+                handleCityClick(city);
+                goToNextStep(); // Move to the next step when a city is selected
+              }}
             >
               {city}
             </div>
@@ -107,7 +131,10 @@ const CitySelector: React.FC<CitySelectorProps> = ({ selectedCity, handleCityCli
               className={`mb-2 mr-1 flex min-w-[30%] cursor-pointer justify-center rounded-3xl border px-3 py-2 text-center text-[13px] font-medium ${
                 searchQuery === selectedCity ? 'bg-[#B95FAB] text-white' : 'bg-gray-100'
               }`}
-              onClick={() => handleCityClick(searchQuery)}
+              onClick={() => {
+                handleCityClick(searchQuery);
+                goToNextStep(); // Move to the next step when a city is selected
+              }}
             >
               {searchQuery}
             </div>

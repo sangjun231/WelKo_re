@@ -166,15 +166,15 @@ const AccordionStep: React.FC<AccordionStepProps> = ({
       {activeStep !== step && (
         <button
           onClick={() => toggleStep(step)}
-          className={`h-[50px] w-full px-4 py-2 text-left font-semibold ${activeStep === step ? 'bg-blue-500 text-white' : 'rounded-2xl text-gray-700 shadow-[0_0_10px_#d3d3d3]'} flex items-center justify-between`}
+          className={`h-[50px] w-full px-4 py-2 text-left font-semibold ${activeStep === step ? 'bg-blue-500 text-white' : 'rounded-2xl text-gray-700 shadow-[0_0_30px_#dbdbdb]'} flex items-center justify-between`}
         >
           <span className="text-[13px] font-medium">{shortTitle}</span>
           <span className="text-[13px] font-semibold">{selection || 'Anything'}</span>
         </button>
       )}
       {activeStep === step && (
-        <div className="mt-2 rounded-2xl p-4 shadow-[0_0_10px_#d3d3d3]">
-          <div className="mb-[15px] text-[21px] font-bold text-gray-700">{title}</div>
+        <div className="mt-2 rounded-2xl p-5 shadow-[0_0_30px_#dbdbdb]">
+          <div className={`${step !== 3 ? 'mb-[15px]' : ''} text-[21px] font-bold text-gray-700`}>{title}</div>
           {children}
         </div>
       )}
