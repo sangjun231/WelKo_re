@@ -62,7 +62,7 @@ const BestPostsList = () => {
               )}
               <div className="flex flex-col">
                 <h3 className="mb-1 line-clamp-2 text-base font-semibold">{post.title}</h3>
-                <p className="mb-1 text-[14px] text-gray-500">
+                <p className="mb-1 text-[14px] tracking-[-0.05em] text-gray-500">
                   {post.startDate && post.endDate
                     ? `${formatDate(post.startDate)} ~ ${formatDate(post.endDate)}`
                     : 'No dates available'}

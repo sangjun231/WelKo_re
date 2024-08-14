@@ -72,8 +72,6 @@ export default function ResultsList({ posts, loading, error }: ResultsListProps)
   return (
     <div className="p-4">
       <Search initialQuery={selection} style={{ paddingTop: '8px', lineHeight: '20px', fontWeight: 500 }} />
-      {loading && <div>Loading...</div>}
-      {error && <div>{error}</div>}
       {!loading && posts.length === 0 && (
         <div className="flex min-h-[400px] flex-col items-center justify-center gap-2 text-center">
           <Image src="/icons/tabler-icon-list-search.svg" alt="search list image" width={44} height={44} />
@@ -97,7 +95,7 @@ export default function ResultsList({ posts, loading, error }: ResultsListProps)
                     alt={post.title}
                     width={96}
                     height={96}
-                    className="mr-2 h-[100px] w-[80px] rounded-lg"
+                    className="mr-2 h-[80px] w-[80px] rounded-lg"
                   />
                 ) : (
                   <div className="mr-2 flex h-24 w-24 items-center justify-center bg-gray-200">No Image</div>
@@ -105,7 +103,7 @@ export default function ResultsList({ posts, loading, error }: ResultsListProps)
                 <div className="flex flex-col">
                   <div>
                     <h3 className="line-clamp-1 text-sm font-semibold">{post.title}</h3>
-                    <p className="mt-1 text-gray-500">
+                    <p className="mt-1 tracking-[-0.1em] text-gray-500">
                       {post.startDate && post.endDate
                         ? `${new Intl.DateTimeFormat('ko', {
                             year: '2-digit',
