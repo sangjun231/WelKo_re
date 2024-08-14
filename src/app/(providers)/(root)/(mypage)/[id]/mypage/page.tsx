@@ -30,8 +30,8 @@ const MyPage = () => {
     `flex-1 text-center ${selectedComponent === component ? 'text-primary-300 border-primary-300 font-semibold' : 'text-grayscale-500'}`;
 
   return (
-    <div className="mx-[20px] flex flex-col">
-      <div className="mt-[8px] flex justify-between">
+    <div className="mx-[20px] mt-[8px] flex flex-col">
+      <div className="flex justify-between">
         <button
           className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-grayscale-50"
           onClick={handleBack}
@@ -63,7 +63,7 @@ const MyPage = () => {
         >
           Reservation
         </button>
-        <button className={`border-b ${buttonClass('Review')} mx-auto max-w-[320px]`} onClick={() => setSelectedComponent('Review')}>
+        <button className={`border-b ${buttonClass('Review')}`} onClick={() => setSelectedComponent('Review')}>
           Review
         </button>
       </div>
