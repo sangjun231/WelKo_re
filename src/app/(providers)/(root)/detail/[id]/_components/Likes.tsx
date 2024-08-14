@@ -12,8 +12,10 @@ import DeleteBtn from '/public/icons/tabler-icon-trash.svg';
 import LikeBtn from '/public/icons/detail_icons/icon_like.svg';
 import IconHome from '/public/icons/navbar_icons/icon_home.svg';
 import { DeletePost } from '../../../postpage/[id]/_components/PostEdit';
+import { useWebStore } from '@/zustand/webStateStore';
 
 const Likes = () => {
+  const { isWeb, setIsWeb } = useWebStore();
   const { id: postId } = useParams<{ id: string }>();
   const user = useAuthStore((state) => state.user);
   const { post } = usePostStore((state) => ({
@@ -41,6 +43,20 @@ const Likes = () => {
 
   const handleDelete = DeletePost();
 
+  // 화면 크기에 따라 isWeb 상태 업데이트
+  useEffect(() => {
+    const handleResize = () => {
+      setIsWeb(window.innerWidth >= 768);
+    };
+
+    handleResize(); // 초기 로드 시 한 번 실행
+    window.addEventListener('resize', handleResize); // 화면 크기 변경 시마다 실행
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [setIsWeb]);
+
   return (
     <div className="absolute left-0 right-0 top-2 z-10 flex items-center justify-between px-4">
       <BackButton />
@@ -51,26 +67,26 @@ const Likes = () => {
             <>
               <Link href={`/postpage/${postId}`}>
                 <button className="icon-button">
-                  <WriteBtn alt="WritePencil" width={24} height={24} />
+                  <WriteBtn alt="WritePencil" width={isWeb ? 44 : 24} height={isWeb ? 44 : 24} />
                 </button>
               </Link>
               <button className="icon-button" onClick={() => handleDelete(postId)}>
-                <DeleteBtn alt="DeleteBtn" width={24} height={24} />
+                <DeleteBtn alt="DeleteBtn" width={isWeb ? 44 : 24} height={isWeb ? 44 : 24} />
               </button>
             </>
           )}
         <div>
           <button onClick={handleLike} className="icon-button">
             {liked ? (
-              <LikeBtn width={24} height={24} color="#141414" fill="#141414" />
+              <LikeBtn width={isWeb ? 44 : 24} height={isWeb ? 44 : 24} color="#141414" fill="#141414" />
             ) : (
-              <LikeBtn width={24} height={24} />
+              <LikeBtn width={isWeb ? 44 : 24} height={isWeb ? 44 : 24} />
             )}
           </button>
         </div>
         <Link href="/">
           <button className="icon-button">
-            <IconHome alt="Home" width={24} height={24} />
+            <IconHome alt="Home" width={isWeb ? 44 : 24} height={isWeb ? 44 : 24} />
           </button>
         </Link>
       </div>
