@@ -97,7 +97,7 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
                   <div
                     className={`max-w-[240px] break-all px-[8px] py-[12px] ${
                       msg.sender_id === senderId
-                        ? 'rounded-br-0 rounded-bl-[16px] rounded-tl-[16px] rounded-tr-[16px] bg-primary-50'
+                        ? 'rounded-br-0 rounded-bl-[16px] rounded-tl-[16px] rounded-tr-[16px] bg-primary-50 web:mr-[68px]'
                         : 'rounded-bl-0 ml-[56px] rounded-br-[16px] rounded-tl-[16px] rounded-tr-[16px] bg-grayscale-50'
                     }`}
                   >
