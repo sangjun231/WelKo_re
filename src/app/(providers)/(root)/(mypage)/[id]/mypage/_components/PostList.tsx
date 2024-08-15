@@ -85,7 +85,7 @@ export default function PostList() {
 
         return (
           <div key={`${post.id}-${index}`} className="mb-[20px] border-b pb-[20px] web:mb-[40px] web:pb-[40px]">
-            <div className="mb-[12px] flex justify-between web:mb-[24px]">
+            <div className="flex justify-between">
               <div>
                 <p className="text-[14px] font-semibold text-grayscale-900 web:text-[21px]">
                   {new Date(post.created_at).toLocaleDateString()}
@@ -121,7 +121,7 @@ export default function PostList() {
               </div>
             </div>
             <Link href={`/detail/${post.id}`}>
-              <div className="flex">
+              <div className="my-[12px] flex web:my-[24px]">
                 <div className="max-h-[80px] min-h-[80px] min-w-[80px] max-w-[80px] web:max-h-[120px] web:min-h-[120px] web:min-w-[120px] web:max-w-[120px]">
                   <Image
                     className="h-[80px] w-[80px] rounded-[8px] web:h-[120px] web:w-[120px] web:rounded-[12px]"
@@ -131,7 +131,7 @@ export default function PostList() {
                     height={80}
                   />
                 </div>
-                <div className="ml-[8px] flex flex-col gap-[4px]">
+                <div className="ml-[8px] flex flex-col gap-[4px] web:ml-[16px]">
                   <p className="line-clamp-1 text-[14px] font-semibold text-primary-900 web:text-[21px]">
                     {post.title}
                   </p>
@@ -146,7 +146,7 @@ export default function PostList() {
               </div>
             </Link>
             <button
-              className="mt-[12px] w-full rounded-lg border p-[8px] text-[14px] font-semibold text-grayscale-700 web:mt-[24px] web:p-[16px] web:text-[18px]"
+              className="w-full rounded-lg border p-[8px] text-[14px] font-semibold text-grayscale-700 web:p-[16px] web:text-[18px]"
               onClick={() => {
                 handleReservationList(post.id);
               }}

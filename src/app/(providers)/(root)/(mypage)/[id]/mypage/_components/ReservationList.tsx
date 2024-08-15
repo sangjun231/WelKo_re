@@ -184,8 +184,8 @@ export default function ReservationList() {
         <div className="flex flex-col items-center justify-center gap-[8px]">
           <Image src="/icons/tabler-icon-calendar-month.svg" alt="no reservation" width={44} height={44} />
           <p className="text-[14px] font-semibold text-grayscale-900">You don&apos;t have any Reservation</p>
-          <p className="text-grayscale-600 text-[12px]">When you recieve a new meaasge,</p>
-          <p className="text-grayscale-600 text-[12px]">it will appear here.</p>
+          <p className="text-[12px] text-grayscale-600">When you recieve a new meaasge,</p>
+          <p className="text-[12px] text-grayscale-600">it will appear here.</p>
         </div>
       </div>
     );
@@ -199,37 +199,48 @@ export default function ReservationList() {
         const review = reviews.find((review) => review.post_id === post.id);
 
         return (
-          <div key={`${post.id}-${index}`} className="mb-[20px] border-b pb-[20px]">
+          <div key={`${post.id}-${index}`} className="mb-[20px] border-b pb-[20px] web:mb-[40px] web:pb-[40px]">
             <div className="flex justify-between">
               <div>
-                <p className="text-[14px] font-semibold text-grayscale-900">
+                <p className="text-[14px] font-semibold text-grayscale-900 web:text-[21px]">
                   {payment ? new Date(payment.created_at).toLocaleDateString() : 'N/A'}
                 </p>
                 <p
-                  className={`text-[14px] font-medium ${status === 'Upcoming Tour' ? 'text-primary-300' : status === 'Refunded' ? 'text-error-color' : 'text-grayscale-900'}`}
+                  className={`text-[14px] font-medium web:text-[21px] ${status === 'Upcoming Tour' ? 'text-primary-300' : status === 'Refunded' ? 'text-error-color' : 'text-grayscale-900'}`}
                 >
                   {status}
                 </p>
               </div>
               <Link className="flex items-center" href={`/detail/payment/history/${payment?.id}`}>
-                <p className="text-[14px] font-semibold text-primary-300">Detail</p>
-                <Image src="/icons/tabler-icon-chevron-right-pr300.svg" alt="Edit Profile" width={16} height={16} />
+                <p className="text-[14px] font-semibold text-primary-300 web:text-[18px]">Detail</p>
+                <Image
+                  className="web:h-[24px] web:w-[24px]"
+                  src="/icons/tabler-icon-chevron-right-pr300.svg"
+                  alt="Edit Profile"
+                  width={16}
+                  height={16}
+                />
               </Link>
             </div>
             <Link href={`/detail/${post.id}`}>
-              <div className="my-[12px] flex">
-                <Image
-                  className="rounded-[8px]"
-                  src={post.image ?? '/icons/upload.png'}
-                  alt={post.title ?? 'Default title'}
-                  width={80}
-                  height={80}
-                  style={{ width: '80px', height: '80px' }}
-                />
-                <div className="ml-[8px] flex flex-col gap-[4px]">
-                  <p className="line-clamp-1 text-[14px] font-semibold text-primary-900">{post.title ?? 'No Title'}</p>
-                  <p className="text-[14px] text-grayscale-500">{formatDateRange(post.startDate, post.endDate)} </p>
-                  <p className="text-[13px] font-medium text-gray-700">
+              <div className="my-[12px] flex web:my-[24px]">
+                <div className="max-h-[80px] min-h-[80px] min-w-[80px] max-w-[80px] web:max-h-[120px] web:min-h-[120px] web:min-w-[120px] web:max-w-[120px]">
+                  <Image
+                    className="h-[80px] w-[80px] rounded-[8px] web:h-[120px] web:w-[120px] web:rounded-[12px]"
+                    src={post.image ?? '/icons/upload.png'}
+                    alt={post.title ?? 'Default title'}
+                    width={80}
+                    height={80}
+                  />
+                </div>
+                <div className="ml-[8px] flex flex-col gap-[4px] web:ml-[16px]">
+                  <p className="line-clamp-1 text-[14px] font-semibold text-primary-900 web:text-[21px]">
+                    {post.title ?? 'No Title'}
+                  </p>
+                  <p className="text-[14px] text-grayscale-500 web:text-[18px]">
+                    {formatDateRange(post.startDate, post.endDate)}{' '}
+                  </p>
+                  <p className="text-[13px] font-medium text-gray-700 web:text-[18px]">
                     <span className="font-semibold text-primary-300">{formatPrice(post.price)}</span>
                     /Person
                   </p>
@@ -258,7 +269,7 @@ export default function ReservationList() {
                   </button>
                 </div>
                 <button
-                  className="w-full rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
+                  className="w-full rounded-lg border p-[8px] text-[14px] font-semibold text-grayscale-700 web:p-[16px] web:text-[18px]"
                   onClick={() => handleChat(post)}
                 >
                   Message Guide
@@ -266,14 +277,14 @@ export default function ReservationList() {
               </div>
             ) : status === 'Refunded' ? (
               <button
-                className="w-full rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
+                className="w-full rounded-lg border p-[8px] text-[14px] font-semibold text-grayscale-700 web:p-[16px] web:text-[18px]"
                 onClick={() => handleChat(post)}
               >
                 Message Guide
               </button>
             ) : (
               <button
-                className="w-full rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
+                className="w-full rounded-lg border p-[8px] text-[14px] font-semibold text-grayscale-700 web:p-[16px] web:text-[18px]"
                 onClick={() => {
                   handleReviewAction(post.id, review?.id);
                 }}
