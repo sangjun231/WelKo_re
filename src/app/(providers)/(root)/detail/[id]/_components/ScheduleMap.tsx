@@ -83,7 +83,9 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
       .map((lat: number, index: number) => {
         if (index < data.places[selectedDay].long.length) {
           const markerContent = `
-          <div class="text-white bg-primary-300 border-2 border-white px-2 rounded-full">${index + 1}</div>
+          <div class="w-6 h-6 text-white bg-primary-300 flex items-center p-2 justify-center border-2 border-white rounded-full">
+          ${index + 1}
+        </div>
         `;
           const marker = new window.naver.maps.Marker({
             position: new window.naver.maps.LatLng(lat, data.places[selectedDay].long[index]),
@@ -145,7 +147,7 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
         )}
       </div>
 
-      <div className={`web:flex web:justify-between flex gap-4`}>
+      <div className={`web:flex web:flex-row web:justify-between flex flex-col gap-4`}>
         {[0, 3].map((startIdx) => (
           <div key={startIdx} className="web:w-1/2 flex flex-col gap-4">
             {data?.places[selectedDay].places.slice(startIdx, startIdx + 3).map((place, index) => (
