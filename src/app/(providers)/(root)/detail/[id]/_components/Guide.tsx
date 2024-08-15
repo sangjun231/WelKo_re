@@ -108,8 +108,8 @@ export const Guide = ({ isWeb }: WebProps) => {
           the guide to discuss and check.
         </p>
       </div>
-      <div className="web:flex-row flex flex-col gap-4">
-        <div className="web:flex-col web:flex-1">
+      <div className="web:flex-row flex flex-col">
+        <div className="web:flex-1 flex flex-col gap-4">
           {user && (
             <div className="flex flex-row items-center gap-2">
               <Image
