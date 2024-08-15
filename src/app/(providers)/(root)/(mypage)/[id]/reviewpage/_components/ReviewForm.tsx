@@ -66,10 +66,19 @@ const ReviewForm = ({ userId }: { userId: string }) => {
   }, [id, postId]);
 
   return (
-    <div className="mt-[56px]">
+    <div className="mt-[8px]">
       <div className="relative flex items-center justify-between">
-        <button className="rounded-[24px] bg-grayscale-50" onClick={handleBack}>
-          <Image src="/icons/tabler-icon-chevron-left.svg" alt="Go Back" width={32} height={32} />
+        <button
+          className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-grayscale-50"
+          onClick={handleBack}
+        >
+          <Image
+            src="/icons/tabler-icon-chevron-left.svg"
+            alt="Go Back"
+            width={24}
+            height={24}
+            style={{ width: '24px', height: '24px' }}
+          />
         </button>
         <p className="absolute left-1/2 -translate-x-1/2 transform text-[18px] font-semibold text-primary-900">
           {id ? 'Edit Review' : 'New Review'}

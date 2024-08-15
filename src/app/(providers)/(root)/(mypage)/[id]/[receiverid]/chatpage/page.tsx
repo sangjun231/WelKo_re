@@ -37,7 +37,7 @@ const ChatPage = () => {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-      <div className="mx-[20px] mt-[56px]">
+      <div className="mx-[20px] mt-[8px]">
         <div className="relative my-[20px] flex items-center justify-between">
           <button
             className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-grayscale-50"
