@@ -31,7 +31,7 @@ export default function DetailPage() {
           <CheckboxDetail isWeb={isWeb} />
           <ScheduleMap isWeb={isWeb}/>
           <Guide isWeb={isWeb}/>
-          <Reviews />
+          <Reviews isWeb={isWeb}/>
         </div>
       </div>
       <DetailNavbar />
