@@ -29,7 +29,7 @@ export default function DetailPage() {
       <div className="flex w-full justify-center">
         <div className="web:mx-[88px] mx-5 w-full">
           <CheckboxDetail isWeb={isWeb} />
-          <ScheduleMap />
+          <ScheduleMap isWeb={isWeb}/>
           <Guide />
           <Reviews />
         </div>

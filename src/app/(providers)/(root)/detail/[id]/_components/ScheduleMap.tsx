@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import { useNaverMapScript } from '@/hooks/Map/useNaverMapScript';
+import { WebProps } from '@/types/webstate';
 
 interface Place {
   title: string;
@@ -22,12 +23,12 @@ interface PostAndPlacesData {
   places: PlaceData[];
 }
 
-const ScheduleMap = () => {
+const ScheduleMap = ({ isWeb }: WebProps) => {
   const clientId = process.env.NEXT_PUBLIC_NCP_CLIENT_ID!;
   const isScriptLoaded = useNaverMapScript(clientId);
   const [mapInstance, setMapInstance] = useState<any>(null);
   const params = useParams();
-  const postId = Array.isArray(params.id) ? params.id[0] : params.id; // URL에서 id를 가져옴
+  const postId = Array.isArray(params.id) ? params.id[0] : params.id;
   const [selectedDay, setSelectedDay] = useState(0);
 
   const fetchPostAndPlaces = async (postId: string): Promise<PostAndPlacesData> => {
@@ -50,7 +51,6 @@ const ScheduleMap = () => {
     }
   };
 
-  // Supabase에서 게시물 및 장소 데이터를 가져오기 위한 React Query
   const { data, error, isLoading } = useQuery<PostAndPlacesData>({
     queryKey: ['postAndPlaces', postId],
     queryFn: () => fetchPostAndPlaces(postId)
@@ -59,7 +59,6 @@ const ScheduleMap = () => {
   useEffect(() => {
     if (!isScriptLoaded || isLoading || !data || data.places.length === 0) return;
 
-    // 지도 초기화 함수
     const initializeMap = () => {
       const map = new window.naver.maps.Map('map', {
         center: new window.naver.maps.LatLng(data.places[0].lat[0], data.places[0].long[0]),
@@ -74,7 +73,6 @@ const ScheduleMap = () => {
   useEffect(() => {
     if (!mapInstance || !data) return;
 
-    // 이전 마커 삭제
     if (mapInstance.markers) {
       mapInstance.markers.forEach((marker: any) => marker.setMap(null));
     } else {
@@ -111,13 +109,20 @@ const ScheduleMap = () => {
 
   return (
     <div className="flex flex-col text-lg">
-      <h2 className="mb-4 font-semibold text-grayscale-900">Where you’ll tour</h2>
-      <div id="map" style={{ width: '100%', height: '300px' }}></div>
-      <div className="my-6 flex gap-2 text-xs font-medium">
+      <h2 className="web:text-4xl web:mb-6 mb-4 font-semibold text-grayscale-900">Where you’ll tour</h2>
+      <div
+        id="map"
+        style={{
+          width: '100%',
+          height: isWeb ? '620px' : '300px'
+        }}
+      ></div>
+
+      <div className="web:my-20 web:gap-5 web:text-xl my-6 flex gap-2 text-xs font-medium">
         {data.places.length > 0 && (
           <button
             onClick={() => setSelectedDay(0)}
-            className={`rounded-3xl px-4 py-2 ${selectedDay === 0 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+            className={`web:px-5 web:py-3 rounded-3xl px-4 py-2 ${selectedDay === 0 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
           >
             Day 1
           </button>
@@ -125,7 +130,7 @@ const ScheduleMap = () => {
         {data.places.length > 1 && (
           <button
             onClick={() => setSelectedDay(1)}
-            className={`rounded-3xl px-4 py-2 ${selectedDay === 1 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+            className={`web:px-5 web:py-3 rounded-3xl px-4 py-2 ${selectedDay === 1 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
           >
             Day 2
           </button>
@@ -133,35 +138,39 @@ const ScheduleMap = () => {
         {data.places.length > 2 && (
           <button
             onClick={() => setSelectedDay(2)}
-            className={`rounded-3xl px-4 py-2 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+            className={`web:px-5 web:py-3 rounded-3xl px-4 py-2 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
           >
             Day 3
           </button>
         )}
       </div>
-      <div className="flex flex-col gap-4">
-        {data?.places[selectedDay].places.map((place, index) => (
-          <div key={index} className="relative flex items-start">
-            <div className="flex flex-col items-center">
-              <div className="z-10 flex h-6 w-6 items-center justify-center rounded-full bg-primary-300 text-sm font-medium text-white">
-                {index + 1}
+
+      <div className={`web:flex web:justify-between flex gap-4`}>
+        {[0, 3].map((startIdx) => (
+          <div key={startIdx} className="web:w-1/2 flex flex-col gap-4">
+            {data?.places[selectedDay].places.slice(startIdx, startIdx + 3).map((place, index) => (
+              <div key={index} className="relative flex items-start">
+                <div className="flex flex-col items-center">
+                  <div className="web:h-11 web:w-11 web:text-2xl z-10 flex h-6 w-6 items-center justify-center rounded-full bg-primary-300 text-sm font-medium text-white">
+                    {startIdx + index + 1}
+                  </div>
+                  {index !== 2 && <div className="absolute top-6 h-full w-px bg-grayscale-100"></div>}
+                </div>
+                <div className="web:p-6 web:ml-12 web:mb-10 ml-3 flex w-full flex-col gap-1 rounded-lg bg-white px-4 py-3 shadow-custom-box">
+                  <h2 className="web:text-xl text-sm font-semibold">
+                    {place.title ? place.title.replace(/<\/?[^>]+(>|$)/g, '') : ''}
+                  </h2>
+                  <p className="web:text-base text-xs text-gray-500">{place.category}</p>
+                  <hr className="web:my-4 my-2 h-[1px] w-full bg-grayscale-100" />
+                  <p className="web:text-lg text-xs font-normal text-gray-700">{place.description}</p>
+                </div>
               </div>
-              {index !== data.places[selectedDay].places.length - 1 ? (
-                <div className="absolute top-6 h-[calc(100%)] w-px bg-grayscale-100"></div>
-              ) : (
-                <div className="absolute top-6 h-[calc(100%-1rem)] w-px bg-grayscale-100"></div>
-              )}
-            </div>
-            <div className="shadow-custom-box ml-3 flex w-full flex-col gap-1 rounded-lg bg-white px-4 py-3">
-              <h2 className="text-sm font-semibold">{place.title ? place.title.replace(/<\/?[^>]+(>|$)/g, '') : ''}</h2>
-              <p className="text-xs text-gray-500">{place.category}</p>
-              <hr className="my-2 h-[1px] w-full bg-grayscale-100" />
-              <p className="text-xs font-normal text-gray-700">{place.description}</p>
-            </div>
+            ))}
           </div>
         ))}
       </div>
-      <hr className="mb-6 mt-8 h-[1px] w-full bg-grayscale-100" />
+
+      <hr className="web:my-20 mb-6 mt-8 h-[1px] w-full bg-grayscale-100" />
     </div>
   );
 };
