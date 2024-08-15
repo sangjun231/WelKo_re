@@ -15,10 +15,13 @@ function PostPage() {
   const [region, setRegion] = useState<string>('');
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
-  const userId = user.id;
+  const [userId, setUserId] = useState<string>('');
   const [sequence, setSequence] = useState<number>(0);
 
   useEffect(() => {
+    if (user) {
+      setUserId(user.id); // user가 존재할 때만 userId 설정
+    }
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!id || !uuidRegex.test(id as string)) {
       alert('Please enter through the correct path');
@@ -49,7 +52,6 @@ function PostPage() {
           setSelectedDay={setSelectedDay}
           region={region}
           setRegion={setRegion}
-          sequence={sequence}
           setSequence={setSequence}
           postId={postId as string}
           userId={userId}

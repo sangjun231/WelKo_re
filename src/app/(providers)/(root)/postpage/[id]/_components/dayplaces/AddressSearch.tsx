@@ -141,13 +141,13 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
                 onClick={() => handlePlaceSelect(place)}
                 className={`flex w-full flex-row p-4 hover:bg-gray-100 ${selectedPlace === place ? 'rounded-2xl border-2 border-primary-300 bg-gray-100' : ''}`}
               >
-                <div className="mr-3 flex size-11 items-center justify-center rounded-lg bg-grayscale-50">
+                <div className="mr-3 flex size-11 flex-shrink-0 items-center justify-center rounded-lg bg-grayscale-50">
                   <GrLocation className="size-5" />
                 </div>
 
                 <div className="flex flex-col items-start">
-                  <h3 className="font bold" dangerouslySetInnerHTML={{ __html: cleanHTML }} />
-                  <div className="flex flex-wrap text-xs text-gray-400">
+                  <h3 className="whitespace-wrap text-left" dangerouslySetInnerHTML={{ __html: cleanHTML }} />
+                  <div className="flex flex-shrink-0 flex-wrap text-xs text-gray-400">
                     <p>{place.category} •&nbsp;</p>
                     <p className="text-xs text-gray-400">{place.roadAddress}</p>
                   </div>

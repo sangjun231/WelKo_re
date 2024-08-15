@@ -2,6 +2,7 @@
 
 import { useCurrentPosition } from '@/hooks/Map/useCurrentPosition';
 import { useNaverMapScript } from '@/hooks/Map/useNaverMapScript';
+import useDayNumbers from '@/hooks/Post/useDayNumbers';
 import { Place } from '@/types/types';
 import { formatDateRange } from '@/utils/detail/functions';
 import { translateAddress } from '@/utils/post/postData';
@@ -21,7 +22,6 @@ type PlaceProps = {
   setSelectedDay: React.Dispatch<React.SetStateAction<string>>;
   region: string;
   setRegion: React.Dispatch<React.SetStateAction<string>>;
-  sequence: number;
   setSequence: React.Dispatch<React.SetStateAction<number>>;
   postId: string;
   userId: string;
@@ -35,11 +35,11 @@ const DayPlaces: React.FC<PlaceProps> = ({
   setSelectedDay,
   region,
   setRegion,
-  sequence,
   setSequence,
   postId,
   userId
 }) => {
+  const { dayNumbers, addDayNumber, handleDaySelect } = useDayNumbers();
   const [days, setDays] = useState<string[]>([]);
   const startDate = sessionStorage.getItem('startDate');
   const endDate = sessionStorage.getItem('endDate');
@@ -66,9 +66,6 @@ const DayPlaces: React.FC<PlaceProps> = ({
   }, []);
 
   const [selectedPlaces, setSelectedPlaces] = useState<Place[]>([]); // 선택한 장소 목록
-  const handleDaySelect = (day: string) => {
-    setSelectedDay(day);
-  };
 
   //지도 관련
   const clientId = process.env.NEXT_PUBLIC_NCP_CLIENT_ID!;
@@ -224,13 +221,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
   const [descriptions, setDescriptions] = useState<{ [key: number]: string }>({});
 
   // 컴포넌트가 렌더링될 때 초기 description 값을 설정
-  useEffect(() => {
-    const initialDescriptions = selectedPlaces.reduce((acc: { [key: number]: string }, place, index) => {
-      acc[index] = place.description || '';
-      return acc;
-    }, {});
-    setDescriptions(initialDescriptions);
-  }, [selectedPlaces]);
+  // useEffect(() => {}, [selectedPlaces]);
 
   // description 값을 업데이트하고 sessionStorage에 저장
   const handleDescriptionChange = (index: number, value: string) => {
@@ -245,11 +236,15 @@ const DayPlaces: React.FC<PlaceProps> = ({
       sessionStorage.setItem(selectedDay, JSON.stringify(updatedPlaces));
     }
   };
-
+  // const handleDaySelect = (day: string) => {
+  //   setSelectedDay(day);
+  // };
   const handleAddSequence = (index: number) => {
     setSequence(index);
     next();
   };
+
+  //Done 클릭 시, 취소 핸들러
   const router = useRouter();
   const handleCancel = () => {
     const userConfirmed = confirm('Do you want to cancel this?');
@@ -259,11 +254,20 @@ const DayPlaces: React.FC<PlaceProps> = ({
     router.replace('/');
   };
 
-  const [numbers, setNumbers] = useState([1]); // 초기에는 숫자 1만 존재
-  const handleAddNumber = () => {
-    // 현재 마지막 숫자에 1을 더한 숫자를 추가
-    setNumbers([...numbers, numbers.length + 1]);
-  };
+  useEffect(() => {
+    // 선택된 장소가 현재 numbers의 길이보다 클 경우 새로운 번호 추가
+    const numbers = dayNumbers[selectedDay] || [];
+    if (selectedPlaces.length >= numbers.length && numbers.length < 6) {
+      addDayNumber(selectedDay);
+    }
+
+    // 각 장소에 대한 설명 초기화
+    const initialDescriptions = selectedPlaces.reduce((acc: { [key: number]: string }, place, index) => {
+      acc[index] = place.description || '';
+      return acc;
+    }, {});
+    setDescriptions(initialDescriptions);
+  }, [selectedDay, selectedPlaces, dayNumbers[selectedDay]?.length]);
 
   return (
     <div className="flex flex-col justify-center">
@@ -308,7 +312,10 @@ const DayPlaces: React.FC<PlaceProps> = ({
               <button
                 key={index}
                 className="whitespace-nowrap rounded-full bg-grayscale-50 px-4 py-2 text-sm font-medium hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
-                onClick={() => handleDaySelect(day)}
+                onClick={() => {
+                  setSelectedDay(day); // selectedDay 상태 관리
+                  handleDaySelect(day); // Day 선택 처리
+                }}
               >
                 {day}
               </button>
@@ -317,14 +324,14 @@ const DayPlaces: React.FC<PlaceProps> = ({
 
           {selectedDay === ''
             ? ''
-            : numbers.map((number, index) => (
+            : dayNumbers[selectedDay]?.map((number, index) => (
                 <div key={index} className="flex flex-col">
                   <div className="mb-4 flex">
                     <div className="relative">
                       <p className="z-10 mr-2 size-6 rounded-full border-2 border-grayscale-50 bg-primary-300 text-center text-sm text-white">
                         {number}
                       </p>
-                      {index < numbers.length - 1 && (
+                      {index < dayNumbers[selectedDay].length - 1 && (
                         <div className="absolute left-1/3 h-full w-0.5 bg-grayscale-100"></div>
                       )}
                     </div>
@@ -362,11 +369,6 @@ const DayPlaces: React.FC<PlaceProps> = ({
                   </div>
                 </div>
               ))}
-          <div className="mt-4 flex justify-center">
-            <button className="border-2 border-primary-300 text-primary-300" onClick={handleAddNumber}>
-              +
-            </button>
-          </div>
         </div>
 
         {selectedDay === '' ? (

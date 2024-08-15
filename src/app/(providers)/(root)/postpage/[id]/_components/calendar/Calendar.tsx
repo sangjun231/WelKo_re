@@ -105,7 +105,12 @@ const Calendar = ({ next, postId }: CalendarProps) => {
           setEndDate={setEndDate}
         />
 
-        <DateSaveButton onClick={handleDateSave} />
+        <DateSaveButton
+          onClick={handleDateSave}
+          startDate={startDate}
+          endDate={endDate}
+          selectedMonth={selectedMonth}
+        />
       </div>
     </div>
   );
