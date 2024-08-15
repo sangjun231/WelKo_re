@@ -71,8 +71,8 @@ export default function PostList() {
         <div className="flex flex-col items-center justify-center gap-[8px]">
           <Image src="/icons/tabler-icon-sticker-2.svg" alt="no post" width={44} height={44} />
           <p className="text-[14px] font-semibold text-grayscale-900">You don&apos;t have any post</p>
-          <p className="text-grayscale-600 text-[12px]">When you receive a new message,</p>
-          <p className="text-grayscale-600 text-[12px]">it will appear here.</p>
+          <p className="text-[12px] text-grayscale-600">When you receive a new message,</p>
+          <p className="text-[12px] text-grayscale-600">it will appear here.</p>
         </div>
       </div>
     );
@@ -84,44 +84,61 @@ export default function PostList() {
         const status = tourStatus(post.endDate);
 
         return (
-          <div key={`${post.id}-${index}`} className="mb-[20px] border-b pb-[20px]">
-            <div className="mb-[12px] flex justify-between">
+          <div key={`${post.id}-${index}`} className="mb-[20px] border-b pb-[20px] web:mb-[40px] web:pb-[40px]">
+            <div className="mb-[12px] flex justify-between web:mb-[24px]">
               <div>
-                <p className="text-[14px] font-semibold text-grayscale-900">
+                <p className="text-[14px] font-semibold text-grayscale-900 web:text-[21px]">
                   {new Date(post.created_at).toLocaleDateString()}
                 </p>
                 <p
-                  className={`text-[14px] font-medium ${status === 'Upcoming Tour' ? 'text-primary-300' : 'text-grayscale-900'}`}
+                  className={`text-[14px] font-medium web:text-[21px] ${status === 'Upcoming Tour' ? 'text-primary-300' : 'text-grayscale-900'}`}
                 >
                   {status}
                 </p>
               </div>
-              <div className="flex gap-[16px]">
-                <button className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]">
-                  <Image src="/icons/tabler-icon-pencil.svg" alt="Edit Tour" width={24} height={24} />
+              <div className="flex gap-[16px] web:gap-[40px]">
+                <button className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9] web:h-[44px] web:w-[44px]">
+                  <Image
+                    className="web:h-[33px] web:w-[33px]"
+                    src="/icons/tabler-icon-pencil.svg"
+                    alt="Edit Tour"
+                    width={24}
+                    height={24}
+                  />
                 </button>
                 <button
-                  className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9]"
+                  className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9] web:h-[44px] web:w-[44px]"
                   onClick={() => handleDelete(post.id)}
                 >
-                  <Image src="/icons/tabler-icon-trash.svg" alt="Delete Tour" width={24} height={24} />
+                  <Image
+                    className="web:h-[33px] web:w-[33px]"
+                    src="/icons/tabler-icon-trash.svg"
+                    alt="Delete Tour"
+                    width={24}
+                    height={24}
+                  />
                 </button>
               </div>
             </div>
             <Link href={`/detail/${post.id}`}>
               <div className="flex">
-                <Image
-                  className="rounded-[8px]"
-                  src={post.image ?? '/icons/upload.png'}
-                  alt={post.title ?? 'Default title'}
-                  width={80}
-                  height={80}
-                  style={{ width: '80px', height: '80px' }}
-                />
+                <div className="max-h-[80px] min-h-[80px] min-w-[80px] max-w-[80px] web:max-h-[120px] web:min-h-[120px] web:min-w-[120px] web:max-w-[120px]">
+                  <Image
+                    className="h-[80px] w-[80px] rounded-[8px] web:h-[120px] web:w-[120px] web:rounded-[12px]"
+                    src={post.image ?? '/icons/upload.png'}
+                    alt={post.title ?? 'Default title'}
+                    width={80}
+                    height={80}
+                  />
+                </div>
                 <div className="ml-[8px] flex flex-col gap-[4px]">
-                  <p className="line-clamp-1 text-[14px] font-semibold text-primary-900">{post.title}</p>
-                  <p className="text-[14px] text-grayscale-500">{formatDateRange(post.startDate, post.endDate)}</p>
-                  <p className="text-[13px] font-semibold text-grayscale-700">
+                  <p className="line-clamp-1 text-[14px] font-semibold text-primary-900 web:text-[21px]">
+                    {post.title}
+                  </p>
+                  <p className="text-[14px] text-grayscale-500 web:text-[18px]">
+                    {formatDateRange(post.startDate, post.endDate)}
+                  </p>
+                  <p className="text-[13px] font-semibold text-grayscale-700 web:text-[18px]">
                     <span className="font-medium text-primary-300">{formatPrice(post.price)}</span>
                     /Person
                   </p>
@@ -129,7 +146,7 @@ export default function PostList() {
               </div>
             </Link>
             <button
-              className="mt-[12px] w-full rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
+              className="mt-[12px] w-full rounded-lg border p-[8px] text-[14px] font-semibold text-grayscale-700 web:mt-[24px] web:p-[16px] web:text-[18px]"
               onClick={() => {
                 handleReservationList(post.id);
               }}
