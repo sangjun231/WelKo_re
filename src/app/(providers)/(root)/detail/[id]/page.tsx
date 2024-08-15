@@ -30,7 +30,7 @@ export default function DetailPage() {
         <div className="web:mx-[88px] mx-5 w-full">
           <CheckboxDetail isWeb={isWeb} />
           <ScheduleMap isWeb={isWeb}/>
-          <Guide />
+          <Guide isWeb={isWeb}/>
           <Reviews />
         </div>
       </div>

@@ -7,6 +7,7 @@ import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { API_MYPAGE_PROFILE, API_POST_DETAILS } from '@/utils/apiConstants';
+import { WebProps } from '@/types/webstate';
 
 interface User {
   name: string;
@@ -21,7 +22,7 @@ type Post = {
   image: string;
 };
 
-export const Guide = () => {
+export const Guide = ({ isWeb }: WebProps) => {
   const { id: postId } = useParams() as { id: string };
   const supabase = createClient();
   const router = useRouter();
@@ -48,11 +49,7 @@ export const Guide = () => {
     return response.data;
   };
 
-  const {
-    data: post,
-    isPending: isPostPending,
-    error: postError
-  } = useQuery<Post>({
+  const { data: post } = useQuery<Post>({
     queryKey: ['post', postId],
     queryFn: fetchPostDetails,
     enabled: !!postId
@@ -103,38 +100,48 @@ export const Guide = () => {
   if (error) return <div>Error fetching user data</div>;
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-2">
-        <h2 className="text-lg font-semibold text-grayscale-900">Contact your guide</h2>
-        <p className="text-sm font-normal text-grayscale-500">
+    <div className="web:;gap-10 flex flex-col gap-6">
+      <div className="web:gap-6 flex flex-col gap-2">
+        <h2 className="web:text-4xl text-lg font-semibold text-grayscale-900">Contact your guide</h2>
+        <p className="web:text-lg web:mb-10 text-sm text-grayscale-500">
           For more information such as the number of people and schedule change, it is recommended to send a message to
           the guide to discuss and check.
         </p>
       </div>
-      <div className="flex flex-col gap-4">
-        {user && (
-          <div className="flex flex-row items-center gap-2">
-            <Image
-              src={user.avatar}
-              alt={`${user.name}의 아바타`}
-              width={56}
-              height={56}
-              className="mr-2 h-14 w-14 rounded-full object-cover"
-            />
-            <div className="flex flex-col gap-1">
-              <h4 className="text-lg font-semibold">{user.name}</h4>
-              <h5 className="text-sm font-normal">Seoul, Korea</h5>
+      <div className="web:flex-row flex flex-col gap-4">
+        <div className="web:flex-col web:flex-1">
+          {user && (
+            <div className="flex flex-row items-center gap-2">
+              <Image
+                src={user.avatar}
+                alt={`${user.name}의 아바타`}
+                width={isWeb ? 80 : 56}
+                height={isWeb ? 80 : 56}
+                className="web:h-80 web:w-80 mr-2 h-14 w-14 rounded-full object-cover"
+              />
+              <div className="flex flex-col gap-1">
+                <h4 className="web:text-2xl text-lg font-semibold">{user.name}</h4>
+                <h5 className="web:text-xl text-sm font-normal">Seoul, Korea</h5>
+              </div>
             </div>
-          </div>
-        )}
-        <button
-          className="rounded-2xl border border-grayscale-800 px-5 py-3 text-base font-semibold text-grayscale-700"
-          onClick={handleChat}
-        >
-          Message Host
-        </button>
+          )}
+
+          <button
+            className="web:py-4 web:px-6 web:text-lg rounded-2xl border border-grayscale-800 px-5 py-3 text-base font-semibold text-grayscale-700"
+            onClick={handleChat}
+          >
+            Message Host
+          </button>
+        </div>
+        <Image
+          src="/img/GuideWeb.png"
+          alt={`${user.name}의 아바타`}
+          width={isWeb ? 80 : 56}
+          height={isWeb ? 80 : 56}
+          className="web:h-80 web:w-80 web:block hidden flex-1 rounded-2xl"
+        />
       </div>
-      <hr className="mb-6 mt-3 h-[1px] w-full bg-grayscale-100" />
+      <hr className="web:my-20 mb-6 mt-3 h-[1px] w-full bg-grayscale-100" />
     </div>
   );
 };
