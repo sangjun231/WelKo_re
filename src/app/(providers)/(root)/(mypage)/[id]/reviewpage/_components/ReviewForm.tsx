@@ -89,16 +89,17 @@ const ReviewForm = ({ userId }: { userId: string }) => {
         {post ? (
           <div className="flex">
             <Image
-              className="rounded-[8px]"
+              className="rounded-[8px] web:h-[120px] web:w-[120px] web:rounded-[12px]"
               src={post.image ?? '/icons/upload.png'}
               alt={post.title ?? 'Default title'}
               width={44}
               height={44}
-              style={{ width: '44px', height: '44px' }}
             />
-            <div className="ml-[8px] flex flex-col">
-              <p className="text-[14px] font-semibold text-primary-900">{post.title}</p>
-              <p className="text-[14px] text-grayscale-500">{formatDateRange(post.startDate, post.endDate)}</p>
+            <div className="ml-[8px] flex flex-col gap-[4px] web:ml-[16px] web:gap-[8px]">
+              <p className="text-[14px] font-semibold text-primary-900 web:text-[21px]">{post.title}</p>
+              <p className="text-[14px] text-grayscale-500 web:text-[18px]">
+                {formatDateRange(post.startDate, post.endDate)}
+              </p>
             </div>
           </div>
         ) : (
@@ -107,18 +108,20 @@ const ReviewForm = ({ userId }: { userId: string }) => {
       </div>
       <form onSubmit={handleSubmit}>
         <Rating key={rating} count={5} value={rating} onChange={ratingChanged} size={24} activeColor="#ffd700" />
-        <textarea
-          className="mt-[20px] h-[225px] w-full resize-none rounded-2xl border bg-grayscale-50 p-[16px] text-[14px] text-grayscale-900"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="You can write up to 500 characters"
-        />
-        <button
-          className="mt-[12px] w-full rounded-xl border bg-primary-300 px-[20px] py-[12px] text-[16px] font-semibold text-white"
-          type="submit"
-        >
-          {id ? 'Update Review' : 'Add Review'}
-        </button>
+        <div className="flex flex-col gap-[12px] web:gap-[24px]">
+          <textarea
+            className="mt-[20px] h-[225px] w-full resize-none rounded-2xl border bg-grayscale-50 p-[16px] text-[14px] text-grayscale-900 web:mt-[40px] web:p-[24px] web:text-[16px]"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="You can write up to 500 characters"
+          />
+          <button
+            className="w-full rounded-xl border bg-primary-300 p-[12px] text-[16px] font-semibold text-white web:p-[16px] web:text-[18px]"
+            type="submit"
+          >
+            {id ? 'Update Review' : 'Add Review'}
+          </button>
+        </div>
       </form>
     </div>
   );
