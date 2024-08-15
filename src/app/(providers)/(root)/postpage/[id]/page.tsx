@@ -2,8 +2,8 @@
 import useAuthStore from '@/zustand/bearsStore';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import AddressSearch from './_components/AddressSearch';
 import Calendar from './_components/calendar/Calendar';
+import AddressSearch from './_components/dayplaces/AddressSearch';
 import DayPlaces from './_components/dayplaces/DayPlaces';
 import Write from './_components/Write';
 

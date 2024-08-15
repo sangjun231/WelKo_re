@@ -43,33 +43,51 @@ const SelectPost = () => {
   if (!post) return <div className="flex items-center justify-center">Loading...</div>;
 
   return (
-    <div className="mt-2 flex flex-col items-center gap-2">
+    <div className="web:mt-10 web:justify-between mt-2 flex flex-col items-center gap-2">
       <div className="mb-4 flex w-full items-center justify-between py-4">
-        <BackButton />
-        <h2 className="flex-grow text-center text-lg font-semibold">Pay</h2>
+        <BackButton className="web:hidden" />
+        <h2 className="mobile:flex-grow web:text-left web:text-3xl text-center text-lg font-semibold">Pay</h2>
         <div className="w-8"></div>
       </div>
-      <div className="flex w-full space-x-4">
-        <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden">
-          <Image src={post.image} alt={post.title} fill style={{ objectFit: 'cover' }} className="rounded-lg" />
-          <button
-            onClick={handleLike}
-            className="absolute right-1 top-2 rounded-full bg-[rgba(255,255,255,0.10)] p-0.5 backdrop-blur-[10px]"
-          >
-            {liked ? (
-              <LikeBtn width={20} height={20} color="#FF7029" fill="#FF7029" />
-            ) : (
-              <LikeBtn width={20} height={20} color="white" />
-            )}
-          </button>
-        </div>
-        <div className="flex flex-col gap-1">
-          <h4 className="line-clamp-1 text-sm font-semibold">{post.title}</h4>
-          <p className="text-sm font-normal text-grayscale-500">{formatDateRange(post.startDate, post.endDate)}</p>
-          <div className="flex items-center text-xs">
-            <span className="font-semibold text-primary-300">{formatPrice(post.price)}</span>
-            <span className="font-medium text-grayscale-600">/Person</span>
+      <div className="flex w-full">
+        <div className="flex flex-1">
+          <div className="web:h-[140px] web:w-[120px] relative mr-4 h-20 w-20 flex-shrink-0">
+            <Image src={post.image} alt={post.title} fill style={{ objectFit: 'cover' }} className="rounded-lg" />
+            <button
+              onClick={handleLike}
+              className="absolute right-1 top-2 rounded-full bg-[rgba(255,255,255,0.10)] p-0.5 backdrop-blur-[10px]"
+            >
+              {liked ? (
+                <LikeBtn width={20} height={20} color="#FF7029" fill="#FF7029" />
+              ) : (
+                <LikeBtn width={20} height={20} color="white" />
+              )}
+            </button>
           </div>
+
+          <div className="web:gap-2 flex flex-col gap-1">
+            <h4 className="web:text-lg web:font-semibold line-clamp-1 text-sm font-semibold">{post.title}</h4>
+            <p className="web:text-base text-sm font-normal text-grayscale-500">
+              {formatDateRange(post.startDate, post.endDate)}
+            </p>
+            <div className="web:text-base flex items-center text-xs">
+              <span className="web:font-semibold font-semibold text-primary-300">{formatPrice(post.price)}</span>
+              <span className="font-medium text-grayscale-700">/Person</span>
+            </div>
+          </div>
+        </div>
+        <div className="web:block mx-4 hidden"></div>
+        {/* 모바일에서 숨기고, 웹에서만 보이는 Cancellation Policy */}
+        <div className="web:block hidden flex-1">
+          <h3 className="text-xl font-medium text-text-color">Cancellation Policy</h3>
+          <p className="text-base font-normal text-grayscale-500">
+            Before you book, make sure you&apos;re comfortable with
+            <u className="text-grayscale-900"> this guide&apos;s cancellation policy.</u> If you want a refund, click
+            the Request for a <u className="text-grayscale-900">refund button</u> and you will get a refund right away.
+            The refund amount will be refunded before 12 o&apos;clock on the same day. You can cancel it for free up to
+            two days after payment. After that, there will be a{' '}
+            <u className="text-grayscale-900">cancellation penalty.</u>
+          </p>
         </div>
       </div>
     </div>

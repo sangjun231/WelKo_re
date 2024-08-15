@@ -8,6 +8,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        mobile: '360px',
+        web: '768px'
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))'
@@ -23,6 +27,7 @@ const config: Config = {
         'grayscale-800': 'var(--Grayscale-800, #2E2E2E)',
         'grayscale-900': 'var(--Grayscale-900, #141414)',
         'primary-50': '#FFE5FB',
+        'primary-100': '#EDCAE8',
         'primary-300': 'var(--Primary-300, #B95FAB)',
         'primary-900': '#21111F',
         'action-color': '#FF7029',

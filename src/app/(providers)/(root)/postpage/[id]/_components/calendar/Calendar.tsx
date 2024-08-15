@@ -4,8 +4,8 @@ import { createClient } from '@/utils/supabase/client';
 import { addMonths, format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { PiCalendarDots } from 'react-icons/pi';
-import DaySelect from '../DaySelect';
 import DateSaveButton from './DateSaveButton';
+import DaySelect from './DaySelect';
 
 interface CalendarProps {
   next: () => void;

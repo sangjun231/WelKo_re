@@ -259,6 +259,12 @@ const DayPlaces: React.FC<PlaceProps> = ({
     router.replace('/');
   };
 
+  const [numbers, setNumbers] = useState([1]); // 초기에는 숫자 1만 존재
+  const handleAddNumber = () => {
+    // 현재 마지막 숫자에 1을 더한 숫자를 추가
+    setNumbers([...numbers, numbers.length + 1]);
+  };
+
   return (
     <div className="flex flex-col justify-center">
       <div className="my-5 flex items-center">
@@ -311,14 +317,16 @@ const DayPlaces: React.FC<PlaceProps> = ({
 
           {selectedDay === ''
             ? ''
-            : [1, 2, 3, 4].map((number, index) => (
+            : numbers.map((number, index) => (
                 <div key={index} className="flex flex-col">
                   <div className="mb-4 flex">
                     <div className="relative">
-                      <p className="relative z-10 mr-2 size-6 rounded-full border-2 border-grayscale-50 bg-primary-300 text-center text-sm text-white">
+                      <p className="z-10 mr-2 size-6 rounded-full border-2 border-grayscale-50 bg-primary-300 text-center text-sm text-white">
                         {number}
                       </p>
-                      <div className="absolute left-1/3 h-3/4 w-0.5 -translate-x-1/2 bg-grayscale-100"></div>
+                      {index < numbers.length - 1 && (
+                        <div className="absolute left-1/3 h-full w-0.5 bg-grayscale-100"></div>
+                      )}
                     </div>
 
                     <div className="rounded-2xl shadow-lg">
@@ -328,6 +336,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
                       >
                         Select Place
                       </button>
+
                       {selectedDay === storedPlacesKey && selectedPlaces[index] && (
                         <div key={index} className="p-4 hover:bg-gray-100">
                           <h3
@@ -353,6 +362,11 @@ const DayPlaces: React.FC<PlaceProps> = ({
                   </div>
                 </div>
               ))}
+          <div className="mt-4 flex justify-center">
+            <button className="border-2 border-primary-300 text-primary-300" onClick={handleAddNumber}>
+              +
+            </button>
+          </div>
         </div>
 
         {selectedDay === '' ? (

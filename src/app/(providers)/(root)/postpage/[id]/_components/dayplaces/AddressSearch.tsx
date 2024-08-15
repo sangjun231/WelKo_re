@@ -88,10 +88,8 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
       places.length = sequence + 1;
     }
     places[sequence] = selectedPlace;
-
-    // 수정된 배열을 세션 스토리지에 다시 저장합니다.
+    // 수정된 배열을 세션 스토리지에 다시 저장
     sessionStorage.setItem(selectedDay, JSON.stringify(places));
-    // setSelectedSearch([]);
     prev();
   };
 
@@ -141,7 +139,7 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
               <button
                 key={index}
                 onClick={() => handlePlaceSelect(place)}
-                className="flex w-full flex-row p-4 hover:bg-gray-100 active:bg-gray-100"
+                className={`flex w-full flex-row p-4 hover:bg-gray-100 ${selectedPlace === place ? 'rounded-2xl border-2 border-primary-300 bg-gray-100' : ''}`}
               >
                 <div className="mr-3 flex size-11 items-center justify-center rounded-lg bg-grayscale-50">
                   <GrLocation className="size-5" />
@@ -159,12 +157,18 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
           })}
         </div>
       )}
-      <button
-        onClick={handlePlaceSave}
-        className="fixed bottom-28 left-0 right-0 mx-auto my-5 h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-medium text-white"
-      >
-        Select
-      </button>
+      {!selectedPlace ? (
+        <button className="bg-primary-100 fixed bottom-28 left-0 right-0 mx-auto my-5 h-14 w-[320px] rounded-2xl p-2 text-lg font-medium text-white">
+          Select
+        </button>
+      ) : (
+        <button
+          onClick={handlePlaceSave}
+          className="fixed bottom-28 left-0 right-0 mx-auto my-5 h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-medium text-white"
+        >
+          Select
+        </button>
+      )}
     </div>
   );
 };
