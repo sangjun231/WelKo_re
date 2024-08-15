@@ -24,6 +24,7 @@ type PlaceProps = {
   sequence: number;
   setSequence: React.Dispatch<React.SetStateAction<number>>;
   postId: string;
+  userId: string;
 };
 
 const DayPlaces: React.FC<PlaceProps> = ({
@@ -36,12 +37,12 @@ const DayPlaces: React.FC<PlaceProps> = ({
   setRegion,
   sequence,
   setSequence,
-  postId
+  postId,
+  userId
 }) => {
   const [days, setDays] = useState<string[]>([]);
   const startDate = sessionStorage.getItem('startDate');
   const endDate = sessionStorage.getItem('endDate');
-  const userId = sessionStorage.getItem('userId');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -108,10 +109,9 @@ const DayPlaces: React.FC<PlaceProps> = ({
         }
 
         if (placesData && Array.isArray(placesData)) {
-          // 모든 데이터를 순회하면서 day별로 sessionStorage에 저장합니다.
           placesData.forEach((dayData: any) => {
             if (dayData && Array.isArray(dayData.places)) {
-              // 데이터를 변환하여 사용하기 쉬운 형태로 만듭니다.
+              // 데이터를 변환하여 사용하기 쉬운 형태로
               const combinedPlaces: Place[] = dayData.places.map((place: any, index: number) => ({
                 title: place.title,
                 category: place.category,
@@ -122,7 +122,6 @@ const DayPlaces: React.FC<PlaceProps> = ({
                 area: dayData.area
               }));
 
-              // 각 day에 해당하는 데이터를 sessionStorage에 저장합니다.
               setSelectedPlaces(combinedPlaces);
               sessionStorage.setItem(dayData.day, JSON.stringify(combinedPlaces));
             }
@@ -298,11 +297,11 @@ const DayPlaces: React.FC<PlaceProps> = ({
         <div id="map" style={{ width: '100%', height: '300px' }}></div>
 
         <div>
-          <div className="mb-4 flex gap-2">
+          <div className="no-scrollbar mb-4 flex gap-2 overflow-x-auto">
             {days.map((day, index) => (
               <button
                 key={index}
-                className="rounded-full bg-grayscale-50 px-4 py-2 text-sm font-medium hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
+                className="whitespace-nowrap rounded-full bg-grayscale-50 px-4 py-2 text-sm font-medium hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
                 onClick={() => handleDaySelect(day)}
               >
                 {day}
@@ -319,7 +318,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
                       <p className="relative z-10 mr-2 size-6 rounded-full border-2 border-grayscale-50 bg-primary-300 text-center text-sm text-white">
                         {number}
                       </p>
-                      <div className="absolute left-1/3 h-full w-0.5 -translate-x-1/2 bg-grayscale-100"></div>
+                      <div className="absolute left-1/3 h-3/4 w-0.5 -translate-x-1/2 bg-grayscale-100"></div>
                     </div>
 
                     <div className="rounded-2xl shadow-lg">

@@ -11,7 +11,17 @@ import { IoChevronBack, IoCloseOutline } from 'react-icons/io5';
 import { LuUsers } from 'react-icons/lu';
 import { TbPhoto } from 'react-icons/tb';
 
-const Write = ({ goToStep2, region, postId }: { goToStep2: () => void; region: string; postId: string }) => {
+const Write = ({
+  goToStep2,
+  region,
+  postId,
+  userId
+}: {
+  goToStep2: () => void;
+  region: string;
+  postId: string;
+  userId: string;
+}) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -46,6 +56,9 @@ const Write = ({ goToStep2, region, postId }: { goToStep2: () => void; region: s
       if (!postId) return;
       const supabase = createClient();
       const { data, error } = await supabase.from('posts').select('*').eq('id', postId).single();
+      if (!data || data.id !== postId) {
+        return;
+      }
       if (data) {
         // 불러온 데이터를 상태로 설정
         setTitle(data.title || '');
@@ -58,6 +71,7 @@ const Write = ({ goToStep2, region, postId }: { goToStep2: () => void; region: s
         setEditId(data.id);
       } else if (error) {
         console.error('Error fetching post data:', error);
+        return;
       }
     };
     fetchPlaces();
@@ -89,14 +103,39 @@ const Write = ({ goToStep2, region, postId }: { goToStep2: () => void; region: s
   };
 
   //이미지 추가하는 핸들러
-  const handleImageAdd = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleImageAdd = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${userId}.${fileExt}`;
+      const filePath = `post_images/${fileName}`;
+
+      // 기존 이미지를 제거 (같은 이름의 파일이 아닌 경우)
+      const existingImagePath = image?.split('/').pop();
+      if (existingImagePath && existingImagePath !== fileName) {
+        const { error: removeError } = await supabase.storage
+          .from('users')
+          .remove([`post_images/${existingImagePath}`]);
+
+        if (removeError) {
+          console.error('Error removing existing image:', removeError.message);
+          return;
+        }
+      }
+      // 새 이미지 업로드
+      const { error: uploadError } = await supabase.storage.from('places').upload(filePath, file, {
+        upsert: true
+      });
+      if (uploadError) {
+        console.error('Error uploading image:', uploadError.message);
+        return;
+      }
+      // 업로드된 이미지의 공개 URL 가져오기
+      const { data: publicUrlData } = supabase.storage.from('places').getPublicUrl(filePath);
+      if (!publicUrlData) return;
+
+      // 상태에 업로드된 이미지의 URL 저장
+      setImage(publicUrlData.publicUrl);
     }
   };
   //이미지 취소 핸들러

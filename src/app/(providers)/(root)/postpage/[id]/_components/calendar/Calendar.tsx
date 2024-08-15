@@ -26,8 +26,10 @@ const Calendar = ({ next, postId }: CalendarProps) => {
     if (postId) {
       const fetchData = async () => {
         const supabase = createClient();
-        const { data, error } = await supabase.from('posts').select('startDate, endDate').eq('id', postId).single();
-
+        const { data, error } = await supabase.from('posts').select('startDate, endDate, id').eq('id', postId).single();
+        if (!data || data.id !== postId) {
+          return;
+        }
         if (error) {
           console.error('Error fetching post data:', error);
           return;
@@ -44,17 +46,6 @@ const Calendar = ({ next, postId }: CalendarProps) => {
   }, [postId]);
 
   const handleDateSave = async () => {
-    const supabase = createClient();
-    const {
-      data: { user },
-      error
-    } = await supabase.auth.getUser();
-    if (error) {
-      console.error('Error getting user:', error);
-      return;
-    }
-    const userId = user?.id as string;
-
     const formatDateForDB = (date: Date | null) => {
       return date?.toISOString().split('T')[0];
     };
@@ -66,7 +57,6 @@ const Calendar = ({ next, postId }: CalendarProps) => {
         const end = formatDateForDB(endDate) as string;
         sessionStorage.setItem('startDate', start);
         sessionStorage.setItem('endDate', end);
-        sessionStorage.setItem('userId', userId);
         next();
       } else {
         alert('Please select a date');

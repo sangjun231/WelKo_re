@@ -15,10 +15,10 @@ function PostPage() {
   const [region, setRegion] = useState<string>('');
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
+  const userId = user.id;
   const [sequence, setSequence] = useState<number>(0);
 
   useEffect(() => {
-    sessionStorage.setItem('postId', postId as string);
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!id || !uuidRegex.test(id as string)) {
       alert('Please enter through the correct path');
@@ -52,10 +52,11 @@ function PostPage() {
           sequence={sequence}
           setSequence={setSequence}
           postId={postId as string}
+          userId={userId}
         />
       )}
       {step === 3 && <AddressSearch prev={prevStep} selectedDay={selectedDay} sequence={sequence} />}
-      {step === 4 && <Write goToStep2={goToStep2} region={region} postId={postId as string} />}
+      {step === 4 && <Write goToStep2={goToStep2} region={region} postId={postId as string} userId={userId} />}
     </div>
   );
 }
