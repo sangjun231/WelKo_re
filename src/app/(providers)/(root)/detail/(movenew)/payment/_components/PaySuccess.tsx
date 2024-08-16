@@ -132,12 +132,12 @@ export default function PaySuccess() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
+    <div className="relative flex min-h-screen flex-col items-center justify-center">
       <div className="mb-5 flex w-full max-w-[300px] flex-col items-center gap-1">
         <h1 className="mb-2 text-2xl font-semibold text-grayscale-900">We’re getting your tour!</h1>
         <p className="text-xs font-normal text-grayscale-600">The payment has been completed.</p>
       </div>
-      <div className="mb-40 flex w-full max-w-[320px] flex-col">
+      <div className="flex w-full flex-col">
         <div
           onClick={handleReservationsClick}
           className="mb-4 w-full cursor-pointer rounded-xl bg-primary-300 px-6 py-3 text-center text-white"
@@ -151,12 +151,15 @@ export default function PaySuccess() {
           Back to Home
         </Link>
       </div>
-      <div className="mb-2 text-center text-gray-600">
-        Is there a mistake? You can cancel it immediately by pressing the button below
+
+      <div className="absolute bottom-20 flex flex-col items-center">
+        <div className="mb-2 text-center text-xs text-gray-600">
+          Is there a mistake? You can cancel it immediately by pressing the button below
+        </div>
+        <button onClick={handleCancelClick} className="text-sm font-semibold text-grayscale-900 underline">
+          Cancel Now
+        </button>
       </div>
-      <button onClick={handleCancelClick} className="text-sm font-semibold text-grayscale-900 underline">
-        Cancel Now
-      </button>
     </div>
   );
 }
