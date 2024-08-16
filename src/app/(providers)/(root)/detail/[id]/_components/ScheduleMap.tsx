@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import { useNaverMapScript } from '@/hooks/Map/useNaverMapScript';
+import { WebProps } from '@/types/webstate';
 
 interface Place {
   title: string;
@@ -166,18 +167,7 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
                   <p className="web:text-lg text-xs font-normal text-gray-700">{place.description}</p>
                 </div>
               </div>
-              {index !== data.places[selectedDay].places.length - 1 ? (
-                <div className="absolute top-6 h-[calc(100%)] w-px bg-grayscale-100"></div>
-              ) : (
-                <div className="absolute top-6 h-[calc(100%-1rem)] w-px bg-grayscale-100"></div>
-              )}
-            </div>
-            <div className="shadow-custom-box ml-3 flex w-full flex-col gap-1 rounded-lg bg-white px-4 py-3">
-              <h2 className="text-sm font-semibold">{place.title ? place.title.replace(/<\/?[^>]+(>|$)/g, '') : ''}</h2>
-              <p className="text-xs text-gray-500">{place.category}</p>
-              <hr className="my-2 h-[1px] w-full bg-grayscale-100" />
-              <p className="text-xs font-normal text-gray-700">{place.description}</p>
-            </div>
+            ))}
           </div>
         ))}
       </div>
