@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Modal from './Modal';
-import TravelPlanner from '@/app/(providers)/(root)/(mainpage)/planner/page';
+import TravelPlanner from '@/app/(providers)/(root)/(mainpage)/_components/planner/TravelPlanner';
 
 interface HeaderSearchProps {
   style?: React.CSSProperties;
