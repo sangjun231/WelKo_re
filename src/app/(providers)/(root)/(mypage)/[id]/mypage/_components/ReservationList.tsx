@@ -249,16 +249,15 @@ export default function ReservationList() {
             </Link>
             {status === 'Upcoming Tour' ? (
               <div>
-                <div className="mb-[12px] flex space-x-[8px]">
+                <div className="mb-[12px] flex gap-[8px] web:mb-[24px] web:gap-[24px]">
                   <button
-                    className="flex-1 rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
+                    className="flex-1 rounded-[8px] border p-[8px] text-[14px] font-semibold text-grayscale-700 web:rounded-[16px] web:p-[16px] web:text-[18px]"
                     onClick={() => handleChangeTour(payment?.id ?? '', post?.id ?? '')}
                   >
                     Change Tour
                   </button>
-
                   <button
-                    className="flex-1 rounded-lg border bg-primary-300 p-2 text-[14px] font-semibold text-white"
+                    className="flex-1 rounded-[8px] border bg-primary-300 p-[8px] text-[14px] font-semibold text-white web:rounded-[16px] web:p-[16px] web:text-[18px]"
                     onClick={() => {
                       if (payment?.id) {
                         handleCancelRequest(payment.id);
@@ -269,7 +268,7 @@ export default function ReservationList() {
                   </button>
                 </div>
                 <button
-                  className="w-full rounded-lg border p-[8px] text-[14px] font-semibold text-grayscale-700 web:p-[16px] web:text-[18px]"
+                  className="w-full rounded-[8px] border p-[8px] text-[14px] font-semibold text-grayscale-700 web:rounded-[16px] web:p-[16px] web:text-[18px]"
                   onClick={() => handleChat(post)}
                 >
                   Message Guide
@@ -277,14 +276,14 @@ export default function ReservationList() {
               </div>
             ) : status === 'Refunded' ? (
               <button
-                className="w-full rounded-lg border p-[8px] text-[14px] font-semibold text-grayscale-700 web:p-[16px] web:text-[18px]"
+                className="w-full rounded-[8px] border p-[8px] text-[14px] font-semibold text-grayscale-700 web:rounded-[16px] web:p-[16px] web:text-[18px]"
                 onClick={() => handleChat(post)}
               >
                 Message Guide
               </button>
             ) : (
               <button
-                className="w-full rounded-lg border p-[8px] text-[14px] font-semibold text-grayscale-700 web:p-[16px] web:text-[18px]"
+                className="w-full rounded-[8px] border p-[8px] text-[14px] font-semibold text-grayscale-700 web:rounded-[16px] web:p-[16px] web:text-[18px]"
                 onClick={() => {
                   handleReviewAction(post.id, review?.id);
                 }}
