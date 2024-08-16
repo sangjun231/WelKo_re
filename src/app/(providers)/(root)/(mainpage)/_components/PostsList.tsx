@@ -129,7 +129,7 @@ const PostsList = () => {
 
   return (
     <div className="relative">
-      <h2 className="mb-5 text-xl font-bold">New Tour</h2>
+      <h2 className="mb-5 text-xl font-bold md:mb-[40px] md:text-4xl">New Tour</h2>
       <div className="overflow-hidden">
         {/* 모바일에서 InfiniteScroll을 사용하여 무한 스크롤 구현 */}
         <div className="block md:hidden">
@@ -177,15 +177,12 @@ const PostsList = () => {
           </InfiniteScroll>
         </div>
         {/* 데스크탑에서 포스터 8개만 표시 */}
-        <div className="hidden md:grid md:grid-cols-4">
+        <div className="hidden gap-4 md:grid md:grid-cols-4">
           {posts.slice(0, 8).map((post, index) => (
-            <div key={`${post.id}-${index}`} className="w-[286px]">
+            <div key={`${post.id}-${index}`} className="w-[auto]">
               <Link href={`/detail/${post.id}`} className="flex h-full flex-col">
                 {post.image ? (
-                  <div
-                    className="relative mb-2 overflow-hidden rounded-2xl"
-                    style={{ width: '286px', height: '286px' }}
-                  >
+                  <div className="relative mb-2 aspect-square max-w-[286px] overflow-hidden rounded-2xl">
                     <Image
                       src={post.image}
                       alt={post.title}

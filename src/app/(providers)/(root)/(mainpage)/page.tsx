@@ -16,7 +16,7 @@ export default function Home() {
         <Header />
         <SlideImage />
         <div
-          className="bottom-0 left-0 right-0 rounded-t-3xl bg-white p-4 md:px-[88px]"
+          className="bottom-0 left-0 right-0 rounded-t-3xl bg-white p-4 md:p-0 md:px-[88px]"
           style={{ height: '20%', top: '80%' }}
         >
           <div className="block sm:hidden">

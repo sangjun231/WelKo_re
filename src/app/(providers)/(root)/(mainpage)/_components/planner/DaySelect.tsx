@@ -19,6 +19,7 @@ interface DaySelectProps {
   setStartDate: (date: Date | null) => void;
   setEndDate: any; //(date: Date | null) => void;
   setSelectedMonth: (date: Date) => void;
+  isModal?: boolean;
 }
 
 const DaySelect: React.FC<DaySelectProps> = ({
@@ -27,7 +28,8 @@ const DaySelect: React.FC<DaySelectProps> = ({
   endDate,
   setStartDate,
   setEndDate,
-  setSelectedMonth
+  setSelectedMonth,
+  isModal = false
 }) => {
   const today = startOfDay(new Date());
 
@@ -75,36 +77,48 @@ const DaySelect: React.FC<DaySelectProps> = ({
   };
 
   return (
-    <div className="flex flex-col">
-      <div className="mb-2 flex items-center justify-between">
-        <button onClick={() => setSelectedMonth(subMonths(selectedMonth, 1))} className="rounded px-2 py-1">
-          &lt;
-        </button>
-        <div className="text-center text-[13px] font-semibold">{format(selectedMonth, 'MMMM yyyy')}</div>
-        <button onClick={() => setSelectedMonth(addMonths(selectedMonth, 1))} className="rounded px-2 py-1">
-          &gt;
-        </button>
-      </div>
-
-      <div className="grid grid-cols-7 gap-2">
-        {daysInCalendar.map((day) => (
-          <button
-            key={day.toDateString()}
-            onClick={() => handleDateClick(day)}
-            className={`flex h-[24px] w-[24px] items-center justify-center rounded-full p-1.5 text-[13px] font-semibold ${
-              startDate && day.toDateString() === startDate.toDateString()
-                ? 'bg-[#B95FAB] text-white'
-                : endDate && day.toDateString() === endDate.toDateString()
-                  ? 'bg-[#B95FAB] text-white'
-                  : isDateInRange(day)
-                    ? 'bg-[#B95FAB] text-white'
-                    : 'bg-white text-black'
-            } ${isDateDisabled(day) ? 'cursor-not-allowed bg-gray-200 text-gray-400' : ''}`}
-            disabled={isDateDisabled(day)}
-          >
-            {format(day, 'd')}
+    <div className={` ${isModal ? `flex items-center justify-center` : ``}`}>
+      <div className={`flex flex-col ${isModal ? 'h-[284px] w-[382px] justify-center' : ''}`}>
+        <div className="flex items-center justify-between">
+          <button onClick={() => setSelectedMonth(subMonths(selectedMonth, 1))} className="rounded px-2 py-1">
+            &lt;
           </button>
-        ))}
+          <div className={`text-center font-semibold ${isModal ? 'text-[21px]' : 'text-[13px]'}`}>
+            {format(selectedMonth, 'MMMM yyyy')}
+          </div>
+          <button onClick={() => setSelectedMonth(addMonths(selectedMonth, 1))} className="rounded px-2 py-1">
+            &gt;
+          </button>
+        </div>
+
+        <div className="my-4 grid grid-cols-7 place-items-center gap-4 text-[13px] font-medium text-[#7A7A7A]">
+          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day) => (
+            <div key={day} className="text-center">
+              {day}
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-7 place-items-center gap-4">
+          {daysInCalendar.map((day) => (
+            <button
+              key={day.toDateString()}
+              onClick={() => handleDateClick(day)}
+              className={`flex h-[24px] w-[24px] items-center justify-center rounded-full p-1.5 text-[13px] font-semibold ${
+                startDate && day.toDateString() === startDate.toDateString()
+                  ? 'bg-[#B95FAB] text-white'
+                  : endDate && day.toDateString() === endDate.toDateString()
+                    ? 'bg-[#B95FAB] text-white'
+                    : isDateInRange(day)
+                      ? 'bg-[#B95FAB] text-white'
+                      : 'bg-white text-black'
+              } ${isDateDisabled(day) ? 'cursor-not-allowed bg-gray-200 text-gray-400' : ''}`}
+              disabled={isDateDisabled(day)}
+            >
+              {format(day, 'd')}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
