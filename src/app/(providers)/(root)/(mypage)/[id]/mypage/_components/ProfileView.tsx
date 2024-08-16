@@ -26,31 +26,38 @@ const ProfileView = ({ userId }: { userId: string }) => {
   }, [userId]);
 
   return (
-    <div className="mt-[20px]">
+    <div>
       {profile ? (
-        <div className="flex">
-          {profile.avatar && (
-            <Image
-              src={`${profile.avatar}?${new Date().getTime()}`}
-              alt="Profile"
-              width={56}
-              height={56}
-              className="rounded-full"
-              style={{ width: '56px', height: '56px' }}
-            />
-          )}
-          <div className="ml-[12px]">
-            <div className="flex">
-              <p className="text-[18px] font-semibold leading-none">{profile.name}</p>
-              {profile.region ? (
-                <p className="ml-[8px] text-[12px]">{profile.region}</p>
-              ) : (
-                <p className="ml-[8px] text-[12px]">Please set the region</p>
-              )}
+        <div className="flex gap-[12px] web:gap-[16px]">
+          <div>
+            {profile.avatar && (
+              <div className="max-h-[56px] max-w-[56px] web:max-h-[80px] web:max-w-[80px]">
+                <Image
+                  className="h-[56px] w-[56px] rounded-full web:h-[80px] web:w-[80px]"
+                  src={`${profile.avatar}?${new Date().getTime()}`}
+                  alt="Profile"
+                  width={56}
+                  height={56}
+                />
+              </div>
+            )}
+          </div>
+          <div className="flex flex-col">
+            <div className="flex gap-[8px] web:gap-[16px]">
+              <p className="text-[18px] font-semibold leading-none web:text-[26px]">{profile.name}</p>
+              <p className="text-[12px] web:text-[20px]">{profile.region ? profile.region : 'Please set the region'}</p>
             </div>
-            <button onClick={goToProfilePage} className="mt-[8px] flex items-center text-[12px]">
+            <button onClick={goToProfilePage} className="mt-[8px] flex items-center text-[12px] web:text-[16px]">
               Edit Profile
-              <Image src="/icons/tabler-icon-chevron-right.svg" alt="Edit Profile" width={16} height={16} />
+              <div className="max-h-[16px] max-w-[16px] web:max-h-[24px] web:max-w-[24px]">
+                <Image
+                  className="h-[16px] w-[16px] web:h-[24px] web:w-[24px]"
+                  src="/icons/tabler-icon-chevron-right.svg"
+                  alt="Edit Profile"
+                  width={16}
+                  height={16}
+                />
+              </div>
             </button>
           </div>
         </div>
