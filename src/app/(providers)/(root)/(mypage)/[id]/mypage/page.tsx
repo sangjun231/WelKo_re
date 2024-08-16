@@ -30,8 +30,8 @@ const MyPage = () => {
     `flex-1 text-center ${selectedComponent === component ? 'text-primary-300 border-primary-300 font-semibold' : 'text-grayscale-500'}`;
 
   return (
-    <div className="mx-[20px] flex flex-col">
-      <div className="mt-[8px] flex justify-between">
+    <div className="mx-[20px] mt-[8px] grid grid-cols-1 gap-[20px] web:mx-[88px] web:gap-[40px]">
+      <div className="flex justify-between">
         <button
           className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-grayscale-50"
           onClick={handleBack}
@@ -50,7 +50,7 @@ const MyPage = () => {
         </button>
       </div>
       <ProfileView userId={id} />
-      <div className="my-[20px] flex justify-around text-[13px] font-medium">
+      <div className="flex items-center justify-around text-[13px] font-medium web:text-[21px]">
         <button className={`border-b ${buttonClass('Wishlist')}`} onClick={() => setSelectedComponent('Wishlist')}>
           Wishlist
         </button>

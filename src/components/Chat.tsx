@@ -83,7 +83,7 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
                       height={44}
                       style={{ width: '44px', height: '44px' }}
                     />
-                    <p className="ml-[12px] text-[13px] font-semibold">{msg.sender.name}</p>
+                    <p className="ml-[12px] text-[13px] font-semibold text-grayscale-900">{msg.sender.name}</p>
                   </div>
                 )}
                 <div className="flex items-end">
@@ -97,11 +97,11 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
                   <div
                     className={`max-w-[240px] break-all px-[8px] py-[12px] ${
                       msg.sender_id === senderId
-                        ? 'rounded-br-0 rounded-bl-[16px] rounded-tl-[16px] rounded-tr-[16px] bg-primary-50'
+                        ? 'rounded-br-0 rounded-bl-[16px] rounded-tl-[16px] rounded-tr-[16px] bg-primary-50 web:mr-[68px]'
                         : 'rounded-bl-0 ml-[56px] rounded-br-[16px] rounded-tl-[16px] rounded-tr-[16px] bg-grayscale-50'
                     }`}
                   >
-                    <p className="text-[14px]">{msg.content}</p>
+                    <p className="text-[14px] text-grayscale-900">{msg.content}</p>
                   </div>
                 </div>
               </div>
@@ -111,7 +111,7 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
       </div>
       <div className="sticky bottom-0 flex items-center border-t bg-white pb-[16px] pt-[16px]">
         <input
-          className="h-[48px] flex-1 rounded-[16px] border bg-grayscale-50 p-[16px] text-[16px]"
+          className="h-[48px] flex-1 rounded-[16px] border bg-grayscale-50 p-[16px] text-[16px] text-grayscale-900"
           type="text"
           placeholder="Placeholder text"
           value={newMessage}

@@ -8,8 +8,9 @@ import Likes from './Likes';
 import { formatDateRange } from '@/utils/detail/functions';
 import IconLocation from '/public/icons/detail_icons/icon_location.svg';
 import IconPeoples from '/public/icons/detail_icons/icon_peoples.svg';
+import { WebProps } from '@/types/webstate';
 
-export default function DetailImg() {
+export default function DetailImg({ isWeb }: WebProps) {
   const { id } = useParams();
   const postId = Array.isArray(id) ? id[0] : id;
   const { setPostId, post, fetchPost } = usePostStore((state) => ({
@@ -31,46 +32,46 @@ export default function DetailImg() {
 
   return (
     <div className="flex w-full flex-col items-center">
-      <div className="relative h-[300px] w-full">
+      <div className="web:h-[640px] relative h-[300px] w-full">
         <Image
           src={post.image}
           alt={post.title}
-          fill
           priority
-          style={{ objectFit: 'cover' }}
-          className="relative mb-[20px]"
+          fill
+          className="bottom-0 left-0 right-0 top-0 object-cover"
+          sizes="100vw"
         />
-        <Likes />
+        <Likes isWeb={isWeb} />
       </div>
-      <div className="max-w-[320px]">
-        <div className="mt-6 flex flex-col items-start gap-8">
-          <div className="flex flex-col gap-4">
-            <ul className="flex max-w-[320px] flex-wrap items-start gap-2">
+      <div className="web:mx-[88px] mx-5">
+        <div className="web:mt-10 web:gap-20 mt-6 flex flex-col gap-8">
+          <div className="web:gap-10 flex flex-col gap-4">
+            <ul className="flex flex-wrap gap-2">
               {tags.map((tag, index) => (
-                <li key={index} className="select-button gap-1 text-[13px]">
+                <li key={index} className="select-button web:text-xl text-sm">
                   {tag}
                 </li>
               ))}
             </ul>
-            <h1 className="text-xl font-semibold text-grayscale-900">{post.title}</h1>
-            <p className="text-xl text-grayscale-500"> {formatDateRange(post.startDate, post.endDate)}</p>
-            <div className="flex text-lg">
+            <h1 className="web:text-4xl text-xl font-semibold text-grayscale-900">{post.title}</h1>
+            <p className="web:text-3xl text-xl text-grayscale-500"> {formatDateRange(post.startDate, post.endDate)}</p>
+            <div className="web:text-3xl flex text-lg">
               <span className="font-semibold text-primary-300">${post.price}</span>
               <span className="font-medium text-grayscale-600">/Person</span>
             </div>
           </div>
-          <div className="flex text-sm font-semibold text-grayscale-900">
-            <IconLocation alt="Location" width={24} height={24} />
-            <h4 className="ml-1 mr-8">Gyeongju</h4>
-            <IconPeoples alt="Max Peoples" width={24} height={24} />
-            <h4 className="ml-1">Max {post.maxPeople}</h4>
+          <div className="web:text-2xl flex text-sm font-semibold text-grayscale-900">
+            <IconLocation alt="Location" width={isWeb ? 37 : 24} height={isWeb ? 37 : 24} />
+            <h4 className="web:ml-2 web:mr-11 ml-1 mr-8">Gyeongju</h4>
+            <IconPeoples alt="Max Peoples" width={isWeb ? 37 : 24} height={isWeb ? 37 : 24} />
+            <h4 className="web:ml-2 web:mr-11 ml-1">Max {post.maxPeople}</h4>
           </div>
         </div>
-        <hr className="mb-6 mt-8 h-[1px] w-full bg-grayscale-100" />
-        <div className="text-sm text-grayscale-700">
+        <hr className="web:my-20 mb-6 mt-8 h-[1px] w-full bg-grayscale-100" />
+        <div className="web:text-xl text-sm text-grayscale-700">
           <p>{post.content}</p>
         </div>
-        <hr className="mb-6 mt-8 h-[1px] w-full bg-grayscale-100" />
+        <hr className="web:my-20 mb-6 mt-8 h-[1px] w-full bg-grayscale-100" />
       </div>
     </div>
   );

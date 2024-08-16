@@ -33,12 +33,12 @@ const SelectUser = () => {
   };
 
   return (
-    <div className="web:mt-20 web:space-between mt-6 flex w-full flex-col">
-      <div className="web:mb-20 web:w-1/2 mb-5 gap-2">
-        <h3 className="web:text-xl text-base font-medium text-text-color">How many tourists?</h3>
+    <div className="web:w-2/5 mobile:mt-6 web:absolute top-[343px] flex w-full flex-col">
+      <div className="web:mb-20 mb-5 gap-2">
+        <h3 className="web:text-xl web:mb-5 text-base font-medium text-text-color">How many tourists?</h3>
         <input
           type="number"
-          className="my-2 w-full rounded-xl bg-grayscale-50 px-4 py-3"
+          className="my-2 w-full rounded-xl bg-grayscale-50 p-6 text-base"
           min="1"
           placeholder="ex) 3"
           value={numPersons === '' ? '' : numPersons}
@@ -48,13 +48,13 @@ const SelectUser = () => {
           If you exceed the number of people booked, your reservation may be canceled. Please contact the guide first.
         </p>
       </div>
-      <div className="mobile:gap-2 mb-5">
+      <div className="mb-5 gap-2">
         <h3 className="web:text-xl web:mb-5 text-base font-medium text-text-color">Nickname/email</h3>
-        <div className="web:w-1/2 my-2 w-full rounded-xl bg-grayscale-100 px-4 py-3">
+        <div className="my-2 w-full rounded-xl bg-grayscale-100 p-6">
           {user ? user.email : '로그인 정보가 없습니다.'}
         </div>
       </div>
-      <div className="web:hidden mb-5">
+      <div className="web:hidden">
         <h3 className="web:text-xl web:mb-5 mb-1 text-base font-medium text-text-color">Cancellation Policy</h3>
         <p className="web:text-base text-xs font-normal text-grayscale-500">
           Before you book, make sure you&apos;re comfortable with

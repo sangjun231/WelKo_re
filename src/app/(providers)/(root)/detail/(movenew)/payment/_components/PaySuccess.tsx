@@ -132,31 +132,37 @@ export default function PaySuccess() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
-      <div className="mb-5 flex w-full max-w-[300px] flex-col items-center gap-1">
-        <h1 className="mb-2 text-2xl font-semibold text-grayscale-900">We’re getting your tour!</h1>
-        <p className="text-xs font-normal text-grayscale-600">The payment has been completed.</p>
+    <div className="relative flex min-h-screen flex-col items-center justify-center">
+      <div className="web:gap-3 web:mb-12 web:max-w-lg mb-5 flex w-full flex-col items-center gap-1">
+        <h1 className="web:text-3xl mb-2 text-center text-xl font-semibold text-grayscale-900">
+          We’re getting your tour!
+        </h1>
+        <p className="web:text-lg text-center text-xs font-normal text-grayscale-600">
+          The payment has been completed.
+        </p>
       </div>
-      <div className="mb-40 flex w-full max-w-[320px] flex-col">
-        <div
+      <div className="web:max-w-lg flex w-full flex-col gap-2">
+        <button
           onClick={handleReservationsClick}
-          className="mb-4 w-full cursor-pointer rounded-xl bg-primary-300 px-6 py-3 text-center text-white"
+          className="web:text-lg web:py-4 web:rounded-2xl w-full cursor-pointer rounded-xl bg-primary-300 px-6 py-3 text-center text-white"
         >
           My Reservation
-        </div>
+        </button>
         <Link
           href="/"
-          className="mb-4 w-full rounded-xl border border-primary-300 px-6 py-3 text-center text-primary-300"
+          className="web:text-lg web:py-4 web:rounded-2xl w-full rounded-xl border border-primary-300 px-6 py-3 text-center text-primary-300"
         >
           Back to Home
         </Link>
       </div>
-      <div className="mb-2 text-center text-gray-600">
-        Is there a mistake? You can cancel it immediately by pressing the button below
+      <div className="web:max-w-lg absolute bottom-20 flex w-full flex-col items-center">
+        <div className="web:text-base mb-2 text-center text-xs text-gray-600">
+          Is there a mistake? You can cancel it immediately by pressing the button below
+        </div>
+        <button onClick={handleCancelClick} className="web:text-lg text-sm font-semibold text-grayscale-900 underline">
+          Cancel Now
+        </button>
       </div>
-      <button onClick={handleCancelClick} className="text-sm font-semibold text-grayscale-900 underline">
-        Cancel Now
-      </button>
     </div>
   );
 }

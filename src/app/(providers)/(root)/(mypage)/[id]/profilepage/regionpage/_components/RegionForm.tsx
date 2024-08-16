@@ -5,13 +5,13 @@ import { useRouter, usePathname } from 'next/navigation';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
-import { translateAddress } from '@/utils/post/postData'; // 번역 함수 import
+import { translateAddress } from '@/utils/post/postData';
 
 const RegionForm = () => {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [position, setPosition] = useState<{ latitude: number; longitude: number } | null>(null);
   const [region, setRegion] = useState<string | null>(null);
-  const [translatedRegion, setTranslatedRegion] = useState<string | null>(null); // 번역된 주소 상태 추가
+  const [translatedRegion, setTranslatedRegion] = useState<string | null>(null);
   const router = useRouter();
   const pathname = usePathname();
   const userId = pathname.split('/')[1];
@@ -96,7 +96,7 @@ const RegionForm = () => {
   const handleSave = async () => {
     if (region && userId) {
       await axios.put(API_MYPAGE_PROFILE(userId), {
-        region: translatedRegion || region // 번역된 주소를 저장
+        region: translatedRegion || region
       });
       router.replace(`/${userId}/profilepage`);
     }
@@ -142,10 +142,19 @@ const RegionForm = () => {
   }, [region]);
 
   return (
-    <div className="mt-[56px]">
+    <div className="mt-[8px]">
       <div className="flex items-center justify-between">
-        <button className="rounded-[24px] bg-grayscale-50" onClick={handleBack}>
-          <Image src="/icons/tabler-icon-chevron-left.svg" alt="Go Back" width={32} height={32} />
+        <button
+          className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-grayscale-50"
+          onClick={handleBack}
+        >
+          <Image
+            src="/icons/tabler-icon-chevron-left.svg"
+            alt="Go Back"
+            width={24}
+            height={24}
+            style={{ width: '24px', height: '24px' }}
+          />
         </button>
         <p className="text-[18px] font-semibold">Location</p>
         <button className="text-[14px] font-medium text-action-color" onClick={handleSave}>
@@ -156,7 +165,7 @@ const RegionForm = () => {
       <div>
         <p className="mb-[8px] text-[16px] font-medium">Location</p>
         {region ? (
-          <p className="flex items-center justify-between rounded-2xl border bg-grayscale-50 p-[16px] text-[16px]">
+          <p className="flex items-center justify-between rounded-2xl border bg-grayscale-50 p-[16px] text-[16px] text-grayscale-900">
             {translatedRegion || 'Loading...'}
             <span>
               <Image src="/icons/tabler-icon-location-filled.svg" alt="location" width={32} height={32} />
