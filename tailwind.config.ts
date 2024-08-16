@@ -35,7 +35,8 @@ const config: Config = {
       },
       boxShadow: {
         'custom-navbar': '0px -8px 15px 0px rgba(0, 0, 0, 0.05)',
-        'custom-box': '0px 0px 30px 0px rgba(0, 0, 0, 0.10)'
+        'custom-box': '0px 0px 30px 0px rgba(0, 0, 0, 0.10)',
+        'custom-marker': '0px 4px 20px 0px rgba(0, 0, 0, 0.25)'
       },
       fontFamily: {
         inter: ['Inter', 'sans-serif'],
