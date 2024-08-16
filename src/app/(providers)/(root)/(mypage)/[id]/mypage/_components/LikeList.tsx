@@ -60,7 +60,7 @@ export default function LikeList() {
         <div className="flex flex-col items-center justify-center gap-[8px]">
           <Image src="/icons/tabler-icon-heart.svg" alt="no wishlist" width={44} height={44} />
           <p className="text-[14px] font-semibold text-grayscale-900">You don&apos;t have any Wishlist</p>
-          <p className="text-[12px] text-grayscale-600">When you recieve a new meaasge,</p>
+          <p className="text-[12px] text-grayscale-600">When you like a tour,</p>
           <p className="text-[12px] text-grayscale-600">it will appear here.</p>
         </div>
       </div>

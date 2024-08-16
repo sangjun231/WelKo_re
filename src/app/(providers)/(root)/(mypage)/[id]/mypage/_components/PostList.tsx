@@ -71,7 +71,7 @@ export default function PostList() {
         <div className="flex flex-col items-center justify-center gap-[8px]">
           <Image src="/icons/tabler-icon-sticker-2.svg" alt="no post" width={44} height={44} />
           <p className="text-[14px] font-semibold text-grayscale-900">You don&apos;t have any post</p>
-          <p className="text-[12px] text-grayscale-600">When you receive a new message,</p>
+          <p className="text-[12px] text-grayscale-600">When you make your tour,</p>
           <p className="text-[12px] text-grayscale-600">it will appear here.</p>
         </div>
       </div>

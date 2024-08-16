@@ -90,7 +90,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
 
         return (
           review && (
-            <div key={`${post.id}-${index}`} className="mb-[20px] web:mb-[20px]">
+            <div key={`${post.id}-${index}`} className="mb-[20px] web:mb-[40px]">
               <div className="flex">
                 <Image
                   className="h-[44px] w-[44px] rounded-[8px] web:h-[120px] web:w-[120px] web:rounded-[12px]"
