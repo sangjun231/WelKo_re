@@ -1,18 +1,14 @@
 'use client';
 
-import { useCurrentPosition } from '@/hooks/Map/useCurrentPosition';
-import { useNaverMapScript } from '@/hooks/Map/useNaverMapScript';
-import useDayNumbers from '@/hooks/Post/useDayNumbers';
 import { Place } from '@/types/types';
-import { formatDateRange } from '@/utils/detail/functions';
-import { translateAddress } from '@/utils/post/postData';
 import { createClient } from '@/utils/supabase/client';
 import DOMPurify from 'dompurify';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { GrLocation } from 'react-icons/gr';
-import { IoChevronBack } from 'react-icons/io5';
+import { IoChevronBack, IoCloseOutline } from 'react-icons/io5';
+import PostMap from './PostMap';
 
 type PlaceProps = {
   next: () => void;
@@ -39,14 +35,22 @@ const DayPlaces: React.FC<PlaceProps> = ({
   postId,
   userId
 }) => {
-  const { dayNumbers, addDayNumber, handleDaySelect } = useDayNumbers();
   const [days, setDays] = useState<string[]>([]);
   const startDate = sessionStorage.getItem('startDate');
   const endDate = sessionStorage.getItem('endDate');
-  const [selectedPlaces, setSelectedPlaces] = useState<Place[]>([]); // 선택한 장소 목록
-  const [descriptions, setDescriptions] = useState<{ [key: number]: string }>({}); // 장소마다 소개 작성
-  // 컴포넌트가 렌더링될 때 초기 description 값을 설정
-  // useEffect(() => {}, [selectedPlaces]);
+  const [placesByDay, setPlacesByDay] = useState<{ [key: string]: Place[] }>({}); // 각 Day에 대한 장소 목록
+  const [descriptionsByDay, setDescriptionsByDay] = useState<{ [key: string]: { [index: number]: string } }>({}); // 각 Day에 대한 설명 목록
+  const [dayNumbers, setDayNumbers] = useState<{ [key: string]: number[] }>({}); // 각 Day에 대한 번호 목록
+
+  //Done 클릭 시, 취소 핸들러
+  const router = useRouter();
+  const handleCancel = () => {
+    const userConfirmed = confirm('Do you want to cancel this?');
+    if (!userConfirmed) {
+      return;
+    }
+    router.replace('/');
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -69,23 +73,18 @@ const DayPlaces: React.FC<PlaceProps> = ({
     }
   }, [startDate, endDate]);
 
-  //지도 관련
-  const clientId = process.env.NEXT_PUBLIC_NCP_CLIENT_ID!;
-  const isScriptLoaded = useNaverMapScript(clientId);
-  const position = useCurrentPosition();
-  const [markers, setMarkers] = useState<any[]>([]);
-
   //sessionStorage 관련
   const storedPlaces = sessionStorage.getItem(selectedDay); //선택한 day에 맞는 value값 가져옴
   const keys = Object.keys(sessionStorage);
   const storedPlacesKey = keys.find((key) => sessionStorage.getItem(key) === storedPlaces);
   useEffect(() => {
     if (storedPlaces) {
-      if (storedPlacesKey === selectedDay) {
-        setSelectedPlaces(JSON.parse(storedPlaces));
-      }
+      setPlacesByDay((prev) => ({
+        ...prev,
+        [selectedDay]: JSON.parse(storedPlaces)
+      }));
     }
-  }, [selectedDay, storedPlaces, storedPlacesKey]);
+  }, [selectedDay]);
 
   // 수정할 때, Supabase에서 장소 데이터를 불러오기
   useEffect(() => {
@@ -93,7 +92,10 @@ const DayPlaces: React.FC<PlaceProps> = ({
 
     if (storedPlaces) {
       // 이미 저장된 데이터가 있으면 해당 데이터를 사용
-      setSelectedPlaces(JSON.parse(storedPlaces));
+      setPlacesByDay((prev) => ({
+        ...prev,
+        [selectedDay]: JSON.parse(storedPlaces)
+      }));
     } else if (postId && selectedDay) {
       const fetchPlaces = async () => {
         const supabase = createClient();
@@ -108,23 +110,26 @@ const DayPlaces: React.FC<PlaceProps> = ({
         }
 
         if (placesData && Array.isArray(placesData)) {
-          placesData.forEach((dayData: any) => {
-            if (dayData && Array.isArray(dayData.places)) {
-              // 데이터를 변환하여 사용하기 쉬운 형태로
-              const combinedPlaces: Place[] = dayData.places.map((place: any, index: number) => ({
-                title: place.title,
-                category: place.category,
-                roadAddress: place.roadAddress,
-                description: place.description,
-                latitude: dayData.lat[index],
-                longitude: dayData.long[index],
-                area: dayData.area
-              }));
+          const dayDataForSelectedDay = placesData.find((dayData: any) => dayData.day === selectedDay);
+          if (dayDataForSelectedDay && Array.isArray(dayDataForSelectedDay.places)) {
+            // 데이터를 변환하여 사용하기 쉬운 형태로
+            const combinedPlaces: Place[] = dayDataForSelectedDay.places.map((place: any, index: number) => ({
+              title: place.title,
+              category: place.category,
+              roadAddress: place.roadAddress,
+              description: place.description,
+              latitude: dayDataForSelectedDay.lat[index],
+              longitude: dayDataForSelectedDay.long[index],
+              area: dayDataForSelectedDay.area
+            }));
 
-              setSelectedPlaces(combinedPlaces);
-              sessionStorage.setItem(dayData.day, JSON.stringify(combinedPlaces));
-            }
-          });
+            setPlacesByDay((prev) => ({
+              ...prev,
+              [selectedDay]: combinedPlaces
+            }));
+
+            sessionStorage.setItem(selectedDay, JSON.stringify(combinedPlaces));
+          }
         } else {
           console.log('No data found for the given postId and day');
         }
@@ -133,137 +138,101 @@ const DayPlaces: React.FC<PlaceProps> = ({
     }
   }, [selectedDay, postId]);
 
-  // 지도 띄우기
-  useEffect(() => {
-    if (!isScriptLoaded || !position) return;
-    // 현재 위치 이름 가져오기
-    const getRegionName = (latitude: number, longitude: number) => {
-      if (!window.naver || !window.naver.maps || !window.naver.maps.Service) {
-        console.error('네이버 맵 서비스가 초기화되지 않았습니다.');
-        return;
-      }
-      const coord = new window.naver.maps.LatLng(latitude, longitude);
-      window.naver.maps.Service.reverseGeocode(
-        {
-          location: coord,
-          coordType: window.naver.maps.Service.CoordType.LatLng
-        },
-        //현재 위치 이름 영어로 번역하기
-        async (status: any, response: any) => {
-          if (status === 200) {
-            if (response.result.items && response.result.items.length > 0) {
-              const address = response.result.items[0].addrdetail.sigugun;
-              try {
-                const translatedAddress = await translateAddress(address);
-                setRegion(translatedAddress.split(' ')[0]);
-              } catch (error) {
-                console.error('Failed to translate address:', error);
-                alert('Failed to translate address.');
-              }
-            } else {
-              alert('Failed to get the location name.');
-            }
-          }
-        }
-      );
-    };
-    // 현재 위치로 지도 띄우기
-    const initializeMap = () => {
-      const mapInstance = new window.naver.maps.Map('map', {
-        center: new window.naver.maps.LatLng(position.latitude, position.longitude),
-        zoom: 14
-      });
-      const currentMarker = new window.naver.maps.Marker({
-        position: new window.naver.maps.LatLng(position.latitude, position.longitude),
-        map: mapInstance
-      });
-
-      getRegionName(position.latitude, position.longitude);
-      setMarkers([currentMarker]);
-
-      // 추가한 장소로 지도 띄우기
-      if (selectedPlaces.length > 0) {
-        //기존 마커 숨기기
-        markers.forEach((marker) => marker.setMap(null));
-        setMarkers([]);
-
-        // 유효한 장소만 필터링하고 원래 인덱스를 기억하기
-        const validPlaces = selectedPlaces
-          .map((place, index) => (place ? { place, index } : null))
-          .filter((item) => item !== null);
-
-        if (validPlaces.length > 0) {
-          // 첫 번째 유효한 장소로 중심 이동
-          const newCenter = new window.naver.maps.LatLng(validPlaces[0].place.latitude, validPlaces[0].place.longitude);
-          mapInstance.setCenter(newCenter);
-
-          validPlaces.forEach(({ place, index }) => {
-            // 마커 꾸미기
-            const markerContent = `
-      <div class="text-white bg-primary-300 border-2 border-white size-6 rounded-full text-center text-sm">${index + 1}</div>
-      `;
-            // 저장된 장소 마커 생성하기
-            new window.naver.maps.Marker({
-              position: new window.naver.maps.LatLng(place.latitude, place.longitude),
-              map: mapInstance,
-              title: place.title,
-              icon: {
-                content: markerContent,
-                anchor: new window.naver.maps.Point(12, 12)
-              }
-            });
-          });
-        }
-      }
-    };
-    initializeMap();
-  }, [isScriptLoaded, position, selectedPlaces]);
-
   // description 값을 업데이트하고 sessionStorage에 저장
   const handleDescriptionChange = (index: number, value: string) => {
-    setDescriptions((prevDescriptions) => ({
+    setDescriptionsByDay((prevDescriptions) => ({
       ...prevDescriptions,
-      [index]: value
+      [selectedDay]: {
+        ...prevDescriptions[selectedDay],
+        [index]: value
+      }
     }));
 
-    const updatedPlaces = [...selectedPlaces];
+    const updatedPlaces = [...(placesByDay[selectedDay] || [])];
     if (updatedPlaces[index]) {
       updatedPlaces[index].description = value;
+      setPlacesByDay((prev) => ({
+        ...prev,
+        [selectedDay]: updatedPlaces
+      }));
       sessionStorage.setItem(selectedDay, JSON.stringify(updatedPlaces));
     }
   };
-  // const handleDaySelect = (day: string) => {
-  //   setSelectedDay(day);
-  // };
+
+  const handleDaySelect = (day: string) => {
+    setSelectedDay(day);
+    setDayNumbers((prev) => {
+      if (!prev[day]) {
+        return {
+          ...prev,
+          [day]: [1] // 첫 번째 버튼 번호를 1로 초기화
+        };
+      }
+      return prev;
+    });
+  };
+
+  const addDayNumber = (day: string) => {
+    setDayNumbers((prev) => {
+      const currentNumbers = prev[day] || [];
+      if (currentNumbers.length < 6) {
+        const newNumbers = [...currentNumbers, currentNumbers.length + 1];
+        return { ...prev, [day]: newNumbers };
+      }
+      return prev;
+    });
+  };
+
   const handleAddSequence = (index: number) => {
     setSequence(index);
     next();
   };
 
-  //Done 클릭 시, 취소 핸들러
-  const router = useRouter();
-  const handleCancel = () => {
-    const userConfirmed = confirm('Do you want to cancel this?');
-    if (!userConfirmed) {
-      return;
-    }
-    router.replace('/');
-  };
   const dayNumberLength = dayNumbers[selectedDay]?.length;
   useEffect(() => {
-    // 선택된 장소가 현재 numbers의 길이보다 클 경우 새로운 번호 추가
     const numbers = dayNumbers[selectedDay] || [];
+    const selectedPlaces = placesByDay[selectedDay] || [];
+
     if (selectedPlaces.length >= numbers.length && numbers.length < 6) {
       addDayNumber(selectedDay);
     }
 
-    // 각 장소에 대한 설명 초기화
     const initialDescriptions = selectedPlaces.reduce((acc: { [key: number]: string }, place, index) => {
-      acc[index] = place.description || '';
+      acc[index] = place?.description || '';
       return acc;
     }, {});
-    setDescriptions(initialDescriptions);
-  }, [selectedDay, selectedPlaces, dayNumberLength]);
+
+    setDescriptionsByDay((prev) => ({
+      ...prev,
+      [selectedDay]: initialDescriptions
+    }));
+  }, [selectedDay, placesByDay, dayNumberLength]);
+
+  //장소 삭제
+  const handleRemovePlace = (index: number) => {
+    const updatedPlaces = [...(placesByDay[selectedDay] || [])];
+    updatedPlaces[index] = null as any;
+    setPlacesByDay((prev) => ({
+      ...prev,
+      [selectedDay]: updatedPlaces
+    }));
+    sessionStorage.setItem(selectedDay, JSON.stringify(updatedPlaces));
+  };
+
+  const allDaysHavePlaces = useMemo(() => {
+    return days.every((day) => {
+      const storedPlaces = sessionStorage.getItem(day);
+      if (!storedPlaces) {
+        return false; // 해당 day에 대한 값이 없으면 false 반환
+      }
+      try {
+        const places = JSON.parse(storedPlaces);
+        return Array.isArray(places) && places.length > 0 && places.every((place) => place !== null);
+      } catch (e) {
+        return false;
+      }
+    });
+  }, [storedPlaces, days]);
 
   return (
     <div className="flex flex-col justify-center">
@@ -278,7 +247,9 @@ const DayPlaces: React.FC<PlaceProps> = ({
 
         <div className="flex w-[199px] flex-col items-center">
           <h1 className="text-lg font-bold">{region}</h1>
-          <p>{formatDateRange(startDate, endDate)}</p>
+          <p>
+            {startDate} - {endDate}
+          </p>
         </div>
         <button className="flex w-20 justify-center font-medium text-[#FF7029]" onClick={handleCancel}>
           Done
@@ -300,7 +271,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
           </Link>
         </div>
 
-        <div id="map" style={{ width: '100%', height: '300px' }}></div>
+        <PostMap selectedPlaces={placesByDay[selectedDay] || []} setRegion={setRegion} />
 
         <div>
           <div className="no-scrollbar mb-4 flex gap-2 overflow-x-auto">
@@ -309,8 +280,8 @@ const DayPlaces: React.FC<PlaceProps> = ({
                 key={index}
                 className="whitespace-nowrap rounded-full bg-grayscale-50 px-4 py-2 text-sm font-medium hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
                 onClick={() => {
-                  setSelectedDay(day); // selectedDay 상태 관리
-                  handleDaySelect(day); // Day 선택 처리
+                  setSelectedDay(day);
+                  handleDaySelect(day);
                 }}
               >
                 {day}
@@ -318,66 +289,71 @@ const DayPlaces: React.FC<PlaceProps> = ({
             ))}
           </div>
 
-          {selectedDay === ''
-            ? ''
-            : dayNumbers[selectedDay]?.map((number, index) => (
-                <div key={index} className="flex flex-col">
-                  <div className="mb-4 flex">
-                    <div className="relative">
-                      <p className="z-10 mr-2 size-6 rounded-full border-2 border-grayscale-50 bg-primary-300 text-center text-sm text-white">
-                        {number}
-                      </p>
-                      {index < dayNumbers[selectedDay].length - 1 && (
-                        <div className="absolute left-1/3 h-full w-0.5 bg-grayscale-100"></div>
-                      )}
-                    </div>
+          {selectedDay &&
+            dayNumbers[selectedDay]?.map((number, index) => (
+              <div key={index} className="flex flex-col">
+                <div className="mb-4 flex">
+                  <div className="relative">
+                    <p className="z-10 mr-2 size-6 rounded-full border-2 border-grayscale-50 bg-primary-300 text-center text-sm text-white">
+                      {number}
+                    </p>
+                    {index < dayNumbers[selectedDay].length - 1 && (
+                      <div className="absolute left-1/3 h-full w-0.5 bg-grayscale-100"></div>
+                    )}
+                  </div>
 
-                    <div className="rounded-2xl shadow-lg">
+                  <div className="w-full rounded-2xl shadow-lg">
+                    {placesByDay[selectedDay] && placesByDay[selectedDay][index] ? (
+                      <div key={index} className="relative p-4 hover:bg-gray-100">
+                        <button className="absolute right-2 top-0 mt-2" onClick={() => handleRemovePlace(index)}>
+                          <IoCloseOutline size={24} />
+                        </button>
+                        <h3
+                          className="font-bold"
+                          dangerouslySetInnerHTML={{
+                            __html: DOMPurify.sanitize(placesByDay[selectedDay][index].title)
+                          }}
+                        />
+                        <div className="flex flex-wrap text-xs text-gray-400">
+                          <p>{placesByDay[selectedDay][index].category} •&nbsp;</p>
+                          <p className="text-xs text-gray-400">{placesByDay[selectedDay][index].roadAddress}</p>
+                        </div>
+
+                        <hr className="my-2" />
+
+                        <textarea
+                          className="h-full w-full resize-none p-2"
+                          placeholder="Introduce your place."
+                          value={descriptionsByDay[selectedDay]?.[index] || ''}
+                          onChange={(e) => handleDescriptionChange(index, e.target.value)}
+                        />
+                      </div>
+                    ) : (
                       <button
-                        className="flex h-[35px] w-[284px] items-center justify-center rounded-lg border-2 border-grayscale-100 p-2 font-medium"
+                        className="flex h-[35px] w-full items-center justify-center rounded-lg border-2 border-grayscale-100 p-2 font-medium"
                         onClick={() => handleAddSequence(index)}
                       >
                         Select Place
                       </button>
-
-                      {selectedDay === storedPlacesKey && selectedPlaces[index] && (
-                        <div key={index} className="p-4 hover:bg-gray-100">
-                          <h3
-                            className="font-bold"
-                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(selectedPlaces[index].title) }}
-                          />
-                          <div className="flex flex-wrap text-xs text-gray-400">
-                            <p>{selectedPlaces[index].category} •&nbsp;</p>
-                            <p className="text-xs text-gray-400">{selectedPlaces[index].roadAddress}</p>
-                          </div>
-
-                          <hr className="my-2" />
-
-                          <textarea
-                            className="h-full w-full resize-none p-2"
-                            placeholder="Introduce your place."
-                            value={descriptions[index] || ''}
-                            onChange={(e) => handleDescriptionChange(index, e.target.value)}
-                          />
-                        </div>
-                      )}
-                    </div>
+                    )}
                   </div>
                 </div>
-              ))}
+              </div>
+            ))}
         </div>
 
-        {selectedDay === '' ? (
-          ''
+        {allDaysHavePlaces ? (
+          <button
+            onClick={goToStep4}
+            className="mx-auto h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-semibold text-white"
+          >
+            Next
+          </button>
         ) : (
-          <>
-            <button
-              onClick={goToStep4}
-              className="mx-auto h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-semibold text-white"
-            >
-              Next
-            </button>
-          </>
+          <button className="mx-auto my-5 h-14 w-[320px] rounded-2xl bg-gray-300 p-2 text-base text-white">
+            Please select a place for each date.
+          </button>
+          // <p className="text-center text-sm text-grayscale-400"></p>
         )}
       </div>
     </div>

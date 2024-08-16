@@ -2,6 +2,7 @@
 import { Place } from '@/types/types';
 import axios from 'axios';
 import DOMPurify from 'dompurify';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { GrLocation } from 'react-icons/gr';
 import { IoIosSearch } from 'react-icons/io';
@@ -93,9 +94,9 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
     prev();
   };
 
-  const storedPlaces = sessionStorage.getItem(selectedDay);
-  const keys = Object.keys(sessionStorage);
-  const storedPlacesKey = keys.find((key) => sessionStorage.getItem(key) === storedPlaces);
+  // const storedPlaces = sessionStorage.getItem(selectedDay);
+  // const keys = Object.keys(sessionStorage);
+  // const storedPlacesKey = keys.find((key) => sessionStorage.getItem(key) === storedPlaces);
 
   return (
     <div className="flex flex-col">
@@ -108,7 +109,7 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
           </div>
         </div>
 
-        <div className="flex h-[48px] items-center rounded-xl bg-grayscale-50 px-2">
+        <div className="flex h-[48px] w-full items-center rounded-xl bg-grayscale-50 px-2">
           <input
             type="text"
             value={searchQuery}
@@ -130,7 +131,17 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
       </div>
 
       {searchResults.length === 0 ? (
-        <div className="p-5 text-center"></div>
+        <div className="flex h-[calc(100vh-600px)] flex-col items-center justify-center p-5">
+          <Image
+            src="\icons\please-search.svg"
+            alt="search empty"
+            width={250}
+            height={250}
+            style={{ width: '250px', height: '250px' }}
+          />
+          {/* <IoIosSearch className="size-10 text-grayscale-100" />
+          <p className="text-xl font-semibold text-grayscale-100">Please search</p> */}
+        </div>
       ) : (
         <div className="h-3/5 overflow-y-scroll">
           {searchResults.map((place, index) => {
@@ -158,7 +169,7 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
         </div>
       )}
       {!selectedPlace ? (
-        <button className="bg-primary-100 fixed bottom-28 left-0 right-0 mx-auto my-5 h-14 w-[320px] rounded-2xl p-2 text-lg font-medium text-white">
+        <button className="fixed bottom-28 left-0 right-0 mx-auto my-5 h-14 w-[320px] rounded-2xl bg-primary-100 p-2 text-lg font-medium text-white">
           Select
         </button>
       ) : (

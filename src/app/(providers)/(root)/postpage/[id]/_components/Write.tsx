@@ -103,14 +103,52 @@ const Write = ({
   };
 
   //이미지 추가하는 핸들러
-  const handleImageAdd = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleImageAdd = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
+    if (!file) return;
+
+    try {
       const reader = new FileReader();
       reader.onload = () => {
-        setImage(reader.result as string);
+        setImage(reader.result as string); // 미리보기 이미지 설정
       };
       reader.readAsDataURL(file);
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${userId}.${fileExt}`;
+      const filePath = `post_images/${fileName}`;
+
+      // 기존 이미지를 제거 (같은 이름의 파일이 아닌 경우)
+      const existingImagePath = image?.split('/').pop();
+      if (existingImagePath && existingImagePath !== fileName) {
+        const { error: removeError } = await supabase.storage
+          .from('places')
+          .remove([`post_images/${existingImagePath}`]);
+
+        if (removeError) {
+          console.error('Error removing existing image:', removeError.message);
+          return;
+        }
+      }
+
+      // 새 이미지 업로드
+      const { error: uploadError } = await supabase.storage.from('places').upload(filePath, file, {
+        upsert: true
+      });
+
+      if (uploadError) {
+        console.error('Error uploading image:', uploadError.message);
+        return;
+      }
+
+      // 업로드된 이미지의 공개 URL 가져오기
+      const { data: publicUrlData } = supabase.storage.from('places').getPublicUrl(filePath);
+
+      if (publicUrlData) {
+        setImage(publicUrlData.publicUrl); // 업로드된 이미지의 URL을 상태로 저장
+      }
+    } catch (error) {
+      console.error('Error handling image upload:', error);
     }
   };
   //이미지 취소 핸들러
@@ -176,6 +214,9 @@ const Write = ({
     },
     onError: (error) => {
       console.error('Error saving post:', error);
+    },
+    onSettled: () => {
+      setIsSubmitting(false); // 요청이 끝난 후 상태를 다시 false로
     }
   });
   // 장소 저장
@@ -204,19 +245,24 @@ const Write = ({
       alert('Failed to save places.');
     }
   });
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const handleSavePost = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // 중복 제출 방지
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     const {
       data: { user },
       error
     } = await supabase.auth.getUser();
     if (error) {
       console.error('Error getting user:', error);
+      setIsSubmitting(false);
       return;
     }
 
     if (!handleFormConfirm()) {
+      setIsSubmitting(false);
       return; // 폼이 유효하지 않으면 여기서 함수 종료
     }
 
@@ -236,9 +282,13 @@ const Write = ({
     };
 
     if (editId) {
-      updateMutationForPost.mutate(postDetails);
+      updateMutationForPost.mutate(postDetails, {
+        onSettled: () => setIsSubmitting(false)
+      });
     } else {
-      addMutationForPost.mutate(postDetails);
+      addMutationForPost.mutate(postDetails, {
+        onSettled: () => setIsSubmitting(false)
+      });
     }
   };
 
@@ -363,6 +413,16 @@ const Write = ({
               onChange={handleMaxPeopleAdd}
               placeholder="5"
               className="mt-2 h-[48px] w-full rounded-xl bg-grayscale-50 p-4"
+              onInput={(event) => {
+                let value = event.currentTarget.value;
+                // 숫자가 아닌 문자 제거
+                value = value.replace(/[^0-9]/g, '');
+                // 0으로 시작하면 0을 제거
+                if (value.startsWith('0')) {
+                  value = value.replace(/^0+/, '');
+                }
+                event.currentTarget.value = value;
+              }}
             />
           </div>
         </div>
@@ -419,15 +479,28 @@ const Write = ({
               onChange={handlePriceAdd}
               placeholder="50"
               className="mt-2 h-[48px] w-full rounded-xl bg-grayscale-50 p-4"
+              onInput={(event) => {
+                let value = event.currentTarget.value;
+                // 숫자가 아닌 문자 제거
+                value = value.replace(/[^0-9]/g, '');
+                // 0으로 시작하면 0을 제거
+                if (value.startsWith('0')) {
+                  value = value.replace(/^0+/, '');
+                }
+                event.currentTarget.value = value;
+              }}
             />
           </div>
         </div>
 
         <button
           type="submit"
-          className="mx-auto my-5 h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-semibold text-white"
+          disabled={isSubmitting}
+          className={`mx-auto my-5 h-14 w-[320px] rounded-2xl ${
+            isSubmitting ? 'bg-gray-300' : 'bg-primary-300'
+          } p-2 text-lg font-semibold text-white`}
         >
-          Done
+          {isSubmitting ? 'Loading...' : 'Done'}
         </button>
       </div>
     </form>
