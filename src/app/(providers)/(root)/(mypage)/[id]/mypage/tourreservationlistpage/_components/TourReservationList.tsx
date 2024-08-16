@@ -108,39 +108,42 @@ const TourReservationList = ({ userId, postId }: { userId: string; postId: strin
       </div>
       <div>
         {data.map((reservation) => (
-          <div className="my-[20px] border-b pb-[20px] web:my-[40px] web:pb-[40px]" key={reservation.id}>
+          <div
+            className="my-[20px] flex flex-col gap-[20px] border-b pb-[20px] web:my-[40px] web:gap-[40px] web:pb-[40px]"
+            key={reservation.id}
+          >
             <div className="flex flex-col gap-[16px] web:gap-[24px]">
-              <div className="flex gap-[8px] text-[14px] mobile:flex-col web:gap-[16px] web:text-[18px]">
+              <div className="flex flex-col gap-[8px] text-[14px] web:flex-row web:gap-[16px] web:text-[18px]">
                 <span className="min-w-[80px] text-[12px] text-grayscale-500 web:text-[18px]">Number</span>
                 <span className="flex-grow text-left">{reservation.id}</span>
               </div>
-              <div className="flex flex-col gap-[8px] text-[14px]">
-                <span className="min-w-[80px] text-[12px] text-grayscale-500">Nickname</span>
+              <div className="flex flex-col gap-[8px] text-[14px] web:flex-row web:gap-[16px] web:text-[18px]">
+                <span className="min-w-[80px] text-[12px] text-grayscale-500 web:text-[18px]">Nickname</span>
                 <span className="flex-grow text-left">{reservation.users.name}</span>
               </div>
-              <div className="flex flex-col gap-[8px] text-[14px]">
-                <span className="min-w-[80px] text-[12px] text-grayscale-500">Email</span>
+              <div className="flex flex-col gap-[8px] text-[14px] web:flex-row web:gap-[16px] web:text-[18px]">
+                <span className="min-w-[80px] text-[12px] text-grayscale-500 web:text-[18px]">Email</span>
                 <span className="flex-grow text-left">{reservation.users.email}</span>
               </div>
-              <div className="flex flex-col gap-[8px] text-[14px]">
-                <span className="min-w-[80px] text-[12px] text-grayscale-500">Date</span>
+              <div className="flex flex-col gap-[8px] text-[14px] web:flex-row web:gap-[16px] web:text-[18px]">
+                <span className="min-w-[80px] text-[12px] text-grayscale-500 web:text-[18px]">Date</span>
                 <span className="flex-grow text-left">{new Date(reservation.created_at).toLocaleString()}</span>
               </div>
-              <div className="flex flex-col gap-[8px] text-[14px]">
-                <span className="min-w-[80px] text-[12px] text-grayscale-500">Tourist</span>
+              <div className="flex flex-col gap-[8px] text-[14px] web:flex-row web:gap-[16px] web:text-[18px]">
+                <span className="min-w-[80px] text-[12px] text-grayscale-500 web:text-[18px]">Tourist</span>
                 <span className="flex-grow text-left">{reservation.people}</span>
               </div>
-              <div className="flex flex-col gap-[8px] text-[14px]">
-                <span className="min-w-[80px] text-[12px] text-grayscale-500">Amount</span>
+              <div className="flex flex-col gap-[8px] text-[14px] web:flex-row web:gap-[16px] web:text-[18px]">
+                <span className="min-w-[80px] text-[12px] text-grayscale-500 web:text-[18px]">Amount</span>
                 <span className="flex-grow text-left">{formatPrice(reservation.total_price)}</span>
               </div>
-              <div className="flex flex-col gap-[8px] text-[14px]">
-                <span className="min-w-[80px] text-[12px] text-grayscale-500">State</span>
+              <div className="flex flex-col gap-[8px] text-[14px] web:flex-row web:gap-[16px] web:text-[18px]">
+                <span className="min-w-[80px] text-[12px] text-grayscale-500 web:text-[18px]">State</span>
                 <span className="flex-grow text-left">{reservation.pay_state}</span>
               </div>
             </div>
             <button
-              className="w-full rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
+              className="w-full rounded-[8px] border p-[8px] text-[14px] font-semibold text-grayscale-700 web:rounded-[16px] web:p-[16px] web:text-[18px]"
               onClick={() => handleChat(reservation.posts, reservation.users.id)}
             >
               Message Tourist
