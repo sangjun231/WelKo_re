@@ -43,9 +43,9 @@ const Likes = ({ isWeb }: WebProps) => {
   const handleDelete = DeletePost();
 
   return (
-    <div className="absolute left-0 right-0 top-2 z-10 flex items-center justify-between px-4">
+    <div className="web:top-12 web:px-[88px] absolute left-0 right-0 top-2 z-10 flex items-center justify-between px-4">
       <BackButton />
-      <div className="flex space-x-4">
+      <div className="web:gap-10 flex gap-4">
         {post &&
           user &&
           post.user_id === user.id && ( // user가 존재하는지 확인
@@ -69,11 +69,13 @@ const Likes = ({ isWeb }: WebProps) => {
             )}
           </button>
         </div>
-        <Link href="/">
-          <button className="icon-button web:hidden">
-            <IconHome alt="Home" width={24} height={24} />
-          </button>
-        </Link>
+        {!isWeb && (
+          <Link href="/">
+            <button className="icon-button">
+              <IconHome alt="Home" width={24} height={24} />
+            </button>
+          </Link>
+        )}
       </div>
     </div>
   );
