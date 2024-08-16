@@ -43,7 +43,7 @@ const SelectPost = () => {
   if (!post) return <div className="flex items-center justify-center">Loading...</div>;
 
   return (
-    <div className="web:mt-[20px] web:justify-between mt-2 flex flex-col items-center gap-2">
+    <div className="web:mt-10 web:justify-between mt-2 flex flex-col items-center gap-2">
       <div className="mb-4 flex w-full items-center justify-between py-4">
         <BackButton className="web:hidden" />
         <h2 className="mobile:flex-grow web:text-left web:text-3xl text-center text-lg font-semibold">Pay</h2>
@@ -76,6 +76,7 @@ const SelectPost = () => {
             </div>
           </div>
         </div>
+        <div className="web:block mx-4 hidden"></div>
         {/* 모바일에서 숨기고, 웹에서만 보이는 Cancellation Policy */}
         <div className="web:block hidden flex-1">
           <h3 className="text-xl font-medium text-text-color">Cancellation Policy</h3>
