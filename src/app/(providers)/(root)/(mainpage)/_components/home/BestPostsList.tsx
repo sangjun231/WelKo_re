@@ -41,14 +41,14 @@ const BestPostsList = () => {
   };
 
   return (
-    <div className="mt-[40px]">
-      <h2 className="text-xl font-bold">Best Tour</h2>
-      <div className="mt-5 grid grid-cols-2 gap-4">
+    <div className="mt-[40px] md:mt-[160px]">
+      <h2 className="text-xl font-bold md:text-4xl">Best Tour</h2>
+      <div className="mt-5 grid grid-cols-2 gap-4 md:mt-[40px] md:grid-cols-4">
         {posts.map((post, index) => (
           <div key={`${post.id}-${index}`} className="w-full flex-none overflow-hidden rounded-md bg-white">
             <Link href={`/detail/${post.id}`} className="flex h-full flex-col">
               {post.image ? (
-                <div className="relative mb-2 overflow-hidden rounded-2xl" style={{ width: '100%', height: '150px' }}>
+                <div className="relative mb-2 h-[150px] w-[150px] overflow-hidden rounded-2xl md:h-[286px] md:w-[286px]">
                   <Image
                     src={post.image}
                     alt={post.title}
@@ -60,7 +60,7 @@ const BestPostsList = () => {
               ) : (
                 <div className="mb-2 flex h-[236px] w-full items-center justify-center bg-gray-200">이미지 없음</div>
               )}
-              <div className="flex flex-col">
+              <div className="flex flex-col md:w-[286px]">
                 <h3 className="mb-1 line-clamp-2 text-base font-semibold">{post.title}</h3>
                 <p className="mb-1 text-[14px] tracking-[-0.05em] text-gray-500">
                   {post.startDate && post.endDate
