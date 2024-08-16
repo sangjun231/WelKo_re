@@ -1,27 +1,27 @@
 'use client';
 
 import Header from '@/components/common/Header/Header';
-import HeadMeta from '@/components/common/Header/HeadMeta';
-import Image from 'next/image';
-import BestPostsList from './_components/BestPostsList';
-import CircleImageList from './_components/CircleImageList';
 import PostsList from './_components/PostsList';
+import HeadMeta from '@/components/common/Header/HeadMeta';
+import Search from '@/components/common/Search/Search';
+import CircleImageList from './_components/home/CircleImageList';
+import BestPostsList from './_components/home/BestPostsList';
+import SlideImage from './_components/home/SlideImage';
 
 export default function Home() {
   return (
     <>
       <HeadMeta />
       <div className="relative">
-        <Image
-          src="/img/img.jpeg"
-          alt="Description of the image"
-          width={800}
-          height={600}
-          style={{ display: 'initial', verticalAlign: 'baseline' }}
-          priority
-        />
-        <div className="bottom-0 left-0 right-0 rounded-t-3xl bg-white p-4" style={{ height: '20%', top: '80%' }}>
-          <Header />
+        <Header />
+        <SlideImage />
+        <div
+          className="bottom-0 left-0 right-0 rounded-t-3xl bg-white p-4 md:px-[88px]"
+          style={{ height: '20%', top: '80%' }}
+        >
+          <div className="block sm:hidden">
+            <Search />
+          </div>
           <CircleImageList />
           <PostsList />
           <BestPostsList />
