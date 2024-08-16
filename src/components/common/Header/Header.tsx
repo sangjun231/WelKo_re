@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Search from '../Search/Search';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { v4 as uuidv4 } from 'uuid';
 import useAuthStore from '@/zustand/bearsStore';
+import HeaderSearch from '../Search/HeaderSearch';
+import Image from 'next/image';
 
 function Header() {
   const router = useRouter();
@@ -14,6 +15,7 @@ function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null); // 아바타 URL 상태 추가
   const { logout } = useAuthStore();
 
   useEffect(() => {
@@ -26,9 +28,19 @@ function Header() {
       if (session) {
         const user = session.user;
         setUserId(user?.id ?? null);
+
+        // 유저의 avatar URL 가져오기
+        if (user) {
+          const { data, error } = await supabase.from('users').select('avatar').eq('id', user.id).single();
+
+          if (data && data.avatar) {
+            setAvatarUrl(data.avatar); // 아바타 URL 설정
+          }
+        }
       }
       setLoading(false);
     };
+
     checkSession();
 
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
@@ -37,6 +49,7 @@ function Header() {
         setUserId(session.user?.id ?? null);
       } else {
         setUserId(null);
+        setAvatarUrl(null);
       }
     });
 
@@ -58,33 +71,40 @@ function Header() {
 
   return (
     <>
-      <div className="hidden sm:block">
-        <div className="flex justify-between">
-          <h1>LOGO</h1>
-          {isLoggedIn ? (
-            <div className="relative mr-5 flex gap-3">
-              <Link href={`/postpage/${uuid}`}>
-                <button className="flex items-center space-x-2 rounded-md border-l-stone-400">Writing</button>
-              </Link>
-              <Link href={`/${userId}/mypage`}>
-                <button className="flex items-center space-x-2 rounded-md border-l-stone-400">MyPage</button>
-              </Link>
-              <button onClick={onLogout} className="flex items-center space-x-2 rounded-md border-l-stone-400">
-                Logout
-              </button>
+      <div className="hidden py-5 sm:block">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <h1 className="ml-[88px] text-2xl font-bold text-[#B95FAB]">Welko</h1>
+            <div className="ml-6" style={{ width: '372px' }}>
+              <HeaderSearch />
             </div>
-          ) : (
-            <Link href="/login">
-              <button>Log in or Sign up</button>
-            </Link>
-          )}
-        </div>
-        <Search />
-      </div>
-
-      <div className="block sm:hidden">
-        <div className="flex items-center justify-center">
-          <Search />
+          </div>
+          <div className="mr-[88px] flex items-center gap-8">
+            {isLoggedIn ? (
+              <>
+                <Link href={`/postpage/${uuid}`}>
+                  <button className="text-base font-medium text-[#B95FAB]">Make Your Tour</button>
+                </Link>
+                <Link href={`/${userId}/mypage`}>
+                  <button className="text-base font-medium">MyPage</button>
+                </Link>
+                <button onClick={onLogout} className="text-base font-medium">
+                  Log Out
+                </button>
+                <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gray-300">
+                  {avatarUrl ? (
+                    <Image src={avatarUrl} alt="User Avatar" fill objectFit="cover" />
+                  ) : (
+                    <span className="text-xs text-white">?</span>
+                  )}
+                </div>
+              </>
+            ) : (
+              <Link href="/login">
+                <button className="text-base font-medium">Log In</button>
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </>

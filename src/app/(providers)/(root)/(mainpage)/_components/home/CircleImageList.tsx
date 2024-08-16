@@ -5,7 +5,9 @@ const locations = [
   { name: 'Busan', src: '/img/Busan.jpeg' },
   { name: 'Seoul', src: '/img/Seoul.jpeg' },
   { name: 'Chuncheon', src: '/img/Chuncheon.jpeg' },
-  { name: 'Jeju', src: '/img/Jeju.jpeg' }
+  { name: 'Jeju', src: '/img/Jeju.jpeg' },
+  { name: 'Yeosu', src: '/img/Yeosu.jpeg' },
+  { name: 'Jeonju', src: '/img/Jeonju.jpeg' }
 ];
 
 export default function CircleImageList() {
@@ -18,11 +20,11 @@ export default function CircleImageList() {
   };
 
   return (
-    <div className="my-[40px] flex justify-around bg-white">
+    <div className="my-[40px] flex flex-wrap justify-around md:justify-center md:gap-10">
       {locations.map((location) => (
         <div
           key={location.name}
-          className="flex cursor-pointer flex-col items-center"
+          className={`flex cursor-pointer flex-col items-center ${location.name === 'Yeosu' || location.name === 'Jeonju' ? 'hidden md:flex' : ''}`}
           onClick={() => handleClick(location.name)}
         >
           <Image

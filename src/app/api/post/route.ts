@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
   try {
     const { data: insertedData, error: insertError } = await supabase
       .from('posts')
-      .insert({
+      .upsert({
         user_id,
         name,
         title,
@@ -69,7 +69,19 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   const supabase = createClient();
   const data = await request.json();
-  const { name, id, title, content, image, maxPeople, tags, price, selectedPrices }: Partial<Tables<'posts'>> = data;
+  const {
+    id,
+    name,
+    title,
+    content,
+    image,
+    maxPeople,
+    tags,
+    price,
+    selectedPrices,
+    startDate,
+    endDate
+  }: Partial<Tables<'posts'>> = data;
 
   if (!id) {
     return NextResponse.json({ error: 'Post ID is required' }, { status: 400 });
@@ -86,7 +98,9 @@ export async function PUT(request: NextRequest) {
         maxPeople,
         tags,
         price,
-        selectedPrices
+        selectedPrices,
+        startDate,
+        endDate
       })
       .eq('id', id);
 

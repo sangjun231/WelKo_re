@@ -56,11 +56,15 @@ const DaySelect: React.FC<DaySelectProps> = ({
       setStartDate(date);
       setEndDate(null);
     } else if (startDate) {
-      if (isAfter(date, startDate)) {
-        setEndDate(date);
+      const newEndDate = isAfter(date, startDate) ? date : startDate;
+      const newStartDate = isAfter(date, startDate) ? startDate : date;
+
+      // 선택된 날짜가 7일을 초과하지 않도록 제한
+      if ((newEndDate.getTime() - newStartDate.getTime()) / (1000 * 60 * 60 * 24) < 7) {
+        setEndDate(newEndDate);
       } else {
-        setStartDate(date);
-        setEndDate(null);
+        alert('You cannot select more than 7 days!');
+        setEndDate(null); // 7일을 초과하면 선택 해제
       }
     } else {
       setStartDate(date);
@@ -102,7 +106,7 @@ const DaySelect: React.FC<DaySelectProps> = ({
                   : startDate && endDate && day >= startDate && day <= endDate
                     ? 'bg-primary-300 text-white'
                     : startDate && day.toDateString() === startDate.toDateString()
-                      ? 'bg-grayscale-700 text-white'
+                      ? 'bg-primary-300 text-white'
                       : endDate && day.toDateString() === endDate.toDateString()
                         ? 'bg-red-500 text-white'
                         : 'bg-white text-black'

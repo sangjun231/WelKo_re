@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
   const { post_id, day, places, lat, long, area } = data;
 
   try {
-    const { error } = await supabase.from('schedule').insert({
+    const { error } = await supabase.from('schedule').upsert({
       post_id,
       day,
       places,
@@ -58,6 +58,35 @@ export async function POST(request: NextRequest) {
       long,
       area
     });
+    if (error) {
+      console.error('Error inserting dates:', error.message);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json({ success: true }, { status: 200 }); // 성공적으로 데이터를 삽입한 후 응답 반환
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return NextResponse.json({ error: 'Unexpected error occurred' }, { status: 500 });
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  const supabase = createClient();
+  const data = await request.json();
+  const { post_id, day, places, lat, long, area } = data;
+
+  try {
+    const { data, error } = await supabase
+      .from('schedule')
+      .update({
+        post_id,
+        day,
+        places,
+        lat,
+        long,
+        area
+      })
+      .eq('post_id', post_id)
+      .eq('day', day);
     if (error) {
       console.error('Error inserting dates:', error.message);
       return NextResponse.json({ error: error.message }, { status: 500 });

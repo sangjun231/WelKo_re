@@ -24,7 +24,7 @@ export type DateType = {
 export type Place = {
   title: string;
   roadAddress: string;
-  address: string;
+  address?: string;
   latitude: number;
   longitude: number;
   area: string;

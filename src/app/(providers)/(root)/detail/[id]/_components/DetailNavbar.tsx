@@ -84,44 +84,44 @@ const DetailNavbar = () => {
   return (
     <div className="fixed bottom-0 left-0 z-10 w-full bg-white">
       {pathname.includes('reservation') ? (
-        <div className="border-t-1 web:px-20 w-full border-grayscale-100 p-5 shadow-custom-navbar">
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col justify-center">
-              <div className="web:text-4xl flex flex-1 items-center text-lg">
+        <div className="border-t-1 web:px-[88px] web:h-[133px] h-20 w-full border-grayscale-100 px-5 shadow-custom-navbar">
+          <div className="flex h-full items-center justify-between">
+            <div className="web:gap-y-2.5 flex flex-1 flex-col justify-center">
+              <div className="web:text-4xl flex items-center text-lg">
                 <span className="font-semibold text-grayscale-900">${totalAmount.toFixed(2)}</span>
                 <span className="font-medium text-grayscale-600">/Total</span>
               </div>
               <div className="flex justify-start">
-                <p className="web:text-3xl text-xs font-medium text-grayscale-900">
+                <p className="web:text-xl web:text-grayscale-600 text-xs font-medium text-grayscale-900">
                   {formatDateRange(post?.startDate ?? null, post?.endDate ?? null)}
                 </p>
               </div>
             </div>
             <button
               onClick={handlePaymentClick}
-              className="web:px-6 web:py-4 web:text-xl rounded-xl bg-primary-300 px-5 py-3 text-base font-semibold text-white"
+              className="web:px-6 web:py-4 web:text-xl flex max-w-[480px] flex-1 items-center justify-center rounded-xl bg-primary-300 px-5 py-3 text-base font-semibold text-white"
             >
               Confirm and Pay
             </button>
           </div>
         </div>
       ) : (
-        <div className="border-t-1 w-full border-grayscale-100 py-5 shadow-custom-navbar">
-          <div className="web:px-[88px] flex items-center px-5">
+        <div className="border-t-1 web:px-[88px] web:h-[133px] h-20 w-full border-grayscale-100 px-5 shadow-custom-navbar">
+          <div className="flex h-full items-center justify-between">
             <div className="web:gap-2.5 flex flex-1 flex-col justify-center">
               <div className="web:text-4xl flex items-center text-lg">
-                <span className="font-semibold text-primary-300">${post?.price}</span>
+                <span className="font-semibold text-primary-300">${post?.price.toFixed(2)}</span>
                 <span className="font-medium text-grayscale-600">/Person</span>
               </div>
               <div className="flex justify-start">
-                <p className="web:text-3xl text-xs font-medium text-grayscale-900">
+                <p className="web:text-xl text-xs font-medium text-grayscale-900">
                   {formatDateRange(post?.startDate ?? null, post?.endDate ?? null)}
                 </p>
               </div>
             </div>
             <button
               onClick={handleReserveClick}
-              className="web:px-6 web:py-4 web:text-3xl flex-1 rounded-xl bg-primary-300 px-5 py-3 text-base font-semibold text-white"
+              className="web:px-6 web:py-4 web:text-xl flex max-w-[480px] flex-1 items-center justify-center rounded-xl bg-primary-300 px-5 py-3 text-base font-semibold text-white"
             >
               Reserve
             </button>

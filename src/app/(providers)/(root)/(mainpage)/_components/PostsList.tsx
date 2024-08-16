@@ -130,48 +130,92 @@ const PostsList = () => {
   return (
     <div className="relative">
       <h2 className="mb-5 text-xl font-bold">New Tour</h2>
-      <InfiniteScroll loading={loading} hasMore={hasMore} onLoadMore={loadMorePosts}>
-        <div className="relative overflow-hidden" ref={scrollContainerRef}>
-          <div className="flex space-x-1">
-            {posts.map((post, index) => (
-              <div key={`${post.id}-${index}`} className="w-64 flex-none rounded-md">
-                <Link href={`/detail/${post.id}`} className="flex h-full flex-col">
-                  {post.image ? (
-                    <div
-                      className="relative mb-2 flex-none overflow-hidden rounded-2xl"
-                      style={{ width: '236px', height: '236px' }}
-                    >
-                      <Image
-                        src={post.image}
-                        alt={post.title}
-                        fill
-                        style={{ objectFit: 'cover' }}
-                        className="rounded-2xl"
-                      />
-                    </div>
-                  ) : (
-                    <div className="mb-2 flex h-[236px] w-[236px] items-center justify-center rounded-2xl bg-gray-200">
-                      이미지 없음
-                    </div>
-                  )}
-                  <div className="flex flex-grow flex-col">
-                    <h3 className="mb-1 line-clamp-1 text-base font-semibold">{post.title}</h3>
-                    <p className="tracking-[-0.1em] text-gray-500">
-                      {post.startDate && post.endDate
-                        ? `${formatDate(post.startDate)} ~ ${formatDate(post.endDate)}`
-                        : 'No dates available'}
-                    </p>
-                    <div className="mt-1 flex text-sm">
-                      <div className="mt-auto line-clamp-1 font-bold text-[#B95FAB]">{formatPrice(post.price)}</div>
-                      <div className="font-medium">/Person</div>
-                    </div>
+      <div className="overflow-hidden">
+        {/* 모바일에서 InfiniteScroll을 사용하여 무한 스크롤 구현 */}
+        <div className="block md:hidden">
+          <InfiniteScroll loading={loading} hasMore={hasMore} onLoadMore={loadMorePosts}>
+            <div className="relative overflow-hidden" ref={scrollContainerRef}>
+              <div className="flex space-x-1">
+                {posts.map((post, index) => (
+                  <div key={`${post.id}-${index}`} className="w-64 flex-none rounded-md">
+                    <Link href={`/detail/${post.id}`} className="flex h-full flex-col">
+                      {post.image ? (
+                        <div
+                          className="relative mb-2 flex-none overflow-hidden rounded-2xl"
+                          style={{ width: '236px', height: '236px' }}
+                        >
+                          <Image
+                            src={post.image}
+                            alt={post.title}
+                            fill
+                            style={{ objectFit: 'cover' }}
+                            className="rounded-2xl"
+                          />
+                        </div>
+                      ) : (
+                        <div className="mb-2 flex h-[236px] w-[236px] items-center justify-center rounded-2xl bg-gray-200">
+                          이미지 없음
+                        </div>
+                      )}
+                      <div className="flex flex-grow flex-col">
+                        <h3 className="mb-1 line-clamp-1 text-base font-semibold">{post.title}</h3>
+                        <p className="tracking-[-0.1em] text-gray-500">
+                          {post.startDate && post.endDate
+                            ? `${formatDate(post.startDate)} ~ ${formatDate(post.endDate)}`
+                            : 'No dates available'}
+                        </p>
+                        <div className="mt-1 flex text-sm">
+                          <div className="mt-auto line-clamp-1 font-bold text-[#B95FAB]">{formatPrice(post.price)}</div>
+                          <div className="font-medium">/Person</div>
+                        </div>
+                      </div>
+                    </Link>
                   </div>
-                </Link>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          </InfiniteScroll>
         </div>
-      </InfiniteScroll>
+        {/* 데스크탑에서 포스터 8개만 표시 */}
+        <div className="hidden md:grid md:grid-cols-4">
+          {posts.slice(0, 8).map((post, index) => (
+            <div key={`${post.id}-${index}`} className="w-[286px]">
+              <Link href={`/detail/${post.id}`} className="flex h-full flex-col">
+                {post.image ? (
+                  <div
+                    className="relative mb-2 overflow-hidden rounded-2xl"
+                    style={{ width: '286px', height: '286px' }}
+                  >
+                    <Image
+                      src={post.image}
+                      alt={post.title}
+                      fill
+                      style={{ objectFit: 'cover' }}
+                      className="rounded-2xl"
+                    />
+                  </div>
+                ) : (
+                  <div className="mb-2 flex h-[236px] items-center justify-center rounded-2xl bg-gray-200">
+                    이미지 없음
+                  </div>
+                )}
+                <div className="flex flex-grow flex-col">
+                  <h3 className="mb-1 line-clamp-1 text-base font-semibold">{post.title}</h3>
+                  <p className="tracking-[-0.1em] text-gray-500">
+                    {post.startDate && post.endDate
+                      ? `${formatDate(post.startDate)} ~ ${formatDate(post.endDate)}`
+                      : 'No dates available'}
+                  </p>
+                  <div className="mt-1 flex text-sm">
+                    <div className="mt-auto line-clamp-1 font-bold text-[#B95FAB]">{formatPrice(post.price)}</div>
+                    <div className="font-medium">/Person</div>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

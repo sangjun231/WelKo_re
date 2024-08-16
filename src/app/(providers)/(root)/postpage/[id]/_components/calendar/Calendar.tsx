@@ -1,9 +1,10 @@
 'use client';
 import BackButton from '@/components/common/Button/BackButton';
 import { createClient } from '@/utils/supabase/client';
-import { addMonths, format, startOfDay } from 'date-fns';
+import { addMonths, format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { PiCalendarDots } from 'react-icons/pi';
+import DateSaveButton from './DateSaveButton';
 import DaySelect from './DaySelect';
 
 interface CalendarProps {
@@ -19,13 +20,16 @@ const Calendar = ({ next, postId }: CalendarProps) => {
   const months = Array.from({ length: 12 }, (_, i) => i);
   const monthLabelM = months.map((month) => format(addMonths(new Date(), month), 'MMM'));
   const monthLabelY = months.map((month) => format(addMonths(new Date(), month), 'yyyy'));
+
   // 수정할 때
   useEffect(() => {
     if (postId) {
       const fetchData = async () => {
         const supabase = createClient();
-        const { data, error } = await supabase.from('posts').select('startDate, endDate').eq('id', postId).single();
-
+        const { data, error } = await supabase.from('posts').select('startDate, endDate, id').eq('id', postId).single();
+        if (!data || data.id !== postId) {
+          return;
+        }
         if (error) {
           console.error('Error fetching post data:', error);
           return;
@@ -42,17 +46,6 @@ const Calendar = ({ next, postId }: CalendarProps) => {
   }, [postId]);
 
   const handleDateSave = async () => {
-    const supabase = createClient();
-    const {
-      data: { user },
-      error
-    } = await supabase.auth.getUser();
-    if (error) {
-      console.error('Error getting user:', error);
-      return;
-    }
-    const userId = user?.id as string;
-
     const formatDateForDB = (date: Date | null) => {
       return date?.toISOString().split('T')[0];
     };
@@ -60,25 +53,14 @@ const Calendar = ({ next, postId }: CalendarProps) => {
     try {
       // 날짜 저장
       if (startDate && endDate) {
-        //const datePostData = {
-        //user_id,
-        //startDate: format(startOfDay(startDate), 'yy. M. d'),
-        //endDate: format(startOfDay(endDate), 'M. d')
-        //id: postId // postId를 포함하여 기존 데이터를 업데이트};
         const start = formatDateForDB(startDate) as string;
         const end = formatDateForDB(endDate) as string;
         sessionStorage.setItem('startDate', start);
         sessionStorage.setItem('endDate', end);
-        sessionStorage.setItem('userId', userId);
         next();
       } else {
         alert('Please select a date');
       }
-
-      //const dateResponse = await upsertDate(datePostData);
-      //const post_id = dateResponse.data.id;
-      //sessionStorage.setItem('postId', post_id);
-      //
     } catch (error) {
       console.error('Error saving dates:', error);
     }
@@ -98,7 +80,7 @@ const Calendar = ({ next, postId }: CalendarProps) => {
       <div className="flex flex-col gap-7 rounded-xl border-x-0 border-y-2 border-gray-200 px-5 shadow-xl">
         <h2 className="ml-3 mt-7 text-2xl font-bold">When&apos;s your tour?</h2>
 
-        <div className="flex w-[320px] overflow-x-auto">
+        <div className="no-scrollbar flex w-[320px] overflow-x-auto">
           {months.map((month, index) => (
             <button
               key={index}
@@ -107,8 +89,8 @@ const Calendar = ({ next, postId }: CalendarProps) => {
             >
               <PiCalendarDots className="mb-1 size-5 text-grayscale-500" />
               <p className="flex">
-                <p className="mr-1 text-sm font-semibold">{monthLabelM[index]}</p>
-                <p className="text-sm">{monthLabelY[index]}</p>
+                <span className="mr-1 text-sm font-semibold">{monthLabelM[index]}</span>
+                <span className="text-sm">{monthLabelY[index]}</span>
               </p>
             </button>
           ))}
@@ -123,16 +105,12 @@ const Calendar = ({ next, postId }: CalendarProps) => {
           setEndDate={setEndDate}
         />
 
-        <button
-          className="mx-auto mb-5 h-14 w-[288px] rounded-2xl bg-primary-300 p-2 text-lg text-white"
+        <DateSaveButton
           onClick={handleDateSave}
-        >
-          {startDate && endDate
-            ? `${format(startOfDay(startDate), 'yy. M. d')} - ${format(startOfDay(endDate), 'M. d')} Select`
-            : selectedMonth
-              ? `${format(selectedMonth, 'yyyy MMM')} Select`
-              : 'Select'}
-        </button>
+          startDate={startDate}
+          endDate={endDate}
+          selectedMonth={selectedMonth}
+        />
       </div>
     </div>
   );
