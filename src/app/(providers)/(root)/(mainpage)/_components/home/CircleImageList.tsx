@@ -20,7 +20,7 @@ export default function CircleImageList() {
   };
 
   return (
-    <div className="my-[40px] flex flex-wrap justify-around md:my-[80px] md:justify-center md:gap-10">
+    <div className="my-[40px] flex flex-wrap justify-center gap-4 md:my-[80px] md:justify-center md:gap-10">
       {locations.map((location) => (
         <div
           key={location.name}

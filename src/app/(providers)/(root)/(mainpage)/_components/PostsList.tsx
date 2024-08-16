@@ -179,13 +179,10 @@ const PostsList = () => {
         {/* 데스크탑에서 포스터 8개만 표시 */}
         <div className="hidden gap-4 md:grid md:grid-cols-4">
           {posts.slice(0, 8).map((post, index) => (
-            <div key={`${post.id}-${index}`} className="w-[286px]">
+            <div key={`${post.id}-${index}`} className="w-[auto]">
               <Link href={`/detail/${post.id}`} className="flex h-full flex-col">
                 {post.image ? (
-                  <div
-                    className="relative mb-2 overflow-hidden rounded-2xl"
-                    style={{ width: '286px', height: '286px' }}
-                  >
+                  <div className="relative mb-2 aspect-square max-w-[286px] overflow-hidden rounded-2xl">
                     <Image
                       src={post.image}
                       alt={post.title}

@@ -2,6 +2,8 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import Modal from './Modal';
+import TravelPlanner from '@/app/(providers)/(root)/(mainpage)/planner/page';
 
 interface HeaderSearchProps {
   style?: React.CSSProperties;
@@ -10,10 +12,15 @@ interface HeaderSearchProps {
 
 export default function HeaderSearch({ style = {}, className }: HeaderSearchProps) {
   const [query, setQuery] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
   const handleInputClick = () => {
-    router.push('/planner');
+    if (window.innerWidth < 768) {
+      router.push('/planner');
+    } else {
+      setIsModalOpen(true);
+    }
   };
 
   return (
@@ -28,6 +35,9 @@ export default function HeaderSearch({ style = {}, className }: HeaderSearchProp
         placeholder="Search your tour in KOREA"
         className="h-[48px] w-full resize-none overflow-hidden rounded-full bg-[#F7F7F9] px-4 py-2 text-sm text-gray-800 focus:border-gray-400 focus:bg-gray-100"
       />
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <TravelPlanner isModal={true} />
+      </Modal>
     </div>
   );
 }

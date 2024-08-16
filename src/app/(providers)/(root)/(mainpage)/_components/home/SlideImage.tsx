@@ -59,7 +59,7 @@ const SlideImage: React.FC = () => {
             style={{
               display: isLoading ? 'none' : 'block',
               width: '100%',
-              height: '100%',
+              height: '560px',
               objectFit: 'cover'
             }}
             priority
@@ -75,7 +75,7 @@ const SlideImage: React.FC = () => {
           style={{
             display: isLoading ? 'none' : 'block',
             width: '100%',
-            height: 'auto'
+            height: '100%'
           }}
           priority
           onLoadingComplete={() => setIsLoading(false)}
@@ -103,7 +103,7 @@ const SlideImage: React.FC = () => {
             <br />
             of a local guide living in Korea
           </div>
-          <Link href={`/postpage/${uuid}`}>
+          <Link href={`/postpage/${uuid}`} className="w-[220px]">
             <button className="flex items-center rounded-2xl bg-[#B95FAB] px-6 py-4 text-lg font-semibold">
               Make Your Tour
               <Image

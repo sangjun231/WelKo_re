@@ -20,7 +20,11 @@ const tags = [
 ];
 const cities = ['Seoul', 'Busan', 'Sokcho', 'Gangneung', 'Jeonju', 'Daegu', 'Gyeongju', 'Yeosu', 'Jeju'];
 
-export default function TravelPlanner() {
+interface TravelPlannerProps {
+  isModal?: boolean; // New prop to determine if it's rendered in a modal
+}
+
+export default function TravelPlanner({ isModal = false }: TravelPlannerProps) {
   const router = useRouter();
   const [activeStep, setActiveStep] = useState<number | null>(1);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -76,12 +80,14 @@ export default function TravelPlanner() {
 
   return (
     <div className="p-4 pb-16">
-      <div className="mb-[38px] grid grid-cols-[1fr_auto_1fr] items-center">
-        <button className="mr-auto rounded-full bg-gray-100 p-1" onClick={() => router.back()}>
-          <Image src="/icons/tabler-icon-x.svg" alt="Close" width={24} height={24} />
-        </button>
-        <div className="col-start-2 text-lg font-semibold">Search</div>
-      </div>
+      {!isModal && (
+        <div className="mb-[38px] grid grid-cols-[1fr_auto_1fr] items-center">
+          <button className="mr-auto rounded-full bg-gray-100 p-1" onClick={() => router.back()}>
+            <Image src="/icons/tabler-icon-x.svg" alt="Close" width={24} height={24} />
+          </button>
+          <div className="col-start-2 text-lg font-semibold">Search</div>
+        </div>
+      )}
 
       <div className="mt-4">
         <AccordionStep
@@ -135,6 +141,7 @@ export default function TravelPlanner() {
             endDate={endDate}
             setStartDate={setStartDate}
             setEndDate={setEndDate}
+            isModal={isModal}
           />
         </AccordionStep>
       </div>
