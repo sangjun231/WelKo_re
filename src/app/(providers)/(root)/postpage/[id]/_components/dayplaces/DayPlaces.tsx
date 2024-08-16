@@ -43,6 +43,10 @@ const DayPlaces: React.FC<PlaceProps> = ({
   const [days, setDays] = useState<string[]>([]);
   const startDate = sessionStorage.getItem('startDate');
   const endDate = sessionStorage.getItem('endDate');
+  const [selectedPlaces, setSelectedPlaces] = useState<Place[]>([]); // 선택한 장소 목록
+  const [descriptions, setDescriptions] = useState<{ [key: number]: string }>({}); // 장소마다 소개 작성
+  // 컴포넌트가 렌더링될 때 초기 description 값을 설정
+  // useEffect(() => {}, [selectedPlaces]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -63,9 +67,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
 
       setDays(dayArray);
     }
-  }, []);
-
-  const [selectedPlaces, setSelectedPlaces] = useState<Place[]>([]); // 선택한 장소 목록
+  }, [startDate, endDate]);
 
   //지도 관련
   const clientId = process.env.NEXT_PUBLIC_NCP_CLIENT_ID!;
@@ -217,12 +219,6 @@ const DayPlaces: React.FC<PlaceProps> = ({
     initializeMap();
   }, [isScriptLoaded, position, selectedPlaces]);
 
-  // 장소마다 소개 작성
-  const [descriptions, setDescriptions] = useState<{ [key: number]: string }>({});
-
-  // 컴포넌트가 렌더링될 때 초기 description 값을 설정
-  // useEffect(() => {}, [selectedPlaces]);
-
   // description 값을 업데이트하고 sessionStorage에 저장
   const handleDescriptionChange = (index: number, value: string) => {
     setDescriptions((prevDescriptions) => ({
@@ -253,7 +249,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
     }
     router.replace('/');
   };
-
+  const dayNumberLength = dayNumbers[selectedDay]?.length;
   useEffect(() => {
     // 선택된 장소가 현재 numbers의 길이보다 클 경우 새로운 번호 추가
     const numbers = dayNumbers[selectedDay] || [];
@@ -267,7 +263,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
       return acc;
     }, {});
     setDescriptions(initialDescriptions);
-  }, [selectedDay, selectedPlaces, dayNumbers[selectedDay]?.length]);
+  }, [selectedDay, selectedPlaces, dayNumberLength]);
 
   return (
     <div className="flex flex-col justify-center">

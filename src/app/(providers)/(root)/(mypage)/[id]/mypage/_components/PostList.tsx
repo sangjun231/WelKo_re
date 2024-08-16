@@ -1,6 +1,6 @@
 'use client';
 
-import { DeletePost } from '@/hooks/Post/usePostDelete';
+import DeletePost from '@/hooks/Post/usePostDelete';
 import { Tables } from '@/types/supabase';
 import { API_MYPAGE_POST } from '@/utils/apiConstants';
 import { formatDateRange } from '@/utils/detail/functions';

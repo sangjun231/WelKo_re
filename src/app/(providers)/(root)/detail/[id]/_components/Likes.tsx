@@ -1,13 +1,13 @@
 'use client';
 
 import BackButton from '@/components/common/Button/BackButton';
+import DeletePost from '@/hooks/Post/usePostDelete';
 import useAuthStore from '@/zustand/bearsStore';
 import { useLikeStore } from '@/zustand/likeStore';
 import usePostStore from '@/zustand/postStore';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
-import DeletePost from '../../../../../../hooks/Post/usePostDelete';
 import LikeBtn from '/public/icons/detail_icons/icon_like.svg';
 import IconHome from '/public/icons/navbar_icons/icon_home.svg';
 import WriteBtn from '/public/icons/tabler-icon-pencil.svg';
