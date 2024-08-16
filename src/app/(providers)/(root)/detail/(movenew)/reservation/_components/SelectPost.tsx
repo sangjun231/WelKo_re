@@ -6,9 +6,8 @@ import usePostStore from '@/zustand/postStore';
 import { formatDateRange } from '@/utils/detail/functions';
 import BackButton from '@/components/common/Button/BackButton';
 import useAuthStore from '@/zustand/bearsStore';
-import LikeBtn from '/public/icons/detail_icons/icon_like.svg';
+import LikeBtn from '/public/icons/tabler-icon-post-heart.svg';
 import { useLikeStore } from '@/zustand/likeStore';
-import { useWebStore } from '@/zustand/webStateStore';
 
 const SelectPost = () => {
   const { isWeb, setIsWeb } = useWebStore();

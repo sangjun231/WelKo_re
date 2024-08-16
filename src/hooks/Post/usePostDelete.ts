@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 //수정 핸들러
 
 // 삭제 핸들러
-export const DeletePost = () => {
+const DeletePost = () => {
   const router = useRouter();
   const handleDelete = async (postId: string) => {
     if (!postId) {
@@ -26,3 +26,5 @@ export const DeletePost = () => {
   };
   return handleDelete;
 };
+
+export default DeletePost;
