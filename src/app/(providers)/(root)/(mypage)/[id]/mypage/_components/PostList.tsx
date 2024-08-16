@@ -1,15 +1,15 @@
 'use client';
 
-import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
-import React, { useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
-import Image from 'next/image';
-import { API_MYPAGE_POST } from '@/utils/apiConstants';
+import DeletePost from '@/hooks/Post/usePostDelete';
 import { Tables } from '@/types/supabase';
+import { API_MYPAGE_POST } from '@/utils/apiConstants';
 import { formatDateRange } from '@/utils/detail/functions';
-import { DeletePost } from '@/app/(providers)/(root)/postpage/[id]/_components/PostEdit';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function PostList() {
   const params = useParams();

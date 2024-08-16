@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
 import { useNaverMapScript } from '@/hooks/Map/useNaverMapScript';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 interface Place {
   title: string;
@@ -152,7 +152,7 @@ const ScheduleMap = () => {
                 <div className="absolute top-6 h-[calc(100%-1rem)] w-px bg-grayscale-100"></div>
               )}
             </div>
-            <div className="shadow-custom-box ml-3 flex w-full flex-col gap-1 rounded-lg bg-white px-4 py-3">
+            <div className="ml-3 flex w-full flex-col gap-1 rounded-lg bg-white px-4 py-3 shadow-custom-box">
               <h2 className="text-sm font-semibold">{place.title ? place.title.replace(/<\/?[^>]+(>|$)/g, '') : ''}</h2>
               <p className="text-xs text-gray-500">{place.category}</p>
               <hr className="my-2 h-[1px] w-full bg-grayscale-100" />

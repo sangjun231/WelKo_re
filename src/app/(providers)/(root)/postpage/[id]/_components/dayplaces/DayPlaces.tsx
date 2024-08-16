@@ -2,6 +2,7 @@
 
 import { useCurrentPosition } from '@/hooks/Map/useCurrentPosition';
 import { useNaverMapScript } from '@/hooks/Map/useNaverMapScript';
+import useDayNumbers from '@/hooks/Post/useDayNumbers';
 import { Place } from '@/types/types';
 import { formatDateRange } from '@/utils/detail/functions';
 import { translateAddress } from '@/utils/post/postData';
@@ -21,8 +22,9 @@ type PlaceProps = {
   setSelectedDay: React.Dispatch<React.SetStateAction<string>>;
   region: string;
   setRegion: React.Dispatch<React.SetStateAction<string>>;
-  sequence: number;
   setSequence: React.Dispatch<React.SetStateAction<number>>;
+  postId: string;
+  userId: string;
 };
 
 const DayPlaces: React.FC<PlaceProps> = ({
@@ -33,23 +35,39 @@ const DayPlaces: React.FC<PlaceProps> = ({
   setSelectedDay,
   region,
   setRegion,
-  sequence,
-  setSequence
+  setSequence,
+  postId,
+  userId
 }) => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-  const [selectedPlaces, setSelectedPlaces] = useState<Place[]>([]); // 선택한 장소 목록
-  const handleDaySelect = (day: string) => {
-    setSelectedDay(day);
-  };
-  const handleSequenceSelect = () => {
-    setSequence(sequence);
-  };
+  const { dayNumbers, addDayNumber, handleDaySelect } = useDayNumbers();
+  const [days, setDays] = useState<string[]>([]);
   const startDate = sessionStorage.getItem('startDate');
   const endDate = sessionStorage.getItem('endDate');
-  const postId = sessionStorage.getItem('postId');
-  const userId = sessionStorage.getItem('userId');
+  const [selectedPlaces, setSelectedPlaces] = useState<Place[]>([]); // 선택한 장소 목록
+  const [descriptions, setDescriptions] = useState<{ [key: number]: string }>({}); // 장소마다 소개 작성
+  // 컴포넌트가 렌더링될 때 초기 description 값을 설정
+  // useEffect(() => {}, [selectedPlaces]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
+    if (startDate && endDate) {
+      const startDateString = new Date(startDate);
+      const endDateString = new Date(endDate);
+      const dayArray: string[] = [];
+
+      let currentDate = new Date(startDateString);
+      let dayCount = 1;
+
+      while (currentDate <= endDateString) {
+        dayArray.push(`Day ${dayCount}`);
+        currentDate.setDate(currentDate.getDate() + 1);
+        dayCount++;
+      }
+
+      setDays(dayArray);
+    }
+  }, [startDate, endDate]);
 
   //지도 관련
   const clientId = process.env.NEXT_PUBLIC_NCP_CLIENT_ID!;
@@ -67,30 +85,46 @@ const DayPlaces: React.FC<PlaceProps> = ({
         setSelectedPlaces(JSON.parse(storedPlaces));
       }
     }
-  }, [selectedDay]);
+  }, [selectedDay, storedPlaces, storedPlacesKey]);
 
   // 수정할 때, Supabase에서 장소 데이터를 불러오기
   useEffect(() => {
-    if (postId && selectedDay) {
+    const storedPlaces = sessionStorage.getItem(selectedDay);
+
+    if (storedPlaces) {
+      // 이미 저장된 데이터가 있으면 해당 데이터를 사용
+      setSelectedPlaces(JSON.parse(storedPlaces));
+    } else if (postId && selectedDay) {
       const fetchPlaces = async () => {
         const supabase = createClient();
         const { data: placesData, error } = await supabase
           .from('schedule')
-          .select('*')
-          .eq('post_id', postId)
-          .eq('day', selectedDay);
+          .select('places, lat, long, area, day')
+          .eq('post_id', postId);
 
-        if (placesData && placesData.length > 0) {
-          // 첫 번째 결과만 사용 (하나의 day에 대한 데이터만 있을 것으로 가정)
-          const placeData = placesData[0];
-          // 사용하기 쉬운 형태로 변환
-          // const combinedPlaces = placeData.map((place: any, index: number) => ({
-          //   places:
-          //   lat: placeData.lat[index],
-          //   long: placeData.long[index]
-          // }));
+        if (error) {
+          console.error('Error fetching data:', error);
+          return;
+        }
 
-          //setSelectedPlaces(combinedPlaces);
+        if (placesData && Array.isArray(placesData)) {
+          placesData.forEach((dayData: any) => {
+            if (dayData && Array.isArray(dayData.places)) {
+              // 데이터를 변환하여 사용하기 쉬운 형태로
+              const combinedPlaces: Place[] = dayData.places.map((place: any, index: number) => ({
+                title: place.title,
+                category: place.category,
+                roadAddress: place.roadAddress,
+                description: place.description,
+                latitude: dayData.lat[index],
+                longitude: dayData.long[index],
+                area: dayData.area
+              }));
+
+              setSelectedPlaces(combinedPlaces);
+              sessionStorage.setItem(dayData.day, JSON.stringify(combinedPlaces));
+            }
+          });
         } else {
           console.log('No data found for the given postId and day');
         }
@@ -153,7 +187,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
         markers.forEach((marker) => marker.setMap(null));
         setMarkers([]);
 
-        // 유효한 장소만 필터링하고 원래 인덱스를 기억합니다.
+        // 유효한 장소만 필터링하고 원래 인덱스를 기억하기
         const validPlaces = selectedPlaces
           .map((place, index) => (place ? { place, index } : null))
           .filter((item) => item !== null);
@@ -185,18 +219,6 @@ const DayPlaces: React.FC<PlaceProps> = ({
     initializeMap();
   }, [isScriptLoaded, position, selectedPlaces]);
 
-  // 장소마다 소개 작성
-  const [descriptions, setDescriptions] = useState<{ [key: number]: string }>({});
-
-  // 컴포넌트가 렌더링될 때 초기 description 값을 설정
-  useEffect(() => {
-    const initialDescriptions = selectedPlaces.reduce((acc: { [key: number]: string }, place, index) => {
-      acc[index] = place.description || '';
-      return acc;
-    }, {});
-    setDescriptions(initialDescriptions);
-  }, [selectedPlaces]);
-
   // description 값을 업데이트하고 sessionStorage에 저장
   const handleDescriptionChange = (index: number, value: string) => {
     setDescriptions((prevDescriptions) => ({
@@ -210,11 +232,15 @@ const DayPlaces: React.FC<PlaceProps> = ({
       sessionStorage.setItem(selectedDay, JSON.stringify(updatedPlaces));
     }
   };
-
+  // const handleDaySelect = (day: string) => {
+  //   setSelectedDay(day);
+  // };
   const handleAddSequence = (index: number) => {
     setSequence(index);
     next();
   };
+
+  //Done 클릭 시, 취소 핸들러
   const router = useRouter();
   const handleCancel = () => {
     const userConfirmed = confirm('Do you want to cancel this?');
@@ -223,6 +249,21 @@ const DayPlaces: React.FC<PlaceProps> = ({
     }
     router.replace('/');
   };
+  const dayNumberLength = dayNumbers[selectedDay]?.length;
+  useEffect(() => {
+    // 선택된 장소가 현재 numbers의 길이보다 클 경우 새로운 번호 추가
+    const numbers = dayNumbers[selectedDay] || [];
+    if (selectedPlaces.length >= numbers.length && numbers.length < 6) {
+      addDayNumber(selectedDay);
+    }
+
+    // 각 장소에 대한 설명 초기화
+    const initialDescriptions = selectedPlaces.reduce((acc: { [key: number]: string }, place, index) => {
+      acc[index] = place.description || '';
+      return acc;
+    }, {});
+    setDescriptions(initialDescriptions);
+  }, [selectedDay, selectedPlaces, dayNumberLength]);
 
   return (
     <div className="flex flex-col justify-center">
@@ -262,28 +303,33 @@ const DayPlaces: React.FC<PlaceProps> = ({
         <div id="map" style={{ width: '100%', height: '300px' }}></div>
 
         <div>
-          <div className="mb-4 flex gap-2">
-            {['day1', 'day2', 'day3'].map((day, index) => (
+          <div className="no-scrollbar mb-4 flex gap-2 overflow-x-auto">
+            {days.map((day, index) => (
               <button
-                key={day}
-                className="rounded-full bg-grayscale-50 px-4 py-2 font-medium hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
-                onClick={() => handleDaySelect(day)}
+                key={index}
+                className="whitespace-nowrap rounded-full bg-grayscale-50 px-4 py-2 text-sm font-medium hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
+                onClick={() => {
+                  setSelectedDay(day); // selectedDay 상태 관리
+                  handleDaySelect(day); // Day 선택 처리
+                }}
               >
-                {`Day ${index + 1}`}
+                {day}
               </button>
             ))}
           </div>
 
           {selectedDay === ''
             ? ''
-            : [1, 2, 3, 4].map((number, index) => (
+            : dayNumbers[selectedDay]?.map((number, index) => (
                 <div key={index} className="flex flex-col">
                   <div className="mb-4 flex">
                     <div className="relative">
-                      <p className="relative z-10 mr-2 size-6 rounded-full border-2 border-grayscale-50 bg-primary-300 text-center text-sm text-white">
+                      <p className="z-10 mr-2 size-6 rounded-full border-2 border-grayscale-50 bg-primary-300 text-center text-sm text-white">
                         {number}
                       </p>
-                      <div className="absolute left-1/3 h-full w-0.5 -translate-x-1/2 bg-grayscale-100"></div>
+                      {index < dayNumbers[selectedDay].length - 1 && (
+                        <div className="absolute left-1/3 h-full w-0.5 bg-grayscale-100"></div>
+                      )}
                     </div>
 
                     <div className="rounded-2xl shadow-lg">
@@ -293,6 +339,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
                       >
                         Select Place
                       </button>
+
                       {selectedDay === storedPlacesKey && selectedPlaces[index] && (
                         <div key={index} className="p-4 hover:bg-gray-100">
                           <h3

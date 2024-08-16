@@ -3,9 +3,13 @@
 @tailwind utilities;
 
 .icon-button {
-  @apply bg-grayscale-50 border-grayscale-50 flex h-8 w-8 items-center justify-center rounded-full border;
+  @apply flex h-8 w-8 items-center justify-center rounded-full border border-grayscale-50 bg-grayscale-50;
 }
 
 .select-button {
-  @apply bg-grayscale-50 border-grayscale-50 gap-[4px] rounded-3xl border px-2 py-3;
+  @apply gap-[4px] rounded-3xl border border-grayscale-50 bg-grayscale-50 px-2 py-3;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge에서 스크롤바 숨기기 */
 }

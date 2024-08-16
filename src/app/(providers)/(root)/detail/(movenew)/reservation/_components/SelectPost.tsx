@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import Image from 'next/image';
-import usePostStore from '@/zustand/postStore';
-import { formatDateRange } from '@/utils/detail/functions';
 import BackButton from '@/components/common/Button/BackButton';
+import { formatDateRange } from '@/utils/detail/functions';
 import useAuthStore from '@/zustand/bearsStore';
-import LikeBtn from '/public/icons/tabler-icon-post-heart.svg';
 import { useLikeStore } from '@/zustand/likeStore';
+import usePostStore from '@/zustand/postStore';
+import Image from 'next/image';
+import { useEffect } from 'react';
+import LikeBtn from '/public/icons/tabler-icon-post-heart.svg';
 
 const SelectPost = () => {
   const { post } = usePostStore((state) => ({

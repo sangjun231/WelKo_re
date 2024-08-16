@@ -1,11 +1,11 @@
 'use client';
 
 import Header from '@/components/common/Header/Header';
-import PostsList from './_components/PostsList';
-import Image from 'next/image';
-import CircleImageList from './_components/CircleImageList';
-import BestPostsList from './_components/BestPostsList';
 import HeadMeta from '@/components/common/Header/HeadMeta';
+import Image from 'next/image';
+import BestPostsList from './_components/BestPostsList';
+import CircleImageList from './_components/CircleImageList';
+import PostsList from './_components/PostsList';
 
 export default function Home() {
   return (

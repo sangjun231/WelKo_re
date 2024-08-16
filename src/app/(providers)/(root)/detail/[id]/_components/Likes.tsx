@@ -1,17 +1,17 @@
 'use client';
 
 import BackButton from '@/components/common/Button/BackButton';
+import DeletePost from '@/hooks/Post/usePostDelete';
 import useAuthStore from '@/zustand/bearsStore';
 import { useLikeStore } from '@/zustand/likeStore';
 import usePostStore from '@/zustand/postStore';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
-import WriteBtn from '/public/icons/tabler-icon-pencil.svg';
-import DeleteBtn from '/public/icons/tabler-icon-trash.svg';
 import LikeBtn from '/public/icons/detail_icons/icon_like.svg';
 import IconHome from '/public/icons/navbar_icons/icon_home.svg';
-import { DeletePost } from '../../../postpage/[id]/_components/PostEdit';
+import WriteBtn from '/public/icons/tabler-icon-pencil.svg';
+import DeleteBtn from '/public/icons/tabler-icon-trash.svg';
 
 const Likes = () => {
   const { id: postId } = useParams<{ id: string }>();
