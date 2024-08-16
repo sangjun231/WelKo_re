@@ -83,7 +83,7 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
       .map((lat: number, index: number) => {
         if (index < data.places[selectedDay].long.length) {
           const markerContent = `
-          <div class="w-6 h-6 text-white bg-primary-300 flex items-center p-2 justify-center border-2 border-white rounded-full">
+          <div class="w-6 h-6 web:w-11 web:h-11 text-white bg-primary-300 flex items-center p-2 justify-center border-2 border-white rounded-full">
           ${index + 1}
         </div>
         `;
