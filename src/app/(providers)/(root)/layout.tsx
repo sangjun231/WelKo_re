@@ -7,8 +7,8 @@ import Header from '@/components/common/Header/Header';
 function RootLayout({ children }: PropsWithChildren) {
   return (
     <div id="root" className="mx-auto flex min-h-screen w-full flex-col web:max-w-[1440px]">
+      <Header />
       <Suspense fallback={<div>Loading...</div>}>
-        <Header />
         <RouteChangeHandler />
       </Suspense>
       <div className="relative flex-1 gap-4">

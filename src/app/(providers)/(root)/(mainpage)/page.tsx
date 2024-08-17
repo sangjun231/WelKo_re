@@ -1,6 +1,5 @@
 'use client';
 
-import Header from '@/components/common/Header/Header';
 import PostsList from './_components/PostsList';
 import HeadMeta from '@/components/common/Header/HeadMeta';
 import Search from '@/components/common/Search/Search';
