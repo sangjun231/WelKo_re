@@ -15,7 +15,7 @@ function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null); // 아바타 URL 상태 추가
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const { logout } = useAuthStore();
 
   useEffect(() => {
@@ -29,12 +29,11 @@ function Header() {
         const user = session.user;
         setUserId(user?.id ?? null);
 
-        // 유저의 avatar URL 가져오기
         if (user) {
           const { data, error } = await supabase.from('users').select('avatar').eq('id', user.id).single();
 
           if (data && data.avatar) {
-            setAvatarUrl(data.avatar); // 아바타 URL 설정
+            setAvatarUrl(data.avatar);
           }
         }
       }
@@ -67,14 +66,21 @@ function Header() {
     return null;
   }
 
+  const handleHomeNavigation = () => {
+    window.location.href = '/';
+  };
+
   const uuid = uuidv4();
 
   return (
     <>
-      <div className="hidden py-5 sm:block">
+      <div className="hidden py-5 md:block">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <h1 className="ml-[88px] text-2xl font-bold text-[#B95FAB]">Welko</h1>
+            <h1 onClick={handleHomeNavigation} className="ml-[88px] cursor-pointer text-2xl font-bold text-[#B95FAB]">
+              Welko
+            </h1>
+
             <div className="ml-6" style={{ width: '372px' }}>
               <HeaderSearch />
             </div>
@@ -83,15 +89,22 @@ function Header() {
             {isLoggedIn ? (
               <>
                 <Link href={`/postpage/${uuid}`}>
-                  <button className="text-base font-medium text-[#B95FAB]">Make Your Tour</button>
+                  <button className="whitespace-pre rounded-3xl px-4 py-2 text-base font-medium text-[#B95FAB] transition-colors duration-200 hover:bg-[#B95FAB] hover:text-white">
+                    Make Your Tour
+                  </button>
                 </Link>
                 <Link href={`/${userId}/mypage`}>
-                  <button className="text-base font-medium">MyPage</button>
+                  <button className="whitespace-pre rounded-3xl px-4 py-2 text-base font-medium transition-colors duration-200 hover:bg-[#B95FAB] hover:text-white">
+                    MyPage
+                  </button>
                 </Link>
-                <button onClick={onLogout} className="text-base font-medium">
+                <button
+                  onClick={onLogout}
+                  className="whitespace-pre rounded-3xl px-4 py-2 text-base font-medium transition-colors duration-200 hover:bg-[#B95FAB] hover:text-white"
+                >
                   Log Out
                 </button>
-                <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gray-300">
+                <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden whitespace-pre rounded-full bg-gray-300">
                   {avatarUrl ? (
                     <Image src={avatarUrl} alt="User Avatar" fill objectFit="cover" />
                   ) : (
@@ -101,7 +114,9 @@ function Header() {
               </>
             ) : (
               <Link href="/login">
-                <button className="text-base font-medium">Log In</button>
+                <button className="rounded-3xl px-4 py-2 text-base font-medium transition-colors duration-200 hover:bg-[#B95FAB] hover:text-white">
+                  Log In
+                </button>
               </Link>
             )}
           </div>

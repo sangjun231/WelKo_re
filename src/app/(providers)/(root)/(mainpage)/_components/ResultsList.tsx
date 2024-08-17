@@ -70,8 +70,16 @@ export default function ResultsList({ posts, loading, error }: ResultsListProps)
   ].join('\n');
 
   return (
-    <div className="p-4">
-      <Search initialQuery={selection} style={{ paddingTop: '8px', lineHeight: '20px', fontWeight: 500 }} />
+    <div className="p-4 md:px-[88px]">
+      <div className="block md:hidden">
+        <Search initialQuery={selection} style={{ paddingTop: '8px', lineHeight: '20px', fontWeight: 500 }} />
+      </div>
+
+      <div className="hidden md:block">
+        <div className="my-[40px] text-[32px] font-semibold">Search Results</div>
+        <div className="mb-6 text-[21px] font-medium">{posts.length} Tour found</div>
+      </div>
+
       {!loading && posts.length === 0 && (
         <div className="flex min-h-[400px] flex-col items-center justify-center gap-2 text-center">
           <Image src="/icons/tabler-icon-list-search.svg" alt="search list image" width={44} height={44} />
@@ -85,9 +93,9 @@ export default function ResultsList({ posts, loading, error }: ResultsListProps)
         hasMore={displayedPosts.length < posts.length}
         onLoadMore={() => setPage((prev) => prev + 1)}
       >
-        <ul className="mt-5">
+        <ul className="mt-5 md:flex md:flex-wrap md:gap-5">
           {displayedPosts.map((post, index) => (
-            <li key={`${post.id}-${index}`} className="flex rounded-md p-2">
+            <li key={`${post.id}-${index}`} className="flex rounded-md p-2 md:w-[calc(50%-10px)] md:p-0">
               <Link href={`/detail/${post.id}`} className="flex w-full">
                 {post.image ? (
                   <Image
@@ -95,15 +103,17 @@ export default function ResultsList({ posts, loading, error }: ResultsListProps)
                     alt={post.title}
                     width={96}
                     height={96}
-                    className="mr-2 h-[80px] w-[80px] rounded-lg"
+                    className="mr-2 h-[80px] w-[80px] rounded-lg md:mr-4 md:h-[140px] md:w-[120px]"
                   />
                 ) : (
                   <div className="mr-2 flex h-24 w-24 items-center justify-center bg-gray-200">No Image</div>
                 )}
                 <div className="flex flex-col">
                   <div>
-                    <h3 className="line-clamp-1 text-sm font-semibold">{post.title}</h3>
-                    <p className="mt-1 tracking-[-0.1em] text-gray-500">
+                    <h3 className="line-clamp-1 text-sm font-semibold md:line-clamp-2 md:text-[21px] md:leading-7">
+                      {post.title}
+                    </h3>
+                    <p className="mt-1 tracking-[-0.1em] text-gray-500 md:mt-2 md:text-lg">
                       {post.startDate && post.endDate
                         ? `${new Intl.DateTimeFormat('ko', {
                             year: '2-digit',
@@ -117,7 +127,7 @@ export default function ResultsList({ posts, loading, error }: ResultsListProps)
                         : 'No dates available'}
                     </p>
                   </div>
-                  <div className="mt-1 flex text-sm">
+                  <div className="mt-1 flex text-sm md:mt-2 md:text-lg">
                     <div className="font-bold text-[#B95FAB]">{formatPrice(post.price)}</div>
                     <div className="font-medium">/Person</div>
                   </div>
