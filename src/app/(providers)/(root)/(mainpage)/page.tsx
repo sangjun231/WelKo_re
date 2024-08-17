@@ -1,6 +1,5 @@
 'use client';
 
-import Header from '@/components/common/Header/Header';
 import PostsList from './_components/PostsList';
 import HeadMeta from '@/components/common/Header/HeadMeta';
 import Search from '@/components/common/Search/Search';
@@ -13,7 +12,7 @@ export default function Home() {
     <>
       <HeadMeta />
       <div className="relative">
-        <Header />
+     
         <SlideImage />
         <div
           className="bottom-0 left-0 right-0 rounded-t-3xl bg-white p-4 md:p-0 md:px-[88px]"

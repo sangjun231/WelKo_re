@@ -1,12 +1,14 @@
-import React, { Suspense } from 'react';
+
+import React from 'react';
 import TravelPlanner from '../_components/planner/TravelPlanner';
 
-const PlannerPage = () => {
+const page = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <>
       <TravelPlanner />
-    </Suspense>
+    </>
   );
 };
 
-export default PlannerPage;
+export default page;
+
