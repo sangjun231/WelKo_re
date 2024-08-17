@@ -11,10 +11,11 @@ import usePostStore from '@/zustand/postStore';
 export default function DetailRead({ isWeb }: WebProps) {
   const { id } = useParams();
   const postId = Array.isArray(id) ? id[0] : id;
-  const { setPostId, post, fetchPost } = usePostStore((state) => ({
+  const { setPostId, post, fetchPost, postArea } = usePostStore((state) => ({
     setPostId: state.setPostId,
     post: state.post,
-    fetchPost: state.fetchPost
+    fetchPost: state.fetchPost,
+    postArea: state.postArea
   }));
 
   useEffect(() => {
@@ -48,7 +49,7 @@ export default function DetailRead({ isWeb }: WebProps) {
         </div>
         <div className="web:text-2xl flex text-sm font-semibold text-grayscale-900">
           <IconLocation alt="Location" width={isWeb ? 37 : 24} height={isWeb ? 37 : 24} />
-          <h4 className="web:ml-2 web:mr-11 ml-1 mr-8">Gyeongju</h4>
+          <h4 className="web:ml-2 web:mr-11 ml-1 mr-8">{postArea}</h4>
           <IconPeoples alt="Max Peoples" width={isWeb ? 37 : 24} height={isWeb ? 37 : 24} />
           <h4 className="web:ml-2 web:mr-11 ml-1">Max {post.maxPeople}</h4>
         </div>
