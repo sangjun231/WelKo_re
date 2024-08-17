@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -67,8 +68,12 @@ export default function TravelPlanner({ isModal = false }: TravelPlannerProps) {
       query.append('endDate', endDate.toISOString());
     }
 
+
     // router.push(`/results?${query.toString()}`);
     window.location.href = `/results?${query.toString()}`;
+
+
+
   };
 
   const toggleStep = (step: number) => {
