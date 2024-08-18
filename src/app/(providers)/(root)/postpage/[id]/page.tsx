@@ -2,6 +2,7 @@
 import useAuthStore from '@/zustand/bearsStore';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { Toaster } from 'react-hot-toast';
 import Calendar from './_components/calendar/Calendar';
 import AddressSearch from './_components/dayplaces/AddressSearch';
 import DayPlaces from './_components/dayplaces/DayPlaces';
@@ -42,6 +43,7 @@ function PostPage() {
 
   return (
     <div>
+      <Toaster />
       {step === 1 && <Calendar next={nextStep} postId={postId as string} />}
       {step === 2 && (
         <DayPlaces

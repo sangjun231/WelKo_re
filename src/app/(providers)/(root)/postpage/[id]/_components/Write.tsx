@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { BiDollar } from 'react-icons/bi';
 import { IoChevronBack, IoCloseOutline } from 'react-icons/io5';
 import { LuUsers } from 'react-icons/lu';
@@ -50,6 +51,7 @@ const Write = ({
   const [editId, setEditId] = useState<string>('');
   const startDate = sessionStorage.getItem('startDate');
   const endDate = sessionStorage.getItem('endDate');
+  const isMobile = window.innerWidth < 768;
 
   useEffect(() => {
     const fetchPlaces = async () => {
@@ -79,16 +81,31 @@ const Write = ({
 
   const handleFormConfirm = () => {
     const missingFields: string[] = [];
-    if (!title.trim()) missingFields.push('제목');
-    if (!content.trim()) missingFields.push('내용');
-    if (!image) missingFields.push('이미지');
-    if (!maxPeople || maxPeople < 1) missingFields.push('최대 인원');
-    if (!price || price < 1) missingFields.push('투어 금액');
-    if (tags.length === 0) missingFields.push('투어 태그');
-    if (selectedPrices.length === 0) missingFields.push('가격 옵션');
+    if (!title.trim()) missingFields.push('title');
+    if (!content.trim()) missingFields.push('introduction');
+    if (!image) missingFields.push('image');
+    if (!maxPeople || maxPeople < 1) missingFields.push('maximum');
+    if (!price || price < 1) missingFields.push('cost');
+    if (tags.length === 0) missingFields.push('theme');
+    if (selectedPrices.length === 0) missingFields.push('offer');
     if (missingFields.length > 0) {
       const missingFieldsString = missingFields.join(', ');
-      alert(`다음 정보를 입력해주세요: "${missingFieldsString}"`);
+
+      if (isMobile) {
+        toast(`Please fill in "${missingFieldsString}"`, {
+          duration: 3000,
+          position: 'bottom-center',
+          style: {
+            background: '#333',
+            color: '#fff',
+            marginBottom: '100px',
+            borderRadius: '70px',
+            padding: '10px 20px'
+          }
+        });
+      } else {
+        alert(`Please fill in "${missingFieldsString}"`); // Web 환경
+      }
       return false;
     }
     return true;
@@ -190,7 +207,21 @@ const Write = ({
       if (tags.length < 4) {
         setTags([...tags, item]);
       } else {
-        alert('태그는 최대 4개까지 선택할 수 있습니다.');
+        if (isMobile) {
+          toast('You can select up to 4 tags.', {
+            duration: 3000,
+            position: 'bottom-center',
+            style: {
+              background: '#333',
+              color: '#fff',
+              marginBottom: '100px',
+              borderRadius: '70px',
+              padding: '10px 20px'
+            }
+          });
+        } else {
+          alert('You can select up to 4 tags.'); // Web 환경
+        }
       }
     }
   };
@@ -320,7 +351,21 @@ const Write = ({
         }
       }
     }
-    alert('Saved!');
+    if (isMobile) {
+      toast('Saved!', {
+        duration: 3000,
+        position: 'bottom-center',
+        style: {
+          background: '#333',
+          color: '#fff',
+          marginBottom: '100px',
+          borderRadius: '70px',
+          padding: '10px 20px'
+        }
+      });
+    } else {
+      alert('Saved!'); // Web 환경
+    }
     router.replace('/');
   };
 

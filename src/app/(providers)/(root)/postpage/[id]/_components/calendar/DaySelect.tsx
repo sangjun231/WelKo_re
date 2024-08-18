@@ -11,6 +11,7 @@ import {
   subMonths
 } from 'date-fns';
 import React from 'react';
+import toast from 'react-hot-toast';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 interface DaySelectProps {
@@ -63,7 +64,22 @@ const DaySelect: React.FC<DaySelectProps> = ({
       if ((newEndDate.getTime() - newStartDate.getTime()) / (1000 * 60 * 60 * 24) < 7) {
         setEndDate(newEndDate);
       } else {
-        alert('You cannot select more than 7 days!');
+        const isMobile = window.innerWidth < 768;
+        if (isMobile) {
+          toast('You cannot select more than 7 days!', {
+            duration: 3000,
+            position: 'bottom-center',
+            style: {
+              background: '#333',
+              color: '#fff',
+              marginBottom: '100px',
+              borderRadius: '70px',
+              padding: '10px 20px'
+            }
+          });
+        } else {
+          alert('You cannot select more than 7 days!'); // Web 환경
+        }
         setEndDate(null); // 7일을 초과하면 선택 해제
       }
     } else {

@@ -3,6 +3,7 @@ import BackButton from '@/components/common/Button/BackButton';
 import { createClient } from '@/utils/supabase/client';
 import { addMonths, format } from 'date-fns';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { PiCalendarDots } from 'react-icons/pi';
 import DateSaveButton from './DateSaveButton';
 import DaySelect from './DaySelect';
@@ -59,7 +60,22 @@ const Calendar = ({ next, postId }: CalendarProps) => {
         sessionStorage.setItem('endDate', end);
         next();
       } else {
-        alert('Please select a date');
+        const isMobile = window.innerWidth < 768;
+        if (isMobile) {
+          toast('Please select a date', {
+            duration: 3000,
+            position: 'bottom-center',
+            style: {
+              background: '#333',
+              color: '#fff',
+              marginBottom: '100px',
+              borderRadius: '70px',
+              padding: '10px 20px'
+            }
+          });
+        } else {
+          alert('Please select a date'); // Web 환경
+        }
       }
     } catch (error) {
       console.error('Error saving dates:', error);
