@@ -29,11 +29,20 @@ interface PeriodSelectorProps {
   endDate: Date | null;
   setStartDate: (date: Date | null) => void;
   setEndDate: (date: Date | null) => void;
+  isModal?: boolean;
 }
 
-const PeriodSelector: React.FC<PeriodSelectorProps> = ({ next, startDate, endDate, setStartDate, setEndDate }) => {
+const PeriodSelector: React.FC<PeriodSelectorProps> = ({
+  next,
+  startDate,
+  endDate,
+  setStartDate,
+  setEndDate,
+  isModal = false
+}) => {
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [activeButtonIndex, setActiveButtonIndex] = useState<number | null>(null);
 
   const months = Array.from({ length: 12 }, (_, i) => i);
 
@@ -106,11 +115,14 @@ const PeriodSelector: React.FC<PeriodSelectorProps> = ({ next, startDate, endDat
       <div className="my-4 max-w-full">
         <div className="no-scrollbar relative flex max-w-full overflow-x-auto scroll-smooth" ref={scrollContainerRef}>
           <div className="flex flex-row">
-            {months.slice(0, 6).map((month, index) => (
+            {months.slice(0, 12).map((month, index) => (
               <button
                 key={index}
-                className="h-15 mr-2 flex w-24 flex-col items-center justify-center rounded-lg border border-solid px-2 py-4 text-black hover:bg-gray-100"
-                onClick={() => setSelectedMonth(addMonths(new Date(), month))}
+                className={`h-15 mr-2 flex w-24 flex-col items-center justify-center rounded-lg border border-solid px-2 py-4 text-black hover:bg-gray-100 ${activeButtonIndex === index ? 'border-2 border-[#B95FAB]' : ''}`}
+                onClick={() => {
+                  setSelectedMonth(addMonths(new Date(), month));
+                  setActiveButtonIndex(index);
+                }}
               >
                 <Image
                   src="/icons/tabler-icon-calendar-month.svg"
@@ -135,6 +147,7 @@ const PeriodSelector: React.FC<PeriodSelectorProps> = ({ next, startDate, endDat
         setStartDate={(date) => handleDateChange(date, 'start')}
         setEndDate={(date: any) => handleDateChange(date, 'end')}
         setSelectedMonth={setSelectedMonth}
+        isModal={isModal}
       />
       <button
         className="my-4 w-full rounded-2xl bg-[#B95FAB] p-2 text-lg font-semibold text-white"

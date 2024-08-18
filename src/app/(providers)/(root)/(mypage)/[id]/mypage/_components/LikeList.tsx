@@ -59,37 +59,38 @@ export default function LikeList() {
       <div className="flex h-screen items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-[8px]">
           <Image src="/icons/tabler-icon-heart.svg" alt="no wishlist" width={44} height={44} />
-          <p className="text-[14px] font-semibold">You don&apos;t have any Wishlist</p>
-          <p className="text-[12px]">When you recieve a new meaasge,</p>
-          <p className="text-[12px]">it will appear here.</p>
+          <p className="text-[14px] font-semibold text-grayscale-900">You don&apos;t have any Wishlist</p>
+          <p className="text-[12px] text-grayscale-600">When you like a tour,</p>
+          <p className="text-[12px] text-grayscale-600">it will appear here.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-[360px]">
+    <div className="grid web:grid-cols-4 web:gap-[40px]">
       {data.map((post, index) => (
         <div key={`${post.id}-${index}`} className="relative mb-[16px]">
-          <div className="flex">
-            <div className="relative">
+          <div className="flex web:flex-col web:gap-[16px]">
+            <div className="relative max-h-[100px] min-h-[100px] min-w-[80px] max-w-[80px] web:max-h-[286px] web:max-w-[286px]">
               <Link href={`/detail/${post.id}`}>
                 <Image
-                  className="rounded-[8px]"
+                  className="h-[100px] w-[80px] rounded-[8px] web:h-[286px] web:w-[286px] web:rounded-[16px]"
                   src={post.image ?? '/icons/upload.png'}
                   alt={post.title ?? 'Default title'}
                   width={80}
                   height={100}
-                  style={{ width: '80px', height: '100px' }}
                 />
               </Link>
               <Like postId={post.id} userId={user.id} />
             </div>
             <Link href={`/detail/${post.id}`}>
-              <div className="ml-[8px] space-y-[4px]">
-                <p className="line-clamp-1 text-[14px] font-semibold text-primary-900">{post.title}</p>
-                <p className="text-[14px] text-grayscale-500">{formatDateRange(post.startDate, post.endDate)}</p>
-                <p className="text-[13px] font-medium text-grayscale-700">
+              <div className="flex flex-col gap-[4px] mobile:ml-[8px] web:gap-[8px]">
+                <p className="line-clamp-1 text-[14px] font-semibold text-primary-900 web:text-[18px]">{post.title}</p>
+                <p className="text-[14px] text-grayscale-500 web:text-[16px]">
+                  {formatDateRange(post.startDate, post.endDate)}
+                </p>
+                <p className="text-[13px] font-medium text-grayscale-700 web:text-[16px]">
                   <span className="font-semibold text-primary-300">{formatPrice(post.price)}</span>
                   /Person
                 </p>

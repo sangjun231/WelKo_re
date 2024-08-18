@@ -13,7 +13,7 @@ const MyPage = () => {
   };
 
   return (
-    <div className="mx-[20px] mt-[56px]">
+    <div className="mx-[20px] mt-[8px]">
       <div className="relative mb-[36px] flex items-center justify-between">
         <button
           className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-grayscale-50"
@@ -27,10 +27,16 @@ const MyPage = () => {
             style={{ width: '24px', height: '24px' }}
           />
         </button>
-        <p className="absolute left-1/2 -translate-x-1/2 transform text-[18px] font-semibold">Message</p>
+        <p className="absolute left-1/2 -translate-x-1/2 transform text-[18px] font-semibold text-primary-900">
+          Message
+        </p>
         <div className="w-8"></div>
       </div>
-      <ChatList userId={id} />
+      <div className="flex items-center justify-center">
+        <div className="web:max-w-[560px] web:border web:px-[40px] web:py-[88px]">
+          <ChatList userId={id} />
+        </div>
+      </div>
     </div>
   );
 };

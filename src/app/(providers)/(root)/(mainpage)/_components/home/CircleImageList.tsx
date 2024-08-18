@@ -5,7 +5,9 @@ const locations = [
   { name: 'Busan', src: '/img/Busan.jpeg' },
   { name: 'Seoul', src: '/img/Seoul.jpeg' },
   { name: 'Chuncheon', src: '/img/Chuncheon.jpeg' },
-  { name: 'Jeju', src: '/img/Jeju.jpeg' }
+  { name: 'Jeju', src: '/img/Jeju.jpeg' },
+  { name: 'Yeosu', src: '/img/Yeosu.jpeg' },
+  { name: 'Jeonju', src: '/img/Jeonju.jpeg' }
 ];
 
 export default function CircleImageList() {
@@ -18,19 +20,19 @@ export default function CircleImageList() {
   };
 
   return (
-    <div className="my-[40px] flex justify-around bg-white">
+    <div className="my-[40px] flex flex-wrap justify-center gap-4 md:my-[80px] md:justify-center md:gap-10">
       {locations.map((location) => (
         <div
           key={location.name}
-          className="flex cursor-pointer flex-col items-center"
+          className={`flex cursor-pointer flex-col items-center ${location.name === 'Yeosu' || location.name === 'Jeonju' ? 'hidden md:flex' : ''}`}
           onClick={() => handleClick(location.name)}
         >
           <Image
             src={location.src}
             alt={location.name}
-            width={80}
-            height={80}
-            className="h-16 w-16 rounded-full border-gray-300"
+            width={120} // 데스크탑에서 이미지 크기
+            height={120} // 데스크탑에서 이미지 크기
+            className="h-16 w-16 rounded-full border-gray-300 md:h-24 md:w-24"
           />
           <span className="mt-2 text-center text-xs">{location.name}</span>
         </div>

@@ -75,11 +75,20 @@ const ProfileForm = ({ userId }: { userId: string }) => {
     <div>
       {profile ? (
         <div>
-          <div className="mb-[20px] mt-[56px] flex items-center justify-between">
-            <button className="rounded-[24px] bg-grayscale-50" onClick={handleBack}>
-              <Image src="/icons/tabler-icon-chevron-left.svg" alt="Go Back" width={32} height={32} />
+          <div className="mb-[20px] mt-[8px] flex items-center justify-between">
+            <button
+              className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-grayscale-50"
+              onClick={handleBack}
+            >
+              <Image
+                src="/icons/tabler-icon-chevron-left.svg"
+                alt="Go Back"
+                width={24}
+                height={24}
+                style={{ width: '24px', height: '24px' }}
+              />
             </button>
-            <p className="text-[18px] font-semibold">Edit Profile</p>
+            <p className="text-[18px] font-semibold text-primary-900">Edit Profile</p>
             <button className="text-[14px] font-medium text-action-color" onClick={handleProfileUpdate}>
               Done
             </button>

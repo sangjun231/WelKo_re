@@ -41,14 +41,14 @@ const BestPostsList = () => {
   };
 
   return (
-    <div className="mt-[40px]">
-      <h2 className="text-xl font-bold">Best Tour</h2>
-      <div className="mt-5 grid grid-cols-2 gap-4">
+    <div className="mt-[40px] md:mt-[160px]">
+      <h2 className="text-xl font-bold md:text-4xl">Best Tour</h2>
+      <div className="mt-5 grid grid-cols-2 gap-4 md:mt-[40px] md:grid-cols-4">
         {posts.map((post, index) => (
-          <div key={`${post.id}-${index}`} className="w-full flex-none overflow-hidden rounded-md bg-white">
-            <Link href={`/detail/${post.id}`} className="flex h-full flex-col">
+          <div key={`${post.id}-${index}`} className="max-w-[286px] flex-none rounded-md">
+            <Link href={`/detail/${post.id}`} className="flex flex-col">
               {post.image ? (
-                <div className="relative mb-2 overflow-hidden rounded-2xl" style={{ width: '100%', height: '150px' }}>
+                <div className="relative mb-2 aspect-square max-w-[150px] overflow-hidden rounded-2xl md:max-w-[286px]">
                   <Image
                     src={post.image}
                     alt={post.title}

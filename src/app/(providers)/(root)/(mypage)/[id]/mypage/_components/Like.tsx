@@ -56,18 +56,18 @@ const Like: React.FC<LikeProps> = ({ postId, userId }) => {
 
   return (
     <button
-      className="absolute right-[4px] top-[8px] rounded-[24px] backdrop-blur-[10px]"
+      className="web:right-[16px] web:top-[16px] absolute right-[4px] top-[8px] rounded-[24px] backdrop-blur-[10px]"
       onClick={handleLike}
       style={{
         backgroundColor: 'rgba(255, 255, 255, 0.10)'
       }}
     >
       <Image
+        className="web:w-[44px] web:h-[44px] h-[24px] w-[24px]"
         src={liked ? '/icons/tabler-icon-heart-filled.svg' : '/icons/tabler-icon-post-heart.svg'}
         alt="heart icon"
         width={24}
         height={24}
-        style={{ width: '24px', height: '24px' }}
       />
     </button>
   );
