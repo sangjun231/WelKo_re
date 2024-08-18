@@ -52,7 +52,7 @@ const PasswordChangeForm = ({ userId, email }: PasswordChangeFormProps) => {
         />
       </div>
       <button type="submit" className="mt-4 rounded bg-black px-4 py-2 text-white">
-        Change Password
+        Done
       </button>
     </form>
   );
