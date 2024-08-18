@@ -30,17 +30,15 @@ const ProfileView = ({ userId }: { userId: string }) => {
       {profile ? (
         <div className="flex gap-[12px] web:gap-[16px]">
           <div>
-            {profile.avatar && (
-              <div className="max-h-[56px] max-w-[56px] web:max-h-[80px] web:max-w-[80px]">
-                <Image
-                  className="h-[56px] w-[56px] rounded-full web:h-[80px] web:w-[80px]"
-                  src={`${profile.avatar}?${new Date().getTime()}`}
-                  alt="Profile"
-                  width={56}
-                  height={56}
-                />
-              </div>
-            )}
+            <div className="max-h-[56px] max-w-[56px] web:max-h-[80px] web:max-w-[80px]">
+              <Image
+                className="h-[56px] w-[56px] rounded-full web:h-[80px] web:w-[80px]"
+                src={profile.avatar ? `${profile.avatar}?${new Date().getTime()}` : '/icons/Profile.svg'}
+                alt="Profile"
+                width={56}
+                height={56}
+              />
+            </div>
           </div>
           <div className="flex flex-col">
             <div className="flex gap-[8px] web:gap-[16px]">
