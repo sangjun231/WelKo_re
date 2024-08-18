@@ -69,7 +69,7 @@ const ProfileForm = ({ userId }: { userId: string }) => {
 
   useEffect(() => {
     fetchProfile();
-  }, [userId, newRegion]);
+  }, [userId, newRegion, setImageUrl]);
 
   return (
     <div>
