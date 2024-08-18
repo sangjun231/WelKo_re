@@ -47,7 +47,7 @@ const ProfileView = ({ userId }: { userId: string }) => {
             </div>
             <button
               onClick={goToProfilePage}
-              className="mt-[8px] flex items-center text-[12px] mobile:max-w-[90px] web:max-w-[120px] web:text-[16px]"
+              className="mt-[8px] flex items-center text-[12px] max-w-[90px] web:max-w-[120px] web:text-[16px]"
             >
               Edit Profile
               <div className="max-h-[16px] max-w-[16px] web:max-h-[24px] web:max-w-[24px]">

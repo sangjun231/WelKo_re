@@ -31,7 +31,7 @@ const MyPage = () => {
 
   return (
     <div className="mx-[20px] mt-[8px] grid grid-cols-1 gap-[20px] web:mx-[88px] web:gap-[40px]">
-      <div className="web:hidden flex justify-between">
+      <div className="flex justify-between web:hidden">
         <button
           className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-grayscale-50"
           onClick={handleBack}

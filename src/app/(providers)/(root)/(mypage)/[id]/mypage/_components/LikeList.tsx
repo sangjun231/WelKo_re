@@ -85,7 +85,7 @@ export default function LikeList() {
               <Like postId={post.id} userId={user.id} />
             </div>
             <Link href={`/detail/${post.id}`}>
-              <div className="flex flex-col gap-[4px] mobile:ml-[8px] web:gap-[8px]">
+              <div className="ml-[8px] web:ml-0 flex flex-col gap-[4px] web:gap-[8px]">
                 <p className="line-clamp-1 text-[14px] font-semibold text-primary-900 web:text-[18px]">{post.title}</p>
                 <p className="text-[14px] text-grayscale-500 web:text-[16px]">
                   {formatDateRange(post.startDate, post.endDate)}
