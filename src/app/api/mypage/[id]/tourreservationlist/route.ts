@@ -3,6 +3,7 @@ import { createClient } from '@/utils/supabase/server';
 
 export async function GET(request: NextRequest, { params }: { params: { userId: string } }) {
   const { userId } = params;
+  const supabase = createClient();
   const postId = request.nextUrl.searchParams.get('postId');
 
   if (!postId) {
@@ -10,7 +11,6 @@ export async function GET(request: NextRequest, { params }: { params: { userId: 
   }
 
   try {
-    const supabase = createClient();
     const { data, error } = await supabase
       .from('payments')
       .select('*, users (id, email , name , avatar), posts (id, title , image, price, startDate, endDate)')

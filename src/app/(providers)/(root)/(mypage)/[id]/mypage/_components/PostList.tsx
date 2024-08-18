@@ -11,27 +11,27 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
+const getPostsData = async (userId: string) => {
+  try {
+    const response = await axios.get(API_MYPAGE_POST(userId));
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(`HTTP error! status: ${error.response?.status}`);
+    } else {
+      throw new Error('An unknown error occurred');
+    }
+  }
+};
+
 export default function PostList() {
   const params = useParams();
   const router = useRouter();
   const userId = Array.isArray(params.id) ? params.id[0] : params.id;
 
-  const getPostsData = async () => {
-    try {
-      const response = await axios.get(API_MYPAGE_POST(userId));
-      return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new Error(`HTTP error! status: ${error.response?.status}`);
-      } else {
-        throw new Error('An unknown error occurred');
-      }
-    }
-  };
-
   const { data, isPending, error, refetch } = useQuery<Tables<'posts'>[]>({
     queryKey: ['post', userId],
-    queryFn: getPostsData,
+    queryFn: () => getPostsData(userId),
     enabled: !!userId
   });
 

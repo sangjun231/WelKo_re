@@ -9,7 +9,7 @@ import { Tables } from '@/types/supabase';
 import { useRouter } from 'next/navigation';
 import { formatDateRange } from '@/utils/detail/functions';
 
-const fetchReservations = async (userId: string, postId: string) => {
+const fetchTourReservations = async (userId: string, postId: string) => {
   const response = await axios.get(API_MYPAGE_TOURRESERVATIONLIST(userId, postId));
   return response.data;
 };
@@ -32,7 +32,7 @@ const TourReservationList = ({ userId, postId }: { userId: string; postId: strin
     })[]
   >({
     queryKey: ['reservations', userId, postId],
-    queryFn: () => fetchReservations(userId, postId),
+    queryFn: () => fetchTourReservations(userId, postId),
     enabled: !!userId && !!postId
   });
 
