@@ -121,7 +121,7 @@ export default function ReservationList() {
   };
 
   const handleChangeTour = async (paymentId: string, postId: string) => {
-    const confirmed = window.confirm('정말 예약을 변경하시겠습니까?');
+    const confirmed = window.confirm('Are you sure you want to change your reservation?');
     if (confirmed) {
       try {
         const response = await axios.post(`/api/detail/payment/${paymentId}`, {
