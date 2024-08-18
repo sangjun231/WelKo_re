@@ -59,15 +59,15 @@ export default function PostList() {
     refetch();
   }, [userId, refetch]);
 
-  if (isPending) return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  if (isPending) return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Loading...</div>;
 
   if (error) {
-    return <div className="flex h-screen items-center justify-center">Error: {error.message}</div>;
+    return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Error: {error.message}</div>;
   }
 
   if (!data || data.length === 0) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-[8px]">
           <Image src="/icons/tabler-icon-sticker-2.svg" alt="no post" width={44} height={44} />
           <p className="text-[14px] font-semibold text-grayscale-900">You don&apos;t have any post</p>

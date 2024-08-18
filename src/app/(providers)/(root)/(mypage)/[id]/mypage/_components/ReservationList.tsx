@@ -121,16 +121,16 @@ export default function ReservationList() {
   }, [reviewsQuery]);
 
   if (isPending) {
-    return <div className="flex h-screen items-center justify-center">Loading...</div>;
+    return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Loading...</div>;
   }
 
   if (error) {
-    return <div className="flex h-screen items-center justify-center">Error: {error.message}</div>;
+    return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Error: {error.message}</div>;
   }
 
   if (!reservationsData || reservationsData.length === 0) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-[8px]">
           <Image src="/icons/tabler-icon-calendar-month.svg" alt="no reservation" width={44} height={44} />
           <p className="text-[14px] font-semibold text-grayscale-900">You don&apos;t have any Reservation</p>

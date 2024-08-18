@@ -82,12 +82,12 @@ const ReviewList = ({ userId }: { userId: string }) => {
   };
 
   if (reviewsLoading || postsLoading) {
-    return <div className="flex h-screen items-center justify-center">Loading...</div>;
+    return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Loading...</div>;
   }
 
   if (reviewsError || postsError) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">
         Error: {reviewsError?.message || postsError?.message}
       </div>
     );
@@ -95,7 +95,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
 
   if (!reviewsData || reviewsData.length === 0) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-[8px]">
           <Image src="/icons/tabler-icon-pencil.svg" alt="no review" width={44} height={44} />
           <p className="text-[14px] font-semibold text-grayscale-900">You don&apos;t have any Review</p>

@@ -157,13 +157,15 @@ const ChatList = ({ userId }: ChatListProps) => {
     };
   }, [chatData, queryClient, userId, intervalId]);
 
-  if (chatPending || postPending || userPending) return <div>Loading...</div>;
+  if (chatPending || postPending || userPending)
+    return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Loading...</div>;
 
-  if (chatError || postError || userError) return <div>Error loading data</div>;
+  if (chatError || postError || userError)
+    return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Error loading data</div>;
 
   if (!chatData || chatData.length === 0) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-[8px]">
           <Image src="/icons/Group-348.svg" alt="no chat" width={44} height={44} />
           <p className="text-[14px] font-semibold text-grayscale-900">You don&apos;t have any messages</p>
