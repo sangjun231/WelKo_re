@@ -44,13 +44,13 @@ export default function ReservationList() {
       };
     })[]
   >({
-    queryKey: ['reservations', userId],
+    queryKey: ['reservationList', userId],
     queryFn: () => fetchReservations(userId),
     enabled: !!userId
   });
 
   const reviewsQuery = useQuery<Tables<'reviews'>[]>({
-    queryKey: ['reviews', userId],
+    queryKey: ['isReview', userId],
     queryFn: () => getReviewsData(userId),
     enabled: !!userId
   });

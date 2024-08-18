@@ -30,7 +30,7 @@ export default function PostList() {
   const userId = Array.isArray(params.id) ? params.id[0] : params.id;
 
   const { data, isPending, error, refetch } = useQuery<Tables<'posts'>[]>({
-    queryKey: ['post', userId],
+    queryKey: ['postList', userId],
     queryFn: () => getPostsData(userId),
     enabled: !!userId
   });
