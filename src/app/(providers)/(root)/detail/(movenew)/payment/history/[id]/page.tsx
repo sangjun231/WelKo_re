@@ -5,7 +5,7 @@ import PaymentHistory from '../../_components/PaymentHistory';
 
 export default function PaymentPage() {
   return (
-    <div className="flex w-full justify-center">
+    <div className="web:mx-[88px] mx-5 flex w-full justify-center">
       <PaymentHistory />
     </div>
   );
