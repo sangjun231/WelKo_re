@@ -15,7 +15,7 @@ export default function DetailPage() {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsWeb(window.innerWidth >= 769);
+      setIsWeb(window.innerWidth >= 768);
     };
 
     handleResize();

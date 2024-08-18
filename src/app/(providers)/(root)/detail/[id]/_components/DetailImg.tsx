@@ -27,7 +27,7 @@ export default function DetailImg({ isWeb }: WebProps) {
 
   return (
     <div className="flex w-full flex-col items-center">
-      <div className="web:h-[640px] relative h-[300px] w-full">
+      <div className="web:h-[640px] relative h-[300px] w-full relative">
         <Image src={post.image} alt={post.title} priority fill className="object-cover" sizes="100vw" />
         <Likes isWeb={isWeb} />
       </div>
