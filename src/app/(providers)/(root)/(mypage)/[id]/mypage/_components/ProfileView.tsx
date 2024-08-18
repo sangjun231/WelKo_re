@@ -47,7 +47,10 @@ const ProfileView = ({ userId }: { userId: string }) => {
               <p className="text-[18px] font-semibold leading-none web:text-[26px]">{profile.name}</p>
               <p className="text-[12px] web:text-[20px]">{profile.region ? profile.region : 'Please set the region'}</p>
             </div>
-            <button onClick={goToProfilePage} className="mt-[8px] flex items-center text-[12px] web:text-[16px]">
+            <button
+              onClick={goToProfilePage}
+              className="mt-[8px] flex items-center text-[12px] mobile:max-w-[90px] web:max-w-[120px] web:text-[16px]"
+            >
               Edit Profile
               <div className="max-h-[16px] max-w-[16px] web:max-h-[24px] web:max-w-[24px]">
                 <Image
