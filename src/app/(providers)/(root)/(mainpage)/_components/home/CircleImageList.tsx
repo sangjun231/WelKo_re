@@ -34,7 +34,7 @@ export default function CircleImageList() {
             height={120} // 데스크탑에서 이미지 크기
             className="h-16 w-16 rounded-full border-gray-300 md:h-24 md:w-24"
           />
-          <span className="mt-2 text-center text-xs">{location.name}</span>
+          <span className="mt-2 text-center text-xs md:mt-6 md:text-lg">{location.name}</span>
         </div>
       ))}
     </div>

@@ -17,9 +17,9 @@ const ProfileDetailsForm = ({ nickname, setNickname, region, userId }: ProfileDe
   };
 
   return (
-    <div className="my-[32px] flex flex-col gap-[24px]">
-      <div>
-        <label className="text-[16px] font-medium">Nickname</label>
+    <div className="my-[32px] flex flex-col gap-[24px] web:gap-[40px]">
+      <div className="flex flex-col gap-[8px] web:gap-[24px]">
+        <label className="text-[16px] font-medium web:text-[21px]">Nickname</label>
         <input
           className="mt-[8px] w-full rounded-2xl border bg-grayscale-50 p-[16px] text-[16px] font-medium text-grayscale-900"
           type="text"
@@ -28,10 +28,10 @@ const ProfileDetailsForm = ({ nickname, setNickname, region, userId }: ProfileDe
           onBlur={(e) => setNickname(e.target.value)}
         />
       </div>
-      <div>
-        <label className="text-[16px] font-medium">Location</label>
+      <div className="flex flex-col gap-[8px] web:gap-[24px]">
+        <label className="text-[16px] font-medium web:text-[21px]">Location</label>
         <button
-          className="mt-[8px] flex w-full items-start rounded-2xl border bg-grayscale-50 p-[16px] text-[16px] text-grayscale-900"
+          className="flex w-full items-start rounded-2xl border bg-grayscale-50 p-[16px] text-[16px] text-grayscale-900"
           onClick={handleRegionClick}
         >
           {region || 'Set your region'}

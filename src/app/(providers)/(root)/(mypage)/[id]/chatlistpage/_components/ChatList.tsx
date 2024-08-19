@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import { API_MYPAGE_CHATS, API_POST_DETAILS, API_MYPAGE_PROFILE } from '@/utils/apiConstants';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+import { API_MYPAGE_CHATS, API_POST_DETAILS, API_MYPAGE_PROFILE } from '@/utils/apiConstants';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { fetchMessages } from '@/services/chatService';
 
 type ChatListProps = {
@@ -40,8 +40,10 @@ type User = {
 };
 
 const ChatList = ({ userId }: ChatListProps) => {
+  const queryClient = useQueryClient();
   const [newMessages, setNewMessages] = useState<{ [key: string]: boolean }>({});
   const router = useRouter();
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
   const fetchPostDetails = async (postId: string): Promise<Post> => {
     const response = await axios.get(API_POST_DETAILS(postId));
@@ -54,7 +56,7 @@ const ChatList = ({ userId }: ChatListProps) => {
   };
 
   const {
-    data: chatData,
+    data: chatData = [],
     error: chatError,
     isPending: chatPending
   } = useQuery<Message[]>({
@@ -63,14 +65,14 @@ const ChatList = ({ userId }: ChatListProps) => {
       const response = await axios.get(API_MYPAGE_CHATS(userId));
       return response.data;
     },
-    refetchInterval: 1000
+    refetchInterval: false
   });
 
   const postIds = chatData?.map((chat) => chat.post_id) || [];
   const userIds = chatData ? chatData.flatMap((chat) => [chat.sender_id, chat.receiver_id]) : [];
 
   const {
-    data: postData,
+    data: postData = [],
     error: postError,
     isPending: postPending
   } = useQuery<Post[]>({
@@ -78,12 +80,11 @@ const ChatList = ({ userId }: ChatListProps) => {
     queryFn: async () => {
       const postDetails = await Promise.all(postIds.map((postId) => fetchPostDetails(postId)));
       return postDetails;
-    },
-    enabled: postIds.length > 0
+    }
   });
 
   const {
-    data: userData,
+    data: userData = [],
     error: userError,
     isPending: userPending
   } = useQuery<User[]>({
@@ -91,8 +92,7 @@ const ChatList = ({ userId }: ChatListProps) => {
     queryFn: async () => {
       const userDetails = await Promise.all(userIds.map((id) => fetchUserDetails(id)));
       return userDetails;
-    },
-    enabled: userIds.length > 0
+    }
   });
 
   const groupedChats = chatData?.reduce((acc: { [key: string]: Chat }, message) => {
@@ -142,13 +142,30 @@ const ChatList = ({ userId }: ChatListProps) => {
     }
   };
 
-  if (chatPending || postPending || userPending) return <div>Loading...</div>;
+  useEffect(() => {
+    if (chatData.length > 0 && !intervalId) {
+      const id = setInterval(() => {
+        queryClient.invalidateQueries({
+          queryKey: ['chatList', userId]
+        });
+      }, 1000);
+      setIntervalId(id);
+    }
 
-  if (chatError || postError || userError) return <div>Error loading data</div>;
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [chatData, queryClient, userId, intervalId]);
 
-  if (!chatData || chatData?.length === 0) {
+  if (chatPending || postPending || userPending)
+    return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Loading...</div>;
+
+  if (chatError || postError || userError)
+    return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Error loading data</div>;
+
+  if (!chatData || chatData.length === 0) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-[8px]">
           <Image src="/icons/Group-348.svg" alt="no chat" width={44} height={44} />
           <p className="text-[14px] font-semibold text-grayscale-900">You don&apos;t have any messages</p>

@@ -9,7 +9,7 @@ import { Tables } from '@/types/supabase';
 import { useRouter } from 'next/navigation';
 import { formatDateRange } from '@/utils/detail/functions';
 
-const fetchReservations = async (userId: string, postId: string) => {
+const fetchTourReservations = async (userId: string, postId: string) => {
   const response = await axios.get(API_MYPAGE_TOURRESERVATIONLIST(userId, postId));
   return response.data;
 };
@@ -32,7 +32,7 @@ const TourReservationList = ({ userId, postId }: { userId: string; postId: strin
     })[]
   >({
     queryKey: ['reservations', userId, postId],
-    queryFn: () => fetchReservations(userId, postId),
+    queryFn: () => fetchTourReservations(userId, postId),
     enabled: !!userId && !!postId
   });
 
@@ -114,31 +114,31 @@ const TourReservationList = ({ userId, postId }: { userId: string; postId: strin
           >
             <div className="flex flex-col gap-[16px] web:gap-[24px]">
               <div className="flex flex-col gap-[8px] text-[14px] web:flex-row web:gap-[16px] web:text-[18px]">
-                <span className="min-w-[80px] text-[12px] text-grayscale-500 web:text-[18px]">Number</span>
+                <span className="min-w-[120px] text-[12px] text-grayscale-500 web:text-[18px]">Number</span>
                 <span className="flex-grow text-left">{reservation.id}</span>
               </div>
               <div className="flex flex-col gap-[8px] text-[14px] web:flex-row web:gap-[16px] web:text-[18px]">
-                <span className="min-w-[80px] text-[12px] text-grayscale-500 web:text-[18px]">Nickname</span>
+                <span className="min-w-[120px] text-[12px] text-grayscale-500 web:text-[18px]">Nickname</span>
                 <span className="flex-grow text-left">{reservation.users.name}</span>
               </div>
               <div className="flex flex-col gap-[8px] text-[14px] web:flex-row web:gap-[16px] web:text-[18px]">
-                <span className="min-w-[80px] text-[12px] text-grayscale-500 web:text-[18px]">Email</span>
+                <span className="min-w-[120px] text-[12px] text-grayscale-500 web:text-[18px]">Email</span>
                 <span className="flex-grow text-left">{reservation.users.email}</span>
               </div>
               <div className="flex flex-col gap-[8px] text-[14px] web:flex-row web:gap-[16px] web:text-[18px]">
-                <span className="min-w-[80px] text-[12px] text-grayscale-500 web:text-[18px]">Date</span>
+                <span className="min-w-[120px] text-[12px] text-grayscale-500 web:text-[18px]">Date</span>
                 <span className="flex-grow text-left">{new Date(reservation.created_at).toLocaleString()}</span>
               </div>
               <div className="flex flex-col gap-[8px] text-[14px] web:flex-row web:gap-[16px] web:text-[18px]">
-                <span className="min-w-[80px] text-[12px] text-grayscale-500 web:text-[18px]">Tourist</span>
+                <span className="min-w-[120px] text-[12px] text-grayscale-500 web:text-[18px]">Tourist</span>
                 <span className="flex-grow text-left">{reservation.people}</span>
               </div>
               <div className="flex flex-col gap-[8px] text-[14px] web:flex-row web:gap-[16px] web:text-[18px]">
-                <span className="min-w-[80px] text-[12px] text-grayscale-500 web:text-[18px]">Amount</span>
+                <span className="min-w-[120px] text-[12px] text-grayscale-500 web:text-[18px]">Amount</span>
                 <span className="flex-grow text-left">{formatPrice(reservation.total_price)}</span>
               </div>
               <div className="flex flex-col gap-[8px] text-[14px] web:flex-row web:gap-[16px] web:text-[18px]">
-                <span className="min-w-[80px] text-[12px] text-grayscale-500 web:text-[18px]">State</span>
+                <span className="min-w-[120px] text-[12px] text-grayscale-500 web:text-[18px]">State</span>
                 <span className="flex-grow text-left">{reservation.pay_state}</span>
               </div>
             </div>

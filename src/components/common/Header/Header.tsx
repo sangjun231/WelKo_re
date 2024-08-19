@@ -77,15 +77,15 @@ function Header() {
       <div className="hidden py-5 md:block">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <h1 onClick={handleHomeNavigation} className="ml-[88px] cursor-pointer text-2xl font-bold text-[#B95FAB]">
-              Welko
-            </h1>
+            <div onClick={handleHomeNavigation} className="ml-[88px] cursor-pointer">
+              <Image src="/icons/WelKo LOGO(124x20).png" alt="WelKo Logo" width={124} height={20} />
+            </div>
 
             <div className="ml-6" style={{ width: '372px' }}>
               <HeaderSearch />
             </div>
           </div>
-          <div className="mr-[88px] flex items-center gap-8">
+          <div className="mr-[88px] flex items-center gap-4">
             {isLoggedIn ? (
               <>
                 <Link href={`/postpage/${uuid}`}>
@@ -93,24 +93,26 @@ function Header() {
                     Make Your Tour
                   </button>
                 </Link>
-                <Link href={`/${userId}/mypage`}>
+                <Link href={`/${userId}/chatlistpage`}>
                   <button className="whitespace-pre rounded-3xl px-4 py-2 text-base font-medium transition-colors duration-200 hover:bg-[#B95FAB] hover:text-white">
-                    MyPage
+                    Message
                   </button>
                 </Link>
                 <button
                   onClick={onLogout}
-                  className="whitespace-pre rounded-3xl px-4 py-2 text-base font-medium transition-colors duration-200 hover:bg-[#B95FAB] hover:text-white"
+                  className="whitespace-pre rounded-3xl px-4 py-2 text-base font-semibold transition-colors duration-200 hover:bg-[#B95FAB] hover:text-white"
                 >
                   Log Out
                 </button>
-                <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden whitespace-pre rounded-full bg-gray-300">
-                  {avatarUrl ? (
-                    <Image src={avatarUrl} alt="User Avatar" fill objectFit="cover" />
-                  ) : (
-                    <span className="text-xs text-white">?</span>
-                  )}
-                </div>
+                <Link href={`/${userId}/mypage`} className="ml-4">
+                  <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden whitespace-pre rounded-full bg-gray-300">
+                    {avatarUrl ? (
+                      <Image src={avatarUrl} alt="User Avatar" fill objectFit="cover" />
+                    ) : (
+                      <span className="text-xs text-white">?</span>
+                    )}
+                  </div>
+                </Link>
               </>
             ) : (
               <Link href="/login">
