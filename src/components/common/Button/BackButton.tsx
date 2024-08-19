@@ -28,6 +28,7 @@ const BackButton = ({ className }: BackButtonProps) => {
       <button
         onClick={() => window.history.back()}
         className={`flex ${isWeb ? 'items-center justify-center rounded-full bg-[#F7F7F9]' : 'icon-button'}`}
+        aria-label="Go Back"
       >
         <BackBtn width={isWeb ? 44 : 24} height={isWeb ? 44 : 24} />
       </button>

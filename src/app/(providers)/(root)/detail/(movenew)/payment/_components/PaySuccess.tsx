@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams, useRouter, useParams } from 'next/navigation';
 import usePostStore from '@/zustand/postStore';
 import axios from 'axios';
@@ -17,6 +17,7 @@ export default function PaySuccess() {
   const txId = searchParams.get('txId');
   const postIdFromParams = searchParams.get('postId');
   const totalAmountFromParams = searchParams.get('totalAmount');
+  const failureCode = searchParams.get('code'); // 실패 코드를 가져옴
   const router = useRouter();
   const { fetchPost } = usePostStore((state) => ({
     setPostId: state.setPostId,
@@ -30,7 +31,17 @@ export default function PaySuccess() {
 
   const { handleCancel } = useAutoCancelHandler();
 
+  // 중복 실행 방지용 useRef
+  const isFailureHandled = useRef(false);
+
   useEffect(() => {
+    // 결제 실패 코드가 있으면 게시물 상세 페이지로 리디렉션
+    if (failureCode === 'FAILURE_TYPE_PG' && !isFailureHandled.current) {
+      isFailureHandled.current = true; // 이 코드가 한 번만 실행되도록 설정
+      alert('Payment has been canceled. You will be redirected to the post detail page.');
+      router.push(`/detail/${postIdFromParams}`);
+      return; // 이후 로직 실행하지 않도록 return
+    }
     const savePaymentData = async () => {
       try {
         if (isDataSaved) return;
@@ -116,7 +127,7 @@ export default function PaySuccess() {
       }
     } catch (error) {
       console.error('Error requesting cancel:', error);
-      alert('하루가 지나서 환불이 불가능어쩌고저쩌고.');
+      alert('The refund is not possible as it has been more than a day.');
     }
   };
 
@@ -126,6 +137,11 @@ export default function PaySuccess() {
       handleCancelRequest();
     }
   };
+
+  if (failureCode === 'FAILURE_TYPE_PG') {
+    // 결제 실패인 경우 PaySuccess 컴포넌트를 렌더링하지 않음
+    return null;
+  }
 
   if (pending) {
     return <div>Loading...</div>;

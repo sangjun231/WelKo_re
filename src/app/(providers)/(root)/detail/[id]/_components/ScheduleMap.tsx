@@ -145,31 +145,64 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
             Day 3
           </button>
         )}
+        {data.places.length > 3 && (
+          <button
+            onClick={() => setSelectedDay(3)}
+            className={`web:px-5 web:py-3 rounded-3xl px-4 py-2 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+          >
+            Day 4
+          </button>
+        )}
+        {data.places.length > 4 && (
+          <button
+            onClick={() => setSelectedDay(4)}
+            className={`web:px-5 web:py-3 rounded-3xl px-4 py-2 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+          >
+            Day 5
+          </button>
+        )}
+        {data.places.length > 5 && (
+          <button
+            onClick={() => setSelectedDay(5)}
+            className={`web:px-5 web:py-3 rounded-3xl px-4 py-2 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+          >
+            Day 6
+          </button>
+        )}
+        {data.places.length > 6 && (
+          <button
+            onClick={() => setSelectedDay(6)}
+            className={`web:px-5 web:py-3 rounded-3xl px-4 py-2 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+          >
+            Day 7
+          </button>
+        )}
       </div>
 
-      <div className={`web:flex web:flex-row web:justify-between flex flex-col gap-4`}>
-        {[0, 3].map((startIdx) => (
-          <div key={startIdx} className="web:w-1/2 flex flex-col gap-4">
-            {data?.places[selectedDay].places.slice(startIdx, startIdx + 3).map((place, index) => (
-              <div key={index} className="relative flex items-start">
-                <div className="flex flex-col items-center">
-                  <div className="web:h-11 web:w-11 web:text-2xl z-10 flex h-6 w-6 items-center justify-center rounded-full bg-primary-300 text-sm font-medium text-white">
-                    {startIdx + index + 1}
-                  </div>
-                  {index !== 2 && <div className="absolute top-6 h-full w-px bg-grayscale-100"></div>}
+      <div className={`web:flex web:gap-x-20 flex flex-col gap-4`}>
+        <div className="flex flex-col gap-4">
+          {data?.places[selectedDay].places.map((place, index) => (
+            <div key={index} className="relative flex items-start">
+              <div className="flex flex-col items-center">
+                <div className="web:h-11 web:w-11 web:text-2xl z-10 flex h-6 w-6 items-center justify-center rounded-full bg-primary-300 text-sm font-medium text-white">
+                  {index + 1}
                 </div>
-                <div className="web:p-6 web:ml-12 web:mb-10 ml-3 flex w-full flex-col gap-1 rounded-lg bg-white px-4 py-3 shadow-custom-box">
-                  <h2 className="web:text-xl text-sm font-semibold">
-                    {place.title ? place.title.replace(/<\/?[^>]+(>|$)/g, '') : ''}
-                  </h2>
-                  <p className="web:text-base text-xs text-gray-500">{place.category}</p>
-                  <hr className="web:my-4 my-2 h-[1px] w-full bg-grayscale-100" />
-                  <p className="web:text-lg text-xs font-normal text-gray-700">{place.description}</p>
-                </div>
+                {/* 마지막 요소가 아닌 경우에만 <hr> 렌더링 */}
+                {index < data?.places[selectedDay].places.length - 1 && (
+                  <div className="absolute top-6 mb-8 h-full w-px bg-grayscale-100"></div>
+                )}
               </div>
-            ))}
-          </div>
-        ))}
+              <div className="web:p-6 web:ml-12 web:mb-10 ml-3 flex w-full flex-col gap-1 rounded-lg bg-white px-4 py-3 shadow-custom-box">
+                <h2 className="web:text-xl text-sm font-semibold">
+                  {place.title ? place.title.replace(/<\/?[^>]+(>|$)/g, '') : ''}
+                </h2>
+                <p className="web:text-base text-xs text-gray-500">{place.category}</p>
+                <hr className="web:my-4 my-2 h-[1px] w-full bg-grayscale-100" />
+                <p className="web:text-lg text-xs font-normal text-gray-700">{place.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       <hr className="web:my-20 mb-6 mt-8 h-[1px] w-full bg-grayscale-100" />
