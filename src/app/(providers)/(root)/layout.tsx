@@ -8,7 +8,9 @@ import Footer from '@/components/common/Navbar/Footer';
 function RootLayout({ children }: PropsWithChildren) {
   return (
     <div id="root" className="web:max-w-[1440px] mx-auto flex min-h-screen w-full flex-col">
-      <Header />
+      <div className="md:h-[88px]">
+        <Header />
+      </div>
       <Suspense fallback={<div>Loading...</div>}>
         <RouteChangeHandler />
       </Suspense>

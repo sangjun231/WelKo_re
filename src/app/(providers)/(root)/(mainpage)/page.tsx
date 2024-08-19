@@ -2,28 +2,29 @@
 
 import PostsList from './_components/PostsList';
 import HeadMeta from '@/components/common/Header/HeadMeta';
-import Search from '@/components/common/Search/Search';
 import CircleImageList from './_components/home/CircleImageList';
-import BestPostsList from './_components/home/BestPostsList';
 import SlideImage from './_components/home/SlideImage';
+import { lazy, Suspense } from 'react';
+
+const BestPostsList = lazy(() => import('./_components/home/BestPostsList'));
 
 export default function Home() {
   return (
     <>
       <HeadMeta />
       <div className="relative">
-     
-        <SlideImage />
+        <div className="md:h-[560px]">
+          <SlideImage />
+        </div>
         <div
           className="bottom-0 left-0 right-0 rounded-t-3xl bg-white p-4 md:p-0 md:px-[88px]"
           style={{ height: '20%', top: '80%' }}
         >
-          <div className="block sm:hidden">
-            <Search />
-          </div>
           <CircleImageList />
           <PostsList />
-          <BestPostsList />
+          <Suspense fallback={<div>Loading...</div>}>
+            <BestPostsList />
+          </Suspense>
         </div>
       </div>
     </>
