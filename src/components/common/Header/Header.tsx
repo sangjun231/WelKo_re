@@ -116,7 +116,7 @@ function Header() {
               </>
             ) : (
               <Link href="/login">
-                <button className="rounded-3xl px-4 py-2 text-base font-medium transition-colors duration-200 hover:bg-[#B95FAB] hover:text-white">
+                <button className="whitespace-pre rounded-3xl px-4 py-2 text-base font-medium transition-colors duration-200 hover:bg-[#B95FAB] hover:text-white">
                   Log In
                 </button>
               </Link>
