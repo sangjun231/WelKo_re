@@ -162,7 +162,10 @@ const RegionForm = () => {
         </button>
       </div>
       <div className="mb-[30px] web:mx-auto web:max-w-[642px]">
-        <div className="my-[20px] h-[400px] w-full rounded-[16px] web:my-[40px] web:h-[642px]" id="map"></div>
+        <div
+          className="my-[20px] h-[400px] w-full rounded-[16px] web:my-[40px] web:min-h-[calc(100vh-600px)]"
+          id="map"
+        ></div>
         <div>
           <p className="mb-[8px] text-[16px] font-medium web:text-[21px]">Location</p>
           {region ? (
