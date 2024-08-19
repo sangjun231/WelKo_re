@@ -83,20 +83,20 @@ export default function ReservationList() {
   };
 
   const handleChangeTour = async (paymentId: string, postId: string) => {
-    const confirmed = window.confirm('정말 예약을 변경하시겠습니까?');
+    const confirmed = window.confirm('Are you sure you want to change your reservation?');
     if (confirmed) {
       try {
         const response = await axios.post(`/api/detail/payment/${paymentId}`, {
           reason: 'User requested cancel',
           requester: 'CUSTOMER'
         });
-        alert('전액 환불되셨습니다!');
+        alert('You have been fully refunded!');
         if (response.data.data.pay_state === 'cancel') {
           router.push(`/detail/reservation/${postId}`);
         }
       } catch (error) {
         console.error('Error requesting cancel:', error);
-        alert('하루가 지나서 환불이 불가능합니다.');
+        alert('The refund is not possible as it has been more than a day.');
       }
     }
   };
@@ -152,11 +152,11 @@ export default function ReservationList() {
           <div key={`${post.id}-${index}`} className="web:mb-[40px] web:pb-[40px] mb-[20px] border-b pb-[20px]">
             <div className="flex justify-between">
               <div>
-                <p className="text-[14px] font-semibold text-grayscale-900 web:text-[21px]">
+                <p className="web:text-[21px] text-[14px] font-semibold text-grayscale-900">
                   {new Date(reservation.created_at).toLocaleDateString()}
                 </p>
                 <p
-                  className={`text-[14px] font-medium web:text-[21px] ${
+                  className={`web:text-[21px] text-[14px] font-medium ${
                     status === 'Upcoming Tour'
                       ? 'text-primary-300'
                       : status === 'Refunded'
@@ -168,7 +168,7 @@ export default function ReservationList() {
                 </p>
               </div>
               <Link className="flex items-center" href={`/detail/payment/history/${paymentId}`}>
-                <p className="text-[14px] font-semibold text-primary-300 web:text-[18px]">Detail</p>
+                <p className="web:text-[18px] text-[14px] font-semibold text-primary-300">Detail</p>
                 <Image
                   className="web:h-[24px] web:w-[24px]"
                   src="/icons/tabler-icon-chevron-right-pr300.svg"
@@ -193,7 +193,7 @@ export default function ReservationList() {
                   <p className="web:text-[21px] line-clamp-1 text-[14px] font-semibold text-primary-900">
                     {post.title ?? 'No Title'}
                   </p>
-                  <p className="text-[14px] text-grayscale-500 web:text-[18px]">
+                  <p className="web:text-[18px] text-[14px] text-grayscale-500">
                     {formatDateRange(post.startDate, post.endDate)}
                   </p>
                   <p className="web:text-[18px] text-[13px] font-medium text-gray-700">
