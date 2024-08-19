@@ -173,6 +173,7 @@ const PostsList = () => {
                             fill
                             style={{ objectFit: 'cover' }}
                             className="rounded-2xl"
+                            sizes="236px"
                           />
                         </div>
                       ) : (
@@ -212,6 +213,7 @@ const PostsList = () => {
                       fill
                       style={{ objectFit: 'cover' }}
                       className="rounded-2xl"
+                      sizes="286px"
                     />
                   </div>
                 ) : (
