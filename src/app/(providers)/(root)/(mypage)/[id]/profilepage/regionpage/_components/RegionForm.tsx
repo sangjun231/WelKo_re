@@ -142,7 +142,7 @@ const RegionForm = () => {
   }, [region]);
 
   return (
-    <div className="mt-[8px]">
+    <div>
       <div className="flex items-center justify-between">
         <button
           className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-grayscale-50"
@@ -161,24 +161,29 @@ const RegionForm = () => {
           Done
         </button>
       </div>
-      <div className="my-[20px] rounded-[16px]" id="map" style={{ width: '100%', height: '400px' }}></div>
-      <div>
-        <p className="mb-[8px] text-[16px] font-medium">Location</p>
-        {region ? (
-          <p className="flex items-center justify-between rounded-2xl border bg-grayscale-50 p-[16px] text-[16px] text-grayscale-900">
-            {translatedRegion || 'Loading...'}
-            <span>
-              <Image src="/icons/tabler-icon-location-filled.svg" alt="location" width={32} height={32} />
-            </span>
-          </p>
-        ) : (
-          <p className="flex items-center justify-between rounded-2xl border bg-grayscale-50 p-[16px] text-[16px] text-grayscale-400">
-            Set your location
-            <span>
-              <Image src="/icons/tabler-icon-location-filled.svg" alt="location" width={32} height={32} />
-            </span>
-          </p>
-        )}
+      <div className="mb-[30px] web:mx-auto web:max-w-[642px]">
+        <div
+          className="my-[20px] h-[400px] w-full rounded-[16px] web:my-[40px] web:min-h-[calc(100vh-600px)]"
+          id="map"
+        ></div>
+        <div>
+          <p className="mb-[8px] text-[16px] font-medium web:text-[21px]">Location</p>
+          {region ? (
+            <p className="flex items-center justify-between rounded-2xl border bg-grayscale-50 p-[16px] text-[16px] text-grayscale-900">
+              {translatedRegion || 'Loading...'}
+              <span>
+                <Image src="/icons/tabler-icon-location-filled.svg" alt="location" width={32} height={32} />
+              </span>
+            </p>
+          ) : (
+            <p className="flex items-center justify-between rounded-2xl border bg-grayscale-50 p-[16px] text-[16px] text-grayscale-400">
+              Set your location
+              <span>
+                <Image src="/icons/tabler-icon-location-filled.svg" alt="location" width={32} height={32} />
+              </span>
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -34,7 +34,7 @@
     "react-rating-stars-component": "^2.2.0",
     "react-router-dom": "^6.26.0",
     "react-toastify": "^10.0.5",
-    "supabase": "^1.187.10",
+    "supabase": "^1.190.0",
     "swiper": "^11.1.7",
     "uuid": "^10.0.0",
     "zustand": "^4.5.4"

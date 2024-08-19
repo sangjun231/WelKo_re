@@ -1,83 +1,105 @@
-'use client';
-
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { formatRelativeDate } from '@/utils/detail/functions';
-import { API_MYPAGE_REVIEWS, API_POST, API_MYPAGE_PROFILE } from '@/utils/apiConstants';
+import { formatRelativeDate, formatDateRange } from '@/utils/detail/functions';
+import { API_MYPAGE_REVIEWS, API_MYPAGE_PROFILE, API_POST } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
-import { formatDateRange } from '@/utils/detail/functions';
+import axios from 'axios';
+
+const fetchReviews = async (userId: string) => {
+  const response = await axios.get(API_MYPAGE_REVIEWS(userId));
+  return response.data;
+};
+
+const fetchProfile = async (userId: string) => {
+  const response = await axios.get(API_MYPAGE_PROFILE(userId));
+  return response.data;
+};
+
+const fetchPostsData = async () => {
+  const response = await axios.get(API_POST());
+  return response.data;
+};
 
 const ReviewList = ({ userId }: { userId: string }) => {
-  const [reviews, setReviews] = useState<Tables<'reviews'>[]>([]);
   const [profile, setProfile] = useState<Tables<'users'>>();
+  const [reviews, setReviews] = useState<Tables<'reviews'>[]>([]);
   const router = useRouter();
 
-  const fetchReviews = async () => {
-    const response = await axios.get(API_MYPAGE_REVIEWS(userId));
-    setReviews(response.data);
-  };
-
-  const fetchProfile = async () => {
-    const response = await axios.get(API_MYPAGE_PROFILE(userId));
-    const profileData = response.data;
-    setProfile(profileData);
-  };
-
-  const getPostsData = async () => {
-    try {
-      const response = await axios.get(API_POST());
-      const data: Tables<'posts'>[] = response.data;
-      return data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new Error(`HTTP error! status: ${error.response?.status}`);
-      } else {
-        throw new Error('An unknown error occurred');
-      }
-    }
-  };
+  const {
+    data: reviewsData,
+    isLoading: reviewsLoading,
+    error: reviewsError
+  } = useQuery<Tables<'reviews'>[]>({
+    queryKey: ['reviewList', userId],
+    queryFn: () => fetchReviews(userId),
+    enabled: !!userId
+  });
 
   const {
     data: posts,
-    isPending,
-    error
+    isLoading: postsLoading,
+    error: postsError
   } = useQuery<Tables<'posts'>[]>({
-    queryKey: ['post', userId],
-    queryFn: getPostsData,
+    queryKey: ['isPost', userId],
+    queryFn: fetchPostsData,
     enabled: !!userId
   });
+
+  useEffect(() => {
+    if (reviewsData) {
+      setReviews(reviewsData);
+    }
+  }, [reviewsData]);
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const profileData = await fetchProfile(userId);
+        setProfile(profileData);
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+
+    if (userId) {
+      fetchProfileData();
+    }
+  }, [userId]);
 
   const handleEditReview = (id: string, postId: string) => {
     router.push(`/${userId}/reviewpage?id=${id}&post_id=${postId}`);
   };
 
   const handleDelete = async (id: string) => {
-    await axios.delete(API_MYPAGE_REVIEWS(userId), { data: { id } });
-    setReviews(reviews.filter((review) => review.id !== id));
+    try {
+      await axios.delete(API_MYPAGE_REVIEWS(userId), { data: { id } });
+      setReviews(reviews.filter((review) => review.id !== id));
+    } catch (error) {
+      console.error('Error deleting review:', error);
+    }
   };
 
-  useEffect(() => {
-    fetchReviews();
-    fetchProfile();
-  }, [userId]);
-
-  if (isPending) return <div className="flex h-screen items-center justify-center">Loading...</div>;
-
-  if (error) {
-    return <div className="flex h-screen items-center justify-center">Error: {error.message}</div>;
+  if (reviewsLoading || postsLoading) {
+    return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Loading...</div>;
   }
 
-  if (!reviews || reviews.length === 0) {
+  if (reviewsError || postsError) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">
+        Error: {reviewsError?.message || postsError?.message}
+      </div>
+    );
+  }
+
+  if (!reviewsData || reviewsData.length === 0) {
+    return (
+      <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-[8px]">
           <Image src="/icons/tabler-icon-pencil.svg" alt="no review" width={44} height={44} />
           <p className="text-[14px] font-semibold text-grayscale-900">You don&apos;t have any Review</p>
-          <p className="text-[12px] text-grayscale-600">When you write a new review,</p>
-          <p className="text-[12px] text-grayscale-600">it will appear here.</p>
+          <p className="text-[12px] text-grayscale-600">When you write a new review, it will appear here.</p>
         </div>
       </div>
     );
@@ -85,7 +107,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
 
   return (
     <div>
-      {posts.map((post, index) => {
+      {posts?.map((post, index) => {
         const review = reviews.find((r) => r.post_id === post.id);
 
         return (
@@ -130,9 +152,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
               <div className="flex justify-end gap-[16px] web:gap-[40px]">
                 <button
                   className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9] web:h-[44px] web:w-[44px]"
-                  onClick={() => {
-                    handleEditReview(review.id, post.id);
-                  }}
+                  onClick={() => handleEditReview(review.id, post.id)}
                 >
                   <Image
                     className="web:h-[33px] web:w-[33px]"
@@ -144,9 +164,7 @@ const ReviewList = ({ userId }: { userId: string }) => {
                 </button>
                 <button
                   className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9] web:h-[44px] web:w-[44px]"
-                  onClick={() => {
-                    handleDelete(review.id);
-                  }}
+                  onClick={() => handleDelete(review.id)}
                 >
                   <Image
                     className="web:h-[33px] web:w-[33px]"

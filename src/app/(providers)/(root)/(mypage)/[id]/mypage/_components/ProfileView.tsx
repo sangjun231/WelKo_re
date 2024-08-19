@@ -30,24 +30,25 @@ const ProfileView = ({ userId }: { userId: string }) => {
       {profile ? (
         <div className="flex gap-[12px] web:gap-[16px]">
           <div>
-            {profile.avatar && (
-              <div className="max-h-[56px] max-w-[56px] web:max-h-[80px] web:max-w-[80px]">
-                <Image
-                  className="h-[56px] w-[56px] rounded-full web:h-[80px] web:w-[80px]"
-                  src={`${profile.avatar}?${new Date().getTime()}`}
-                  alt="Profile"
-                  width={56}
-                  height={56}
-                />
-              </div>
-            )}
+            <div className="max-h-[56px] max-w-[56px] web:max-h-[80px] web:max-w-[80px]">
+              <Image
+                className="h-[56px] w-[56px] rounded-full web:h-[80px] web:w-[80px]"
+                src={profile.avatar ? `${profile.avatar}?${new Date().getTime()}` : '/icons/Profile.svg'}
+                alt="Profile"
+                width={56}
+                height={56}
+              />
+            </div>
           </div>
           <div className="flex flex-col">
             <div className="flex gap-[8px] web:gap-[16px]">
               <p className="text-[18px] font-semibold leading-none web:text-[26px]">{profile.name}</p>
               <p className="text-[12px] web:text-[20px]">{profile.region ? profile.region : 'Please set the region'}</p>
             </div>
-            <button onClick={goToProfilePage} className="mt-[8px] flex items-center text-[12px] web:text-[16px]">
+            <button
+              onClick={goToProfilePage}
+              className="mt-[8px] flex items-center text-[12px] max-w-[90px] web:max-w-[120px] web:text-[16px]"
+            >
               Edit Profile
               <div className="max-h-[16px] max-w-[16px] web:max-h-[24px] web:max-w-[24px]">
                 <Image

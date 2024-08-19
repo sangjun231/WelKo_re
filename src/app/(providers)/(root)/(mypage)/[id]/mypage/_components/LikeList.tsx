@@ -48,15 +48,15 @@ export default function LikeList() {
     refetch();
   }, [userId, refetch]);
 
-  if (isPending) return <div className="flex items-center justify-center">Loading...</div>;
+  if (isPending) return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Loading...</div>;
 
   if (error) {
-    return <div className="flex h-screen items-center justify-center">Error: {error.message}</div>;
+    return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Error: {error.message}</div>;
   }
 
   if (!data || data.length === 0) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-[8px]">
           <Image src="/icons/tabler-icon-heart.svg" alt="no wishlist" width={44} height={44} />
           <p className="text-[14px] font-semibold text-grayscale-900">You don&apos;t have any Wishlist</p>
@@ -85,7 +85,7 @@ export default function LikeList() {
               <Like postId={post.id} userId={user.id} />
             </div>
             <Link href={`/detail/${post.id}`}>
-              <div className="flex flex-col gap-[4px] mobile:ml-[8px] web:gap-[8px]">
+              <div className="ml-[8px] flex flex-col gap-[4px] web:ml-0 web:gap-[8px]">
                 <p className="line-clamp-1 text-[14px] font-semibold text-primary-900 web:text-[18px]">{post.title}</p>
                 <p className="text-[14px] text-grayscale-500 web:text-[16px]">
                   {formatDateRange(post.startDate, post.endDate)}

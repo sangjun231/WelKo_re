@@ -6,91 +6,57 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { API_POST, API_MYPAGE_REVIEWS, API_MYPAGE_PAYMENTS } from '@/utils/apiConstants';
+import { API_MYPAGE_RESERVATION, API_MYPAGE_REVIEWS } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
 import { formatDateRange } from '@/utils/detail/functions';
-import usePostStore from '@/zustand/postStore';
+
+const fetchReservations = async (userId: string) => {
+  const response = await axios.get(API_MYPAGE_RESERVATION(userId));
+  return response.data;
+};
+
+const getReviewsData = async (userId: string) => {
+  const response = await axios.get(API_MYPAGE_REVIEWS(userId));
+  return response.data as Tables<'reviews'>[];
+};
 
 export default function ReservationList() {
   const params = useParams();
   const router = useRouter();
   const userId = Array.isArray(params.id) ? params.id[0] : params.id;
-
   const [reviews, setReviews] = useState<Tables<'reviews'>[]>([]);
 
-  const { fetchPost, setPostId } = usePostStore((state) => ({
-    post: state.post,
-    fetchPost: state.fetchPost,
-    setPostId: state.setPostId
-  }));
-
-  const getPostsData = async () => {
-    try {
-      const response = await axios.get(API_POST());
-      const data: Tables<'posts'>[] = response.data;
-      return data.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new Error(`HTTP error! status: ${error.response?.status}`);
-      } else {
-        throw new Error('An unknown error occurred');
-      }
-    }
-  };
-
   const {
-    data: posts,
-    isPending,
+    data: reservationsData,
     error,
-    refetch: refetchPosts
-  } = useQuery<Tables<'posts'>[]>({
-    queryKey: ['post', userId],
-    queryFn: getPostsData,
+    isPending
+  } = useQuery<
+    (Tables<'payments'> & {
+      users: { id: string };
+      posts: {
+        id: string;
+        user_id: string | null;
+        title: string;
+        image: string | null;
+        price: number | null;
+        startDate: string | null;
+        endDate: string | null;
+      };
+    })[]
+  >({
+    queryKey: ['reservationList', userId],
+    queryFn: () => fetchReservations(userId),
     enabled: !!userId
   });
-
-  const getPaymentsData = async (userId: string) => {
-    try {
-      const response = await axios.get(API_MYPAGE_PAYMENTS(userId));
-      return response.data as Tables<'payments'>[];
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new Error(`HTTP error! status: ${error.response?.status}`);
-      } else {
-        throw new Error('An unknown error occurred');
-      }
-    }
-  };
-
-  const paymentsQuery = useQuery<Tables<'payments'>[]>({
-    queryKey: ['payments', userId],
-    queryFn: () => getPaymentsData(userId),
-    enabled: !!userId
-  });
-
-  const getReviewsData = async () => {
-    try {
-      const response = await axios.get(API_MYPAGE_REVIEWS(userId));
-      return response.data as Tables<'reviews'>[];
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new Error(`HTTP error! status: ${error.response?.status}`);
-      } else {
-        throw new Error('An unknown error occurred');
-      }
-    }
-  };
 
   const reviewsQuery = useQuery<Tables<'reviews'>[]>({
-    queryKey: ['reviews', userId],
-    queryFn: getReviewsData,
+    queryKey: ['isReview', userId],
+    queryFn: () => getReviewsData(userId),
     enabled: !!userId
   });
 
   const formatPrice = (price: number | null): string => {
-    if (price === null) {
-      return 'N/A';
-    }
+    if (price === null) return 'N/A';
     return `$${price.toLocaleString('en-US')}`;
   };
 
@@ -103,17 +69,13 @@ export default function ReservationList() {
   };
 
   const handleReviewAction = (postId: string, reviewId?: string) => {
-    if (reviewId) {
-      router.push(`/${userId}/reviewpage?id=${reviewId}&post_id=${postId}`);
-    } else {
-      router.push(`/${userId}/reviewpage?post_id=${postId}`);
-    }
+    router.push(`/${userId}/reviewpage${reviewId ? `?id=${reviewId}&post_id=${postId}` : `?post_id=${postId}`}`);
   };
 
-  const handleChat = (post: Tables<'posts'>) => {
+  const handleChat = (post: Partial<Tables<'posts'>>) => {
     const postAuthorId = post.user_id;
     const query = new URLSearchParams({
-      postId: post.id,
+      postId: post.id || '',
       postTitle: post.title || '',
       postImage: post.image || ''
     }).toString();
@@ -129,10 +91,7 @@ export default function ReservationList() {
           requester: 'CUSTOMER'
         });
         alert('전액 환불되셨습니다!');
-
         if (response.data.data.pay_state === 'cancel') {
-          setPostId(postId);
-          await fetchPost(postId);
           router.push(`/detail/reservation/${postId}`);
         }
       } catch (error) {
@@ -149,38 +108,29 @@ export default function ReservationList() {
         requester: 'CUSTOMER'
       });
       alert(response.data.message);
-      paymentsQuery.refetch();
+      reviewsQuery.refetch();
     } catch (error) {
       alert('Cancel request failed.');
     }
   };
 
-  const filteredPosts =
-    posts?.filter((post) =>
-      paymentsQuery.data?.some((payment) => payment.post_id === post.id && payment.user_id === userId)
-    ) ?? [];
-
   useEffect(() => {
     if (reviewsQuery.data) {
       setReviews(reviewsQuery.data);
     }
-  }, [reviewsQuery.data]);
+  }, [reviewsQuery]);
 
-  useEffect(() => {
-    refetchPosts();
-    paymentsQuery.refetch();
-    reviewsQuery.refetch();
-  }, [userId, refetchPosts, paymentsQuery.refetch, reviewsQuery.refetch]);
-
-  if (isPending) return <div className="flex h-screen items-center justify-center">Loading...</div>;
-
-  if (error) {
-    return <div className="flex h-screen items-center justify-center">Error: {error.message}</div>;
+  if (isPending) {
+    return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Loading...</div>;
   }
 
-  if (!posts || posts.length === 0) {
+  if (error) {
+    return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Error: {error.message}</div>;
+  }
+
+  if (!reservationsData || reservationsData.length === 0) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-[8px]">
           <Image src="/icons/tabler-icon-calendar-month.svg" alt="no reservation" width={44} height={44} />
           <p className="text-[14px] font-semibold text-grayscale-900">You don&apos;t have any Reservation</p>
@@ -193,9 +143,9 @@ export default function ReservationList() {
 
   return (
     <div>
-      {filteredPosts.map((post, index) => {
-        const payment = paymentsQuery.data?.find((pay) => pay.post_id === post.id);
-        const status = payment ? tourStatus(post.endDate, payment.pay_state ?? '') : 'N/A';
+      {reservationsData.map((reservation, index) => {
+        const { posts: post, id: paymentId, pay_state } = reservation;
+        const status = tourStatus(post.endDate, pay_state ?? '');
         const review = reviews.find((review) => review.post_id === post.id);
 
         return (
@@ -203,15 +153,21 @@ export default function ReservationList() {
             <div className="flex justify-between">
               <div>
                 <p className="text-[14px] font-semibold text-grayscale-900 web:text-[21px]">
-                  {payment ? new Date(payment.created_at).toLocaleDateString() : 'N/A'}
+                  {new Date(reservation.created_at).toLocaleDateString()}
                 </p>
                 <p
-                  className={`text-[14px] font-medium web:text-[21px] ${status === 'Upcoming Tour' ? 'text-primary-300' : status === 'Refunded' ? 'text-error-color' : 'text-grayscale-900'}`}
+                  className={`text-[14px] font-medium web:text-[21px] ${
+                    status === 'Upcoming Tour'
+                      ? 'text-primary-300'
+                      : status === 'Refunded'
+                        ? 'text-error-color'
+                        : 'text-grayscale-900'
+                  }`}
                 >
                   {status}
                 </p>
               </div>
-              <Link className="flex items-center" href={`/detail/payment/history/${payment?.id}`}>
+              <Link className="flex items-center" href={`/detail/payment/history/${paymentId}`}>
                 <p className="text-[14px] font-semibold text-primary-300 web:text-[18px]">Detail</p>
                 <Image
                   className="web:h-[24px] web:w-[24px]"
@@ -238,7 +194,7 @@ export default function ReservationList() {
                     {post.title ?? 'No Title'}
                   </p>
                   <p className="text-[14px] text-grayscale-500 web:text-[18px]">
-                    {formatDateRange(post.startDate, post.endDate)}{' '}
+                    {formatDateRange(post.startDate, post.endDate)}
                   </p>
                   <p className="text-[13px] font-medium text-gray-700 web:text-[18px]">
                     <span className="font-semibold text-primary-300">{formatPrice(post.price)}</span>
@@ -249,19 +205,18 @@ export default function ReservationList() {
             </Link>
             {status === 'Upcoming Tour' ? (
               <div>
-                <div className="mb-[12px] flex space-x-[8px]">
+                <div className="mb-[12px] flex gap-[8px] web:mb-[24px] web:gap-[24px]">
                   <button
-                    className="flex-1 rounded-lg border p-2 text-[14px] font-semibold text-grayscale-700"
-                    onClick={() => handleChangeTour(payment?.id ?? '', post?.id ?? '')}
+                    className="flex-1 rounded-[8px] border p-[8px] text-[14px] font-semibold text-grayscale-700 web:rounded-[16px] web:p-[16px] web:text-[18px]"
+                    onClick={() => handleChangeTour(paymentId, post.id)}
                   >
                     Change Tour
                   </button>
-
                   <button
-                    className="flex-1 rounded-lg border bg-primary-300 p-2 text-[14px] font-semibold text-white"
+                    className="flex-1 rounded-[8px] border bg-primary-300 p-[8px] text-[14px] font-semibold text-white web:rounded-[16px] web:p-[16px] web:text-[18px]"
                     onClick={() => {
-                      if (payment?.id) {
-                        handleCancelRequest(payment.id);
+                      if (paymentId) {
+                        handleCancelRequest(paymentId);
                       }
                     }}
                   >
@@ -269,7 +224,7 @@ export default function ReservationList() {
                   </button>
                 </div>
                 <button
-                  className="w-full rounded-lg border p-[8px] text-[14px] font-semibold text-grayscale-700 web:p-[16px] web:text-[18px]"
+                  className="w-full rounded-[8px] border p-[8px] text-[14px] font-semibold text-grayscale-700 web:rounded-[16px] web:p-[16px] web:text-[18px]"
                   onClick={() => handleChat(post)}
                 >
                   Message Guide
@@ -277,14 +232,14 @@ export default function ReservationList() {
               </div>
             ) : status === 'Refunded' ? (
               <button
-                className="w-full rounded-lg border p-[8px] text-[14px] font-semibold text-grayscale-700 web:p-[16px] web:text-[18px]"
+                className="w-full rounded-[8px] border p-[8px] text-[14px] font-semibold text-grayscale-700 web:rounded-[16px] web:p-[16px] web:text-[18px]"
                 onClick={() => handleChat(post)}
               >
                 Message Guide
               </button>
             ) : (
               <button
-                className="w-full rounded-lg border p-[8px] text-[14px] font-semibold text-grayscale-700 web:p-[16px] web:text-[18px]"
+                className="w-full rounded-[8px] border p-[8px] text-[14px] font-semibold text-grayscale-700 web:rounded-[16px] web:p-[16px] web:text-[18px]"
                 onClick={() => {
                   handleReviewAction(post.id, review?.id);
                 }}
