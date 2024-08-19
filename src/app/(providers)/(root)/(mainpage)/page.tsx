@@ -2,7 +2,6 @@
 
 import PostsList from './_components/PostsList';
 import HeadMeta from '@/components/common/Header/HeadMeta';
-import Search from '@/components/common/Search/Search';
 import CircleImageList from './_components/home/CircleImageList';
 import SlideImage from './_components/home/SlideImage';
 import { lazy, Suspense } from 'react';
@@ -21,9 +20,6 @@ export default function Home() {
           className="bottom-0 left-0 right-0 rounded-t-3xl bg-white p-4 md:p-0 md:px-[88px]"
           style={{ height: '20%', top: '80%' }}
         >
-          {/* <div className="block md:hidden">
-            <Search />
-          </div> */}
           <CircleImageList />
           <PostsList />
           <Suspense fallback={<div>Loading...</div>}>

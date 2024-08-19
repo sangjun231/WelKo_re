@@ -5,7 +5,7 @@ import Link from 'next/link';
 import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
 
 const supabase = createClient();
-const POSTS_PER_PAGE = 5;
+const POSTS_PER_PAGE = 10;
 const MAX_POSTS = 10; // 최대 포스트 개수
 
 interface Post {
