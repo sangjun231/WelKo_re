@@ -126,15 +126,17 @@ export default function PostList() {
                 </p>
               </div>
               <div className="flex gap-[16px] web:gap-[40px]">
-                <button className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9] web:h-[44px] web:w-[44px]">
-                  <Image
-                    className="web:h-[33px] web:w-[33px]"
-                    src="/icons/tabler-icon-pencil.svg"
-                    alt="Edit Tour"
-                    width={24}
-                    height={24}
-                  />
-                </button>
+                <Link href={`/postpage/${post.id}`}>
+                  <button className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9] web:h-[44px] web:w-[44px]">
+                    <Image
+                      className="web:h-[33px] web:w-[33px]"
+                      src="/icons/tabler-icon-pencil.svg"
+                      alt="Edit Tour"
+                      width={24}
+                      height={24}
+                    />
+                  </button>
+                </Link>
                 <button
                   className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9] web:h-[44px] web:w-[44px]"
                   onClick={() => handleDelete(post.id)}
