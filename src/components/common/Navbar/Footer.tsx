@@ -10,11 +10,15 @@ function Footer() {
 
   // 특정 경로에서 Footer를 숨기기
   const excludedRoutes = ['/login', '/chatpage'];
-  const shouldHideFooter = excludedRoutes.includes(pathname) || pathname.startsWith('/postpage');
+  const shouldHideFooter =
+    excludedRoutes.includes(pathname) ||
+    (pathname.startsWith('/detail') && !pathname.startsWith('/detail/payment')) ||
+    pathname.startsWith('/postpage');
 
   if (shouldHideFooter) {
     return null;
   }
+
   return (
     <>
       <div className="mt-[310px] bg-grayscale-50 py-8">
