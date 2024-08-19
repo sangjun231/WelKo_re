@@ -75,9 +75,9 @@ export default function PostList() {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete('/api/post', { data: { post_id: postId } });
+        await axios.delete(API_MYPAGE_POST(userId), { data: { post_id: postId } });
         MySwal.fire('Deleted!', 'Your post has been deleted.', 'success');
-        router.replace('/');
+        refetch();
       } catch (error) {
         MySwal.fire('Failed!', 'Failed to delete post.', 'error');
       }
