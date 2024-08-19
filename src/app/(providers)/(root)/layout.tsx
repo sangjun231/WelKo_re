@@ -7,7 +7,9 @@ import Header from '@/components/common/Header/Header';
 function RootLayout({ children }: PropsWithChildren) {
   return (
     <div id="root" className="mx-auto flex min-h-screen w-full flex-col web:max-w-[1440px]">
-      <Header />
+      <div className="md:h-[88px]">
+        <Header />
+      </div>
       <Suspense fallback={<div>Loading...</div>}>
         <RouteChangeHandler />
       </Suspense>

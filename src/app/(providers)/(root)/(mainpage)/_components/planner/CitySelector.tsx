@@ -46,7 +46,7 @@ const CitySelector: React.FC<CitySelectorProps> = ({
     handleCityClick(result);
     setSearchQuery(result);
     setAutoCompleteResults([]);
-    goToNextStep(); // Move to the next step when a city is selected
+    goToNextStep();
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,17 +55,20 @@ const CitySelector: React.FC<CitySelectorProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && autoCompleteResults.length > 0) {
-      handleAutoCompleteClick(autoCompleteResults[0]);
+    if (e.key === 'Enter') {
+      const trimmedQuery = searchQuery.trim();
+      if (trimmedQuery !== '') {
+        handleAutoCompleteClick(trimmedQuery);
+      }
     }
   };
 
   const handleClearSearch = () => {
-    setSearchQuery(''); // Clear the search input
-    setAutoCompleteResults([]); // Clear the autocomplete results
+    setSearchQuery('');
+    setAutoCompleteResults([]);
   };
 
-  const filteredCities = cities.filter((city) => city.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredCities = searchQuery ? autoCompleteResults : cities;
 
   return (
     <div>
@@ -98,48 +101,40 @@ const CitySelector: React.FC<CitySelectorProps> = ({
             />
           )}
         </div>
-        {autoCompleteResults.length > 0 && (
-          <div className="mb-4 rounded-md border bg-white p-2">
+        {searchQuery && autoCompleteResults.length > 0 && (
+          <div className="mb-4 p-2">
             {autoCompleteResults.map((result) => (
               <div
                 key={result}
-                className="cursor-pointer p-2 hover:bg-gray-200"
+                className="flex cursor-pointer items-center p-2 font-semibold hover:bg-gray-200 md:text-[21px]"
                 onClick={() => handleAutoCompleteClick(result)}
               >
-                {result}
+                <div className="mr-4 flex items-center justify-center rounded-md bg-[#F7F7F9] p-2">
+                  <Image src="/icons/tabler-icon-map-pin.png" alt="Location icon" width={20} height={20} />
+                </div>
+                {result}, South Korea
               </div>
             ))}
           </div>
         )}
-        <div className="mb-4 flex flex-wrap">
-          {filteredCities.map((city) => (
-            <div
-              key={city}
-              className={`mb-2 mr-1 flex min-w-[30%] cursor-pointer justify-center rounded-3xl border px-3 py-2 text-center text-[13px] font-medium ${
-                city === selectedCity ? 'bg-[#B95FAB] text-white' : 'bg-gray-100'
-              }`}
-              onClick={() => {
-                handleCityClick(city);
-                goToNextStep(); // Move to the next step when a city is selected
-              }}
-            >
-              {city}
-            </div>
-          ))}
-          {searchQuery && !cities.includes(searchQuery) && (
-            <div
-              className={`mb-2 mr-1 flex min-w-[30%] cursor-pointer justify-center rounded-3xl border px-3 py-2 text-center text-[13px] font-medium ${
-                searchQuery === selectedCity ? 'bg-[#B95FAB] text-white' : 'bg-gray-100'
-              }`}
-              onClick={() => {
-                handleCityClick(searchQuery);
-                goToNextStep(); // Move to the next step when a city is selected
-              }}
-            >
-              {searchQuery}
-            </div>
-          )}
-        </div>
+        {!searchQuery && (
+          <div className="mb-4 flex flex-wrap">
+            {filteredCities.map((city) => (
+              <div
+                key={city}
+                className={`mb-2 mr-1 flex min-w-[30%] cursor-pointer justify-center rounded-3xl border px-3 py-2 text-center text-[13px] font-medium ${
+                  city === selectedCity ? 'bg-[#B95FAB] text-white' : 'bg-gray-100'
+                }`}
+                onClick={() => {
+                  handleCityClick(city);
+                  goToNextStep();
+                }}
+              >
+                {city}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
