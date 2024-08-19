@@ -27,7 +27,7 @@ const BackButton = ({ className }: BackButtonProps) => {
     <div className={`${className}`}>
       <button
         onClick={() => window.history.back()}
-        className={`flex bg-[#F7F7F9] md:items-center md:justify-center md:rounded-full ${window.innerWidth < 768 ? 'icon-button' : ''}`}
+        className={`flex ${isWeb ? 'items-center justify-center rounded-full bg-[#F7F7F9]' : 'icon-button'}`}
       >
         <BackBtn width={isWeb ? 44 : 24} height={isWeb ? 44 : 24} />
       </button>
