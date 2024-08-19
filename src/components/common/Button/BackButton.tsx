@@ -27,10 +27,10 @@ const BackButton = ({ className }: BackButtonProps) => {
     <div className={`${className}`}>
       <button
         onClick={() => window.history.back()}
-        className={`flex ${isWeb ? 'items-center justify-center rounded-full bg-[#F7F7F9]' : 'icon-button'}`}
+        className={`flex ${isWeb ? 'web:h-14 web:w-14 items-center justify-center rounded-full bg-[#F7F7F9]' : 'icon-button'}`}
         aria-label="Go Back"
       >
-        <BackBtn width={isWeb ? 44 : 24} height={isWeb ? 44 : 24} />
+        <BackBtn width={isWeb ? 32 : 24} height={isWeb ? 32 : 24} />
       </button>
     </div>
   );
