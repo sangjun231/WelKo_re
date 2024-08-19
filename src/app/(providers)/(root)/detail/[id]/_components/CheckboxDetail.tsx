@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import usePostStore from '@/zustand/postStore';
 import { useParams } from 'next/navigation';
 import IconRoom from '/public/icons/detail_icons/icon_room_charge.svg';
@@ -9,11 +9,6 @@ import IconTicket from '/public/icons/detail_icons/icon_ticket.svg';
 import IconTransportation from '/public/icons/detail_icons/icon_transportation.svg';
 import { WebProps } from '@/types/webstate';
 
-// Skeleton 컴포넌트 정의
-const Skeleton = ({ height, width }: { height: string; width?: string }) => (
-  <div className={`animate-pulse bg-gray-200 ${height} ${width ? width : 'w-full'}`}></div>
-);
-
 export const CheckboxDetail = ({ isWeb }: WebProps) => {
   const { id: postId } = useParams<{ id: string }>();
   const { post, fetchPost } = usePostStore((state) => ({
@@ -21,29 +16,11 @@ export const CheckboxDetail = ({ isWeb }: WebProps) => {
     fetchPost: state.fetchPost
   }));
 
-  const [pending, setPending] = useState(true);
-
   useEffect(() => {
-    if (postId) {
-      fetchPost(postId).finally(() => setPending(false));
-    }
+    fetchPost(postId);
   }, [postId, fetchPost]);
 
-  if (pending) {
-    return (
-      <div className="flex w-full flex-col">
-        <Skeleton height="h-10" />
-        <div className="web:grid-cols-4 grid grid-cols-1 gap-4">
-          <Skeleton height="h-24" />
-          <Skeleton height="h-24" />
-          <Skeleton height="h-24" />
-          <Skeleton height="h-24" />
-        </div>
-      </div>
-    );
-  }
-
-  if (!post) return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  if (!post) return <div>Loading...</div>;
 
   const selectedPrices = post.selectedPrices || [];
 
