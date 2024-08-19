@@ -50,7 +50,7 @@ const AuthForm = () => {
 
   return (
     <div className="flex items-center justify-center md:h-screen md:bg-gray-100">
-      <div className="h-[800px] w-full max-w-md bg-white px-5 md:w-full md:rounded-lg md:p-6 md:shadow-lg">
+      <div className="h-[800px] w-full max-w-md bg-white px-5 md:h-auto md:w-full md:max-w-[480px] md:rounded-lg md:p-6 md:px-[80px] md:py-[48px] md:shadow-lg">
         <div className="mt-2 flex h-[44px] items-center pb-[16px] pt-3.5 md:hidden">
           <BackButton />
         </div>
@@ -108,7 +108,9 @@ const AuthForm = () => {
           {isSignUp ? 'Sign Up' : 'Log In'}
         </button>
 
-        <div className={`absolute left-0 ${isSignUp ? 'mt-[58px]' : 'mt-[214px]'} w-full text-center`}>
+        <div
+          className={`absolute left-0 ${isSignUp ? 'mt-[58px] md:mt-[40px]' : 'mt-[214px] md:mt-[40px]'} w-full text-center md:relative`}
+        >
           <p className="text-center text-[#707B81]">
             {isSignUp ? 'Already have an account?' : 'Don’t have an account?'}{' '}
             <button onClick={toggleForm} className="font-medium text-[#FF7029] underline">
@@ -117,14 +119,14 @@ const AuthForm = () => {
           </p>
 
           {!isSignUp && (
-            <p className="absolute mt-4 w-full text-center">
+            <p className="absolute mt-4 w-full text-center md:relative">
               <button onClick={goToFindPassword} className="font-medium text-[#FF7029] underline">
                 Forgot Password?
               </button>
             </p>
           )}
 
-          <div className="my-4 mt-[77px] flex justify-center">
+          <div className="my-4 mt-[77px] flex justify-center md:mt-[40px]">
             <a href="#" onClick={onGoogleLogin} className="mx-1 p-2">
               <Image
                 src="https://supabase.com/dashboard/img/icons/google-icon.svg"

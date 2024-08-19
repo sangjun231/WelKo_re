@@ -43,7 +43,7 @@ const BestPostsList = () => {
   return (
     <div className="mt-[40px] md:mt-[160px]">
       <h2 className="text-xl font-bold md:text-4xl">Best Tour</h2>
-      <div className="mt-5 grid grid-cols-2 gap-4 md:mt-[40px] md:grid-cols-4">
+      <div className="mt-5 grid grid-cols-2 gap-4 md:mt-[40px] md:grid-cols-2 lg:grid-cols-3 min-[1440px]:grid-cols-4">
         {posts.map((post, index) => (
           <div key={`${post.id}-${index}`} className="max-w-[286px] flex-none rounded-md">
             <Link href={`/detail/${post.id}`} className="flex flex-col">

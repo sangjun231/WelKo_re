@@ -92,37 +92,60 @@ const PostsList = () => {
   };
 
   useEffect(() => {
-    const handleTouchStart = (e: TouchEvent) => {
-      if (scrollContainerRef.current) {
+    const container = scrollContainerRef.current;
+
+    const handleDragStart = (e: MouseEvent | TouchEvent) => {
+      if (container) {
         isDragging.current = true;
-        startX.current = e.touches[0].clientX - scrollContainerRef.current.getBoundingClientRect().left;
-        scrollLeft.current = scrollContainerRef.current.scrollLeft;
+        if (e instanceof TouchEvent) {
+          startX.current = e.touches[0].clientX - container.getBoundingClientRect().left;
+        } else {
+          startX.current = e.clientX - container.getBoundingClientRect().left;
+        }
+        scrollLeft.current = container.scrollLeft;
       }
     };
 
-    const handleTouchMove = (e: TouchEvent) => {
-      if (isDragging.current && scrollContainerRef.current) {
-        e.preventDefault(); // prevent default to avoid scrolling while dragging
-        const x = e.touches[0].clientX - scrollContainerRef.current.getBoundingClientRect().left;
+    const handleDragMove = (e: MouseEvent | TouchEvent) => {
+      if (isDragging.current && container) {
+        e.preventDefault();
+        let x;
+        if (e instanceof TouchEvent) {
+          x = e.touches[0].clientX - container.getBoundingClientRect().left;
+        } else {
+          x = e.clientX - container.getBoundingClientRect().left;
+        }
         const walk = (x - startX.current) * 2; // Scroll speed factor
-        scrollContainerRef.current.scrollLeft = scrollLeft.current - walk;
+        container.scrollLeft = scrollLeft.current - walk;
+
+        // Optional debugging
+        // console.log(`scrollLeft: ${scrollLeft.current}, walk: ${walk}`);
       }
     };
 
-    const handleTouchEnd = () => {
+    const handleDragEnd = () => {
       isDragging.current = false;
     };
 
-    const container = scrollContainerRef.current;
     if (container) {
-      container.addEventListener('touchstart', handleTouchStart, { passive: false });
-      container.addEventListener('touchmove', handleTouchMove, { passive: false });
-      container.addEventListener('touchend', handleTouchEnd);
+      container.addEventListener('mousedown', handleDragStart);
+      container.addEventListener('touchstart', handleDragStart, { passive: false });
+
+      window.addEventListener('mousemove', handleDragMove);
+      window.addEventListener('touchmove', handleDragMove, { passive: false });
+
+      window.addEventListener('mouseup', handleDragEnd);
+      window.addEventListener('touchend', handleDragEnd);
 
       return () => {
-        container.removeEventListener('touchstart', handleTouchStart);
-        container.removeEventListener('touchmove', handleTouchMove);
-        container.removeEventListener('touchend', handleTouchEnd);
+        container.removeEventListener('mousedown', handleDragStart);
+        container.removeEventListener('touchstart', handleDragStart);
+
+        window.removeEventListener('mousemove', handleDragMove);
+        window.removeEventListener('touchmove', handleDragMove);
+
+        window.removeEventListener('mouseup', handleDragEnd);
+        window.removeEventListener('touchend', handleDragEnd);
       };
     }
   }, []);
@@ -134,7 +157,7 @@ const PostsList = () => {
         {/* 모바일에서 InfiniteScroll을 사용하여 무한 스크롤 구현 */}
         <div className="block md:hidden">
           <InfiniteScroll loading={loading} hasMore={hasMore} onLoadMore={loadMorePosts}>
-            <div className="relative overflow-hidden" ref={scrollContainerRef}>
+            <div className="scroll-container relative overflow-hidden" ref={scrollContainerRef}>
               <div className="flex space-x-1">
                 {posts.map((post, index) => (
                   <div key={`${post.id}-${index}`} className="w-64 flex-none rounded-md">
@@ -177,9 +200,9 @@ const PostsList = () => {
           </InfiniteScroll>
         </div>
         {/* 데스크탑에서 포스터 8개만 표시 */}
-        <div className="hidden gap-4 md:grid md:grid-cols-4">
+        <div className="hidden gap-4 md:grid md:grid-cols-2 lg:grid lg:grid-cols-3 min-[1440px]:grid min-[1440px]:grid-cols-4">
           {posts.slice(0, 8).map((post, index) => (
-            <div key={`${post.id}-${index}`} className="w-[auto]">
+            <div key={`${post.id}-${index}`} className="max-w-[286px]">
               <Link href={`/detail/${post.id}`} className="flex h-full flex-col">
                 {post.image ? (
                   <div className="relative mb-2 aspect-square max-w-[286px] overflow-hidden rounded-2xl">
