@@ -85,9 +85,9 @@ const Write = ({
     if (!content.trim()) missingFields.push('introduction');
     if (!image) missingFields.push('image');
     if (!maxPeople || maxPeople < 1) missingFields.push('maximum');
-    if (!price || price < 1) missingFields.push('cost');
     if (tags.length === 0) missingFields.push('theme');
     if (selectedPrices.length === 0) missingFields.push('offer');
+    if (!price || price < 1) missingFields.push('cost');
     if (missingFields.length > 0) {
       const missingFieldsString = missingFields.join(', ');
 
@@ -111,13 +111,13 @@ const Write = ({
     return true;
   };
 
-  const handleCancel = () => {
-    const userConfirmed = confirm('Do you want to cancel this?');
-    if (!userConfirmed) {
-      return;
-    }
-    router.replace('/');
-  };
+  // const handleCancel = () => {
+  //   const userConfirmed = confirm('Do you want to cancel this?');
+  //   if (!userConfirmed) {
+  //     return;
+  //   }
+  //   router.replace('/');
+  // };
 
   //이미지 추가하는 핸들러
   const handleImageAdd = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -380,16 +380,16 @@ const Write = ({
           </div>
         </div>
         <div className="flex w-[199px] flex-col items-center">
-          <h1 className="text-lg font-bold">{region}</h1>
-          <p>{formatDateRange(startDate, endDate)}</p>
+          <h1 className="text-lg font-bold web:text-[32px] web:font-semibold">{region}</h1>
+          <p className="web:hidden">{formatDateRange(startDate, endDate)}</p>
         </div>
         <div className="flex w-20"></div>
       </div>
 
       <div className="mx-5 flex flex-col gap-5">
         {/* 제목, 내용 입력 폼 */}
-        <div className="mt-7 flex flex-col items-center gap-5">
-          <div className="w-[320px]">
+        <div className="mt-7 flex flex-col items-center gap-5 web:items-start">
+          <div className="w-[320px] web:w-[622px]">
             <label className="font-semibold">Tour title</label>
             <input
               className="mt-2 h-[48px] w-full rounded-xl bg-grayscale-50 p-4"
@@ -399,15 +399,11 @@ const Write = ({
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
-          <div className="w-[320px]">
+          <div className="w-[320px] web:w-[622px]">
             <label className="font-semibold">Introduction</label>
             <textarea
               className="mt-2 h-[209px] w-full resize-none rounded-2xl bg-grayscale-50 p-4"
-              placeholder="You can write up to 500 characters.
-            &#10;
-            1. how much you lived in that area?
-            &#10;
-            2. promote the features of your course."
+              placeholder={`You can write up to 500 characters.\n1. how much you lived in that area?\n2. promote the features of your course.`}
               value={content}
               onChange={(e) => setContent(e.target.value)}
             />
@@ -455,7 +451,7 @@ const Write = ({
               value={maxPeople === undefined ? '' : maxPeople}
               onChange={handleMaxPeopleAdd}
               placeholder="5"
-              className="mt-2 h-[48px] w-full rounded-xl bg-grayscale-50 p-4"
+              className="mt-2 h-[48px] w-full rounded-xl bg-grayscale-50 p-4 web:w-[428px]"
               onInput={(event) => {
                 let value = event.currentTarget.value;
                 // 숫자가 아닌 문자 제거
@@ -473,7 +469,10 @@ const Write = ({
         {/* 투어 태그 선택 */}
         <hr className="my-5" />
         <div>
-          <h1 className="text-xl font-semibold">Tour theme</h1>
+          <h1 className="mb-4 flex items-end text-xl">
+            <p className="font-semibold">Tour theme</p>
+            <p className="ml-3 text-sm text-grayscale-500">Choose up to 4</p>
+          </h1>
           <div className="mt-4 flex flex-wrap gap-2">
             {tagData.map((item) => (
               <button
@@ -492,7 +491,7 @@ const Write = ({
         <hr className="my-5" />
         <div>
           <h1 className="mb-4 text-xl font-semibold">What this tour offers</h1>
-          <div className="flex w-full flex-col gap-4">
+          <div className="flex w-full flex-col gap-4 web:w-[622px]">
             {prices.map((item) => (
               <label key={item} className="flex justify-between">
                 {item}
@@ -512,7 +511,7 @@ const Write = ({
         <div>
           <h1 className="mb-4 flex items-end text-xl">
             <p className="font-semibold">Tour cost</p>
-            <p className="text-sm">/Person</p>
+            <p className="ml-1 text-sm text-grayscale-500">/Person</p>
           </h1>
           <div className="flex items-center">
             <BiDollar className="mr-3 size-8 pt-2" />
@@ -521,7 +520,7 @@ const Write = ({
               value={price}
               onChange={handlePriceAdd}
               placeholder="50"
-              className="mt-2 h-[48px] w-full rounded-xl bg-grayscale-50 p-4"
+              className="mt-2 h-[48px] w-full rounded-xl bg-grayscale-50 p-4 web:w-[428px]"
               onInput={(event) => {
                 let value = event.currentTarget.value;
                 // 숫자가 아닌 문자 제거
@@ -539,8 +538,8 @@ const Write = ({
         <button
           type="submit"
           disabled={isSubmitting}
-          className={`mx-auto my-5 h-14 w-[320px] rounded-2xl ${
-            isSubmitting ? 'bg-gray-300' : 'bg-primary-300'
+          className={`mx-auto my-5 h-14 w-[320px] rounded-2xl web:w-full ${
+            isSubmitting ? 'bg-gray-300' : !handleFormConfirm ? 'bg-primary-100' : 'bg-primary-300'
           } p-2 text-lg font-semibold text-white`}
         >
           {isSubmitting ? 'Loading...' : 'Done'}
