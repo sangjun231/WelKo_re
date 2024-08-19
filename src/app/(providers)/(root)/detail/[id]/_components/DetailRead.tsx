@@ -1,12 +1,15 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { WebProps } from '@/types/webstate';
 import IconLocation from '/public/icons/detail_icons/icon_location.svg';
 import IconPeoples from '/public/icons/detail_icons/icon_peoples.svg';
 import { formatDateRange } from '@/utils/detail/functions';
 import { useParams } from 'next/navigation';
 import usePostStore from '@/zustand/postStore';
+
+// Skeleton 컴포넌트 정의
+const Skeleton = ({ height }: { height: string }) => <div className={`animate-pulse bg-gray-200 ${height}`}></div>;
 
 export default function DetailRead({ isWeb }: WebProps) {
   const { id } = useParams();
@@ -18,12 +21,25 @@ export default function DetailRead({ isWeb }: WebProps) {
     postArea: state.postArea
   }));
 
+  const [pending, setPending] = useState(true);
+
   useEffect(() => {
     if (postId) {
       setPostId(postId);
-      fetchPost(postId);
+      fetchPost(postId).finally(() => setPending(false));
     }
   }, [postId, setPostId, fetchPost]);
+
+  if (pending) {
+    return (
+      <div className="flex w-full flex-col">
+        <Skeleton height="h-10" />
+        <Skeleton height="h-6" />
+        <Skeleton height="h-6" />
+        <Skeleton height="h-[300px]" />
+      </div>
+    );
+  }
 
   if (!post) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
