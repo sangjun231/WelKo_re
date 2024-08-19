@@ -85,7 +85,7 @@ const Calendar = ({ next, postId }: CalendarProps) => {
   return (
     <div className="flex flex-col justify-center">
       {/* 헤더 부분 디자인 */}
-      <div className="my-5 flex items-center">
+      <div className="my-5 flex items-center web:hidden">
         <div className="flex w-20 justify-center">
           <BackButton />
         </div>
@@ -93,10 +93,12 @@ const Calendar = ({ next, postId }: CalendarProps) => {
         <h1 className="flex w-[199px] justify-center text-xl font-semibold">Make tour</h1>
       </div>
 
-      <div className="flex flex-col gap-7 rounded-xl border-x-0 border-y-2 border-gray-200 px-5 shadow-xl">
-        <h2 className="ml-3 mt-7 text-2xl font-bold">When&apos;s your tour?</h2>
-
-        <div className="no-scrollbar flex w-[320px] overflow-x-auto">
+      <div className="flex flex-col gap-7 rounded-xl border-x-0 border-y-2 border-gray-200 px-5 shadow-xl web:gap-10 web:border-0 web:shadow-none">
+        <div className="web:mb-14">
+          <h2 className="ml-3 mt-7 font-bold mobile:text-2xl web:text-3xl">When&apos;s your tour?</h2>
+          <p className="ml-3 mt-3 hidden text-lg text-grayscale-600 web:block">You can choose up to 7 days</p>
+        </div>
+        <div className="no-scrollbar flex w-full overflow-x-auto web:hidden">
           {months.map((month, index) => (
             <button
               key={index}

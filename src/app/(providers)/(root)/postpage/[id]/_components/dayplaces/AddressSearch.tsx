@@ -99,7 +99,7 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
   // const storedPlacesKey = keys.find((key) => sessionStorage.getItem(key) === storedPlaces);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col web:w-[360px]">
       <div className="my-5 mr-5 flex items-center">
         <div className="flex w-20 justify-center">
           <div className="icon-button">
@@ -169,13 +169,13 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
         </div>
       )}
       {!selectedPlace ? (
-        <button className="fixed bottom-28 left-0 right-0 mx-auto my-5 h-14 w-[320px] rounded-2xl bg-primary-100 p-2 text-lg font-medium text-white">
+        <button className="fixed bottom-28 left-0 right-0 mx-auto my-5 h-14 w-[320px] cursor-default rounded-2xl bg-primary-100 p-2 text-lg font-medium text-white web:absolute web:bottom-9 web:left-5 web:right-auto">
           Select
         </button>
       ) : (
         <button
           onClick={handlePlaceSave}
-          className="fixed bottom-28 left-0 right-0 mx-auto my-5 h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-medium text-white"
+          className="fixed bottom-28 left-0 right-0 mx-auto my-5 h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-medium text-white web:absolute web:bottom-9 web:left-5 web:right-auto"
         >
           Select
         </button>

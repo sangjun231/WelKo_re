@@ -5,9 +5,11 @@ import { translateAddress } from '@/utils/post/postData';
 import React, { useEffect, useState } from 'react';
 
 const PostMap = ({
+  mapId,
   selectedPlaces,
   setRegion
 }: {
+  mapId: string;
   selectedPlaces: Place[];
   setRegion: React.Dispatch<React.SetStateAction<string>>;
 }) => {
@@ -52,7 +54,7 @@ const PostMap = ({
     };
     // 현재 위치로 지도 띄우기
     const initializeMap = () => {
-      const mapInstance = new window.naver.maps.Map('map', {
+      const mapInstance = new window.naver.maps.Map(`${mapId}`, {
         center: new window.naver.maps.LatLng(position.latitude, position.longitude),
         zoom: 14
       });
@@ -101,7 +103,8 @@ const PostMap = ({
     };
     initializeMap();
   }, [isScriptLoaded, position, selectedPlaces]);
-  return <div id="map" style={{ width: '100%', height: '300px' }}></div>;
+
+  return <div id={mapId} className="h-[300px] w-full web:h-full"></div>;
 };
 
 export default PostMap;

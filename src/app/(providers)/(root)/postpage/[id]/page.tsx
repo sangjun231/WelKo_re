@@ -54,6 +54,7 @@ function PostPage() {
           setSelectedDay={setSelectedDay}
           region={region}
           setRegion={setRegion}
+          sequence={sequence}
           setSequence={setSequence}
           postId={postId as string}
           userId={userId}

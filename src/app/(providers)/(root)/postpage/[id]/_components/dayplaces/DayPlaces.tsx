@@ -2,12 +2,13 @@
 
 import { Place } from '@/types/types';
 import { createClient } from '@/utils/supabase/client';
+import { format, startOfDay } from 'date-fns';
 import DOMPurify from 'dompurify';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { GrLocation } from 'react-icons/gr';
 import { IoChevronBack, IoCloseOutline } from 'react-icons/io5';
+import AddressSearch from './AddressSearch';
 import PostMap from './PostMap';
 
 type PlaceProps = {
@@ -18,6 +19,7 @@ type PlaceProps = {
   setSelectedDay: React.Dispatch<React.SetStateAction<string>>;
   region: string;
   setRegion: React.Dispatch<React.SetStateAction<string>>;
+  sequence: number;
   setSequence: React.Dispatch<React.SetStateAction<number>>;
   postId: string;
   userId: string;
@@ -31,6 +33,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
   setSelectedDay,
   region,
   setRegion,
+  sequence,
   setSequence,
   postId,
   userId
@@ -38,19 +41,12 @@ const DayPlaces: React.FC<PlaceProps> = ({
   const [days, setDays] = useState<string[]>([]);
   const startDate = sessionStorage.getItem('startDate');
   const endDate = sessionStorage.getItem('endDate');
+  const startDateString = startDate ? new Date(startDate) : null;
+  const endDateString = endDate ? new Date(endDate) : null;
   const [placesByDay, setPlacesByDay] = useState<{ [key: string]: Place[] }>({}); // 각 Day에 대한 장소 목록
   const [descriptionsByDay, setDescriptionsByDay] = useState<{ [key: string]: { [index: number]: string } }>({}); // 각 Day에 대한 설명 목록
   const [dayNumbers, setDayNumbers] = useState<{ [key: string]: number[] }>({}); // 각 Day에 대한 번호 목록
-
-  //Done 클릭 시, 취소 핸들러
-  const router = useRouter();
-  const handleCancel = () => {
-    const userConfirmed = confirm('Do you want to cancel this?');
-    if (!userConfirmed) {
-      return;
-    }
-    router.replace('/');
-  };
+  const [step, setStep] = useState(1);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -76,7 +72,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
   //sessionStorage 관련
   const storedPlaces = sessionStorage.getItem(selectedDay); //선택한 day에 맞는 value값 가져옴
   const keys = Object.keys(sessionStorage);
-  const storedPlacesKey = keys.find((key) => sessionStorage.getItem(key) === storedPlaces);
+  //const storedPlacesKey = keys.find((key) => sessionStorage.getItem(key) === storedPlaces);
   useEffect(() => {
     if (storedPlaces) {
       setPlacesByDay((prev) => ({
@@ -84,7 +80,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
         [selectedDay]: JSON.parse(storedPlaces)
       }));
     }
-  }, [selectedDay]);
+  }, [selectedDay, step]);
 
   // 수정할 때, Supabase에서 장소 데이터를 불러오기
   useEffect(() => {
@@ -184,8 +180,13 @@ const DayPlaces: React.FC<PlaceProps> = ({
   };
 
   const handleAddSequence = (index: number) => {
-    setSequence(index);
-    next();
+    if (window.innerWidth >= 768) {
+      setSequence(index);
+      setStep(step + 1);
+    } else {
+      setSequence(index);
+      next();
+    }
   };
 
   const dayNumberLength = dayNumbers[selectedDay]?.length;
@@ -236,7 +237,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
 
   return (
     <div className="flex flex-col justify-center">
-      <div className="my-5 flex items-center">
+      <div className="my-5 flex items-center justify-between web:justify-start">
         <div className="flex w-20 justify-center">
           <div className="icon-button">
             <button onClick={prev} className="flex h-full w-full items-center justify-center">
@@ -246,115 +247,132 @@ const DayPlaces: React.FC<PlaceProps> = ({
         </div>
 
         <div className="flex w-[199px] flex-col items-center">
-          <h1 className="text-lg font-bold">{region}</h1>
-          <p>
-            {startDate} - {endDate}
-          </p>
+          <h1 className="text-lg font-bold web:text-[32px] web:font-semibold">{region}</h1>
+          <p className="web:hidden">{`${startDateString ? format(startOfDay(startDateString), 'yy. M. d') : ''} - ${endDateString ? format(startOfDay(endDateString), 'M. d') : ''} `}</p>
         </div>
-        <button className="flex w-20 justify-center font-medium text-[#FF7029]" onClick={handleCancel}>
-          Done
-        </button>
+        <div className="flex w-20"></div>
       </div>
 
-      <div className="m-5 flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <div className="flex">
-            <GrLocation className="size-5" />
-            <p className="ml-2 font-semibold">{region}</p>
-          </div>
-
-          <Link
-            href={`/${userId}/profilepage/regionpage`}
-            className="cursor-pointer font-semibold text-grayscale-500 underline"
-          >
-            Change Location
-          </Link>
-        </div>
-
-        <PostMap selectedPlaces={placesByDay[selectedDay] || []} setRegion={setRegion} />
-
-        <div>
-          <div className="no-scrollbar mb-4 flex gap-2 overflow-x-auto">
-            {days.map((day, index) => (
-              <button
-                key={index}
-                className="whitespace-nowrap rounded-full bg-grayscale-50 px-4 py-2 text-sm font-medium hover:bg-primary-300 hover:text-white active:bg-primary-300 active:text-white"
-                onClick={() => {
-                  setSelectedDay(day);
-                  handleDaySelect(day);
-                }}
-              >
-                {day}
-              </button>
-            ))}
-          </div>
-
-          {selectedDay &&
-            dayNumbers[selectedDay]?.map((number, index) => (
-              <div key={index} className="flex flex-col">
-                <div className="mb-4 flex">
-                  <div className="relative">
-                    <p className="z-10 mr-2 size-6 rounded-full border-2 border-grayscale-50 bg-primary-300 text-center text-sm text-white">
-                      {number}
-                    </p>
-                    {index < dayNumbers[selectedDay].length - 1 && (
-                      <div className="absolute left-1/3 h-full w-0.5 bg-grayscale-100"></div>
-                    )}
-                  </div>
-
-                  <div className="w-full rounded-2xl shadow-lg">
-                    {placesByDay[selectedDay] && placesByDay[selectedDay][index] ? (
-                      <div key={index} className="relative p-4 hover:bg-gray-100">
-                        <button className="absolute right-2 top-0 mt-2" onClick={() => handleRemovePlace(index)}>
-                          <IoCloseOutline size={24} />
-                        </button>
-                        <h3
-                          className="font-bold"
-                          dangerouslySetInnerHTML={{
-                            __html: DOMPurify.sanitize(placesByDay[selectedDay][index].title)
-                          }}
-                        />
-                        <div className="flex flex-wrap text-xs text-gray-400">
-                          <p>{placesByDay[selectedDay][index].category} •&nbsp;</p>
-                          <p className="text-xs text-gray-400">{placesByDay[selectedDay][index].roadAddress}</p>
-                        </div>
-
-                        <hr className="my-2" />
-
-                        <textarea
-                          className="h-full w-full resize-none p-2"
-                          placeholder="Introduce your place."
-                          value={descriptionsByDay[selectedDay]?.[index] || ''}
-                          onChange={(e) => handleDescriptionChange(index, e.target.value)}
-                        />
-                      </div>
-                    ) : (
-                      <button
-                        className="flex h-[35px] w-full items-center justify-center rounded-lg border-2 border-grayscale-100 p-2 font-medium"
-                        onClick={() => handleAddSequence(index)}
-                      >
-                        Select Place
-                      </button>
-                    )}
-                  </div>
-                </div>
+      <div className="web:flex web:w-full web:[height:calc(100vh-200px)]">
+        {step === 1 && (
+          <div className="m-5 flex flex-col gap-4 web:justify-between">
+            {/* 위치 */}
+            <div className="flex items-center justify-between web:absolute web:right-5 web:z-10 web:w-[360px] web:rounded-2xl web:bg-white web:p-5">
+              <div className="flex">
+                <GrLocation className="size-5" />
+                <p className="ml-2 font-semibold">{region}</p>
               </div>
-            ))}
-        </div>
 
-        {allDaysHavePlaces ? (
-          <button
-            onClick={goToStep4}
-            className="mx-auto h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-semibold text-white"
-          >
-            Next
-          </button>
-        ) : (
-          <button className="mx-auto my-5 h-14 w-[320px] rounded-2xl bg-gray-300 p-2 text-base text-white">
-            Please select a place for each date.
-          </button>
-          // <p className="text-center text-sm text-grayscale-400"></p>
+              <Link
+                href={`/${userId}/profilepage/regionpage`}
+                className="cursor-pointer font-semibold text-grayscale-500 underline"
+              >
+                Change Location
+              </Link>
+            </div>
+
+            {/* 지도 */}
+            <div className="web:hidden">
+              <PostMap mapId="map1" selectedPlaces={placesByDay[selectedDay] || []} setRegion={setRegion} />
+            </div>
+
+            {/* 장소 선택 구역 */}
+            <div className="web:relative web:overflow-auto">
+              <p className="mb-5 hidden text-center text-xl font-semibold web:block">{`${startDateString ? format(startOfDay(startDateString), 'yy. M. d') : ''} - ${endDateString ? format(startOfDay(endDateString), 'M. d') : ''} `}</p>
+
+              <div className="no-scrollbar mb-4 flex gap-2 overflow-x-auto">
+                {days.map((day, index) => (
+                  <button
+                    key={index}
+                    className={`whitespace-nowrap rounded-full bg-grayscale-50 px-4 py-2 text-sm font-medium ${selectedDay === day ? 'bg-primary-300 text-white' : 'bg-grayscale-50 hover:bg-primary-300 hover:text-white'}`}
+                    onClick={() => {
+                      setSelectedDay(day);
+                      handleDaySelect(day);
+                    }}
+                  >
+                    {day}
+                  </button>
+                ))}
+              </div>
+
+              {selectedDay &&
+                dayNumbers[selectedDay]?.map((number, index) => (
+                  <div key={index} className="flex flex-col">
+                    <div className="mb-4 flex">
+                      <div className="relative">
+                        <p className="z-10 mr-2 size-6 rounded-full border-2 border-grayscale-50 bg-primary-300 text-center text-sm text-white">
+                          {number}
+                        </p>
+                        {index < dayNumbers[selectedDay].length - 1 && (
+                          <div className="absolute left-1/3 h-full w-0.5 bg-grayscale-100"></div>
+                        )}
+                      </div>
+
+                      <div className="w-full rounded-2xl shadow-lg">
+                        {placesByDay[selectedDay] && placesByDay[selectedDay][index] ? (
+                          <div key={index} className="relative p-4 hover:bg-gray-100">
+                            <button className="absolute right-2 top-0 mt-2" onClick={() => handleRemovePlace(index)}>
+                              <IoCloseOutline size={24} />
+                            </button>
+                            <h3
+                              className="font-bold"
+                              dangerouslySetInnerHTML={{
+                                __html: DOMPurify.sanitize(placesByDay[selectedDay][index].title)
+                              }}
+                            />
+                            <div className="flex flex-wrap text-xs text-gray-400">
+                              <p>{placesByDay[selectedDay][index].category} •&nbsp;</p>
+                              <p className="text-xs text-gray-400">{placesByDay[selectedDay][index].roadAddress}</p>
+                            </div>
+
+                            <hr className="my-2" />
+
+                            <textarea
+                              className="h-full w-full resize-none p-2"
+                              placeholder="Introduce your place."
+                              value={descriptionsByDay[selectedDay]?.[index] || ''}
+                              onChange={(e) => handleDescriptionChange(index, e.target.value)}
+                            />
+                          </div>
+                        ) : (
+                          <button
+                            className="flex h-[35px] w-full items-center justify-center rounded-lg border-2 border-grayscale-100 p-2 font-medium"
+                            onClick={() => handleAddSequence(index)}
+                          >
+                            Select Place
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </div>
+            <div className="flex">
+              {allDaysHavePlaces ? (
+                <button
+                  onClick={goToStep4}
+                  className="mx-auto h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-semibold text-white"
+                >
+                  Next
+                </button>
+              ) : (
+                <button className="mx-auto my-5 h-14 w-[320px] rounded-2xl bg-gray-300 p-2 text-base text-white web:my-0">
+                  Please select a place for each date.
+                </button>
+                // <p className="text-center text-sm text-grayscale-400"></p>
+              )}
+            </div>
+          </div>
         )}
+        {step === 2 && (
+          <div>
+            <AddressSearch prev={() => setStep(step - 1)} selectedDay={selectedDay} sequence={sequence} />
+          </div>
+        )}
+
+        <div className="hidden web:block web:h-full web:w-full">
+          <PostMap mapId="map2" selectedPlaces={placesByDay[selectedDay] || []} setRegion={setRegion} />
+        </div>
       </div>
     </div>
   );

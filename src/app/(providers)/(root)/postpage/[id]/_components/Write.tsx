@@ -132,7 +132,7 @@ const Write = ({
       reader.readAsDataURL(file);
 
       const fileExt = file.name.split('.').pop();
-      const fileName = `${userId}.${fileExt}`;
+      const fileName = `${postId}.${fileExt}`;
       const filePath = `post_images/${fileName}`;
 
       // 기존 이미지를 제거 (같은 이름의 파일이 아닌 경우)
@@ -371,7 +371,7 @@ const Write = ({
 
   return (
     <form onSubmit={handleSavePost}>
-      <div className="my-5 flex items-center">
+      <div className="my-5 flex items-center justify-between web:justify-start">
         <div className="flex w-20 justify-center">
           <div className="icon-button">
             <button onClick={goToStep2} className="flex h-full w-full items-center justify-center">
@@ -383,9 +383,7 @@ const Write = ({
           <h1 className="text-lg font-bold">{region}</h1>
           <p>{formatDateRange(startDate, endDate)}</p>
         </div>
-        <button className="flex w-20 justify-center font-medium text-[#FF7029]" onClick={handleCancel}>
-          Done
-        </button>
+        <div className="flex w-20"></div>
       </div>
 
       <div className="mx-5 flex flex-col gap-5">
