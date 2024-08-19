@@ -82,7 +82,7 @@ const DetailNavbar = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 z-10 w-full bg-white">
+    <div className="web:mt-28 fixed bottom-0 left-0 z-10 w-full bg-white">
       {pathname.includes('reservation') ? (
         <div className="border-t-1 web:px-[88px] web:h-[133px] h-20 w-full border-grayscale-100 px-5 shadow-custom-navbar">
           <div className="flex h-full items-center justify-between">
