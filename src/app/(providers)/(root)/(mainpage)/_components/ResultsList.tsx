@@ -81,10 +81,19 @@ export default function ResultsList({ posts, loading, error }: ResultsListProps)
       </div>
 
       {!loading && posts.length === 0 && (
-        <div className="flex min-h-[400px] flex-col items-center justify-center gap-2 text-center">
-          <Image src="/icons/tabler-icon-list-search.svg" alt="search list image" width={44} height={44} />
-          <div className="text-sm font-semibold">No posts found</div>
-          <div className="w-[213px] text-xs font-normal">Try to search by changing the date and region</div>
+        <div className="mt-[230px] flex flex-col items-center justify-center gap-2 text-center">
+          {/* mt-[230px] 전에 썼던 것 min-h-[400px]  */}
+          <Image
+            src="/icons/tabler-icon-list-search.svg"
+            alt="search list image"
+            width={44}
+            height={44}
+            className="md:h-[80px] md:w-[80px]"
+          />
+          <div className="text-sm font-semibold md:text-2xl">No posts found</div>
+          <div className="w-[213px] text-xs font-normal md:w-[320px] md:text-lg">
+            Try to search by changing the date and region
+          </div>
         </div>
       )}
 
@@ -93,17 +102,20 @@ export default function ResultsList({ posts, loading, error }: ResultsListProps)
         hasMore={displayedPosts.length < posts.length}
         onLoadMore={() => setPage((prev) => prev + 1)}
       >
-        <ul className="mt-5 md:flex md:flex-wrap md:gap-5">
+        <ul className="mt-5 min-[1440px]:flex min-[1440px]:flex-wrap min-[1440px]:gap-5">
           {displayedPosts.map((post, index) => (
-            <li key={`${post.id}-${index}`} className="flex rounded-md p-2 md:w-[calc(50%-10px)] md:p-0">
-              <Link href={`/detail/${post.id}`} className="flex w-full">
+            <li
+              key={`${post.id}-${index}`}
+              className="flex rounded-md p-2 md:mb-5 md:p-0 min-[1440px]:mb-0 min-[1440px]:w-[calc(50%-10px)] min-[1440px]:p-0"
+            >
+              <Link href={`/detail/${post.id}`} className="flex max-w-[460px]">
                 {post.image ? (
                   <Image
                     src={post.image}
                     alt={post.title}
                     width={96}
                     height={96}
-                    className="mr-2 h-[80px] w-[80px] rounded-lg md:mr-4 md:h-[140px] md:w-[120px]"
+                    className="mr-2 h-[100px] w-[80px] rounded-lg md:mr-4 md:h-[140px] md:w-[120px]"
                   />
                 ) : (
                   <div className="mr-2 flex h-24 w-24 items-center justify-center bg-gray-200">No Image</div>

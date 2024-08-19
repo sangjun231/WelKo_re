@@ -31,11 +31,12 @@
     "react-hot-toast": "^2.4.1",
     "react-icons": "^5.2.1",
     "react-kakao-maps-sdk": "^1.1.27",
+    "react-lazy-load-image-component": "^1.6.2",
     "react-modal": "^3.16.1",
     "react-rating-stars-component": "^2.2.0",
     "react-router-dom": "^6.26.0",
     "react-toastify": "^10.0.5",
-    "supabase": "^1.187.10",
+    "supabase": "^1.190.0",
     "swiper": "^11.1.7",
     "uuid": "^10.0.0",
     "zustand": "^4.5.4"

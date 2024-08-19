@@ -11,7 +11,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     let query = supabase.from('reviews').select('*').eq('user_id', user_id);
 
-    if (reviewId && postId) {
+    if (reviewId) {
       query = query.eq('id', reviewId).eq('post_id', postId);
     }
 

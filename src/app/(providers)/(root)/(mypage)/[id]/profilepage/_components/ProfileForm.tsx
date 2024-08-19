@@ -69,13 +69,13 @@ const ProfileForm = ({ userId }: { userId: string }) => {
 
   useEffect(() => {
     fetchProfile();
-  }, [userId, newRegion]);
+  }, [userId, newRegion, setImageUrl]);
 
   return (
     <div>
       {profile ? (
         <div>
-          <div className="mb-[20px] mt-[8px] flex items-center justify-between">
+          <div className="mb-[20px] flex items-center justify-between web:mb-[32px]">
             <button
               className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-grayscale-50"
               onClick={handleBack}
@@ -93,22 +93,28 @@ const ProfileForm = ({ userId }: { userId: string }) => {
               Done
             </button>
           </div>
-          <div className="flex flex-col gap-[8px]">
-            <ProfileImageUpload userId={userId} imageUrl={imageUrl} onImageChange={handleImageChange} />
-            <p className="text-center text-[24px] font-bold">{nickname}</p>
-            <p className="text-center text-[16px] text-action-color">{email}</p>
-          </div>
-          <ProfileDetailsForm nickname={nickname} setNickname={setNickname} region={region} userId={userId} />
-          <div className="mt-[40px] flex flex-col">
-            {showPasswordChange && <PasswordChangeForm userId={userId} email={profile.email} />}
-          </div>
-          <div className="fixed bottom-[120px] left-0 right-0 flex justify-around">
-            <button className="text-[14px]" onClick={() => setShowPasswordChange(!showPasswordChange)}>
-              Change Password
-            </button>
-            <button className="text-[14px] text-red-500" onClick={handleDeleteAccount}>
-              Delete Account
-            </button>
+          <div className="web:mx-auto web:max-w-[648px]">
+            <div className="flex flex-col gap-[8px]">
+              <ProfileImageUpload userId={userId} imageUrl={imageUrl} onImageChange={handleImageChange} />
+              <p className="text-center text-[24px] font-bold web:text-[28px]">{nickname}</p>
+              <p className="text-center text-[16px] text-action-color web:text-[18px]">{email}</p>
+            </div>
+            <ProfileDetailsForm nickname={nickname} setNickname={setNickname} region={region} userId={userId} />
+
+            <div className="mt-[40px] flex flex-col">
+              {showPasswordChange && <PasswordChangeForm userId={userId} email={profile.email} />}
+            </div>
+            <div className="my-[20px] flex justify-around">
+              <button
+                className="text-[14px] web:text-[18px]"
+                onClick={() => setShowPasswordChange(!showPasswordChange)}
+              >
+                Change Password
+              </button>
+              <button className="web:text-[18px ]text-[14px] text-error-color" onClick={handleDeleteAccount}>
+                Delete Account
+              </button>
+            </div>
           </div>
         </div>
       ) : (

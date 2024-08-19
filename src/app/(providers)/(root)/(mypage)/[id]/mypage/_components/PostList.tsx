@@ -11,27 +11,27 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
+const getPostsData = async (userId: string) => {
+  try {
+    const response = await axios.get(API_MYPAGE_POST(userId));
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(`HTTP error! status: ${error.response?.status}`);
+    } else {
+      throw new Error('An unknown error occurred');
+    }
+  }
+};
+
 export default function PostList() {
   const params = useParams();
   const router = useRouter();
   const userId = Array.isArray(params.id) ? params.id[0] : params.id;
 
-  const getPostsData = async () => {
-    try {
-      const response = await axios.get(API_MYPAGE_POST(userId));
-      return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new Error(`HTTP error! status: ${error.response?.status}`);
-      } else {
-        throw new Error('An unknown error occurred');
-      }
-    }
-  };
-
   const { data, isPending, error, refetch } = useQuery<Tables<'posts'>[]>({
-    queryKey: ['post', userId],
-    queryFn: getPostsData,
+    queryKey: ['postList', userId],
+    queryFn: () => getPostsData(userId),
     enabled: !!userId
   });
 
@@ -59,15 +59,15 @@ export default function PostList() {
     refetch();
   }, [userId, refetch]);
 
-  if (isPending) return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  if (isPending) return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Loading...</div>;
 
   if (error) {
-    return <div className="flex h-screen items-center justify-center">Error: {error.message}</div>;
+    return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Error: {error.message}</div>;
   }
 
   if (!data || data.length === 0) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-[8px]">
           <Image src="/icons/tabler-icon-sticker-2.svg" alt="no post" width={44} height={44} />
           <p className="text-[14px] font-semibold text-grayscale-900">You don&apos;t have any post</p>

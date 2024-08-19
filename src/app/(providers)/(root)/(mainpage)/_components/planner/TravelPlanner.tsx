@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -68,12 +67,8 @@ export default function TravelPlanner({ isModal = false }: TravelPlannerProps) {
       query.append('endDate', endDate.toISOString());
     }
 
-
     // router.push(`/results?${query.toString()}`);
     window.location.href = `/results?${query.toString()}`;
-
-
-
   };
 
   const toggleStep = (step: number) => {
@@ -89,7 +84,7 @@ export default function TravelPlanner({ isModal = false }: TravelPlannerProps) {
   return (
     <div className="p-4 pb-16">
       {!isModal && (
-        <div className="mb-[38px] grid grid-cols-[1fr_auto_1fr] items-center">
+        <div className="mb-[38px] block grid grid-cols-[1fr_auto_1fr] items-center md:hidden">
           <button className="mr-auto rounded-full bg-gray-100 p-1" onClick={() => router.back()}>
             <Image src="/icons/tabler-icon-x.svg" alt="Close" width={24} height={24} />
           </button>
