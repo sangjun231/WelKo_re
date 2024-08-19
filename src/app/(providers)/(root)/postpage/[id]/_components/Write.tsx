@@ -120,58 +120,52 @@ const Write = ({
   // };
 
   //이미지 추가하는 핸들러
-  const handleImageAdd = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageAdd = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) return;
-
-    try {
+    if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setImage(reader.result as string); // 미리보기 이미지 설정
+        setImage(reader.result as string);
       };
       reader.readAsDataURL(file);
-
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${postId}.${fileExt}`;
-      const filePath = `post_images/${fileName}`;
-
-      // 기존 이미지를 제거 (같은 이름의 파일이 아닌 경우)
-      const existingImagePath = image?.split('/').pop();
-      if (existingImagePath && existingImagePath !== fileName) {
-        const { error: removeError } = await supabase.storage
-          .from('places')
-          .remove([`post_images/${existingImagePath}`]);
-
-        if (removeError) {
-          console.error('Error removing existing image:', removeError.message);
-          return;
-        }
-      }
-
-      // 새 이미지 업로드
-      const { error: uploadError } = await supabase.storage.from('places').upload(filePath, file, {
-        upsert: true
-      });
-
-      if (uploadError) {
-        console.error('Error uploading image:', uploadError.message);
-        return;
-      }
-
-      // 업로드된 이미지의 공개 URL 가져오기
-      const { data: publicUrlData } = supabase.storage.from('places').getPublicUrl(filePath);
-
-      if (publicUrlData) {
-        setImage(publicUrlData.publicUrl); // 업로드된 이미지의 URL을 상태로 저장
-      }
-    } catch (error) {
-      console.error('Error handling image upload:', error);
     }
   };
   //이미지 취소 핸들러
   const handleImageRemove = () => {
     setImage('');
   };
+  //이미지 storage에 저장하는 핸들러
+  const handleImageStorage = async (): Promise<string | null> => {
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const file = fileInput?.files?.[0];
+    if (!file) return null;
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${postId}.${fileExt}`;
+      const filePath = `post_images/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage.from('places').upload(filePath, file, {
+        upsert: true
+      });
+
+      if (uploadError) {
+        console.error('Error uploading image:', uploadError.message);
+        return null;
+      }
+
+      const { data: publicUrlData } = supabase.storage.from('places').getPublicUrl(filePath);
+      if (publicUrlData) {
+        return publicUrlData.publicUrl; // 업로드된 이미지의 공개 URL 반환
+      }
+    } catch (error) {
+      console.error('Error handling image upload:', error);
+      return null;
+    }
+
+    return null;
+  };
+
   //최대 인원 추가하는 핸들러, value 값을 숫자로 저장하는 핸들러
   const handleMaxPeopleAdd = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -296,6 +290,7 @@ const Write = ({
       setIsSubmitting(false);
       return; // 폼이 유효하지 않으면 여기서 함수 종료
     }
+    const imageUrl = await handleImageStorage(); // 이미지 업로드 후 URL 반환
 
     const postDetails = {
       id: postId,
@@ -303,7 +298,7 @@ const Write = ({
       name: user?.user_metadata.name,
       title,
       content,
-      image,
+      image: imageUrl,
       maxPeople,
       tags,
       price,
@@ -517,7 +512,7 @@ const Write = ({
             <BiDollar className="mr-3 size-8 pt-2" />
             <input
               type="number"
-              value={price}
+              value={price === undefined ? '' : price}
               onChange={handlePriceAdd}
               placeholder="50"
               className="mt-2 h-[48px] w-full rounded-xl bg-grayscale-50 p-4 web:w-[428px]"
