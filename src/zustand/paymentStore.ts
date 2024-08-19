@@ -142,7 +142,7 @@ export const requestPayment = async (
     }
   } catch (error) {
     console.error('Payment request error:', error);
-    alert('결제 요청 중 오류가 발생했습니다.');
+    alert('An error occurred while processing the payment request.');
   }
 };
 

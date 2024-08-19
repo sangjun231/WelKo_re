@@ -44,24 +44,24 @@ const Likes = ({ isWeb }: WebProps) => {
 
   return (
     <div className="web:top-12 web:px-[88px] absolute left-0 right-0 top-2 z-10 flex items-center justify-between px-4">
-      <BackButton />
+      <BackButton/>
       <div className="web:gap-10 flex gap-4">
         {post &&
           user &&
           post.user_id === user.id && ( // user가 존재하는지 확인
             <>
               <Link href={`/postpage/${postId}`}>
-                <button className="icon-button">
+                <button className="icon-button" aria-label="Edit Post">
                   <WriteBtn alt="WritePencil" width={isWeb ? 32 : 24} height={isWeb ? 32 : 24} />
                 </button>
               </Link>
-              <button className="icon-button" onClick={() => handleDelete(postId)}>
+              <button className="icon-button" aria-label="Delete Post" onClick={() => handleDelete(postId)}>
                 <DeleteBtn alt="DeleteBtn" width={isWeb ? 32 : 24} height={isWeb ? 32 : 24} />
               </button>
             </>
           )}
         <div>
-          <button onClick={handleLike} className="icon-button">
+          <button onClick={handleLike} className="icon-button" aria-label="Like Post">
             {liked ? (
               <LikeBtn width={isWeb ? 32 : 24} height={isWeb ? 32 : 24} color="#141414" fill="#141414" />
             ) : (
@@ -71,7 +71,7 @@ const Likes = ({ isWeb }: WebProps) => {
         </div>
         {!isWeb && (
           <Link href="/">
-            <button className="icon-button">
+            <button className="icon-button" aria-label="Go Home">
               <IconHome alt="Home" width={24} height={24} />
             </button>
           </Link>

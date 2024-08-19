@@ -118,11 +118,11 @@ export const Guide = ({ isWeb }: WebProps) => {
                 width={isWeb ? 80 : 56}
                 height={isWeb ? 80 : 56}
                 priority
-                className="web:h-40 web:w-40 h-14 w-14 rounded-full"
+                className="web:h-20 web:w-20 h-14 w-14 rounded-full"
               />
-              <div className="flex flex-col">
-                <h4 className="web:text-2xl text-lg font-semibold">{user.name}</h4>
-                <h5 className="web:text-xl text-sm font-normal">Seoul, Korea</h5>
+              <div className="web:gap-1.5 flex flex-col">
+                <h4 className="web:text-[26px] text-lg font-semibold">{user.name}</h4>
+                <h5 className="web:text-xl text-sm font-normal">{user.region}, Korea</h5>
               </div>
             </div>
           )}

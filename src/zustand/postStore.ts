@@ -5,9 +5,11 @@ import { Post } from '@/types/posts';
 interface PostState {
   postId: string | null;
   post: Post | null;
+  postArea: string | null;
   userName: string | null;
   setPostId: (id: string | null) => void;
   setPost: (post: Post | null) => void;
+  setPostArea: (area: string | null) => void;
   setUserName: (name: string | null) => void;
   fetchPost: (id: string) => Promise<void>;
 }
@@ -15,9 +17,11 @@ interface PostState {
 const usePostStore = create<PostState>((set) => ({
   postId: null,
   post: null,
+  postArea: null,
   userName: null,
   setPostId: (id) => set({ postId: id }),
   setPost: (post) => set({ post }),
+  setPostArea: (area) => set({ postArea: area }),
   setUserName: (name) => set({ userName: name }),
   fetchPost: async (id: string) => {
     const supabase = createClient();
@@ -26,9 +30,8 @@ const usePostStore = create<PostState>((set) => ({
       .select(
         `
         *,
-        users!posts_user_id_fkey1 (
-          name
-        )
+        users!posts_user_id_fkey1 (name),
+        schedule (area)
       `
       )
       .eq('id', id)
@@ -37,7 +40,12 @@ const usePostStore = create<PostState>((set) => ({
     if (error) {
       console.error('Error fetching post:', error);
     } else {
-      set({ post: data, userName: data.users.name });
+      const scheduleData = data.schedule ? data.schedule[0]?.area || 'N/A' : 'N/A';
+      set({
+        post: data,
+        postArea: scheduleData,
+        userName: data.users.name
+      });
     }
   }
 }));

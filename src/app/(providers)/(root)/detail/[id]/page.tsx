@@ -8,13 +8,14 @@ import { CheckboxDetail } from './_components/CheckboxDetail';
 import DetailNavbar from './_components/DetailNavbar';
 import ScheduleMap from './_components/ScheduleMap';
 import { useWebStore } from '@/zustand/webStateStore';
+import DetailRead from './_components/DetailRead';
 
 export default function DetailPage() {
   const { isWeb, setIsWeb } = useWebStore();
 
   useEffect(() => {
     const handleResize = () => {
-      setIsWeb(window.innerWidth >= 769);
+      setIsWeb(window.innerWidth >= 768);
     };
 
     handleResize();
@@ -28,10 +29,11 @@ export default function DetailPage() {
       <DetailImg isWeb={isWeb} />
       <div className="flex w-full justify-center">
         <div className="web:mx-[88px] mx-5 w-full">
+          <DetailRead isWeb={isWeb} />
           <CheckboxDetail isWeb={isWeb} />
-          <ScheduleMap isWeb={isWeb}/>
-          <Guide isWeb={isWeb}/>
-          <Reviews isWeb={isWeb}/>
+          <ScheduleMap isWeb={isWeb} />
+          <Guide isWeb={isWeb} />
+          <Reviews isWeb={isWeb} />
         </div>
       </div>
       <DetailNavbar />
