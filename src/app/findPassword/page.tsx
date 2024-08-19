@@ -31,12 +31,16 @@ const FindPassword = () => {
 
   return (
     <div className="flex items-center justify-center md:h-screen md:bg-gray-100">
-      <div className="h-[800px] w-full max-w-md bg-white px-5 md:w-full md:rounded-lg md:p-6 md:shadow-lg">
-        <div className="mt-2 flex h-[44px] items-center pb-[16px] pt-3.5 md:hidden">
-          <BackButton />
+      <div className="h-[800px] w-full max-w-md bg-white px-5 md:h-auto md:w-full md:max-w-[480px] md:rounded-lg md:p-6 md:px-[80px] md:py-[48px] md:shadow-lg">
+        <div className="mt-2 flex h-[44px] items-center pb-[16px] pt-3.5 md:mt-0">
+          <div className="md:ml-[-45px]">
+            <BackButton />
+          </div>
         </div>
-        <h1 className="mt-[41px] text-center text-2xl font-bold">Find Password</h1>
-        <span className="mb-8 mt-3 block text-center text-sm text-[#7D848D]">We’ll send you reset email</span>
+        <h1 className="mt-[41px] text-center text-2xl font-bold md:mt-[40px]">Find Password</h1>
+        <span className="mb-8 mt-3 block text-center text-sm text-[#7D848D] md:mb-[40px]">
+          We’ll send you reset email
+        </span>
         <form onSubmit={handleFindPassword}>
           <p className="mb-2 font-medium">Email</p>
           <input
