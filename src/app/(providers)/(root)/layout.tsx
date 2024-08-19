@@ -3,10 +3,11 @@ import Navbar from '@/components/common/Navbar/Navbar';
 import { PropsWithChildren, Suspense } from 'react';
 import RouteChangeHandler from './(mainpage)/_components/RouteChangeHandler';
 import Header from '@/components/common/Header/Header';
+import Footer from '@/components/common/Navbar/Footer';
 
 function RootLayout({ children }: PropsWithChildren) {
   return (
-    <div id="root" className="mx-auto flex min-h-screen w-full flex-col web:max-w-[1440px]">
+    <div id="root" className="web:max-w-[1440px] mx-auto flex min-h-screen w-full flex-col">
       <div className="md:h-[88px]">
         <Header />
       </div>
@@ -20,6 +21,7 @@ function RootLayout({ children }: PropsWithChildren) {
         </div>
       </div>
       <Navbar />
+      <Footer />
     </div>
   );
 }
