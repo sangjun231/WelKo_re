@@ -8,6 +8,7 @@ import { useMyPageStore } from '@/zustand/mypageStore';
 import useAuthStore from '@/zustand/bearsStore';
 import Link from 'next/link';
 import { useAutoCancelHandler } from '@/hooks/Detail/autoCancelHandler';
+import Swal from 'sweetalert2';
 
 export default function PaySuccess() {
   const user = useAuthStore((state) => state.user);
@@ -119,23 +120,51 @@ export default function PaySuccess() {
         reason: 'User requested cancel',
         requester: 'CUSTOMER'
       });
-      alert(response.data.message);
 
+      // 성공 시 알림
       if (response.data.success) {
-        setSelectedComponent('Reservations');
-        router.push(`/${user?.id}/mypage`);
+        Swal.fire({
+          title: 'Cancellation Successful',
+          text: response.data.message,
+          icon: 'success',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          setSelectedComponent('Reservations');
+          router.push(`/${user?.id}/mypage`);
+        });
+      } else {
+        Swal.fire({
+          title: 'Cancellation Failed',
+          text: response.data.message,
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
       }
     } catch (error) {
       console.error('Error requesting cancel:', error);
-      alert('The refund is not possible as it has been more than a day.');
+      Swal.fire({
+        title: 'Error',
+        text: 'The refund is not possible as it has been more than a day.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
     }
   };
 
   const handleCancelClick = () => {
-    const confirmed = window.confirm('Are you sure you want to cancel the payment? This action cannot be undone.');
-    if (confirmed) {
-      handleCancelRequest();
-    }
+    Swal.fire({
+      title: 'Are you sure you want to cancel the payment?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#B95FAB',
+      confirmButtonText: 'Yes, cancel it!',
+      cancelButtonText: 'No, thanks'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleCancelRequest();
+      }
+    });
   };
 
   if (failureCode === 'FAILURE_TYPE_PG') {

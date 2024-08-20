@@ -78,7 +78,7 @@ const SlideImage: React.FC = () => {
           style={{
             display: isLoading ? 'none' : 'block',
             width: '100%',
-            height: '100%'
+            height: '216px'
           }}
           priority
           onLoad={() => setIsLoading(false)}
