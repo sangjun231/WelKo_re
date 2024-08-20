@@ -125,14 +125,6 @@ const Write = ({
     return true;
   };
 
-  // const handleCancel = () => {
-  //   const userConfirmed = confirm('Do you want to cancel this?');
-  //   if (!userConfirmed) {
-  //     return;
-  //   }
-  //   router.replace('/');
-  // };
-
   //이미지 추가하는 핸들러
   const handleImageAdd = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -322,7 +314,7 @@ const Write = ({
       name: user?.user_metadata.name,
       title,
       content,
-      image: imageUrl,
+      image: imageUrl || image,
       maxPeople,
       tags,
       price,

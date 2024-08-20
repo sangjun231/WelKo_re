@@ -1,6 +1,7 @@
 'use client';
 
 import BackButton from '@/components/common/Button/BackButton';
+import useRequireLogin from '@/hooks/CustomAlert';
 import handleDelete from '@/hooks/Post/usePostDelete';
 import { WebProps } from '@/types/webstate';
 import useAuthStore from '@/zustand/bearsStore';
@@ -33,9 +34,11 @@ const Likes = ({ isWeb }: WebProps) => {
     }
   }, [postId, user?.id, fetchLikeStatus]);
 
+  const requireLogin = useRequireLogin();
+
   const handleLike = () => {
     if (!user) {
-      alert('좋아요를 누르기 위해서는 로그인이 필요합니다.');
+      requireLogin();
       return;
     }
     toggleLike(postId, user.id);
@@ -47,14 +50,28 @@ const Likes = ({ isWeb }: WebProps) => {
         title: 'You have removed this post from your favorites!',
         icon: 'info',
         confirmButtonText: 'OK',
-        confirmButtonColor: primaryColor // 버튼 색상 설정
+        confirmButtonColor: primaryColor, // 버튼 색상 설정
+        customClass: {
+          actions: 'flex flex-col gap-[8px] w-full',
+          title: 'font-semibold text-[18px]',
+          htmlContainer: 'text-grayscale-500 text-[14px]',
+          popup: 'rounded-[16px] p-[24px]',
+          confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]'
+        }
       });
     } else {
       Swal.fire({
         title: 'You have added this post to your favorites!',
         icon: 'success',
         confirmButtonText: 'OK',
-        confirmButtonColor: primaryColor // 버튼 색상 설정
+        confirmButtonColor: primaryColor, // 버튼 색상 설정
+        customClass: {
+          actions: 'flex flex-col gap-[8px] w-full',
+          title: 'font-semibold text-[18px]',
+          htmlContainer: 'text-grayscale-500 text-[14px]',
+          popup: 'rounded-[16px] p-[24px]',
+          confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]'
+        }
       });
     }
   };

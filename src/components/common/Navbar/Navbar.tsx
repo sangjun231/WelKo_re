@@ -1,5 +1,6 @@
 'use client';
 
+import useRequireLogin from '@/hooks/CustomAlert';
 import useAuthStore from '@/zustand/bearsStore';
 import { useMyPageStore } from '@/zustand/mypageStore';
 import Link from 'next/link';
@@ -17,11 +18,14 @@ function Navbar() {
   const user = useAuthStore((state) => state.user);
   const setSelectedComponent = useMyPageStore((state) => state.setSelectedComponent);
   const uuid = uuidv4();
+  const requireLogin = useRequireLogin();
 
   const handleReservationsClick = () => {
     if (!user) {
-      alert('로그인이 필요한 서비스입니다!!');
-      router.push('/login');
+      requireLogin(() => {
+        setSelectedComponent('Reservation');
+        router.push(`/${user?.id}/mypage`);
+      });
       return;
     }
     setSelectedComponent('Reservation');
@@ -30,8 +34,9 @@ function Navbar() {
 
   const handlePostClick = () => {
     if (!user) {
-      alert('로그인이 필요한 서비스입니다!!');
-      router.push('/login');
+      requireLogin(() => {
+        router.push(`/postpage/${uuid}`);
+      });
       return;
     }
     router.push(`/postpage/${uuid}`);
@@ -39,8 +44,9 @@ function Navbar() {
 
   const handleMessagesClick = () => {
     if (!user) {
-      alert('로그인이 필요한 서비스입니다!!');
-      router.push('/login');
+      requireLogin(() => {
+        router.push(`/${user?.id}/chatlistpage`);
+      });
       return;
     }
     router.push(`/${user?.id}/chatlistpage`);
@@ -48,8 +54,10 @@ function Navbar() {
 
   const handleMypageClick = () => {
     if (!user) {
-      alert('로그인이 필요한 서비스입니다!!');
-      router.push('/login');
+      requireLogin(() => {
+        setSelectedComponent('Wishlist');
+        router.push(`/${user?.id}/mypage`);
+      });
       return;
     }
     setSelectedComponent('Wishlist');
