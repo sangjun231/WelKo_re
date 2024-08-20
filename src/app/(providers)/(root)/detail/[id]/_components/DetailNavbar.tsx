@@ -8,6 +8,7 @@ import usePaymentStore, { requestPayment } from '@/zustand/paymentStore';
 import { formatDateRange } from '@/utils/detail/functions';
 import axios from 'axios';
 import { useAutoCancelHandler } from '@/hooks/Detail/autoCancelHandler';
+import useRequireLogin from '@/hooks/CustomAlert';
 
 const DetailNavbar = () => {
   const user = useAuthStore((state) => state.user);
@@ -21,6 +22,7 @@ const DetailNavbar = () => {
   }));
 
   const { handleCancel } = useAutoCancelHandler();
+  const requireLogin = useRequireLogin();
 
   const handlePaymentSuccess = useCallback(
     async (response: any) => {
@@ -74,8 +76,7 @@ const DetailNavbar = () => {
 
   const handleReserveClick = () => {
     if (!user) {
-      alert('로그인이 필요한 서비스입니다!!');
-      router.push('/login');
+      requireLogin();
     } else {
       router.push(`/detail/reservation/${post?.id}`);
     }
