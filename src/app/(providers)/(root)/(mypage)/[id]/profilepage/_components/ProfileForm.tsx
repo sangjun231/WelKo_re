@@ -48,15 +48,19 @@ const ProfileForm = ({ userId }: { userId: string }) => {
     });
 
     if (result.isConfirmed && profile) {
-      await axios.put(API_MYPAGE_PROFILE(userId), {
-        id: profile.id,
-        name: nickname,
-        email,
-        avatar: imageUrl,
-        region
-      });
-      fetchProfile();
-      router.replace(`/${userId}/mypage`);
+      try {
+        await axios.put(API_MYPAGE_PROFILE(userId), {
+          id: profile.id,
+          name: nickname,
+          email,
+          avatar: imageUrl,
+          region
+        });
+        fetchProfile();
+        router.replace(`/${userId}/mypage`);
+      } catch (error) {
+        MySwal.fire('Failed!', 'Failed to edit profile.', 'error');
+      }
     }
   };
 
