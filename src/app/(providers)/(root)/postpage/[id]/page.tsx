@@ -2,7 +2,9 @@
 import useAuthStore from '@/zustand/bearsStore';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import Calendar from './_components/calendar/Calendar';
 import AddressSearch from './_components/dayplaces/AddressSearch';
 import DayPlaces from './_components/dayplaces/DayPlaces';
@@ -18,20 +20,45 @@ function PostPage() {
   const user = useAuthStore((state) => state.user);
   const [userId, setUserId] = useState<string>('');
   const [sequence, setSequence] = useState<number>(0);
+  const MySwal = withReactContent(Swal);
+  const isMobile = window.innerWidth < 768;
 
   useEffect(() => {
     if (user) {
       setUserId(user.id); // user가 존재할 때만 userId 설정
     }
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!id || !uuidRegex.test(id as string)) {
-      alert('Please enter through the correct path');
-      router.back(); // 유효하지 않은 경우 이전 페이지로 이동
+    if (!user) {
+      if (isMobile) {
+        toast('Please login', {
+          duration: 3000,
+          position: 'bottom-center',
+          style: {
+            background: '#333',
+            color: '#fff',
+            marginBottom: '100px',
+            borderRadius: '70px',
+            padding: '10px 20px'
+          }
+        });
+      } else {
+        MySwal.fire({
+          title: 'Please login',
+          icon: 'warning',
+          customClass: {
+            actions: 'flex flex-col gap-[8px] w-full',
+            title: 'font-semibold text-[18px]',
+            popup: 'rounded-[16px] p-[24px]',
+            confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]'
+          }
+        });
+      }
+      router.push('/login');
       return;
     }
-    if (!user) {
-      alert('Please log in');
-      router.push('/login');
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!id || !uuidRegex.test(id as string)) {
+      MySwal.fire({ title: 'Please enter through the correct path', icon: 'warning' });
+      router.back(); // 유효하지 않은 경우 이전 페이지로 이동
       return;
     }
   }, [user, id, router]);

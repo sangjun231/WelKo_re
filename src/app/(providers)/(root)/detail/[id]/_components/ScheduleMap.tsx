@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
 import { useNaverMapScript } from '@/hooks/Map/useNaverMapScript';
 import { WebProps } from '@/types/webstate';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 interface Place {
   title: string;

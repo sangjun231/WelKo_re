@@ -1,5 +1,6 @@
 'use client';
 
+import handleDelete from '@/hooks/Post/usePostDelete';
 import { Tables } from '@/types/supabase';
 import { API_MYPAGE_POST } from '@/utils/apiConstants';
 import { formatDateRange } from '@/utils/detail/functions';
@@ -7,8 +8,6 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -26,7 +25,6 @@ const getPostsData = async (userId: string) => {
 };
 
 export default function PostList() {
-  const MySwal = withReactContent(Swal);
   const params = useParams();
   const router = useRouter();
   const userId = Array.isArray(params.id) ? params.id[0] : params.id;
@@ -53,35 +51,6 @@ export default function PostList() {
 
   const handleReservationList = (postId: string) => {
     router.push(`/${userId}/mypage/tourreservationlistpage?postId=${postId}`);
-  };
-
-  const handleDelete = async (postId: string) => {
-    const result = await MySwal.fire({
-      title: 'Do you want to delete your post?',
-      text: 'If you delete, you can always rewrite it later',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Delete Post',
-      cancelButtonText: 'No thanks',
-      customClass: {
-        actions: 'flex flex-col gap-[8px] w-full',
-        title: 'font-semibold text-[18px]',
-        htmlContainer: 'text-grayscale-500 text-[14px]',
-        popup: 'rounded-[16px] p-[24px]',
-        confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]',
-        cancelButton: 'bg-white text-[16px] p-[12px] w-full rounded-[12px] text-grayscale-700'
-      }
-    });
-
-    if (result.isConfirmed) {
-      try {
-        await axios.delete(API_MYPAGE_POST(userId), { data: { post_id: postId } });
-        MySwal.fire('Deleted!', 'Your post has been deleted.', 'success');
-        refetch();
-      } catch (error) {
-        MySwal.fire('Failed!', 'Failed to delete post.', 'error');
-      }
-    }
   };
 
   useEffect(() => {
@@ -139,7 +108,7 @@ export default function PostList() {
                 </Link>
                 <button
                   className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9] web:h-[44px] web:w-[44px]"
-                  onClick={() => handleDelete(post.id)}
+                  onClick={() => handleDelete(post.id, router)}
                 >
                   <Image
                     className="web:h-[33px] web:w-[33px]"
