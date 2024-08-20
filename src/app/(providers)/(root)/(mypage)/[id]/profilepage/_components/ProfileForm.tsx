@@ -73,7 +73,7 @@ const ProfileForm = ({ userId }: { userId: string }) => {
       html: '<p style="color: #FF2D2D; font-size: 14px;">This action cannot be undone.</p>',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Delete Post',
+      confirmButtonText: 'Delete account',
       cancelButtonText: 'No thanks',
       customClass: {
         actions: 'flex flex-col gap-[8px] w-full',
