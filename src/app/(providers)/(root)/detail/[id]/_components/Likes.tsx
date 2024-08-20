@@ -50,14 +50,28 @@ const Likes = ({ isWeb }: WebProps) => {
         title: 'You have removed this post from your favorites!',
         icon: 'info',
         confirmButtonText: 'OK',
-        confirmButtonColor: primaryColor // 버튼 색상 설정
+        confirmButtonColor: primaryColor, // 버튼 색상 설정
+        customClass: {
+          actions: 'flex flex-col gap-[8px] w-full',
+          title: 'font-semibold text-[18px]',
+          htmlContainer: 'text-grayscale-500 text-[14px]',
+          popup: 'rounded-[16px] p-[24px]',
+          confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]'
+        }
       });
     } else {
       Swal.fire({
         title: 'You have added this post to your favorites!',
         icon: 'success',
         confirmButtonText: 'OK',
-        confirmButtonColor: primaryColor // 버튼 색상 설정
+        confirmButtonColor: primaryColor, // 버튼 색상 설정
+        customClass: {
+          actions: 'flex flex-col gap-[8px] w-full',
+          title: 'font-semibold text-[18px]',
+          htmlContainer: 'text-grayscale-500 text-[14px]',
+          popup: 'rounded-[16px] p-[24px]',
+          confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]'
+        }
       });
     }
   };
