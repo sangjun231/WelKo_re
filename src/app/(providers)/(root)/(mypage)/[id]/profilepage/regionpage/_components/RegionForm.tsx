@@ -145,19 +145,21 @@ const RegionForm = () => {
     <div>
       <div className="flex items-center justify-between">
         <button
-          className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-grayscale-50"
+          className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-grayscale-50 web:h-[44px] web:w-[44px]"
           onClick={handleBack}
         >
           <Image
+            className="web:h-[33px] web:w-[33px]"
             src="/icons/tabler-icon-chevron-left.svg"
             alt="Go Back"
             width={24}
             height={24}
-            style={{ width: '24px', height: '24px' }}
           />
         </button>
-        <p className="web:text-[32px] text-[18px] font-semibold">Location</p>
-        <button className="web:text-[24px] text-[14px] font-medium text-action-color" onClick={handleSave}>
+        <p className="mx-auto text-[18px] font-semibold text-primary-900 web:ml-[20px] web:self-start web:text-[32px]">
+          Location
+        </p>
+        <button className="text-[14px] font-medium text-action-color web:text-[24px]" onClick={handleSave}>
           Done
         </button>
       </div>
