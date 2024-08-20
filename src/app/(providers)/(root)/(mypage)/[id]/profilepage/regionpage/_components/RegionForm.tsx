@@ -10,7 +10,7 @@ import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import { translateAddress } from '@/utils/post/postData';
 
 const RegionForm = () => {
-    const MySwal = withReactContent(Swal);
+  const MySwal = withReactContent(Swal);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [position, setPosition] = useState<{ latitude: number; longitude: number } | null>(null);
   const [region, setRegion] = useState<string | null>(null);
@@ -97,23 +97,27 @@ const RegionForm = () => {
   };
 
   const handleSave = async () => {
-        const result = await MySwal.fire({
-          title: 'Location updated successfully',
-          icon: 'success',
-          confirmButtonText: 'Done',
-          customClass: {
-            actions: 'flex flex-col gap-[8px] w-full',
-            title: 'font-semibold text-[18px]',
-            popup: 'rounded-[16px] p-[24px]',
-            confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]'
-          }
+    const result = await MySwal.fire({
+      title: 'Location updated successfully',
+      icon: 'success',
+      confirmButtonText: 'Done',
+      customClass: {
+        actions: 'flex flex-col gap-[8px] w-full',
+        title: 'font-semibold text-[18px]',
+        popup: 'rounded-[16px] p-[24px]',
+        confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]'
+      }
+    });
+
+    try {
+      if (region && userId && result.isConfirmed) {
+        await axios.put(API_MYPAGE_PROFILE(userId), {
+          region: translatedRegion || region
         });
-    
-    if (region && userId && result.isConfirmed) {
-      await axios.put(API_MYPAGE_PROFILE(userId), {
-        region: translatedRegion || region
-      });
-      router.replace(`/${userId}/profilepage`);
+        router.replace(`/${userId}/profilepage`);
+      }
+    } catch (error) {
+      MySwal.fire('Failed!', 'Failed to set location.', 'error');
     }
   };
 
