@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 type ProfileDetailsFormProps = {
   nickname: string;
@@ -12,7 +13,7 @@ type ProfileDetailsFormProps = {
 
 const ProfileDetailsForm = ({ nickname, setNickname, region, userId }: ProfileDetailsFormProps) => {
   const router = useRouter();
-  const [error, setError] = useState('');
+  const [error, setError] = useState<React.ReactNode>('');
 
   const handleRegionClick = () => {
     router.replace(`/${userId}/profilepage/regionpage`);
@@ -20,9 +21,26 @@ const ProfileDetailsForm = ({ nickname, setNickname, region, userId }: ProfileDe
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    const isMobile = window.innerWidth < 768;
 
-    if (value.length >= 15) {
-      setError('Nickname cannot exceed 15 characters.');
+    toast.dismiss();
+
+    if (isMobile && value.length >= 15) {
+      toast('Nickname cannot exceed 15 characters.', {
+        position: 'bottom-center',
+        duration: Infinity,
+        style: {
+          background: '#333',
+          color: '#fff',
+          marginBottom: '100px',
+          borderRadius: '70px',
+          padding: '10px 20px'
+        }
+      });
+    }
+
+    if (value.length >= 15 && !isMobile) {
+      setError(<span className="text-[16px] text-error-color">Nickname cannot exceed 15 characters.</span>);
     } else {
       setError('');
     }
