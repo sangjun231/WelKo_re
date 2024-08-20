@@ -116,11 +116,8 @@ export default function ReservationList() {
         if (response.data.data.pay_state === 'cancel') {
           router.push(`/detail/reservation/${postId}`);
         }
-
       } catch (error) {
         MySwal.fire('Failed!', 'The refund is not possible as it has been more than a day.', 'error');
-
-        console.error('Error requesting cancel:', error);
       }
     }
   };
