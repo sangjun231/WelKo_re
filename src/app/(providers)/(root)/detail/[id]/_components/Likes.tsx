@@ -39,17 +39,22 @@ const Likes = ({ isWeb }: WebProps) => {
       return;
     }
     toggleLike(postId, user.id);
+
+    const primaryColor = '#B95FAB'; // primary-300 색상의 HEX 코드
+
     if (liked) {
       Swal.fire({
         title: 'You have removed this post from your favorites!',
         icon: 'info',
-        confirmButtonText: 'OK'
+        confirmButtonText: 'OK',
+        confirmButtonColor: primaryColor // 버튼 색상 설정
       });
     } else {
       Swal.fire({
         title: 'You have added this post to your favorites!',
         icon: 'success',
-        confirmButtonText: 'OK'
+        confirmButtonText: 'OK',
+        confirmButtonColor: primaryColor // 버튼 색상 설정
       });
     }
   };

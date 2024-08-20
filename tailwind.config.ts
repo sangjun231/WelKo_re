@@ -28,7 +28,7 @@ const config: Config = {
         'grayscale-900': 'var(--Grayscale-900, #141414)',
         'primary-50': '#FFE5FB',
         'primary-100': '#EDCAE8',
-        'primary-300': 'var(--Primary-300, #B95FAB)',
+        'primary-300': '#B95FAB',
         'primary-900': '#21111F',
         'action-color': '#FF7029',
         'error-color': '#FF2D2D'
