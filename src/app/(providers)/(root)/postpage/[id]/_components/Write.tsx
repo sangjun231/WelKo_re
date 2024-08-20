@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { BiDollar } from 'react-icons/bi';
 import { IoChevronBack, IoCloseOutline } from 'react-icons/io5';
 import { LuUsers } from 'react-icons/lu';
@@ -50,6 +51,7 @@ const Write = ({
   const [editId, setEditId] = useState<string>('');
   const startDate = sessionStorage.getItem('startDate');
   const endDate = sessionStorage.getItem('endDate');
+  const isMobile = window.innerWidth < 768;
 
   useEffect(() => {
     const fetchPlaces = async () => {
@@ -79,28 +81,43 @@ const Write = ({
 
   const handleFormConfirm = () => {
     const missingFields: string[] = [];
-    if (!title.trim()) missingFields.push('제목');
-    if (!content.trim()) missingFields.push('내용');
-    if (!image) missingFields.push('이미지');
-    if (!maxPeople || maxPeople < 1) missingFields.push('최대 인원');
-    if (!price || price < 1) missingFields.push('투어 금액');
-    if (tags.length === 0) missingFields.push('투어 태그');
-    if (selectedPrices.length === 0) missingFields.push('가격 옵션');
+    if (!title.trim()) missingFields.push('title');
+    if (!content.trim()) missingFields.push('introduction');
+    if (!image) missingFields.push('image');
+    if (!maxPeople || maxPeople < 1) missingFields.push('maximum');
+    if (tags.length === 0) missingFields.push('theme');
+    if (selectedPrices.length === 0) missingFields.push('offer');
+    if (!price || price < 1) missingFields.push('cost');
     if (missingFields.length > 0) {
       const missingFieldsString = missingFields.join(', ');
-      alert(`다음 정보를 입력해주세요: "${missingFieldsString}"`);
+
+      if (isMobile) {
+        toast(`Please fill in "${missingFieldsString}"`, {
+          duration: 3000,
+          position: 'bottom-center',
+          style: {
+            background: '#333',
+            color: '#fff',
+            marginBottom: '100px',
+            borderRadius: '70px',
+            padding: '10px 20px'
+          }
+        });
+      } else {
+        alert(`Please fill in "${missingFieldsString}"`); // Web 환경
+      }
       return false;
     }
     return true;
   };
 
-  const handleCancel = () => {
-    const userConfirmed = confirm('Do you want to cancel this?');
-    if (!userConfirmed) {
-      return;
-    }
-    router.replace('/');
-  };
+  // const handleCancel = () => {
+  //   const userConfirmed = confirm('Do you want to cancel this?');
+  //   if (!userConfirmed) {
+  //     return;
+  //   }
+  //   router.replace('/');
+  // };
 
   //이미지 추가하는 핸들러
   const handleImageAdd = (event: ChangeEvent<HTMLInputElement>) => {
@@ -117,6 +134,38 @@ const Write = ({
   const handleImageRemove = () => {
     setImage('');
   };
+  //이미지 storage에 저장하는 핸들러
+  const handleImageStorage = async (): Promise<string | null> => {
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const file = fileInput?.files?.[0];
+    if (!file) return null;
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${postId}.${fileExt}`;
+      const filePath = `post_images/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage.from('places').upload(filePath, file, {
+        upsert: true
+      });
+
+      if (uploadError) {
+        console.error('Error uploading image:', uploadError.message);
+        return null;
+      }
+
+      const { data: publicUrlData } = supabase.storage.from('places').getPublicUrl(filePath);
+      if (publicUrlData) {
+        return publicUrlData.publicUrl; // 업로드된 이미지의 공개 URL 반환
+      }
+    } catch (error) {
+      console.error('Error handling image upload:', error);
+      return null;
+    }
+
+    return null;
+  };
+
   //최대 인원 추가하는 핸들러, value 값을 숫자로 저장하는 핸들러
   const handleMaxPeopleAdd = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -152,7 +201,21 @@ const Write = ({
       if (tags.length < 4) {
         setTags([...tags, item]);
       } else {
-        alert('태그는 최대 4개까지 선택할 수 있습니다.');
+        if (isMobile) {
+          toast('You can select up to 4 tags.', {
+            duration: 3000,
+            position: 'bottom-center',
+            style: {
+              background: '#333',
+              color: '#fff',
+              marginBottom: '100px',
+              borderRadius: '70px',
+              padding: '10px 20px'
+            }
+          });
+        } else {
+          alert('You can select up to 4 tags.'); // Web 환경
+        }
       }
     }
   };
@@ -176,6 +239,9 @@ const Write = ({
     },
     onError: (error) => {
       console.error('Error saving post:', error);
+    },
+    onSettled: () => {
+      setIsSubmitting(false); // 요청이 끝난 후 상태를 다시 false로
     }
   });
   // 장소 저장
@@ -204,21 +270,27 @@ const Write = ({
       alert('Failed to save places.');
     }
   });
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const handleSavePost = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // 중복 제출 방지
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     const {
       data: { user },
       error
     } = await supabase.auth.getUser();
     if (error) {
       console.error('Error getting user:', error);
+      setIsSubmitting(false);
       return;
     }
 
     if (!handleFormConfirm()) {
+      setIsSubmitting(false);
       return; // 폼이 유효하지 않으면 여기서 함수 종료
     }
+    const imageUrl = await handleImageStorage(); // 이미지 업로드 후 URL 반환
 
     const postDetails = {
       id: postId,
@@ -226,7 +298,7 @@ const Write = ({
       name: user?.user_metadata.name,
       title,
       content,
-      image,
+      image: imageUrl,
       maxPeople,
       tags,
       price,
@@ -236,9 +308,13 @@ const Write = ({
     };
 
     if (editId) {
-      updateMutationForPost.mutate(postDetails);
+      updateMutationForPost.mutate(postDetails, {
+        onSettled: () => setIsSubmitting(false)
+      });
     } else {
-      addMutationForPost.mutate(postDetails);
+      addMutationForPost.mutate(postDetails, {
+        onSettled: () => setIsSubmitting(false)
+      });
     }
   };
 
@@ -270,13 +346,27 @@ const Write = ({
         }
       }
     }
-    alert('Saved!');
+    if (isMobile) {
+      toast('Saved!', {
+        duration: 3000,
+        position: 'bottom-center',
+        style: {
+          background: '#333',
+          color: '#fff',
+          marginBottom: '100px',
+          borderRadius: '70px',
+          padding: '10px 20px'
+        }
+      });
+    } else {
+      alert('Saved!'); // Web 환경
+    }
     router.replace('/');
   };
 
   return (
     <form onSubmit={handleSavePost}>
-      <div className="my-5 flex items-center">
+      <div className="my-5 flex items-center justify-between web:justify-start">
         <div className="flex w-20 justify-center">
           <div className="icon-button">
             <button onClick={goToStep2} className="flex h-full w-full items-center justify-center">
@@ -285,18 +375,16 @@ const Write = ({
           </div>
         </div>
         <div className="flex w-[199px] flex-col items-center">
-          <h1 className="text-lg font-bold">{region}</h1>
-          <p>{formatDateRange(startDate, endDate)}</p>
+          <h1 className="text-lg font-bold web:text-[32px] web:font-semibold">{region}</h1>
+          <p className="web:hidden">{formatDateRange(startDate, endDate)}</p>
         </div>
-        <button className="flex w-20 justify-center font-medium text-[#FF7029]" onClick={handleCancel}>
-          Done
-        </button>
+        <div className="flex w-20"></div>
       </div>
 
       <div className="mx-5 flex flex-col gap-5">
         {/* 제목, 내용 입력 폼 */}
-        <div className="mt-7 flex flex-col items-center gap-5">
-          <div className="w-[320px]">
+        <div className="mt-7 flex flex-col items-center gap-5 web:items-start">
+          <div className="w-[320px] web:w-[622px]">
             <label className="font-semibold">Tour title</label>
             <input
               className="mt-2 h-[48px] w-full rounded-xl bg-grayscale-50 p-4"
@@ -306,15 +394,11 @@ const Write = ({
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
-          <div className="w-[320px]">
+          <div className="w-[320px] web:w-[622px]">
             <label className="font-semibold">Introduction</label>
             <textarea
               className="mt-2 h-[209px] w-full resize-none rounded-2xl bg-grayscale-50 p-4"
-              placeholder="You can write up to 500 characters.
-            &#10;
-            1. how much you lived in that area?
-            &#10;
-            2. promote the features of your course."
+              placeholder={`You can write up to 500 characters.\n1. how much you lived in that area?\n2. promote the features of your course.`}
               value={content}
               onChange={(e) => setContent(e.target.value)}
             />
@@ -362,7 +446,17 @@ const Write = ({
               value={maxPeople === undefined ? '' : maxPeople}
               onChange={handleMaxPeopleAdd}
               placeholder="5"
-              className="mt-2 h-[48px] w-full rounded-xl bg-grayscale-50 p-4"
+              className="mt-2 h-[48px] w-full rounded-xl bg-grayscale-50 p-4 web:w-[428px]"
+              onInput={(event) => {
+                let value = event.currentTarget.value;
+                // 숫자가 아닌 문자 제거
+                value = value.replace(/[^0-9]/g, '');
+                // 0으로 시작하면 0을 제거
+                if (value.startsWith('0')) {
+                  value = value.replace(/^0+/, '');
+                }
+                event.currentTarget.value = value;
+              }}
             />
           </div>
         </div>
@@ -370,7 +464,10 @@ const Write = ({
         {/* 투어 태그 선택 */}
         <hr className="my-5" />
         <div>
-          <h1 className="text-xl font-semibold">Tour theme</h1>
+          <h1 className="mb-4 flex items-end text-xl">
+            <p className="font-semibold">Tour theme</p>
+            <p className="ml-3 text-sm text-grayscale-500">Choose up to 4</p>
+          </h1>
           <div className="mt-4 flex flex-wrap gap-2">
             {tagData.map((item) => (
               <button
@@ -389,7 +486,7 @@ const Write = ({
         <hr className="my-5" />
         <div>
           <h1 className="mb-4 text-xl font-semibold">What this tour offers</h1>
-          <div className="flex w-full flex-col gap-4">
+          <div className="flex w-full flex-col gap-4 web:w-[622px]">
             {prices.map((item) => (
               <label key={item} className="flex justify-between">
                 {item}
@@ -409,25 +506,38 @@ const Write = ({
         <div>
           <h1 className="mb-4 flex items-end text-xl">
             <p className="font-semibold">Tour cost</p>
-            <p className="text-sm">/Person</p>
+            <p className="ml-1 text-sm text-grayscale-500">/Person</p>
           </h1>
           <div className="flex items-center">
             <BiDollar className="mr-3 size-8 pt-2" />
             <input
               type="number"
-              value={price}
+              value={price === undefined ? '' : price}
               onChange={handlePriceAdd}
               placeholder="50"
-              className="mt-2 h-[48px] w-full rounded-xl bg-grayscale-50 p-4"
+              className="mt-2 h-[48px] w-full rounded-xl bg-grayscale-50 p-4 web:w-[428px]"
+              onInput={(event) => {
+                let value = event.currentTarget.value;
+                // 숫자가 아닌 문자 제거
+                value = value.replace(/[^0-9]/g, '');
+                // 0으로 시작하면 0을 제거
+                if (value.startsWith('0')) {
+                  value = value.replace(/^0+/, '');
+                }
+                event.currentTarget.value = value;
+              }}
             />
           </div>
         </div>
 
         <button
           type="submit"
-          className="mx-auto my-5 h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-semibold text-white"
+          disabled={isSubmitting}
+          className={`mx-auto my-5 h-14 w-[320px] rounded-2xl web:w-full ${
+            isSubmitting ? 'bg-gray-300' : !handleFormConfirm ? 'bg-primary-100' : 'bg-primary-300'
+          } p-2 text-lg font-semibold text-white`}
         >
-          Done
+          {isSubmitting ? 'Loading...' : 'Done'}
         </button>
       </div>
     </form>
