@@ -30,23 +30,29 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
   const [mapInstance, setMapInstance] = useState<any>(null);
   const params = useParams();
   const postId = Array.isArray(params.id) ? params.id[0] : params.id;
-  const [selectedDay, setSelectedDay] = useState(0);
+  const [selectedDay, setSelectedDay] = useState('Day 1');
 
   const fetchPostAndPlaces = async (postId: string): Promise<PostAndPlacesData> => {
     try {
       const response = await axios.get(`/api/detail/map/${postId}`);
       const data = response.data;
 
-      const parsedPlaces = data.places.map((item: any, index: number) => {
-        return {
-          lat: item.lat,
-          long: item.long,
-          places: item.places,
-          day: item.day || `Day ${index + 1}`
-        };
+      console.log('Fetched Data:', data); // 데이터 확인
+
+      const parsedPlaces: PlaceData[] = data.places.map((item: any) => ({
+        lat: item.lat,
+        long: item.long,
+        places: item.places,
+        day: item.day || 'Unknown Day'
+      }));
+
+      const sortedPlaces = parsedPlaces.sort((a, b) => {
+        const dayA = parseInt(a.day.replace('Day ', ''));
+        const dayB = parseInt(b.day.replace('Day ', ''));
+        return dayA - dayB;
       });
 
-      return { places: parsedPlaces };
+      return { places: sortedPlaces };
     } catch (error) {
       console.error('Error fetching post and places:', error);
       throw error;
@@ -59,62 +65,75 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
   });
 
   useEffect(() => {
-    if (!isScriptLoaded || isLoading || !data || data.places.length === 0) return;
-
-    const initializeMap = () => {
-      const map = new window.naver.maps.Map('map', {
-        center: new window.naver.maps.LatLng(data.places[0].lat[0], data.places[0].long[0]),
-        zoom: 10
-      });
-      setMapInstance(map);
-
-      // 맵 클릭 이벤트 추가
-      window.naver.maps.Event.addListener(map, 'click', () => {
-        map.setCenter(new window.naver.maps.LatLng(data.places[selectedDay].lat[0], data.places[selectedDay].long[0]));
-        map.setZoom(12); // 원하는 줌 레벨로 설정
-      });
-    };
-
-    initializeMap();
-  }, [isScriptLoaded, isLoading, data, selectedDay]);
-
-  useEffect(() => {
-    if (!mapInstance || !data) return;
-
-    if (mapInstance.markers) {
-      mapInstance.markers.forEach((marker: any) => marker.setMap(null));
-    } else {
-      mapInstance.markers = [];
+    if (isScriptLoaded && data && data.places.length > 0) {
+      // 맵과 마커 초기화
+      initializeMap(data);
     }
+  }, [isScriptLoaded, data]);
 
-    const newMarkers = data.places[selectedDay].lat
-      .map((lat: number, index: number) => {
-        if (index < data.places[selectedDay].long.length) {
+  const initializeMap = (data: PostAndPlacesData) => {
+    const map = new window.naver.maps.Map('map', {
+      center: new window.naver.maps.LatLng(data.places[0].lat[0], data.places[0].long[0]),
+      zoom: 10
+    });
+    setMapInstance(map);
+
+    // 맵 클릭 이벤트 추가
+    window.naver.maps.Event.addListener(map, 'click', () => {
+      const selectedPlaceData = data.places.find((place) => place.day === selectedDay);
+      if (selectedPlaceData) {
+        map.setCenter(new window.naver.maps.LatLng(selectedPlaceData.lat[0], selectedPlaceData.long[0]));
+        map.setZoom(12); // 원하는 줌 레벨로 설정
+      }
+    });
+
+    // 초기 마커 설정
+    updateMarkers(
+      map,
+      data.places.find((place) => place.day === 'Day 1')
+    );
+  };
+
+  const updateMarkers = (map: any, selectedPlaceData: PlaceData | undefined) => {
+    if (!map || !selectedPlaceData) return;
+
+    // 기존 마커 제거
+    map.markers?.forEach((marker: any) => marker.setMap(null));
+
+    // 새로운 마커 추가
+    const newMarkers = selectedPlaceData.lat
+      .map((lat, index) => {
+        if (index < selectedPlaceData.long.length) {
           const markerContent = `
           <div class="w-6 h-6 web:w-11 web:h-11 text-white bg-primary-300 flex items-center p-2 justify-center border-2 border-white rounded-full">
-          ${index + 1}
-        </div>
+            ${index + 1}
+          </div>
         `;
-          const marker = new window.naver.maps.Marker({
-            position: new window.naver.maps.LatLng(lat, data.places[selectedDay].long[index]),
-            map: mapInstance,
-            title: data.places[selectedDay].places[index].title,
+          return new window.naver.maps.Marker({
+            position: new window.naver.maps.LatLng(lat, selectedPlaceData.long[index]),
+            map: map,
+            title: selectedPlaceData.places[index].title,
             icon: {
               content: markerContent,
               anchor: new window.naver.maps.Point(12, 12)
             }
           });
-          return marker;
         }
       })
       .filter((marker) => marker !== undefined);
 
-    mapInstance.markers = newMarkers;
+    map.markers = newMarkers;
+  };
+
+  useEffect(() => {
+    if (mapInstance && data && selectedDay) {
+      const selectedPlaceData = data.places.find((place) => place.day === selectedDay);
+      updateMarkers(mapInstance, selectedPlaceData);
+    }
   }, [mapInstance, data, selectedDay]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading map data</div>;
-
   if (!data) return <div>No data available</div>;
 
   return (
@@ -129,12 +148,12 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
       ></div>
 
       <div className="my-6 flex gap-2 text-xs font-medium web:my-20 web:gap-5 web:text-xl">
-        {data.places.map((place, index) => (
+        {data.places.map((place) => (
           <button
-            key={index}
-            onClick={() => setSelectedDay(index)}
+            key={place.day}
+            onClick={() => setSelectedDay(place.day)}
             className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${
-              selectedDay === index ? 'bg-primary-300 text-white' : 'bg-grayscale-50'
+              selectedDay === place.day ? 'bg-primary-300 text-white' : 'bg-grayscale-50'
             }`}
           >
             {place.day}
@@ -144,27 +163,28 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
 
       <div className={`flex flex-col gap-4 web:flex web:gap-x-20`}>
         <div className="flex flex-col gap-4">
-          {data?.places[selectedDay].places.map((place, index) => (
-            <div key={index} className="relative flex items-start">
-              <div className="flex flex-col items-center">
-                <div className="z-10 flex h-6 w-6 items-center justify-center rounded-full bg-primary-300 text-sm font-medium text-white web:h-11 web:w-11 web:text-2xl">
-                  {index + 1}
+          {data.places
+            .find((place) => place.day === selectedDay)
+            ?.places.map((place, index) => (
+              <div key={index} className="relative flex items-start">
+                <div className="flex flex-col items-center">
+                  <div className="z-10 flex h-6 w-6 items-center justify-center rounded-full bg-primary-300 text-sm font-medium text-white web:h-11 web:w-11 web:text-2xl">
+                    {index + 1}
+                  </div>
+                  {index < data.places.find((place) => place.day === selectedDay)!.places.length - 1 && (
+                    <div className="absolute top-6 mb-8 h-full w-px bg-grayscale-100"></div>
+                  )}
                 </div>
-                {/* 마지막 요소가 아닌 경우에만 <hr> 렌더링 */}
-                {index < data?.places[selectedDay].places.length - 1 && (
-                  <div className="absolute top-6 mb-8 h-full w-px bg-grayscale-100"></div>
-                )}
+                <div className="ml-3 flex w-full flex-col gap-1 rounded-lg bg-white px-4 py-3 shadow-custom-box web:mb-10 web:ml-12 web:p-6">
+                  <h2 className="text-sm font-semibold web:text-xl">
+                    {place.title ? place.title.replace(/<\/?[^>]+(>|$)/g, '') : ''}
+                  </h2>
+                  <p className="text-xs text-gray-500 web:text-base">{place.category}</p>
+                  <hr className="my-2 h-[1px] w-full bg-grayscale-100 web:my-4" />
+                  <p className="text-xs font-normal text-gray-700 web:text-lg">{place.description}</p>
+                </div>
               </div>
-              <div className="ml-3 flex w-full flex-col gap-1 rounded-lg bg-white px-4 py-3 shadow-custom-box web:mb-10 web:ml-12 web:p-6">
-                <h2 className="text-sm font-semibold web:text-xl">
-                  {place.title ? place.title.replace(/<\/?[^>]+(>|$)/g, '') : ''}
-                </h2>
-                <p className="text-xs text-gray-500 web:text-base">{place.category}</p>
-                <hr className="my-2 h-[1px] w-full bg-grayscale-100 web:my-4" />
-                <p className="text-xs font-normal text-gray-700 web:text-lg">{place.description}</p>
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
 
