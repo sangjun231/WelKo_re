@@ -6,6 +6,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import { API_MYPAGE_RESERVATION, API_MYPAGE_REVIEWS } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
 import { formatDateRange } from '@/utils/detail/functions';
@@ -21,6 +23,7 @@ const getReviewsData = async (userId: string) => {
 };
 
 export default function ReservationList() {
+  const MySwal = withReactContent(Swal);
   const params = useParams();
   const router = useRouter();
   const userId = Array.isArray(params.id) ? params.id[0] : params.id;
@@ -29,7 +32,8 @@ export default function ReservationList() {
   const {
     data: reservationsData,
     error,
-    isPending
+    isPending,
+    refetch
   } = useQuery<
     (Tables<'payments'> & {
       users: { id: string };
@@ -82,7 +86,7 @@ export default function ReservationList() {
     router.push(`/${userId}/${postAuthorId}/chatpage?${query}`);
   };
 
-  const handleChangeTour = async (paymentId: string, postId: string) => {
+  const handleChangeReservation = async (paymentId: string, postId: string) => {
     const confirmed = window.confirm('Are you sure you want to change your reservation?');
     if (confirmed) {
       try {
@@ -101,16 +105,34 @@ export default function ReservationList() {
     }
   };
 
-  const handleCancelRequest = async (paymentId: string) => {
-    try {
-      const response = await axios.post(`/api/detail/payment/${paymentId}`, {
-        reason: 'User requested cancel',
-        requester: 'CUSTOMER'
-      });
-      alert(response.data.message);
-      reviewsQuery.refetch();
-    } catch (error) {
-      alert('Cancel request failed.');
+  const handleCancelReservation = async (paymentId: string) => {
+    const result = await MySwal.fire({
+      title: 'Do you want to cancel your reservation?',
+      text: 'If you cancel, you will get a full refund',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Cancel Tour',
+      cancelButtonText: 'No thanks',
+      customClass: {
+        actions: 'flex flex-col gap-[8px] w-full',
+        title: 'font-semibold text-[18px]',
+        htmlContainer: 'text-grayscale-500 text-[14px]',
+        popup: 'rounded-[16px] p-[24px]',
+        confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]',
+        cancelButton: 'bg-white text-[16px] p-[12px] w-full rounded-[12px] text-grayscale-700'
+      }
+    });
+    if (result.isConfirmed) {
+      try {
+        await axios.post(`/api/detail/payment/${paymentId}`, {
+          reason: 'User requested cancel',
+          requester: 'CUSTOMER'
+        });
+        MySwal.fire('Deleted!', 'Your post has been deleted.', 'success');
+        refetch();
+      } catch (error) {
+        MySwal.fire('Failed!', 'Failed to delete post.', 'error');
+      }
     }
   };
 
@@ -149,14 +171,14 @@ export default function ReservationList() {
         const review = reviews.find((review) => review.post_id === post.id);
 
         return (
-          <div key={`${post.id}-${index}`} className="web:mb-[40px] web:pb-[40px] mb-[20px] border-b pb-[20px]">
+          <div key={`${post.id}-${index}`} className="mb-[20px] border-b pb-[20px] web:mb-[40px] web:pb-[40px]">
             <div className="flex justify-between">
               <div>
-                <p className="web:text-[21px] text-[14px] font-semibold text-grayscale-900">
+                <p className="text-[14px] font-semibold text-grayscale-900 web:text-[21px]">
                   {new Date(reservation.created_at).toLocaleDateString()}
                 </p>
                 <p
-                  className={`web:text-[21px] text-[14px] font-medium ${
+                  className={`text-[14px] font-medium web:text-[21px] ${
                     status === 'Upcoming Tour'
                       ? 'text-primary-300'
                       : status === 'Refunded'
@@ -168,7 +190,7 @@ export default function ReservationList() {
                 </p>
               </div>
               <Link className="flex items-center" href={`/detail/payment/history/${paymentId}`}>
-                <p className="web:text-[18px] text-[14px] font-semibold text-primary-300">Detail</p>
+                <p className="text-[14px] font-semibold text-primary-300 web:text-[18px]">Detail</p>
                 <Image
                   className="web:h-[24px] web:w-[24px]"
                   src="/icons/tabler-icon-chevron-right-pr300.svg"
@@ -179,24 +201,24 @@ export default function ReservationList() {
               </Link>
             </div>
             <Link href={`/detail/${post.id}`}>
-              <div className="web:my-[24px] my-[12px] flex">
-                <div className="web:max-h-[120px] web:min-h-[120px] web:min-w-[120px] web:max-w-[120px] max-h-[80px] min-h-[80px] min-w-[80px] max-w-[80px]">
+              <div className="my-[12px] flex web:my-[24px]">
+                <div className="max-h-[80px] min-h-[80px] min-w-[80px] max-w-[80px] web:max-h-[120px] web:min-h-[120px] web:min-w-[120px] web:max-w-[120px]">
                   <Image
-                    className="web:h-[120px] web:w-[120px] web:rounded-[12px] h-[80px] w-[80px] rounded-[8px]"
+                    className="h-[80px] w-[80px] rounded-[8px] web:h-[120px] web:w-[120px] web:rounded-[12px]"
                     src={post.image ?? '/icons/upload.png'}
                     alt={post.title ?? 'Default title'}
                     width={80}
                     height={80}
                   />
                 </div>
-                <div className="web:ml-[16px] ml-[8px] flex flex-col gap-[4px]">
-                  <p className="web:text-[21px] line-clamp-1 text-[14px] font-semibold text-primary-900">
+                <div className="ml-[8px] flex flex-col gap-[4px] web:ml-[16px]">
+                  <p className="line-clamp-1 text-[14px] font-semibold text-primary-900 web:text-[21px]">
                     {post.title ?? 'No Title'}
                   </p>
-                  <p className="web:text-[18px] text-[14px] text-grayscale-500">
+                  <p className="text-[14px] text-grayscale-500 web:text-[18px]">
                     {formatDateRange(post.startDate, post.endDate)}
                   </p>
-                  <p className="web:text-[18px] text-[13px] font-medium text-gray-700">
+                  <p className="text-[13px] font-medium text-gray-700 web:text-[18px]">
                     <span className="font-semibold text-primary-300">{formatPrice(post.price)}</span>
                     /Person
                   </p>
@@ -205,18 +227,18 @@ export default function ReservationList() {
             </Link>
             {status === 'Upcoming Tour' ? (
               <div>
-                <div className="web:mb-[24px] web:gap-[24px] mb-[12px] flex gap-[8px]">
+                <div className="mb-[12px] flex gap-[8px] web:mb-[24px] web:gap-[24px]">
                   <button
-                    className="web:rounded-[16px] web:p-[16px] web:text-[18px] flex-1 rounded-[8px] border p-[8px] text-[14px] font-semibold text-grayscale-700"
-                    onClick={() => handleChangeTour(paymentId, post.id)}
+                    className="flex-1 rounded-[8px] border p-[8px] text-[14px] font-semibold text-grayscale-700 web:rounded-[16px] web:p-[16px] web:text-[18px]"
+                    onClick={() => handleChangeReservation(paymentId, post.id)}
                   >
                     Change Tour
                   </button>
                   <button
-                    className="web:rounded-[16px] web:p-[16px] web:text-[18px] flex-1 rounded-[8px] border bg-primary-300 p-[8px] text-[14px] font-semibold text-white"
+                    className="flex-1 rounded-[8px] border bg-primary-300 p-[8px] text-[14px] font-semibold text-white web:rounded-[16px] web:p-[16px] web:text-[18px]"
                     onClick={() => {
                       if (paymentId) {
-                        handleCancelRequest(paymentId);
+                        handleCancelReservation(paymentId);
                       }
                     }}
                   >
@@ -224,7 +246,7 @@ export default function ReservationList() {
                   </button>
                 </div>
                 <button
-                  className="web:rounded-[16px] web:p-[16px] web:text-[18px] w-full rounded-[8px] border p-[8px] text-[14px] font-semibold text-grayscale-700"
+                  className="w-full rounded-[8px] border p-[8px] text-[14px] font-semibold text-grayscale-700 web:rounded-[16px] web:p-[16px] web:text-[18px]"
                   onClick={() => handleChat(post)}
                 >
                   Message Guide
@@ -232,14 +254,14 @@ export default function ReservationList() {
               </div>
             ) : status === 'Refunded' ? (
               <button
-                className="web:rounded-[16px] web:p-[16px] web:text-[18px] w-full rounded-[8px] border p-[8px] text-[14px] font-semibold text-grayscale-700"
+                className="w-full rounded-[8px] border p-[8px] text-[14px] font-semibold text-grayscale-700 web:rounded-[16px] web:p-[16px] web:text-[18px]"
                 onClick={() => handleChat(post)}
               >
                 Message Guide
               </button>
             ) : (
               <button
-                className="web:rounded-[16px] web:p-[16px] web:text-[18px] w-full rounded-[8px] border p-[8px] text-[14px] font-semibold text-grayscale-700"
+                className="w-full rounded-[8px] border p-[8px] text-[14px] font-semibold text-grayscale-700 web:rounded-[16px] web:p-[16px] web:text-[18px]"
                 onClick={() => {
                   handleReviewAction(post.id, review?.id);
                 }}
