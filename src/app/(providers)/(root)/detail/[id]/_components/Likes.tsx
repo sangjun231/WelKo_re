@@ -13,6 +13,7 @@ import IconHome from '/public/icons/navbar_icons/icon_home.svg';
 import { WebProps } from '@/types/webstate';
 import WriteBtn from '/public/icons/tabler-icon-pencil.svg';
 import DeleteBtn from '/public/icons/tabler-icon-trash.svg';
+import Swal from 'sweetalert2';
 
 const Likes = ({ isWeb }: WebProps) => {
   const { id: postId } = useParams<{ id: string }>();
@@ -38,13 +39,26 @@ const Likes = ({ isWeb }: WebProps) => {
       return;
     }
     toggleLike(postId, user.id);
+    if (liked) {
+      Swal.fire({
+        title: 'You have removed this post from your favorites!',
+        icon: 'info',
+        confirmButtonText: 'OK'
+      });
+    } else {
+      Swal.fire({
+        title: 'You have added this post to your favorites!',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+    }
   };
 
   const handleDelete = DeletePost();
 
   return (
     <div className="web:top-12 web:px-[88px] absolute left-0 right-0 top-2 z-10 flex items-center justify-between px-4">
-      <BackButton/>
+      <BackButton />
       <div className="web:gap-10 flex gap-4">
         {post &&
           user &&
