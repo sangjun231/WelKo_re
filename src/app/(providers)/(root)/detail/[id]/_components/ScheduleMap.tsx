@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
 import { useNaverMapScript } from '@/hooks/Map/useNaverMapScript';
 import { WebProps } from '@/types/webstate';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 interface Place {
   title: string;
@@ -148,7 +148,7 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
         {data.places.length > 3 && (
           <button
             onClick={() => setSelectedDay(3)}
-            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 3 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
           >
             Day 4
           </button>
@@ -156,7 +156,7 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
         {data.places.length > 4 && (
           <button
             onClick={() => setSelectedDay(4)}
-            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 4 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
           >
             Day 5
           </button>
@@ -164,7 +164,7 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
         {data.places.length > 5 && (
           <button
             onClick={() => setSelectedDay(5)}
-            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 5 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
           >
             Day 6
           </button>
@@ -172,7 +172,7 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
         {data.places.length > 6 && (
           <button
             onClick={() => setSelectedDay(6)}
-            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 6 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
           >
             Day 7
           </button>
