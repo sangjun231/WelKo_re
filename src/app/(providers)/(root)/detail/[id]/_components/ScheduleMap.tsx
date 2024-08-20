@@ -17,6 +17,7 @@ interface PlaceData {
   lat: number[];
   long: number[];
   places: Place[];
+  day: string;
 }
 
 interface PostAndPlacesData {
@@ -36,11 +37,12 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
       const response = await axios.get(`/api/detail/map/${postId}`);
       const data = response.data;
 
-      const parsedPlaces = data.places.map((item: any) => {
+      const parsedPlaces = data.places.map((item: any, index: number) => {
         return {
           lat: item.lat,
           long: item.long,
-          places: item.places
+          places: item.places,
+          day: item.day || `Day ${index + 1}`
         };
       });
 
@@ -127,62 +129,17 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
       ></div>
 
       <div className="my-6 flex gap-2 text-xs font-medium web:my-20 web:gap-5 web:text-xl">
-        {data.places.length > 0 && (
+        {data.places.map((place, index) => (
           <button
-            onClick={() => setSelectedDay(0)}
-            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 0 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+            key={index}
+            onClick={() => setSelectedDay(index)}
+            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${
+              selectedDay === index ? 'bg-primary-300 text-white' : 'bg-grayscale-50'
+            }`}
           >
-            Day 1
+            {place.day}
           </button>
-        )}
-        {data.places.length > 1 && (
-          <button
-            onClick={() => setSelectedDay(1)}
-            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 1 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
-          >
-            Day 2
-          </button>
-        )}
-        {data.places.length > 2 && (
-          <button
-            onClick={() => setSelectedDay(2)}
-            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
-          >
-            Day 3
-          </button>
-        )}
-        {data.places.length > 3 && (
-          <button
-            onClick={() => setSelectedDay(3)}
-            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 3 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
-          >
-            Day 4
-          </button>
-        )}
-        {data.places.length > 4 && (
-          <button
-            onClick={() => setSelectedDay(4)}
-            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 4 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
-          >
-            Day 5
-          </button>
-        )}
-        {data.places.length > 5 && (
-          <button
-            onClick={() => setSelectedDay(5)}
-            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 5 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
-          >
-            Day 6
-          </button>
-        )}
-        {data.places.length > 6 && (
-          <button
-            onClick={() => setSelectedDay(6)}
-            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 6 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
-          >
-            Day 7
-          </button>
-        )}
+        ))}
       </div>
 
       <div className={`flex flex-col gap-4 web:flex web:gap-x-20`}>
