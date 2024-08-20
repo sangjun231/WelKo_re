@@ -157,10 +157,9 @@ export default function PaySuccess() {
       text: 'This action cannot be undone.',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      confirmButtonColor: '#B95FAB',
       confirmButtonText: 'Yes, cancel it!',
-      cancelButtonText: 'No, keep it'
+      cancelButtonText: 'No, thanks'
     }).then((result) => {
       if (result.isConfirmed) {
         handleCancelRequest();
