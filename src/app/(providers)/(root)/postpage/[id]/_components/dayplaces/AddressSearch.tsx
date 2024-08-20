@@ -23,6 +23,7 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [cleanHTML, setCleanHTML] = useState<string>('');
   const [selectedSearch, setSelectedSearch] = useState<Place[]>([]);
+  const [hasSearched, setHasSearched] = useState(false);
 
   // 검색 결과에 적용된 태그 없애기
   useEffect(() => {
@@ -62,6 +63,7 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
       });
 
       setSearchResults(places); // 검색 결과를 배열로 설정
+      setHasSearched(true);
     } catch (error) {
       console.error('Error searching places:', error);
     }
@@ -69,11 +71,15 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       searchPlaces();
+    } else if (event.key === 'Backspace' && searchQuery.length <= 1) {
+      // Backspace 키가 눌렸고, 검색어가 비어가고 있는 경우
+      setHasSearched(false);
     }
   };
   const searchValueinit = () => {
     setSearchQuery('');
     setSearchResults([]);
+    setHasSearched(false);
   };
 
   // 선택한 장소 목록에 추가 (선택버튼)
@@ -93,10 +99,6 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
     sessionStorage.setItem(selectedDay, JSON.stringify(places));
     prev();
   };
-
-  // const storedPlaces = sessionStorage.getItem(selectedDay);
-  // const keys = Object.keys(sessionStorage);
-  // const storedPlacesKey = keys.find((key) => sessionStorage.getItem(key) === storedPlaces);
 
   return (
     <div className="flex flex-col web:w-[360px]">
@@ -118,7 +120,7 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
             placeholder={`Select ${selectedDay} Place`}
             className="h-[48px] w-full bg-grayscale-50 p-4"
           />
-          {searchResults.length > 0 ? (
+          {hasSearched && searchResults.length > 0 ? (
             <button onClick={searchValueinit}>
               <IoCloseOutline className="size-6 text-grayscale-500" />
             </button>
@@ -169,13 +171,13 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
         </div>
       )}
       {!selectedPlace ? (
-        <button className="fixed bottom-28 left-0 right-0 mx-auto my-5 h-14 w-[320px] cursor-default rounded-2xl bg-primary-100 p-2 text-lg font-medium text-white web:absolute web:bottom-9 web:left-5 web:right-auto">
+        <button className="absolute bottom-7 left-0 right-0 mx-auto my-5 h-14 w-[320px] cursor-default rounded-2xl bg-primary-100 p-2 text-lg font-medium text-white web:absolute web:bottom-9 web:left-5 web:right-auto">
           Select
         </button>
       ) : (
         <button
           onClick={handlePlaceSave}
-          className="fixed bottom-28 left-0 right-0 mx-auto my-5 h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-medium text-white web:absolute web:bottom-9 web:left-5 web:right-auto"
+          className="absolute bottom-7 left-0 right-0 mx-auto my-5 h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-medium text-white web:absolute web:bottom-9 web:left-5 web:right-auto"
         >
           Select
         </button>

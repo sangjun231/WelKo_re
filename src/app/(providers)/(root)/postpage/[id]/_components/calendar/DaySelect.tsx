@@ -1,6 +1,8 @@
 import { addMonths, endOfMonth, endOfWeek, isAfter, isBefore, startOfDay, startOfMonth, startOfWeek } from 'date-fns';
 import React from 'react';
 import toast from 'react-hot-toast';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import { MonthCalendar } from './MonthCalendar';
 
 interface DaySelectProps {
@@ -20,6 +22,7 @@ const DaySelect: React.FC<DaySelectProps> = ({
   setStartDate,
   setEndDate
 }) => {
+  const MySwal = withReactContent(Swal);
   const today = startOfDay(new Date());
 
   if (!(selectedMonth instanceof Date) || isNaN(selectedMonth.getTime())) {
@@ -76,7 +79,17 @@ const DaySelect: React.FC<DaySelectProps> = ({
             }
           });
         } else {
-          alert('You cannot select more than 7 days!'); // Web 환경
+          // Web 환경
+          MySwal.fire({
+            title: 'You cannot select more than 7 days!',
+            icon: 'warning',
+            customClass: {
+              actions: 'flex flex-col gap-[8px] w-full',
+              title: 'font-semibold text-[18px]',
+              popup: 'rounded-[16px] p-[24px]',
+              confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]'
+            }
+          });
         }
         setEndDate(null); // 7일을 초과하면 선택 해제
       }

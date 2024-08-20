@@ -5,6 +5,8 @@ import { addMonths, format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { PiCalendarDots } from 'react-icons/pi';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import DateSaveButton from './DateSaveButton';
 import DaySelect from './DaySelect';
 
@@ -14,6 +16,7 @@ interface CalendarProps {
 }
 
 const Calendar = ({ next, postId }: CalendarProps) => {
+  const MySwal = withReactContent(Swal);
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -74,7 +77,8 @@ const Calendar = ({ next, postId }: CalendarProps) => {
             }
           });
         } else {
-          alert('Please select a date'); // Web 환경
+          // Web 환경
+          MySwal.fire({ title: 'Please select a date', icon: 'warning' });
         }
       }
     } catch (error) {

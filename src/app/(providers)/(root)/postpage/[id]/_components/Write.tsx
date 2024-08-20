@@ -11,6 +11,8 @@ import { BiDollar } from 'react-icons/bi';
 import { IoChevronBack, IoCloseOutline } from 'react-icons/io5';
 import { LuUsers } from 'react-icons/lu';
 import { TbPhoto } from 'react-icons/tb';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 const Write = ({
   goToStep2,
@@ -52,6 +54,7 @@ const Write = ({
   const startDate = sessionStorage.getItem('startDate');
   const endDate = sessionStorage.getItem('endDate');
   const isMobile = window.innerWidth < 768;
+  const MySwal = withReactContent(Swal);
 
   useEffect(() => {
     const fetchPlaces = async () => {
@@ -104,7 +107,18 @@ const Write = ({
           }
         });
       } else {
-        alert(`Please fill in "${missingFieldsString}"`); // Web 환경
+        // Web 환경
+        MySwal.fire({
+          title: 'Please fill in',
+          text: `"${missingFieldsString}"`,
+          icon: 'warning',
+          customClass: {
+            actions: 'flex flex-col gap-[8px] w-full',
+            title: 'font-semibold text-[18px]',
+            popup: 'rounded-[16px] p-[24px]',
+            confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]'
+          }
+        });
       }
       return false;
     }
@@ -214,7 +228,17 @@ const Write = ({
             }
           });
         } else {
-          alert('You can select up to 4 tags.'); // Web 환경
+          // Web 환경
+          MySwal.fire({
+            title: 'You can select up to 4 tags.',
+            icon: 'warning',
+            customClass: {
+              actions: 'flex flex-col gap-[8px] w-full',
+              title: 'font-semibold text-[18px]',
+              popup: 'rounded-[16px] p-[24px]',
+              confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]'
+            }
+          });
         }
       }
     }
@@ -249,7 +273,7 @@ const Write = ({
     mutationFn: savePlaces,
     onError: (error) => {
       console.error('Error saving places:', error);
-      alert('Failed to save places.');
+      MySwal.fire({ title: 'Failed to save places.', icon: 'error' });
     }
   });
   // 전체 데이터 수정
@@ -267,7 +291,7 @@ const Write = ({
     mutationFn: updatePlaces,
     onError: (error) => {
       console.error('Error saving places:', error);
-      alert('Failed to save places.');
+      MySwal.fire({ title: 'Failed to save places.', icon: 'error' });
     }
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -359,7 +383,18 @@ const Write = ({
         }
       });
     } else {
-      alert('Saved!'); // Web 환경
+      //web 환경
+      MySwal.fire({
+        title: 'Saved!',
+        text: 'Your post has been Saved.',
+        icon: 'success',
+        customClass: {
+          actions: 'flex flex-col gap-[8px] w-full',
+          title: 'font-semibold text-[18px]',
+          popup: 'rounded-[16px] p-[24px]',
+          confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]'
+        }
+      });
     }
     router.replace('/');
   };
