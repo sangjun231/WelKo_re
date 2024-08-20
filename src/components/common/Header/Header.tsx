@@ -78,7 +78,7 @@ function Header() {
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <div onClick={handleHomeNavigation} className="ml-[88px] cursor-pointer">
-              <Image src="/icons/WelKo LOGO(124x20).png" alt="WelKo Logo" width={124} height={20} />
+              <Image src="/icons/WelKo LOGO(991x160).png" alt="WelKo Logo" width={124} height={20} />
             </div>
 
             <div className="ml-6" style={{ width: '372px' }}>
