@@ -57,11 +57,11 @@ export default function PostList() {
 
   const handleDelete = async (postId: string) => {
     const result = await MySwal.fire({
-      title: 'Do you want to cancel your tour?',
-      text: 'If you cancel, you will get a full refund',
+      title: 'Do you want to delete your post?',
+      text: 'If you delete, you can always rewrite it later',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Cancel Tour',
+      confirmButtonText: 'Delete Post',
       cancelButtonText: 'No thanks',
       customClass: {
         actions: 'flex flex-col gap-[8px] w-full',
@@ -75,9 +75,9 @@ export default function PostList() {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete('/api/post', { data: { post_id: postId } });
+        await axios.delete(API_MYPAGE_POST(userId), { data: { post_id: postId } });
         MySwal.fire('Deleted!', 'Your post has been deleted.', 'success');
-        router.replace('/');
+        refetch();
       } catch (error) {
         MySwal.fire('Failed!', 'Failed to delete post.', 'error');
       }
