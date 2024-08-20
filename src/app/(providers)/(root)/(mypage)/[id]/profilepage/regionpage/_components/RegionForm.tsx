@@ -4,10 +4,13 @@ import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import { translateAddress } from '@/utils/post/postData';
 
 const RegionForm = () => {
+    const MySwal = withReactContent(Swal);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [position, setPosition] = useState<{ latitude: number; longitude: number } | null>(null);
   const [region, setRegion] = useState<string | null>(null);
@@ -94,7 +97,19 @@ const RegionForm = () => {
   };
 
   const handleSave = async () => {
-    if (region && userId) {
+        const result = await MySwal.fire({
+          title: 'Location updated successfully',
+          icon: 'success',
+          confirmButtonText: 'Done',
+          customClass: {
+            actions: 'flex flex-col gap-[8px] w-full',
+            title: 'font-semibold text-[18px]',
+            popup: 'rounded-[16px] p-[24px]',
+            confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]'
+          }
+        });
+    
+    if (region && userId && result.isConfirmed) {
       await axios.put(API_MYPAGE_PROFILE(userId), {
         region: translatedRegion || region
       });
