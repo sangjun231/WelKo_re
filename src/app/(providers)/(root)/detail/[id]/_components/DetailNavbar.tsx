@@ -82,46 +82,46 @@ const DetailNavbar = () => {
   };
 
   return (
-    <div className="web:mt-28 fixed bottom-0 left-0 z-10 w-full bg-white">
+    <div className="fixed bottom-0 left-0 z-10 w-full bg-white web:mt-28">
       {pathname.includes('reservation') ? (
-        <div className="border-t-1 web:px-[88px] web:h-[133px] h-20 w-full border-grayscale-100 px-5 shadow-custom-navbar">
+        <div className="border-t-1 h-20 w-full border-grayscale-100 px-5 shadow-custom-navbar web:h-[133px] web:px-[88px]">
           <div className="flex h-full items-center justify-between">
-            <div className="web:gap-y-2.5 flex flex-1 flex-col justify-center">
-              <div className="web:text-4xl flex items-center text-lg">
-                <span className="font-semibold text-grayscale-900">${totalAmount.toFixed(2)}</span>
+            <div className="flex flex-1 flex-col justify-center web:gap-y-2.5">
+              <div className="flex items-center text-lg web:text-4xl">
+                <span className="font-semibold text-grayscale-900">${totalAmount}</span>
                 <span className="font-medium text-grayscale-600">/Total</span>
               </div>
               <div className="flex justify-start">
-                <p className="web:text-xl web:text-grayscale-600 text-xs font-medium text-grayscale-900">
+                <p className="text-xs font-medium text-grayscale-900 web:text-xl web:text-grayscale-600">
                   {formatDateRange(post?.startDate ?? null, post?.endDate ?? null)}
                 </p>
               </div>
             </div>
             <button
               onClick={handlePaymentClick}
-              className="web:px-6 web:py-4 web:text-xl flex max-w-[480px] flex-1 items-center justify-center rounded-xl bg-primary-300 px-5 py-3 text-base font-semibold text-white"
+              className="flex max-w-[480px] flex-1 items-center justify-center rounded-xl bg-primary-300 px-5 py-3 text-base font-semibold text-white web:px-6 web:py-4 web:text-xl"
             >
               Confirm and Pay
             </button>
           </div>
         </div>
       ) : (
-        <div className="border-t-1 web:px-[88px] web:h-[133px] h-20 w-full border-grayscale-100 px-5 shadow-custom-navbar">
+        <div className="border-t-1 h-20 w-full border-grayscale-100 px-5 shadow-custom-navbar web:h-[133px] web:px-[88px]">
           <div className="flex h-full items-center justify-between">
-            <div className="web:gap-2.5 flex flex-1 flex-col justify-center">
-              <div className="web:text-4xl flex items-center text-lg">
-                <span className="font-semibold text-primary-300">${post?.price.toFixed(2)}</span>
+            <div className="flex flex-1 flex-col justify-center web:gap-2.5">
+              <div className="flex items-center text-lg web:text-4xl">
+                <span className="font-semibold text-primary-300">${post?.price}</span>
                 <span className="font-medium text-grayscale-600">/Person</span>
               </div>
               <div className="flex justify-start">
-                <p className="web:text-xl text-xs font-medium text-grayscale-900">
+                <p className="text-xs font-medium text-grayscale-900 web:text-xl">
                   {formatDateRange(post?.startDate ?? null, post?.endDate ?? null)}
                 </p>
               </div>
             </div>
             <button
               onClick={handleReserveClick}
-              className="web:px-6 web:py-4 web:text-xl flex max-w-[480px] flex-1 items-center justify-center rounded-xl bg-primary-300 px-5 py-3 text-base font-semibold text-white"
+              className="flex max-w-[480px] flex-1 items-center justify-center rounded-xl bg-primary-300 px-5 py-3 text-base font-semibold text-white web:px-6 web:py-4 web:text-xl"
             >
               Reserve
             </button>
