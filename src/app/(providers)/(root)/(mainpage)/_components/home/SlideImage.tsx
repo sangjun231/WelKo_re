@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import Search from '@/components/common/Search/Search';
+import { createClient } from '@/utils/supabase/client';
 
 const images = [
   { src: '/img/main.jpeg', webpSrc: '/img/main.webp', alt: 'Main Image' },
@@ -15,14 +16,16 @@ const images = [
 ];
 
 const SlideImage: React.FC = () => {
+  const supabase = createClient();
+  const router = useRouter();
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
-  const [uuid, setUuid] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsDesktop(window.innerWidth >= 768); // 화면 너비가 768px 이상일 때 데스크탑으로 간주
+      setIsDesktop(window.innerWidth >= 768);
     };
 
     window.addEventListener('resize', handleResize);
@@ -32,22 +35,46 @@ const SlideImage: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const checkSession = async () => {
+      const {
+        data: { session }
+      } = await supabase.auth.getSession();
+      setIsLoggedIn(session !== null);
+    };
+
+    checkSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsLoggedIn(session !== null);
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [supabase.auth]);
+
+  useEffect(() => {
     if (isDesktop) {
       const interval = setInterval(() => {
         setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-      }, 5000); // 5초마다 이미지 전환
+      }, 5000);
 
       return () => clearInterval(interval);
     }
   }, [isDesktop]);
 
-  useEffect(() => {
-    setUuid(uuidv4());
-  }, []);
+  const handleTourButtonClick = () => {
+    const uuid = uuidv4();
+    if (isLoggedIn) {
+      router.push(`/postpage/${uuid}`);
+    } else {
+      // 알림창 필요할듯?
+      router.push('/login');
+    }
+  };
 
   return (
     <div className="relative">
-      {/* 로딩 상태를 기반으로 콘텐츠 숨기기 */}
       {isLoading && <div className="absolute inset-0 bg-transparent" />}
       {isDesktop ? (
         <div style={{ width: '100%', height: '560px', overflow: 'hidden' }}>
@@ -78,7 +105,7 @@ const SlideImage: React.FC = () => {
           style={{
             display: isLoading ? 'none' : 'block',
             width: '100%',
-            height: '100%'
+            height: '216px'
           }}
           priority
           onLoad={() => setIsLoading(false)}
@@ -105,8 +132,11 @@ const SlideImage: React.FC = () => {
             <br />
             of a local guide living in Korea
           </div>
-          <Link href={`/postpage/${uuid}`} className="w-[220px]">
-            <button className="flex items-center rounded-2xl bg-[#B95FAB] px-6 py-4 text-lg font-semibold">
+          <div className="w-[220px]">
+            <button
+              onClick={handleTourButtonClick}
+              className="flex items-center rounded-2xl bg-[#B95FAB] px-6 py-4 text-lg font-semibold"
+            >
               Make Your Tour
               <Image
                 src="/icons/tabler-icon-whtiepencil.svg"
@@ -116,10 +146,9 @@ const SlideImage: React.FC = () => {
                 className="ml-1"
               />
             </button>
-          </Link>
+          </div>
         </div>
       )}
-
       {!isDesktop && (
         <div className="absolute bottom-3 left-0 block flex w-full justify-center px-5 md:hidden">
           <Search />
