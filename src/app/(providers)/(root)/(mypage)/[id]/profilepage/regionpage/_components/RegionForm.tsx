@@ -156,8 +156,8 @@ const RegionForm = () => {
             style={{ width: '24px', height: '24px' }}
           />
         </button>
-        <p className="text-[18px] font-semibold">Location</p>
-        <button className="text-[14px] font-medium text-action-color" onClick={handleSave}>
+        <p className="web:text-[32px] text-[18px] font-semibold">Location</p>
+        <button className="web:text-[24px] text-[14px] font-medium text-action-color" onClick={handleSave}>
           Done
         </button>
       </div>

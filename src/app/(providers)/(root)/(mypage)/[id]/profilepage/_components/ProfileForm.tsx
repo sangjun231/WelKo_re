@@ -106,8 +106,8 @@ const ProfileForm = ({ userId }: { userId: string }) => {
                 style={{ width: '24px', height: '24px' }}
               />
             </button>
-            <p className="text-[18px] font-semibold text-primary-900">Edit Profile</p>
-            <button className="text-[14px] font-medium text-action-color" onClick={handleProfileUpdate}>
+            <p className="text-[18px] font-semibold text-primary-900 web:text-[32px]">Edit Profile</p>
+            <button className="text-[14px] font-medium text-action-color web:text-[24px]" onClick={handleProfileUpdate}>
               Done
             </button>
           </div>
