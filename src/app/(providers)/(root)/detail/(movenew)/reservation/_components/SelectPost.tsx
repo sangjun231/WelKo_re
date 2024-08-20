@@ -9,6 +9,7 @@ import useAuthStore from '@/zustand/bearsStore';
 import LikeBtn from '/public/icons/tabler-icon-post-heart.svg';
 import { useLikeStore } from '@/zustand/likeStore';
 import { useWebStore } from '@/zustand/webStateStore';
+import Swal from 'sweetalert2';
 
 const SelectPost = () => {
   const { isWeb, setIsWeb } = useWebStore();
@@ -32,6 +33,19 @@ const SelectPost = () => {
   const handleLike = () => {
     if (post?.id && user?.id) {
       toggleLike(post.id, user.id);
+      if (liked) {
+        Swal.fire({
+          title: 'You have removed this post from your favorites!',
+          icon: 'info',
+          confirmButtonText: 'OK'
+        });
+      } else {
+        Swal.fire({
+          title: 'You have added this post to your favorites!',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
+      }
     }
   };
 
