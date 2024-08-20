@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { API_MYPAGE_PROFILE, API_POST_DETAILS } from '@/utils/apiConstants';
 import { WebProps } from '@/types/webstate';
+import Swal from 'sweetalert2';
 
 interface User {
   name: string;
@@ -76,9 +77,20 @@ export const Guide = ({ isWeb }: WebProps) => {
 
   const handleChat = () => {
     if (!customerUser || !user || !post) {
-      throw new Error('Customer user, guide user, or post details are missing.');
+      Swal.fire({
+        title: 'Missing Information',
+        icon: 'warning',
+        confirmButtonText: 'OK',
+        customClass: {
+          actions: 'flex flex-col gap-[8px] w-full',
+          title: 'font-semibold text-[18px]',
+          htmlContainer: 'text-grayscale-500 text-[14px]',
+          popup: 'rounded-[16px] p-[24px]',
+          confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]'
+        }
+      });
+      return;
     }
-
     const senderId = customerUser.id;
     const receiverId = user.id;
 
