@@ -38,12 +38,13 @@ const SelectUser = () => {
         <h3 className="web:text-xl web:mb-5 text-base font-medium text-text-color">How many tourists?</h3>
         <input
           type="number"
-          className="my-2 w-full rounded-xl bg-grayscale-50 p-6 text-base"
+          className="my-2 w-full rounded-xl bg-grayscale-50 p-6 text-base outline-none"
           min="1"
           placeholder="ex) 3"
           value={numPersons === '' ? '' : numPersons}
           onChange={handleNumPersonsChange}
         />
+
         <p className="web:mt-6 web:text-base text-[10px] text-grayscale-500">
           If you exceed the number of people booked, your reservation may be canceled. Please contact the guide first.
         </p>

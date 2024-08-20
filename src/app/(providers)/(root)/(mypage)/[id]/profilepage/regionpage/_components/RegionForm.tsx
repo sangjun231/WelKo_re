@@ -4,10 +4,13 @@ import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import { API_MYPAGE_PROFILE } from '@/utils/apiConstants';
 import { translateAddress } from '@/utils/post/postData';
 
 const RegionForm = () => {
+  const MySwal = withReactContent(Swal);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [position, setPosition] = useState<{ latitude: number; longitude: number } | null>(null);
   const [region, setRegion] = useState<string | null>(null);
@@ -94,11 +97,26 @@ const RegionForm = () => {
   };
 
   const handleSave = async () => {
-    if (region && userId) {
-      await axios.put(API_MYPAGE_PROFILE(userId), {
-        region: translatedRegion || region
-      });
-      router.replace(`/${userId}/profilepage`);
+    const result = await MySwal.fire({
+      title: 'Location updated successfully',
+      icon: 'success',
+      customClass: {
+        actions: 'flex flex-col gap-[8px] w-full',
+        title: 'font-semibold text-[18px]',
+        popup: 'rounded-[16px] p-[24px]',
+        confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]'
+      }
+    });
+
+    try {
+      if (region && userId && result.isConfirmed) {
+        await axios.put(API_MYPAGE_PROFILE(userId), {
+          region: translatedRegion || region
+        });
+        router.replace(`/${userId}/profilepage`);
+      }
+    } catch (error) {
+      MySwal.fire('Failed!', 'Failed to set location.', 'error');
     }
   };
 
@@ -145,19 +163,21 @@ const RegionForm = () => {
     <div>
       <div className="flex items-center justify-between">
         <button
-          className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-grayscale-50"
+          className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-grayscale-50 web:h-[44px] web:w-[44px]"
           onClick={handleBack}
         >
           <Image
+            className="web:h-[33px] web:w-[33px]"
             src="/icons/tabler-icon-chevron-left.svg"
             alt="Go Back"
             width={24}
             height={24}
-            style={{ width: '24px', height: '24px' }}
           />
         </button>
-        <p className="text-[18px] font-semibold">Location</p>
-        <button className="text-[14px] font-medium text-action-color" onClick={handleSave}>
+        <p className="mx-auto text-[18px] font-semibold text-primary-900 web:ml-[20px] web:self-start web:text-[32px]">
+          Location
+        </p>
+        <button className="text-[14px] font-medium text-action-color web:text-[24px]" onClick={handleSave}>
           Done
         </button>
       </div>

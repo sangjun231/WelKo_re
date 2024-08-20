@@ -74,7 +74,7 @@ function Header() {
 
   return (
     <>
-      <div className="hidden py-5 md:block">
+      <div className="hidden border-b py-5 md:block">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <div onClick={handleHomeNavigation} className="ml-[88px] cursor-pointer">

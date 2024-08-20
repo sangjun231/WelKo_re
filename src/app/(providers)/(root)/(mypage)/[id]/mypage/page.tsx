@@ -30,7 +30,7 @@ const MyPage = () => {
     `flex-1 text-center ${selectedComponent === component ? 'text-primary-300 border-primary-300 font-semibold' : 'text-grayscale-500'}`;
 
   return (
-    <div className="mx-[20px] mt-[8px] grid grid-cols-1 gap-[20px] web:mx-[88px] web:gap-[40px]">
+    <div className="mx-[20px] mt-[8px] grid grid-cols-1 gap-[20px] web:mx-[88px] web:mt-[40px] web:gap-[40px]">
       <div className="flex justify-between web:hidden">
         <button
           className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-grayscale-50"

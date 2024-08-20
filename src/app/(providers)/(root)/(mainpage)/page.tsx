@@ -1,12 +1,13 @@
 'use client';
 
-import PostsList from './_components/PostsList';
 import HeadMeta from '@/components/common/Header/HeadMeta';
 import CircleImageList from './_components/home/CircleImageList';
 import SlideImage from './_components/home/SlideImage';
 import { lazy, Suspense } from 'react';
+import PopularPostList from './_components/home/PopularPostList';
 
 const BestPostsList = lazy(() => import('./_components/home/BestPostsList'));
+const PostsList = lazy(() => import('./_components/PostsList'));
 
 export default function Home() {
   return (
@@ -21,9 +22,10 @@ export default function Home() {
           style={{ height: '20%', top: '80%' }}
         >
           <CircleImageList />
-          <PostsList />
+          <PopularPostList />
           <Suspense fallback={<div>Loading...</div>}>
             <BestPostsList />
+            <PostsList />
           </Suspense>
         </div>
       </div>

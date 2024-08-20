@@ -21,7 +21,7 @@ function Footer() {
 
   return (
     <>
-      <div className="mt-[310px] bg-grayscale-50 py-8">
+      <div className="web:block mt-[310px] hidden bg-grayscale-50 py-8">
         <div className="flex items-center justify-between px-[88px]">
           <div className="flex items-center">
             <div className="flex">

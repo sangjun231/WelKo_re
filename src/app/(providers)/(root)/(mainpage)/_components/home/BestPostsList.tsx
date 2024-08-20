@@ -45,7 +45,7 @@ const BestPostsList = () => {
       <h2 className="text-xl font-bold md:text-4xl">Best Tour</h2>
       <div className="mt-5 grid grid-cols-2 gap-4 md:mt-[40px] md:grid-cols-2 lg:grid-cols-3 min-[1440px]:grid-cols-4">
         {posts.map((post, index) => (
-          <div key={`${post.id}-${index}`} className="max-w-[286px] flex-none rounded-md">
+          <div key={`${post.id}-${index}`} className="max-w-[150px] flex-none rounded-md md:max-w-[286px]">
             <Link href={`/detail/${post.id}`} className="flex flex-col">
               {post.image ? (
                 <div className="relative mb-2 aspect-square max-w-[150px] overflow-hidden rounded-2xl md:max-w-[286px]">

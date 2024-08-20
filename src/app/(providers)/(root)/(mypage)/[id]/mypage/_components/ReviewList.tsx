@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import { formatRelativeDate, formatDateRange } from '@/utils/detail/functions';
 import { API_MYPAGE_REVIEWS, API_MYPAGE_PROFILE, API_POST } from '@/utils/apiConstants';
 import { Tables } from '@/types/supabase';
@@ -23,6 +25,7 @@ const fetchPostsData = async () => {
 };
 
 const ReviewList = ({ userId }: { userId: string }) => {
+  const MySwal = withReactContent(Swal);
   const [profile, setProfile] = useState<Tables<'users'>>();
   const [reviews, setReviews] = useState<Tables<'reviews'>[]>([]);
   const router = useRouter();
@@ -30,7 +33,8 @@ const ReviewList = ({ userId }: { userId: string }) => {
   const {
     data: reviewsData,
     isLoading: reviewsLoading,
-    error: reviewsError
+    error: reviewsError,
+    refetch
   } = useQuery<Tables<'reviews'>[]>({
     queryKey: ['reviewList', userId],
     queryFn: () => fetchReviews(userId),
@@ -47,6 +51,40 @@ const ReviewList = ({ userId }: { userId: string }) => {
     enabled: !!userId
   });
 
+
+  const handleEditReview = (id: string, postId: string) => {
+    router.push(`/${userId}/reviewpage?id=${id}&post_id=${postId}`);
+  };
+
+  const handleDelete = async (id: string) => {
+    const result = await MySwal.fire({
+      title: 'Do you want to delete your review?',
+      text: 'If you delete, you can always rewrite it later',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'delete review',
+      cancelButtonText: 'No thanks',
+      customClass: {
+        actions: 'flex flex-col gap-[8px] w-full',
+        title: 'font-semibold text-[18px]',
+        htmlContainer: 'text-grayscale-500 text-[14px]',
+        popup: 'rounded-[16px] p-[24px]',
+        confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]',
+        cancelButton: 'bg-white text-[16px] p-[12px] w-full rounded-[12px] text-grayscale-700'
+      }
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await axios.delete(API_MYPAGE_REVIEWS(userId), { data: { id } });
+        MySwal.fire('Deleted!', 'Your review has been deleted.', 'success');
+        refetch();
+      } catch (error) {
+        MySwal.fire('Failed!', 'Failed to delete review.', 'error');
+      }
+    }
+  };
+  
   useEffect(() => {
     if (reviewsData) {
       setReviews(reviewsData);
@@ -67,19 +105,6 @@ const ReviewList = ({ userId }: { userId: string }) => {
       fetchProfileData();
     }
   }, [userId]);
-
-  const handleEditReview = (id: string, postId: string) => {
-    router.push(`/${userId}/reviewpage?id=${id}&post_id=${postId}`);
-  };
-
-  const handleDelete = async (id: string) => {
-    try {
-      await axios.delete(API_MYPAGE_REVIEWS(userId), { data: { id } });
-      setReviews(reviews.filter((review) => review.id !== id));
-    } catch (error) {
-      console.error('Error deleting review:', error);
-    }
-  };
 
   if (reviewsLoading || postsLoading) {
     return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Loading...</div>;
