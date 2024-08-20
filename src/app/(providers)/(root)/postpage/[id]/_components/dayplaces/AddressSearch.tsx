@@ -132,44 +132,52 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
         </div>
       </div>
 
-      {searchResults.length === 0 ? (
-        <div className="flex h-[calc(100vh-600px)] flex-col items-center justify-center p-5">
+      <div className="flex h-[calc(100vh-400px)] flex-col items-center justify-center p-5">
+        {hasSearched ? (
+          searchResults.length === 0 ? (
+            <Image
+              src="/icons/no-search-results.svg"
+              alt="No search results"
+              width={250}
+              height={250}
+              style={{ width: '250px', height: '250px' }}
+            />
+          ) : (
+            <div className="h-full w-full">
+              {searchResults.map((place, index) => {
+                const cleanHTML = DOMPurify.sanitize(place.title);
+                return (
+                  <button
+                    key={index}
+                    onClick={() => handlePlaceSelect(place)}
+                    className={`flex w-full flex-row p-4 hover:bg-gray-100 ${selectedPlace === place ? 'rounded-2xl border-2 border-primary-300 bg-gray-100' : ''}`}
+                  >
+                    <div className="mr-3 flex size-11 flex-shrink-0 items-center justify-center rounded-lg bg-grayscale-50">
+                      <GrLocation className="size-5" />
+                    </div>
+                    <div className="flex flex-col items-start">
+                      <h3 className="whitespace-wrap text-left" dangerouslySetInnerHTML={{ __html: cleanHTML }} />
+                      <div className="flex flex-shrink-0 flex-wrap text-xs text-gray-400">
+                        <p>{place.category} •&nbsp;</p>
+                        <p className="text-xs text-gray-400">{place.roadAddress}</p>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )
+        ) : (
           <Image
-            src="\icons\please-search.svg"
-            alt="search empty"
+            src="/icons/please-search.svg"
+            alt="Please search"
             width={250}
             height={250}
             style={{ width: '250px', height: '250px' }}
           />
-          {/* <IoIosSearch className="size-10 text-grayscale-100" />
-          <p className="text-xl font-semibold text-grayscale-100">Please search</p> */}
-        </div>
-      ) : (
-        <div className="h-3/5 overflow-y-scroll">
-          {searchResults.map((place, index) => {
-            const cleanHTML = DOMPurify.sanitize(place.title);
-            return (
-              <button
-                key={index}
-                onClick={() => handlePlaceSelect(place)}
-                className={`flex w-full flex-row p-4 hover:bg-gray-100 ${selectedPlace === place ? 'rounded-2xl border-2 border-primary-300 bg-gray-100' : ''}`}
-              >
-                <div className="mr-3 flex size-11 flex-shrink-0 items-center justify-center rounded-lg bg-grayscale-50">
-                  <GrLocation className="size-5" />
-                </div>
+        )}
+      </div>
 
-                <div className="flex flex-col items-start">
-                  <h3 className="whitespace-wrap text-left" dangerouslySetInnerHTML={{ __html: cleanHTML }} />
-                  <div className="flex flex-shrink-0 flex-wrap text-xs text-gray-400">
-                    <p>{place.category} •&nbsp;</p>
-                    <p className="text-xs text-gray-400">{place.roadAddress}</p>
-                  </div>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      )}
       {!selectedPlace ? (
         <button className="absolute bottom-7 left-0 right-0 mx-auto my-5 h-14 w-[320px] cursor-default rounded-2xl bg-primary-100 p-2 text-lg font-medium text-white web:absolute web:bottom-9 web:left-5 web:right-auto">
           Select
