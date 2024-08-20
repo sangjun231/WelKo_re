@@ -111,7 +111,7 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
 
   return (
     <div className="flex flex-col text-lg">
-      <h2 className="web:text-4xl web:mb-6 mb-4 font-semibold text-grayscale-900">Where you’ll tour</h2>
+      <h2 className="mb-4 font-semibold text-grayscale-900 web:mb-6 web:text-4xl">Where you’ll tour</h2>
       <div
         id="map"
         style={{
@@ -120,11 +120,11 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
         }}
       ></div>
 
-      <div className="web:my-20 web:gap-5 web:text-xl my-6 flex gap-2 text-xs font-medium">
+      <div className="my-6 flex gap-2 text-xs font-medium web:my-20 web:gap-5 web:text-xl">
         {data.places.length > 0 && (
           <button
             onClick={() => setSelectedDay(0)}
-            className={`web:px-5 web:py-3 rounded-3xl px-4 py-2 ${selectedDay === 0 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 0 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
           >
             Day 1
           </button>
@@ -132,7 +132,7 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
         {data.places.length > 1 && (
           <button
             onClick={() => setSelectedDay(1)}
-            className={`web:px-5 web:py-3 rounded-3xl px-4 py-2 ${selectedDay === 1 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 1 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
           >
             Day 2
           </button>
@@ -140,7 +140,7 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
         {data.places.length > 2 && (
           <button
             onClick={() => setSelectedDay(2)}
-            className={`web:px-5 web:py-3 rounded-3xl px-4 py-2 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
           >
             Day 3
           </button>
@@ -148,7 +148,7 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
         {data.places.length > 3 && (
           <button
             onClick={() => setSelectedDay(3)}
-            className={`web:px-5 web:py-3 rounded-3xl px-4 py-2 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 3 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
           >
             Day 4
           </button>
@@ -156,7 +156,7 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
         {data.places.length > 4 && (
           <button
             onClick={() => setSelectedDay(4)}
-            className={`web:px-5 web:py-3 rounded-3xl px-4 py-2 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 4 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
           >
             Day 5
           </button>
@@ -164,7 +164,7 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
         {data.places.length > 5 && (
           <button
             onClick={() => setSelectedDay(5)}
-            className={`web:px-5 web:py-3 rounded-3xl px-4 py-2 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 5 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
           >
             Day 6
           </button>
@@ -172,19 +172,19 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
         {data.places.length > 6 && (
           <button
             onClick={() => setSelectedDay(6)}
-            className={`web:px-5 web:py-3 rounded-3xl px-4 py-2 ${selectedDay === 2 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
+            className={`rounded-3xl px-4 py-2 web:px-5 web:py-3 ${selectedDay === 6 ? 'bg-primary-300 text-white' : 'bg-grayscale-50'}`}
           >
             Day 7
           </button>
         )}
       </div>
 
-      <div className={`web:flex web:gap-x-20 flex flex-col gap-4`}>
+      <div className={`flex flex-col gap-4 web:flex web:gap-x-20`}>
         <div className="flex flex-col gap-4">
           {data?.places[selectedDay].places.map((place, index) => (
             <div key={index} className="relative flex items-start">
               <div className="flex flex-col items-center">
-                <div className="web:h-11 web:w-11 web:text-2xl z-10 flex h-6 w-6 items-center justify-center rounded-full bg-primary-300 text-sm font-medium text-white">
+                <div className="z-10 flex h-6 w-6 items-center justify-center rounded-full bg-primary-300 text-sm font-medium text-white web:h-11 web:w-11 web:text-2xl">
                   {index + 1}
                 </div>
                 {/* 마지막 요소가 아닌 경우에만 <hr> 렌더링 */}
@@ -192,20 +192,20 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
                   <div className="absolute top-6 mb-8 h-full w-px bg-grayscale-100"></div>
                 )}
               </div>
-              <div className="web:p-6 web:ml-12 web:mb-10 ml-3 flex w-full flex-col gap-1 rounded-lg bg-white px-4 py-3 shadow-custom-box">
-                <h2 className="web:text-xl text-sm font-semibold">
+              <div className="ml-3 flex w-full flex-col gap-1 rounded-lg bg-white px-4 py-3 shadow-custom-box web:mb-10 web:ml-12 web:p-6">
+                <h2 className="text-sm font-semibold web:text-xl">
                   {place.title ? place.title.replace(/<\/?[^>]+(>|$)/g, '') : ''}
                 </h2>
-                <p className="web:text-base text-xs text-gray-500">{place.category}</p>
-                <hr className="web:my-4 my-2 h-[1px] w-full bg-grayscale-100" />
-                <p className="web:text-lg text-xs font-normal text-gray-700">{place.description}</p>
+                <p className="text-xs text-gray-500 web:text-base">{place.category}</p>
+                <hr className="my-2 h-[1px] w-full bg-grayscale-100 web:my-4" />
+                <p className="text-xs font-normal text-gray-700 web:text-lg">{place.description}</p>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      <hr className="web:my-20 mb-6 mt-8 h-[1px] w-full bg-grayscale-100" />
+      <hr className="mb-6 mt-8 h-[1px] w-full bg-grayscale-100 web:my-20" />
     </div>
   );
 };
