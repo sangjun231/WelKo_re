@@ -9,11 +9,11 @@ import usePostStore from '@/zustand/postStore';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import Swal from 'sweetalert2';
 import LikeBtn from '/public/icons/detail_icons/icon_like.svg';
 import IconHome from '/public/icons/navbar_icons/icon_home.svg';
 import WriteBtn from '/public/icons/tabler-icon-pencil.svg';
 import DeleteBtn from '/public/icons/tabler-icon-trash.svg';
-import Swal from 'sweetalert2';
 
 const Likes = ({ isWeb }: WebProps) => {
   const { id: postId } = useParams<{ id: string }>();
@@ -62,15 +62,9 @@ const Likes = ({ isWeb }: WebProps) => {
   const router = useRouter();
 
   return (
-<<<<<<< HEAD
     <div className="absolute left-0 right-0 top-2 z-10 flex items-center justify-between px-4 web:top-12 web:px-[88px]">
       <BackButton />
       <div className="flex gap-4 web:gap-10">
-=======
-    <div className="web:top-12 web:px-[88px] absolute left-0 right-0 top-2 z-10 flex items-center justify-between px-4">
-      <BackButton />
-      <div className="web:gap-10 flex gap-4">
->>>>>>> f7e5636874ab1e8a0317413ea0c6118963cbc1f6
         {post &&
           user &&
           post.user_id === user.id && ( // user가 존재하는지 확인
