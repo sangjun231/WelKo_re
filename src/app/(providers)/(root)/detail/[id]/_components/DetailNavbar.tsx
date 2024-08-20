@@ -75,9 +75,11 @@ const DetailNavbar = () => {
   };
 
   const handleReserveClick = () => {
-    requireLogin(() => {
+    if (!user) {
+      requireLogin();
+    } else {
       router.push(`/detail/reservation/${post?.id}`);
-    });
+    }
   };
 
   return (

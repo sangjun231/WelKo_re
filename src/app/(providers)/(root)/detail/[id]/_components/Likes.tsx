@@ -14,6 +14,7 @@ import { WebProps } from '@/types/webstate';
 import WriteBtn from '/public/icons/tabler-icon-pencil.svg';
 import DeleteBtn from '/public/icons/tabler-icon-trash.svg';
 import Swal from 'sweetalert2';
+import useRequireLogin from '@/hooks/CustomAlert';
 
 const Likes = ({ isWeb }: WebProps) => {
   const { id: postId } = useParams<{ id: string }>();
@@ -33,9 +34,11 @@ const Likes = ({ isWeb }: WebProps) => {
     }
   }, [postId, user?.id, fetchLikeStatus]);
 
+  const requireLogin = useRequireLogin();
+
   const handleLike = () => {
     if (!user) {
-      alert('좋아요를 누르기 위해서는 로그인이 필요합니다.');
+      requireLogin();
       return;
     }
     toggleLike(postId, user.id);
@@ -62,9 +65,9 @@ const Likes = ({ isWeb }: WebProps) => {
   const handleDelete = DeletePost();
 
   return (
-    <div className="web:top-12 web:px-[88px] absolute left-0 right-0 top-2 z-10 flex items-center justify-between px-4">
+    <div className="absolute left-0 right-0 top-2 z-10 flex items-center justify-between px-4 web:top-12 web:px-[88px]">
       <BackButton />
-      <div className="web:gap-10 flex gap-4">
+      <div className="flex gap-4 web:gap-10">
         {post &&
           user &&
           post.user_id === user.id && ( // user가 존재하는지 확인
