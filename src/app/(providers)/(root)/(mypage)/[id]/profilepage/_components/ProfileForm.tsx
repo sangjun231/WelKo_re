@@ -35,7 +35,19 @@ const ProfileForm = ({ userId }: { userId: string }) => {
   };
 
   const handleProfileUpdate = async () => {
-    if (profile) {
+    const result = await MySwal.fire({
+      title: 'Profile updated successfully',
+      icon: 'success',
+      confirmButtonText: 'Done',
+      customClass: {
+        actions: 'flex flex-col gap-[8px] w-full',
+        title: 'font-semibold text-[18px]',
+        popup: 'rounded-[16px] p-[24px]',
+        confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]'
+      }
+    });
+
+    if (result.isConfirmed && profile) {
       await axios.put(API_MYPAGE_PROFILE(userId), {
         id: profile.id,
         name: nickname,
@@ -43,7 +55,6 @@ const ProfileForm = ({ userId }: { userId: string }) => {
         avatar: imageUrl,
         region
       });
-      alert('Profile updated successfully');
       fetchProfile();
       router.replace(`/${userId}/mypage`);
     }
