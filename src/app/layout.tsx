@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: 'WelKo',
   description: 'Welcome Korea',
   icons: {
-    icon: '/icons/WelKo-Icon.png'
+    icon: '/icons/Favicon.png'
   }
 };
 
