@@ -58,22 +58,19 @@ const NewPostList = () => {
     }).format(d);
   };
 
-  if (loading) return <div>로딩 중...</div>;
-  if (error) return <div>{error}</div>;
-
   return (
     <div className="mt-[40px] md:mt-[160px]">
       <h2 className="text-xl font-bold md:mb-10 md:text-4xl">New Tour</h2>
-      <ul className="mt-5 md:flex md:flex-wrap md:gap-5">
+      <ul className="mt-5 lg:flex lg:flex-wrap lg:gap-5">
         {posts.map((post, index) => (
-          <li key={`${post.id}-${index}`} className="mb-4 flex rounded-md md:mb-0 md:mb-5 md:w-[calc(50%-10px)] md:p-0">
+          <li key={`${post.id}-${index}`} className="mb-4 flex rounded-md lg:mb-0 lg:w-[calc(50%-10px)] lg:p-0">
             <Link href={`/detail/${post.id}`} className="flex max-w-[460px]">
               {post.image ? (
                 <Image
                   src={post.image}
                   alt={post.title}
-                  width={96}
-                  height={96}
+                  width={120}
+                  height={140}
                   className="mr-2 h-[100px] w-[80px] rounded-lg md:mr-4 md:h-[140px] md:w-[120px]"
                 />
               ) : (

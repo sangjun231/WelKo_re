@@ -166,7 +166,7 @@ const PopularPostList = () => {
               <div className="flex space-x-1">
                 {posts.map((post, index) => (
                   <div key={`${post.id}-${index}`} className="inline-block w-64 flex-none rounded-md">
-                    <Link href={`/detail/${post.id}`} className="flex flex-col">
+                    <Link href={`/detail/${post.id}`} className="flex max-w-[236px] flex-col">
                       {post.image ? (
                         <div
                           className="relative mb-2 flex-none overflow-hidden rounded-2xl"

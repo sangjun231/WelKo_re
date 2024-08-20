@@ -5,6 +5,7 @@ import Search from '@/components/common/Search/Search';
 import Link from 'next/link';
 import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
 import { useEffect, useState } from 'react';
+import Loader from '@/components/common/Loading/Loader';
 
 interface Post {
   id: string;
@@ -79,6 +80,12 @@ export default function ResultsList({ posts, loading, error }: ResultsListProps)
         <div className="my-[40px] text-[32px] font-semibold">Search Results</div>
         <div className="mb-6 text-[21px] font-medium">{posts.length} Tour found</div>
       </div>
+
+      {loading && (
+        <div className="flex min-h-[400px] items-center justify-center">
+          <Loader />
+        </div>
+      )}
 
       {!loading && posts.length === 0 && (
         <div className="mt-[230px] flex flex-col items-center justify-center gap-2 text-center">
