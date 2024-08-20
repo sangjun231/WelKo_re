@@ -38,7 +38,6 @@ const ProfileForm = ({ userId }: { userId: string }) => {
     const result = await MySwal.fire({
       title: 'Profile updated successfully',
       icon: 'success',
-      confirmButtonText: 'Done',
       customClass: {
         actions: 'flex flex-col gap-[8px] w-full',
         title: 'font-semibold text-[18px]',

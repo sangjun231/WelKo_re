@@ -100,7 +100,6 @@ const RegionForm = () => {
     const result = await MySwal.fire({
       title: 'Location updated successfully',
       icon: 'success',
-      confirmButtonText: 'Done',
       customClass: {
         actions: 'flex flex-col gap-[8px] w-full',
         title: 'font-semibold text-[18px]',
