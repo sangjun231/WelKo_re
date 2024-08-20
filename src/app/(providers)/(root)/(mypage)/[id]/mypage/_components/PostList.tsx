@@ -57,11 +57,11 @@ export default function PostList() {
 
   const handleDelete = async (postId: string) => {
     const result = await MySwal.fire({
-      title: 'Do you want to delete your post?',
+      title: 'Do you want to delete your tour?',
       text: 'If you delete, you can always rewrite it later',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Delete Post',
+      confirmButtonText: 'Delete Tour',
       cancelButtonText: 'No thanks',
       customClass: {
         actions: 'flex flex-col gap-[8px] w-full',
