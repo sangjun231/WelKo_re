@@ -22,5 +22,5 @@
 </div>
 
 ## 서비스 아키텍처
-![아키텍처](https://github.com/user-attachments/assets/369481c3-4253-400f-9bd1-9c02d5bdeede)
+![undefined (1)](https://github.com/user-attachments/assets/3078a491-fa9c-4a62-9672-89cadb23b71c)
 
