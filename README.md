@@ -10,6 +10,8 @@
 
 * 여행객은 현지 가이드와 실시간 소통을 통해 여행 계획 수립에도 도움을 얻을 수 있습니다. 
 
+## 팀원 소개
+
 ## 기술 환경 및 스택
 <div align='center'>
 <img src="https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB"/> 
@@ -19,14 +21,6 @@
 <img src="https://img.shields.io/badge/Next.js-%23000000.svg?style=for-the-badge&logo=Next.js&logoColor=white" />
 </div>
 
-## DB 설계
-- users 테이블
+## 서비스 아키텍처
+![아키텍처](https://github.com/user-attachments/assets/369481c3-4253-400f-9bd1-9c02d5bdeede)
 
-|컬럼명|타입|용도|입력방법|외래키|예시|
-| :-----: |:-----: |:-----: |:-----: |:-----: |:-----: |
-|id|uuid|||auth.users.id||
-|created_at|timestamptz|||||
-|email|text|||||
-|nickname|text|||||
-|avatar|text|||||
-|is_admin|text|||||
