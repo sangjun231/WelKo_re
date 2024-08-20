@@ -65,10 +65,16 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
         zoom: 10
       });
       setMapInstance(map);
+
+      // 맵 클릭 이벤트 추가
+      window.naver.maps.Event.addListener(map, 'click', () => {
+        map.setCenter(new window.naver.maps.LatLng(data.places[selectedDay].lat[0], data.places[selectedDay].long[0]));
+        map.setZoom(12); // 원하는 줌 레벨로 설정
+      });
     };
 
     initializeMap();
-  }, [isScriptLoaded, isLoading, data]);
+  }, [isScriptLoaded, isLoading, data, selectedDay]);
 
   useEffect(() => {
     if (!mapInstance || !data) return;
