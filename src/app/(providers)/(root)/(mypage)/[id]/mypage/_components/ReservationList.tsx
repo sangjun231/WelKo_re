@@ -87,20 +87,40 @@ export default function ReservationList() {
   };
 
   const handleChangeReservation = async (paymentId: string, postId: string) => {
-    const confirmed = window.confirm('Are you sure you want to change your reservation?');
-    if (confirmed) {
+    const result = await MySwal.fire({
+      title: 'Are you sure you want to change your reservation?',
+      text: 'If you cancel, you will get a full refund',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Change Tour',
+      cancelButtonText: 'No thanks',
+      customClass: {
+        actions: 'flex flex-col gap-[8px] w-full',
+        title: 'font-semibold text-[18px]',
+        htmlContainer: 'text-grayscale-500 text-[14px]',
+        popup: 'rounded-[16px] p-[24px]',
+        confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]',
+        cancelButton: 'bg-white text-[16px] p-[12px] w-full rounded-[12px] text-grayscale-700'
+      }
+    });
+
+    if (result.isConfirmed) {
       try {
         const response = await axios.post(`/api/detail/payment/${paymentId}`, {
           reason: 'User requested cancel',
           requester: 'CUSTOMER'
         });
-        alert('You have been fully refunded!');
+
+        MySwal.fire('Refunded!', 'You have been fully refunded!', 'success');
+
         if (response.data.data.pay_state === 'cancel') {
           router.push(`/detail/reservation/${postId}`);
         }
+
       } catch (error) {
+        MySwal.fire('Failed!', 'The refund is not possible as it has been more than a day.', 'error');
+
         console.error('Error requesting cancel:', error);
-        alert('The refund is not possible as it has been more than a day.');
       }
     }
   };
@@ -122,6 +142,7 @@ export default function ReservationList() {
         cancelButton: 'bg-white text-[16px] p-[12px] w-full rounded-[12px] text-grayscale-700'
       }
     });
+
     if (result.isConfirmed) {
       try {
         await axios.post(`/api/detail/payment/${paymentId}`, {
