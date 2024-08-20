@@ -35,17 +35,31 @@ const ProfileForm = ({ userId }: { userId: string }) => {
   };
 
   const handleProfileUpdate = async () => {
-    if (profile) {
-      await axios.put(API_MYPAGE_PROFILE(userId), {
-        id: profile.id,
-        name: nickname,
-        email,
-        avatar: imageUrl,
-        region
-      });
-      alert('Profile updated successfully');
-      fetchProfile();
-      router.replace(`/${userId}/mypage`);
+    const result = await MySwal.fire({
+      title: 'Profile updated successfully',
+      icon: 'success',
+      customClass: {
+        actions: 'flex flex-col gap-[8px] w-full',
+        title: 'font-semibold text-[18px]',
+        popup: 'rounded-[16px] p-[24px]',
+        confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]'
+      }
+    });
+
+    if (result.isConfirmed && profile) {
+      try {
+        await axios.put(API_MYPAGE_PROFILE(userId), {
+          id: profile.id,
+          name: nickname,
+          email,
+          avatar: imageUrl,
+          region
+        });
+        fetchProfile();
+        router.replace(`/${userId}/mypage`);
+      } catch (error) {
+        MySwal.fire('Failed!', 'Failed to edit profile.', 'error');
+      }
     }
   };
 
@@ -59,7 +73,7 @@ const ProfileForm = ({ userId }: { userId: string }) => {
       html: '<p style="color: #FF2D2D; font-size: 14px;">This action cannot be undone.</p>',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Delete Post',
+      confirmButtonText: 'Delete account',
       cancelButtonText: 'No thanks',
       customClass: {
         actions: 'flex flex-col gap-[8px] w-full',
