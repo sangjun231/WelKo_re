@@ -27,36 +27,30 @@ interface PostAndPlacesData {
 const ScheduleMap = ({ isWeb }: WebProps) => {
   const clientId = process.env.NEXT_PUBLIC_NCP_CLIENT_ID!;
   const isScriptLoaded = useNaverMapScript(clientId);
-  const [mapInstance, setMapInstance] = useState<any>(null);
   const params = useParams();
   const postId = Array.isArray(params.id) ? params.id[0] : params.id;
-  const [selectedDay, setSelectedDay] = useState('Day 1');
+
+  const [selectedDay, setSelectedDay] = useState<string>('Day 1'); // 초기값을 'Day 1'로 설정
+  const [mapInstance, setMapInstance] = useState<any>(null);
 
   const fetchPostAndPlaces = async (postId: string): Promise<PostAndPlacesData> => {
-    try {
-      const response = await axios.get(`/api/detail/map/${postId}`);
-      const data = response.data;
+    const response = await axios.get(`/api/detail/map/${postId}`);
+    const data = response.data;
 
-      console.log('Fetched Data:', data); // 데이터 확인
+    const parsedPlaces: PlaceData[] = data.places.map((item: any) => ({
+      lat: item.lat,
+      long: item.long,
+      places: item.places,
+      day: item.day || 'Unknown Day'
+    }));
 
-      const parsedPlaces: PlaceData[] = data.places.map((item: any) => ({
-        lat: item.lat,
-        long: item.long,
-        places: item.places,
-        day: item.day || 'Unknown Day'
-      }));
+    const sortedPlaces = parsedPlaces.sort((a, b) => {
+      const dayA = parseInt(a.day.replace('Day ', ''));
+      const dayB = parseInt(b.day.replace('Day ', ''));
+      return dayA - dayB;
+    });
 
-      const sortedPlaces = parsedPlaces.sort((a, b) => {
-        const dayA = parseInt(a.day.replace('Day ', ''));
-        const dayB = parseInt(b.day.replace('Day ', ''));
-        return dayA - dayB;
-      });
-
-      return { places: sortedPlaces };
-    } catch (error) {
-      console.error('Error fetching post and places:', error);
-      throw error;
-    }
+    return { places: sortedPlaces };
   };
 
   const { data, error, isLoading } = useQuery<PostAndPlacesData>({
@@ -66,33 +60,31 @@ const ScheduleMap = ({ isWeb }: WebProps) => {
 
   useEffect(() => {
     if (isScriptLoaded && data && data.places.length > 0) {
-      // 맵과 마커 초기화
-      initializeMap(data);
+      // 데이터를 불러온 후 selectedDay가 'Day 1'로 설정되어 있는지 확인
+      if (!selectedDay || selectedDay !== 'Day 1') {
+        setSelectedDay('Day 1');
+      }
+
+      // selectedDay가 설정된 후 맵 초기화
+      const selectedPlaceData = data.places.find((place) => place.day === 'Day 1');
+      if (selectedPlaceData) {
+        const map = new window.naver.maps.Map('map', {
+          center: new window.naver.maps.LatLng(selectedPlaceData.lat[0], selectedPlaceData.long[0]),
+          zoom: 10
+        });
+        setMapInstance(map);
+
+        // 초기 마커 설정
+        updateMarkers(map, selectedPlaceData);
+
+        // 맵 클릭 이벤트 추가
+        window.naver.maps.Event.addListener(map, 'click', () => {
+          map.setCenter(new window.naver.maps.LatLng(selectedPlaceData.lat[0], selectedPlaceData.long[0]));
+          map.setZoom(12); // 원하는 줌 레벨로 설정
+        });
+      }
     }
   }, [isScriptLoaded, data]);
-
-  const initializeMap = (data: PostAndPlacesData) => {
-    const map = new window.naver.maps.Map('map', {
-      center: new window.naver.maps.LatLng(data.places[0].lat[0], data.places[0].long[0]),
-      zoom: 10
-    });
-    setMapInstance(map);
-
-    // 맵 클릭 이벤트 추가
-    window.naver.maps.Event.addListener(map, 'click', () => {
-      const selectedPlaceData = data.places.find((place) => place.day === selectedDay);
-      if (selectedPlaceData) {
-        map.setCenter(new window.naver.maps.LatLng(selectedPlaceData.lat[0], selectedPlaceData.long[0]));
-        map.setZoom(12); // 원하는 줌 레벨로 설정
-      }
-    });
-
-    // 초기 마커 설정
-    updateMarkers(
-      map,
-      data.places.find((place) => place.day === 'Day 1')
-    );
-  };
 
   const updateMarkers = (map: any, selectedPlaceData: PlaceData | undefined) => {
     if (!map || !selectedPlaceData) return;
