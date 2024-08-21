@@ -152,7 +152,7 @@ const PopularPostList = () => {
   }, []);
 
   return (
-    <div className="relative mt-[40px] md:mt-[160px]">
+    <div className="relative mt-[40px] md:mt-0">
       <h2 className="mb-5 text-xl font-bold md:mb-[40px] md:text-4xl">Popular Monthly Tour</h2>
       <div className="overflow-hidden">
         {/* 모바일에서 InfiniteScroll을 사용하여 무한 스크롤 구현 */}
