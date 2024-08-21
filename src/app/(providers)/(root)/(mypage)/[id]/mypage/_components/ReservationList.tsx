@@ -88,8 +88,8 @@ export default function ReservationList() {
 
   const handleChangeReservation = async (paymentId: string, postId: string) => {
     const result = await MySwal.fire({
-      title: 'Are you sure you want to change your reservation?',
-      text: 'If you cancel, you will get a full refund',
+      title: 'Do you want to change your tour?',
+      text: 'After the full refund, the new payment will be made.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Change Tour',
@@ -124,7 +124,7 @@ export default function ReservationList() {
 
   const handleCancelReservation = async (paymentId: string) => {
     const result = await MySwal.fire({
-      title: 'Do you want to cancel your reservation?',
+      title: 'Do you want to cancel your tour?',
       text: 'If you cancel, you will get a full refund',
       icon: 'warning',
       showCancelButton: true,
