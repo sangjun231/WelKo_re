@@ -1,30 +1,56 @@
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
-//수정 핸들러
+const handleDelete = async (postId: string, router: AppRouterInstance) => {
+  const MySwal = withReactContent(Swal);
+  const result = await MySwal.fire({
+    title: 'Do you want to cancel your tour?',
+    text: 'If you cancel, you will get a full refund',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Cancel Tour',
+    cancelButtonText: 'No thanks',
+    customClass: {
+      actions: 'flex flex-col gap-[8px] w-full',
+      title: 'font-semibold text-[18px]',
+      htmlContainer: 'text-grayscale-500 text-[14px]',
+      popup: 'rounded-[16px] p-[24px]',
+      confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]',
+      cancelButton: 'bg-white text-[16px] p-[12px] w-full rounded-[12px] text-grayscale-700'
+    }
+  });
 
-// 삭제 핸들러
-const DeletePost = () => {
-  const router = useRouter();
-  const handleDelete = async (postId: string) => {
-    if (!postId) {
-      alert('Post ID not found');
-      return;
-    }
-    const userConfirmed = confirm('Do you want to delete this?');
-    if (!userConfirmed) {
-      return;
-    }
+  if (result.isConfirmed) {
     try {
-      const response = await axios.delete('/api/post', { data: { post_id: postId } });
-      alert('Deleted!');
+      await axios.delete('/api/post', { data: { post_id: postId } });
+      MySwal.fire({
+        title: 'Deleted!',
+        text: 'Your post has been deleted.',
+        icon: 'success',
+        customClass: {
+          actions: 'flex flex-col gap-[8px] w-full',
+          title: 'font-semibold text-[18px]',
+          popup: 'rounded-[16px] p-[24px]',
+          confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]'
+        }
+      });
       router.replace('/');
     } catch (error) {
-      console.error('Error deleting post:', error);
-      alert('Failed to delete post.');
+      MySwal.fire({
+        title: 'Failed!',
+        text: 'Failed to delete post.',
+        icon: 'error',
+        customClass: {
+          actions: 'flex flex-col gap-[8px] w-full',
+          title: 'font-semibold text-[18px]',
+          popup: 'rounded-[16px] p-[24px]',
+          confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]'
+        }
+      });
     }
-  };
-  return handleDelete;
+  }
 };
 
-export default DeletePost;
+export default handleDelete;

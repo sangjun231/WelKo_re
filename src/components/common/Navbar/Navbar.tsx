@@ -1,15 +1,16 @@
 'use client';
 
+import useRequireLogin from '@/hooks/CustomAlert';
 import useAuthStore from '@/zustand/bearsStore';
 import { useMyPageStore } from '@/zustand/mypageStore';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { v4 as uuidv4 } from 'uuid';
 import IconHome from '/public/icons/navbar_icons/icon_home.svg';
-import IconReservation from '/public/icons/navbar_icons/icon_reservation.svg';
-import IconPlus from '/public/icons/navbar_icons/icon_plus.svg';
 import IconMessage from '/public/icons/navbar_icons/icon_message.svg';
 import IconMypage from '/public/icons/navbar_icons/icon_mypage.svg';
-import { v4 as uuidv4 } from 'uuid';
+import IconPlus from '/public/icons/navbar_icons/icon_plus.svg';
+import IconReservation from '/public/icons/navbar_icons/icon_reservation.svg';
 
 function Navbar() {
   const router = useRouter();
@@ -17,11 +18,14 @@ function Navbar() {
   const user = useAuthStore((state) => state.user);
   const setSelectedComponent = useMyPageStore((state) => state.setSelectedComponent);
   const uuid = uuidv4();
+  const requireLogin = useRequireLogin();
 
   const handleReservationsClick = () => {
     if (!user) {
-      alert('로그인이 필요한 서비스입니다!!');
-      router.push('/login');
+      requireLogin(() => {
+        setSelectedComponent('Reservation');
+        router.push(`/${user?.id}/mypage`);
+      });
       return;
     }
     setSelectedComponent('Reservation');
@@ -30,8 +34,9 @@ function Navbar() {
 
   const handlePostClick = () => {
     if (!user) {
-      alert('로그인이 필요한 서비스입니다!!');
-      router.push('/login');
+      requireLogin(() => {
+        router.push(`/postpage/${uuid}`);
+      });
       return;
     }
     router.push(`/postpage/${uuid}`);
@@ -39,8 +44,9 @@ function Navbar() {
 
   const handleMessagesClick = () => {
     if (!user) {
-      alert('로그인이 필요한 서비스입니다!!');
-      router.push('/login');
+      requireLogin(() => {
+        router.push(`/${user?.id}/chatlistpage`);
+      });
       return;
     }
     router.push(`/${user?.id}/chatlistpage`);
@@ -48,8 +54,10 @@ function Navbar() {
 
   const handleMypageClick = () => {
     if (!user) {
-      alert('로그인이 필요한 서비스입니다!!');
-      router.push('/login');
+      requireLogin(() => {
+        setSelectedComponent('Wishlist');
+        router.push(`/${user?.id}/mypage`);
+      });
       return;
     }
     setSelectedComponent('Wishlist');
@@ -57,8 +65,8 @@ function Navbar() {
   };
 
   // 특정 경로에서 Navbar를 숨기기
-  const excludedRoutes = ['/login', `/postpage/${uuid}`, `/chatpage`];
-  if (excludedRoutes.includes(pathname) || pathname.startsWith('/detail')) {
+  const excludedRoutes = ['/login', `/chatpage`];
+  if (excludedRoutes.includes(pathname) || pathname.startsWith('/detail') || pathname.startsWith('/postpage')) {
     return null;
   }
   const chatpageRegex = /\/[a-f0-9-]+\/[a-f0-9-]+\/chatpage/;
@@ -67,7 +75,7 @@ function Navbar() {
   }
 
   return (
-    <nav className="web:hidden sticky bottom-0 flex border-t border-grayscale-100 bg-white text-grayscale-500">
+    <nav className="sticky bottom-0 flex border-t border-grayscale-100 bg-white text-grayscale-500 web:hidden">
       <div className="container mx-auto flex items-center justify-between p-[15px]">
         <Link href="/">
           <div className="flex flex-col items-center gap-1 hover:text-primary-300">

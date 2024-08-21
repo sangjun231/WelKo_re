@@ -255,7 +255,7 @@ const DayPlaces: React.FC<PlaceProps> = ({
 
       <div className="web:flex web:w-full web:[height:calc(100vh-200px)]">
         {step === 1 && (
-          <div className="m-5 flex flex-col gap-4 web:justify-between">
+          <div className="m-5 flex flex-col justify-between gap-4">
             {/* 위치 */}
             <div className="flex items-center justify-between web:absolute web:right-5 web:z-10 web:w-[360px] web:rounded-2xl web:bg-white web:p-5">
               <div className="flex">
@@ -347,20 +347,20 @@ const DayPlaces: React.FC<PlaceProps> = ({
                   </div>
                 ))}
             </div>
-            <div className="flex">
-              {allDaysHavePlaces ? (
+            <div className="pb-[100px] web:pb-0">
+              <div className="absolute bottom-7 left-0 right-0 flex flex-col gap-3 web:static">
+                {!allDaysHavePlaces && (
+                  <p className="text-center text-sm text-grayscale-400">Please select a place for each date.</p>
+                )}
                 <button
-                  onClick={goToStep4}
-                  className="mx-auto h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-semibold text-white"
+                  onClick={allDaysHavePlaces ? goToStep4 : undefined}
+                  className={`mx-auto h-14 w-[320px] rounded-2xl p-2 text-lg font-semibold text-white ${
+                    allDaysHavePlaces ? 'bg-primary-300' : 'bg-primary-100'
+                  }`}
                 >
                   Next
                 </button>
-              ) : (
-                <button className="mx-auto my-5 h-14 w-[320px] rounded-2xl bg-gray-300 p-2 text-base text-white web:my-0">
-                  Please select a place for each date.
-                </button>
-                // <p className="text-center text-sm text-grayscale-400"></p>
-              )}
+              </div>
             </div>
           </div>
         )}

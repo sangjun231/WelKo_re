@@ -1,5 +1,6 @@
 'use client';
 
+import handleDelete from '@/hooks/Post/usePostDelete';
 import { Tables } from '@/types/supabase';
 import { API_MYPAGE_POST } from '@/utils/apiConstants';
 import { formatDateRange } from '@/utils/detail/functions';
@@ -27,6 +28,7 @@ const getPostsData = async (userId: string) => {
 
 export default function PostList() {
   const MySwal = withReactContent(Swal);
+
   const params = useParams();
   const router = useRouter();
   const userId = Array.isArray(params.id) ? params.id[0] : params.id;
@@ -139,7 +141,7 @@ export default function PostList() {
                 </Link>
                 <button
                   className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#F7F7F9] web:h-[44px] web:w-[44px]"
-                  onClick={() => handleDelete(post.id)}
+                  onClick={() => handleDelete(post.id, router)}
                 >
                   <Image
                     className="web:h-[33px] web:w-[33px]"

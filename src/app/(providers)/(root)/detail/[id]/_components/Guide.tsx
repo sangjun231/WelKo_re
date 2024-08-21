@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { API_MYPAGE_PROFILE, API_POST_DETAILS } from '@/utils/apiConstants';
 import { WebProps } from '@/types/webstate';
+import Swal from 'sweetalert2';
 
 interface User {
   name: string;
@@ -76,9 +77,20 @@ export const Guide = ({ isWeb }: WebProps) => {
 
   const handleChat = () => {
     if (!customerUser || !user || !post) {
-      throw new Error('Customer user, guide user, or post details are missing.');
+      Swal.fire({
+        title: 'Missing Information',
+        icon: 'warning',
+        confirmButtonText: 'OK',
+        customClass: {
+          actions: 'flex flex-col gap-[8px] w-full',
+          title: 'font-semibold text-[18px]',
+          htmlContainer: 'text-grayscale-500 text-[14px]',
+          popup: 'rounded-[16px] p-[24px]',
+          confirmButton: 'bg-primary-300 text-white w-full text-[16px] p-[12px] rounded-[12px]'
+        }
+      });
+      return;
     }
-
     const senderId = customerUser.id;
     const receiverId = user.id;
 
@@ -100,16 +112,16 @@ export const Guide = ({ isWeb }: WebProps) => {
   if (error) return <div>Error fetching user data</div>;
 
   return (
-    <div className="web:flex web:gap-10 web:flex-row web:gap-40 flex flex-col gap-6">
-      <div className="web:w-1/2 flex flex-col gap-2">
+    <div className="flex flex-col gap-6 web:flex web:flex-row web:gap-10 web:gap-40">
+      <div className="flex flex-col gap-2 web:w-1/2">
         <div className="flex flex-col gap-4">
-          <h2 className="web:text-4xl text-lg font-semibold text-grayscale-900">Contact your guide</h2>
-          <p className="web:text-lg web:mb-10 text-sm text-grayscale-500">
+          <h2 className="text-lg font-semibold text-grayscale-900 web:text-4xl">Contact your guide</h2>
+          <p className="text-sm text-grayscale-500 web:mb-10 web:text-lg">
             For more information such as the number of people and schedule change, it is recommended to send a message
             to the guide to discuss and check.
           </p>
         </div>
-        <div className="web:gap-6 flex flex-col gap-4">
+        <div className="flex flex-col gap-4 web:gap-6">
           {user && (
             <div className="flex items-center gap-4">
               <Image
@@ -118,24 +130,24 @@ export const Guide = ({ isWeb }: WebProps) => {
                 width={isWeb ? 80 : 56}
                 height={isWeb ? 80 : 56}
                 priority
-                className="web:h-20 web:w-20 h-14 w-14 rounded-full"
+                className="h-14 w-14 rounded-full web:h-20 web:w-20"
               />
-              <div className="web:gap-1.5 flex flex-col">
-                <h4 className="web:text-[26px] text-lg font-semibold">{user.name}</h4>
-                <h5 className="web:text-xl text-sm font-normal">{user.region}, Korea</h5>
+              <div className="flex flex-col web:gap-1.5">
+                <h4 className="text-lg font-semibold web:text-[26px]">{user.name}</h4>
+                <h5 className="text-sm font-normal web:text-xl">{user.region}</h5>
               </div>
             </div>
           )}
 
           <button
-            className="web:py-4 web:px-6 web:text-lg rounded-2xl border border-grayscale-800 px-5 py-3 text-base font-semibold text-grayscale-700"
+            className="rounded-2xl border border-grayscale-800 px-5 py-3 text-base font-semibold text-grayscale-700 web:px-6 web:py-4 web:text-lg"
             onClick={handleChat}
           >
             Message Host
           </button>
         </div>
       </div>
-      <div className="web:w-1/2 web:flex web:items-center web:justify-center flex hidden">
+      <div className="flex hidden web:flex web:w-1/2 web:items-center web:justify-center">
         <Image
           src="/img/GuideWeb.png"
           alt={`${user.name}의 아바타`}

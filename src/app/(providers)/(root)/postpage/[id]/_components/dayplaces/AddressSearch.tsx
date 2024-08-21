@@ -23,6 +23,7 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [cleanHTML, setCleanHTML] = useState<string>('');
   const [selectedSearch, setSelectedSearch] = useState<Place[]>([]);
+  const [hasSearched, setHasSearched] = useState(false);
 
   // 검색 결과에 적용된 태그 없애기
   useEffect(() => {
@@ -62,6 +63,7 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
       });
 
       setSearchResults(places); // 검색 결과를 배열로 설정
+      setHasSearched(true);
     } catch (error) {
       console.error('Error searching places:', error);
     }
@@ -69,11 +71,15 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       searchPlaces();
+    } else if (event.key === 'Backspace' && searchQuery.length <= 1) {
+      // Backspace 키가 눌렸고, 검색어가 비어가고 있는 경우
+      setHasSearched(false);
     }
   };
   const searchValueinit = () => {
     setSearchQuery('');
     setSearchResults([]);
+    setHasSearched(false);
   };
 
   // 선택한 장소 목록에 추가 (선택버튼)
@@ -93,10 +99,6 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
     sessionStorage.setItem(selectedDay, JSON.stringify(places));
     prev();
   };
-
-  // const storedPlaces = sessionStorage.getItem(selectedDay);
-  // const keys = Object.keys(sessionStorage);
-  // const storedPlacesKey = keys.find((key) => sessionStorage.getItem(key) === storedPlaces);
 
   return (
     <div className="flex flex-col web:w-[360px]">
@@ -118,7 +120,7 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
             placeholder={`Select ${selectedDay} Place`}
             className="h-[48px] w-full bg-grayscale-50 p-4"
           />
-          {searchResults.length > 0 ? (
+          {hasSearched && searchResults.length > 0 ? (
             <button onClick={searchValueinit}>
               <IoCloseOutline className="size-6 text-grayscale-500" />
             </button>
@@ -130,52 +132,60 @@ const AddressSearch = ({ prev, selectedDay, sequence }: SearchAddressProps) => {
         </div>
       </div>
 
-      {searchResults.length === 0 ? (
-        <div className="flex h-[calc(100vh-600px)] flex-col items-center justify-center p-5">
+      <div className="flex h-[calc(100vh-400px)] flex-col items-center justify-center p-5">
+        {hasSearched ? (
+          searchResults.length === 0 ? (
+            <Image
+              src="/icons/no-search-results.svg"
+              alt="No search results"
+              width={250}
+              height={250}
+              style={{ width: '250px', height: '250px' }}
+            />
+          ) : (
+            <div className="h-full w-full">
+              {searchResults.map((place, index) => {
+                const cleanHTML = DOMPurify.sanitize(place.title);
+                return (
+                  <button
+                    key={index}
+                    onClick={() => handlePlaceSelect(place)}
+                    className={`flex w-full flex-row p-4 hover:bg-gray-100 ${selectedPlace === place ? 'rounded-2xl border-2 border-primary-300 bg-gray-100' : ''}`}
+                  >
+                    <div className="mr-3 flex size-11 flex-shrink-0 items-center justify-center rounded-lg bg-grayscale-50">
+                      <GrLocation className="size-5" />
+                    </div>
+                    <div className="flex flex-col items-start">
+                      <h3 className="whitespace-wrap text-left" dangerouslySetInnerHTML={{ __html: cleanHTML }} />
+                      <div className="flex flex-shrink-0 flex-wrap text-xs text-gray-400">
+                        <p>{place.category} •&nbsp;</p>
+                        <p className="text-xs text-gray-400">{place.roadAddress}</p>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )
+        ) : (
           <Image
-            src="\icons\please-search.svg"
-            alt="search empty"
+            src="/icons/please-search.svg"
+            alt="Please search"
             width={250}
             height={250}
             style={{ width: '250px', height: '250px' }}
           />
-          {/* <IoIosSearch className="size-10 text-grayscale-100" />
-          <p className="text-xl font-semibold text-grayscale-100">Please search</p> */}
-        </div>
-      ) : (
-        <div className="h-3/5 overflow-y-scroll">
-          {searchResults.map((place, index) => {
-            const cleanHTML = DOMPurify.sanitize(place.title);
-            return (
-              <button
-                key={index}
-                onClick={() => handlePlaceSelect(place)}
-                className={`flex w-full flex-row p-4 hover:bg-gray-100 ${selectedPlace === place ? 'rounded-2xl border-2 border-primary-300 bg-gray-100' : ''}`}
-              >
-                <div className="mr-3 flex size-11 flex-shrink-0 items-center justify-center rounded-lg bg-grayscale-50">
-                  <GrLocation className="size-5" />
-                </div>
+        )}
+      </div>
 
-                <div className="flex flex-col items-start">
-                  <h3 className="whitespace-wrap text-left" dangerouslySetInnerHTML={{ __html: cleanHTML }} />
-                  <div className="flex flex-shrink-0 flex-wrap text-xs text-gray-400">
-                    <p>{place.category} •&nbsp;</p>
-                    <p className="text-xs text-gray-400">{place.roadAddress}</p>
-                  </div>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      )}
       {!selectedPlace ? (
-        <button className="fixed bottom-28 left-0 right-0 mx-auto my-5 h-14 w-[320px] cursor-default rounded-2xl bg-primary-100 p-2 text-lg font-medium text-white web:absolute web:bottom-9 web:left-5 web:right-auto">
+        <button className="absolute bottom-7 left-0 right-0 mx-auto my-5 h-14 w-[320px] cursor-default rounded-2xl bg-primary-100 p-2 text-lg font-medium text-white web:absolute web:bottom-9 web:left-5 web:right-auto">
           Select
         </button>
       ) : (
         <button
           onClick={handlePlaceSave}
-          className="fixed bottom-28 left-0 right-0 mx-auto my-5 h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-medium text-white web:absolute web:bottom-9 web:left-5 web:right-auto"
+          className="absolute bottom-7 left-0 right-0 mx-auto my-5 h-14 w-[320px] rounded-2xl bg-primary-300 p-2 text-lg font-medium text-white web:absolute web:bottom-9 web:left-5 web:right-auto"
         >
           Select
         </button>

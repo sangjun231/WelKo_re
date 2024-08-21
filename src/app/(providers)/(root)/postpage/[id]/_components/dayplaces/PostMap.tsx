@@ -3,6 +3,8 @@ import { useNaverMapScript } from '@/hooks/Map/useNaverMapScript';
 import { Place } from '@/types/types';
 import { translateAddress } from '@/utils/post/postData';
 import React, { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 const PostMap = ({
   mapId,
@@ -13,6 +15,7 @@ const PostMap = ({
   selectedPlaces: Place[];
   setRegion: React.Dispatch<React.SetStateAction<string>>;
 }) => {
+  const MySwal = withReactContent(Swal);
   //지도 관련
   const clientId = process.env.NEXT_PUBLIC_NCP_CLIENT_ID!;
   const isScriptLoaded = useNaverMapScript(clientId);
@@ -43,10 +46,10 @@ const PostMap = ({
                 setRegion(translatedAddress.split(' ')[0]);
               } catch (error) {
                 console.error('Failed to translate address:', error);
-                alert('Failed to translate address.');
+                MySwal.fire('Failed!', 'Failed to translate address.', 'error');
               }
             } else {
-              alert('Failed to get the location name.');
+              MySwal.fire('Failed!', 'Failed to get the location name.', 'error');
             }
           }
         }
