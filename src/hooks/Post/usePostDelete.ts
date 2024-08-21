@@ -6,11 +6,11 @@ import withReactContent from 'sweetalert2-react-content';
 const handleDelete = async (postId: string, router: AppRouterInstance) => {
   const MySwal = withReactContent(Swal);
   const result = await MySwal.fire({
-    title: 'Do you want to cancel your tour?',
-    text: 'If you cancel, you will get a full refund',
+    title: 'Do you want to delete your tour?',
+    text: 'If you delete, you can always rewrite it later',
     icon: 'warning',
     showCancelButton: true,
-    confirmButtonText: 'Cancel Tour',
+    confirmButtonText: 'Delete Tour',
     cancelButtonText: 'No thanks',
     customClass: {
       actions: 'flex flex-col gap-[8px] w-full',
