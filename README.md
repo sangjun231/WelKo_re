@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# ✈️ 한국의 현지 투어 플랫폼 WelKo 
+![Main(1920x1080)](https://github.com/user-attachments/assets/a4911835-7c46-4d73-a4fa-cbb0eb448c9b)
+* Test ID: test55@naver.com
+* Test PWD: 1q2w3e4r!
 
-## Getting Started
+## 프로젝트 소개
+* 해외 여행객을 대상으로 한국의 현지 투어 상품을 판매하고 현지인이 직접 가이드해주는 투어 플랫폼
+ 
+* 이 사이트는 지루하고 흔한 여행이 아닌, 현지인만이 아는 여행 장소와 맛집 등 특별한 투어를 계획하여 판매합니다. 
 
-First, run the development server:
+* 여행객은 현지 가이드와 실시간 소통을 통해 여행 계획 수립에도 도움을 얻을 수 있습니다. 
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 팀원 소개
+![A12-Team](https://github.com/user-attachments/assets/053156ba-c17f-41fa-9c21-586749161d53)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 기술 환경 및 스택
+- **Front-end**: 
+  <img src="https://img.shields.io/badge/Next.js-%23000000.svg?style=for-the-badge&logo=Next.js&logoColor=white" />&nbsp;
+  <img src="https://img.shields.io/badge/Tailwind%20CSS-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white" />&nbsp;
+  <img src="https://img.shields.io/badge/-React%20Query-FF4154?style=for-the-badge&logo=react%20query&logoColor=white" />
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Back-end**:
+  <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />&nbsp;
+  
+- **Deployment**:
+  <img src="https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white" />
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- **Tools**:
+  <img src="https://img.shields.io/badge/GitHub-%23181717.svg?style=for-the-badge&logo=github&logoColor=white" />&nbsp;
+  <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white" />&nbsp;
+  <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white" />&nbsp;
+  <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white" />
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 서비스 아키텍처
+![undefined (1)](https://github.com/user-attachments/assets/3078a491-fa9c-4a62-9672-89cadb23b71c)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
