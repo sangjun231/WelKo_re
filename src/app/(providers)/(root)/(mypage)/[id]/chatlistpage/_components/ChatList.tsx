@@ -5,6 +5,7 @@ import { API_MYPAGE_CHATS, API_POST_DETAILS, API_MYPAGE_PROFILE } from '@/utils/
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { fetchMessages } from '@/services/chatService';
+import { createClient } from '@/utils/supabase/client';
 
 type ChatListProps = {
   userId: string;
@@ -39,21 +40,22 @@ type User = {
   avatar: string;
 };
 
+const fetchPostDetails = async (postId: string): Promise<Post> => {
+  const response = await axios.get(API_POST_DETAILS(postId));
+  return response.data;
+};
+
+const fetchUserDetails = async (userId: string): Promise<User> => {
+  const response = await axios.get(API_MYPAGE_PROFILE(userId));
+  return response.data;
+};
+
 const ChatList = ({ userId }: ChatListProps) => {
+  const supabase = createClient();
   const queryClient = useQueryClient();
   const [newMessages, setNewMessages] = useState<{ [key: string]: boolean }>({});
   const router = useRouter();
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-
-  const fetchPostDetails = async (postId: string): Promise<Post> => {
-    const response = await axios.get(API_POST_DETAILS(postId));
-    return response.data;
-  };
-
-  const fetchUserDetails = async (userId: string): Promise<User> => {
-    const response = await axios.get(API_MYPAGE_PROFILE(userId));
-    return response.data;
-  };
 
   const {
     data: chatData = [],
@@ -64,8 +66,7 @@ const ChatList = ({ userId }: ChatListProps) => {
     queryFn: async () => {
       const response = await axios.get(API_MYPAGE_CHATS(userId));
       return response.data;
-    },
-    refetchInterval: false
+    }
   });
 
   const postIds = chatData?.map((chat) => chat.post_id) || [];
@@ -156,6 +157,28 @@ const ChatList = ({ userId }: ChatListProps) => {
   //     if (intervalId) clearInterval(intervalId);
   //   };
   // }, [chatData, queryClient, userId, intervalId]);
+
+  useEffect(() => {
+    const loadMessages = async () => {
+      await fetchMessages(userId, userId, ''); // 초기 데이터 로드
+    };
+
+    loadMessages();
+
+    const channel = supabase
+      .channel('public:messages')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
+        if (payload.new.post_id && (payload.new.sender_id === userId || payload.new.receiver_id === userId)) {
+          queryClient.invalidateQueries({ queryKey: ['chatList', userId] });
+        }
+      })
+      .subscribe();
+
+    return () => {
+      // 컴포넌트 언마운트 시 구독 취소
+      channel.unsubscribe();
+    };
+  }, [userId, queryClient]);
 
   if (chatPending || postPending || userPending)
     return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Loading...</div>;
