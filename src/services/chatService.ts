@@ -22,11 +22,11 @@ export const fetchMessages = async (senderId: string, receiverId: string, postId
     return [];
   }
 
-  const uncheckedMessages = data.filter((message) => message.receiver_id === receiverId && !message.is_checked);
-  if (uncheckedMessages.length > 0) {
-    const uncheckedMessageIds = uncheckedMessages.map((message) => message.id);
-    await supabase.from('messages').update({ is_checked: true }).in('id', uncheckedMessageIds);
-  }
+  // const uncheckedMessages = data.filter((message) => message.receiver_id === receiverId && !message.is_checked);
+  // if (uncheckedMessages.length > 0) {
+  //   const uncheckedMessageIds = uncheckedMessages.map((message) => message.id);
+  //   await supabase.from('messages').update({ is_checked: true }).in('id', uncheckedMessageIds);
+  // }
 
   // Realtime 구독 설정
   supabase
