@@ -120,7 +120,16 @@ const ChatList = ({ userId }: ChatListProps) => {
       [chatId]: true
     }));
 
-    await fetchMessages(chat.receiver_id, chat.sender_id, chat.post_id);
+    // 상대방 메시지만 업데이트
+    const messages = await fetchMessages(userId, receiverId, chat.post_id);
+    const uncheckedMessages = messages.filter((message) => message.receiver_id === userId && !message.is_checked);
+
+    if (uncheckedMessages.length > 0) {
+      const uncheckedMessageIds = uncheckedMessages.map((message) => message.id);
+      await supabase.from('messages').update({ is_checked: true }).in('id', uncheckedMessageIds);
+    }
+    // 채팅 리스트 쿼리 무효화
+    queryClient.invalidateQueries({ queryKey: ['chatList', userId] });
 
     router.push(
       `/${userId}/${receiverId}/chatpage?postId=${chat.post_id}&postTitle=${postDetails?.title}&postImage=${postDetails?.image}`
@@ -142,21 +151,6 @@ const ChatList = ({ userId }: ChatListProps) => {
       return `${messageDate.getMonth() + 1}.${messageDate.getDate()}`;
     }
   };
-
-  // useEffect(() => {
-  //   if (chatData.length > 0 && !intervalId) {
-  //     const id = setInterval(() => {
-  //       queryClient.invalidateQueries({
-  //         queryKey: ['chatList', userId]
-  //       });
-  //     }, 1000);
-  //     setIntervalId(id);
-  //   }
-
-  //   return () => {
-  //     if (intervalId) clearInterval(intervalId);
-  //   };
-  // }, [chatData, queryClient, userId, intervalId]);
 
   useEffect(() => {
     const loadMessages = async () => {
