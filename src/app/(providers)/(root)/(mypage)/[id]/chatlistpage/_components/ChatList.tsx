@@ -142,20 +142,20 @@ const ChatList = ({ userId }: ChatListProps) => {
     }
   };
 
-  useEffect(() => {
-    if (chatData.length > 0 && !intervalId) {
-      const id = setInterval(() => {
-        queryClient.invalidateQueries({
-          queryKey: ['chatList', userId]
-        });
-      }, 1000);
-      setIntervalId(id);
-    }
+  // useEffect(() => {
+  //   if (chatData.length > 0 && !intervalId) {
+  //     const id = setInterval(() => {
+  //       queryClient.invalidateQueries({
+  //         queryKey: ['chatList', userId]
+  //       });
+  //     }, 1000);
+  //     setIntervalId(id);
+  //   }
 
-    return () => {
-      if (intervalId) clearInterval(intervalId);
-    };
-  }, [chatData, queryClient, userId, intervalId]);
+  //   return () => {
+  //     if (intervalId) clearInterval(intervalId);
+  //   };
+  // }, [chatData, queryClient, userId, intervalId]);
 
   if (chatPending || postPending || userPending)
     return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Loading...</div>;

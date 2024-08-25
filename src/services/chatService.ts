@@ -28,6 +28,20 @@ export const fetchMessages = async (senderId: string, receiverId: string, postId
     await supabase.from('messages').update({ is_checked: true }).in('id', uncheckedMessageIds);
   }
 
+  // Realtime 구독 설정
+  supabase
+    .channel('public:messages')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
+      if (
+        payload.new.post_id === postId &&
+        (payload.new.sender_id === senderId || payload.new.receiver_id === receiverId)
+      ) {
+        // 새로운 메시지를 처리하는 로직을 추가
+        data.push(payload.new); // 실시간으로 수신된 메시지를 기존 데이터에 추가
+      }
+    })
+    .subscribe();
+
   return data;
 };
 

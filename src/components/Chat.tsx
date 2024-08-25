@@ -53,13 +53,12 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
   );
 
   useEffect(() => {
-    const fetchData = async () => {
+    const loadMessages = async () => {
       const fetchedMessages = await fetchMessages(senderId, receiverId, postId);
       setMessages(fetchedMessages);
     };
 
-    const interval = setInterval(fetchData, 1000);
-    return () => clearInterval(interval);
+    loadMessages();
   }, [senderId, receiverId, postId]);
 
   return (
