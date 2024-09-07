@@ -120,7 +120,6 @@ const ChatList = ({ userId }: ChatListProps) => {
       [chatId]: true
     }));
 
-    // 상대방 메시지만 업데이트
     const messages = await fetchMessages(userId, receiverId, chat.post_id);
     const uncheckedMessages = messages.filter((message) => message.receiver_id === userId && !message.is_checked);
 
@@ -128,7 +127,6 @@ const ChatList = ({ userId }: ChatListProps) => {
       const uncheckedMessageIds = uncheckedMessages.map((message) => message.id);
       await supabase.from('messages').update({ is_checked: true }).in('id', uncheckedMessageIds);
     }
-    // 채팅 리스트 쿼리 무효화
     queryClient.invalidateQueries({ queryKey: ['chatList', userId] });
 
     router.push(
@@ -154,7 +152,7 @@ const ChatList = ({ userId }: ChatListProps) => {
 
   useEffect(() => {
     const loadMessages = async () => {
-      await fetchMessages(userId, userId, ''); // 초기 데이터 로드
+      await fetchMessages(userId, userId, '');
     };
 
     loadMessages();
@@ -169,7 +167,6 @@ const ChatList = ({ userId }: ChatListProps) => {
       .subscribe();
 
     return () => {
-      // 컴포넌트 언마운트 시 구독 취소
       channel.unsubscribe();
     };
   }, [userId, queryClient]);
