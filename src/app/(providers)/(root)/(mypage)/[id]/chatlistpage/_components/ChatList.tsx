@@ -55,7 +55,6 @@ const ChatList = ({ userId }: ChatListProps) => {
   const queryClient = useQueryClient();
   const [newMessages, setNewMessages] = useState<{ [key: string]: boolean }>({});
   const router = useRouter();
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
   const {
     data: chatData = [],
