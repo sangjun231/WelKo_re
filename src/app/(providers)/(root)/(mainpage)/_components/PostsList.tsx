@@ -16,7 +16,7 @@ interface Post {
   image?: string;
   price: number;
   tags?: string[];
-  created_at: string; // Assuming the post table has a `created_at` field
+  created_at: string;
 }
 
 const NewPostList = () => {
@@ -27,7 +27,6 @@ const NewPostList = () => {
   useEffect(() => {
     const fetchPopularPosts = async () => {
       try {
-        // Fetch latest 8 posts sorted by created_at in descending order
         const { data: postsData, error: postsError } = await supabase
           .from('posts')
           .select('*')
