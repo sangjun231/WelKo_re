@@ -2,7 +2,11 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import LikeBtn from '/public/icons/tabler-icon-post-heart.svg';
 import { createClient } from '@/utils/supabase/client';
+import { useLikeStore } from '@/zustand/likeStore';
+import usePostStore from '@/zustand/postStore';
+import useAuthStore from '@/zustand/bearsStore';
 
 const supabase = createClient();
 
@@ -23,6 +27,33 @@ const NewPostList = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const formatPrice = (price: number) => `$${price}`;
+  const formatDate = (date: string) => {
+    const d = new Date(date);
+    return new Intl.DateTimeFormat('ko', {
+      year: '2-digit',
+      month: 'numeric',
+      day: 'numeric'
+    }).format(d);
+  };
+
+  const user = useAuthStore((state) => state.user);
+  const { fetchPost, post } = usePostStore((state) => ({
+    fetchPost: state.fetchPost,
+    post: state.post
+  }));
+  const { liked, fetchLikeStatus, toggleLike } = useLikeStore((state) => ({
+    liked: state.liked,
+    fetchLikeStatus: state.fetchLikeStatus,
+    toggleLike: state.toggleLike
+  }));
+
+  const handleLike = () => {
+    if (post?.id && user?.id) {
+      toggleLike(post.id, user.id);
+    }
+  };
 
   useEffect(() => {
     const fetchPopularPosts = async () => {
@@ -47,16 +78,6 @@ const NewPostList = () => {
     fetchPopularPosts();
   }, []);
 
-  const formatPrice = (price: number) => `$${price}`;
-  const formatDate = (date: string) => {
-    const d = new Date(date);
-    return new Intl.DateTimeFormat('ko', {
-      year: '2-digit',
-      month: 'numeric',
-      day: 'numeric'
-    }).format(d);
-  };
-
   return (
     <div className="mt-[40px] md:mt-[160px]">
       <h2 className="text-xl font-bold md:mb-10 md:text-4xl">New Tour</h2>
@@ -65,13 +86,25 @@ const NewPostList = () => {
           <li key={`${post.id}-${index}`} className="mb-4 flex rounded-md lg:mb-0 lg:w-[calc(50%-10px)] lg:p-0">
             <Link href={`/detail/${post.id}`} className="flex max-w-[460px]">
               {post.image ? (
-                <Image
-                  src={post.image}
-                  alt={post.title}
-                  width={120}
-                  height={140}
-                  className="mr-2 h-[100px] w-[80px] rounded-lg md:mr-4 md:h-[140px] md:w-[120px]"
-                />
+                <div>
+                  <Image
+                    src={post.image}
+                    alt={post.title}
+                    width={120}
+                    height={140}
+                    className="mr-2 h-[100px] w-[80px] rounded-lg md:mr-4 md:h-[140px] md:w-[120px]"
+                  />
+                  {/* <button
+                    onClick={handleLike}
+                    className="absolute right-1 top-2 rounded-full bg-[rgba(255,255,255,0.10)] p-0.5 backdrop-blur-[10px]"
+                  >
+                    {liked ? (
+                      <LikeBtn width={20} height={20} color="#FF7029" fill="#FF7029" />
+                    ) : (
+                      <LikeBtn width={20} height={20} color="white" />
+                    )}
+                  </button> */}
+                </div>
               ) : (
                 <div className="mr-2 flex h-24 w-24 items-center justify-center bg-gray-200">No Image</div>
               )}

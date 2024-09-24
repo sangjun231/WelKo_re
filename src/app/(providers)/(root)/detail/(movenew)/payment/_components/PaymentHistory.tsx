@@ -113,16 +113,17 @@ export default function PaymentHistory() {
             {/* 이미지와 제목 */}
             <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg web:h-[120px] web:w-[120px]">
               <Image src={post.image} alt={post.title} fill style={{ objectFit: 'cover' }} className="rounded-lg" />
-              <button
+              {/* <button
                 onClick={handleLike}
                 className="absolute right-1 top-2 rounded-full bg-[rgba(255,255,255,0.10)] p-0.5 backdrop-blur-[10px]"
               >
-                {/* {liked ? (
+                결제 및 환불 내역 좋아요 기능 주석 
+                {liked ? (
                   <LikeBtn width={20} height={20} color="#FF7029" fill="#FF7029" />
                 ) : (
                   <LikeBtn width={20} height={20} color="white" />
-                )} */}
-              </button>
+                )}
+              </button> */}
             </div>
             <div className="flex flex-col gap-1">
               <h4 className="line-clamp-1 text-sm font-semibold web:text-xl">{post.title}</h4>
@@ -134,8 +135,8 @@ export default function PaymentHistory() {
             </div>
           </div>
           <hr className="my-5 h-[1px] w-full bg-grayscale-100 web:my-10" />
-          {/* 예약 정보 */}
 
+          {/* 예약 정보 */}
           <div className="flex flex-col gap-1">
             <h3 className="text-lg font-semibold web:text-3xl">Reservation</h3>
             <div className="mt-2 flex flex-col gap-2">
