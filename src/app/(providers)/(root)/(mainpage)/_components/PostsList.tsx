@@ -29,14 +29,15 @@ const NewPostList = () => {
   const [error, setError] = useState<string | null>(null);
 
   const formatPrice = (price: number) => `$${price}`;
-  const formatDate = (date: string) => {
-    const d = new Date(date);
-    return new Intl.DateTimeFormat('ko', {
-      year: '2-digit',
-      month: 'numeric',
-      day: 'numeric'
-    }).format(d);
-  };
+  // 사용 안하는 함수 주석, 추후 필요시 사용 할 수도 있어서 삭제 보류
+  // const formatDate = (date: string) => {
+  //   const d = new Date(date);
+  //   return new Intl.DateTimeFormat('ko', {
+  //     year: '2-digit',
+  //     month: 'numeric',
+  //     day: 'numeric'
+  //   }).format(d);
+  // };
 
   const user = useAuthStore((state) => state.user);
   const { fetchPost, post } = usePostStore((state) => ({
