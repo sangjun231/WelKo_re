@@ -31,7 +31,7 @@ export default function LikeList() {
     }
   };
 
-  const { data, isPending, error, refetch } = useQuery<Tables<'posts'>[]>({
+  const { data, isPending, error } = useQuery<Tables<'posts'>[]>({
     queryKey: ['likedPosts', userId],
     queryFn: getLikedPostsData,
     enabled: !!userId
@@ -43,10 +43,6 @@ export default function LikeList() {
     }
     return `$${price.toLocaleString('en-US')}`;
   };
-
-  useEffect(() => {
-    refetch();
-  }, [userId, refetch]);
 
   if (isPending) return <div className="flex min-h-[calc(100vh-400px)] items-center justify-center">Loading...</div>;
 
