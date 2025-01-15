@@ -7,6 +7,7 @@ import { createClient } from '@/utils/supabase/client';
 import { useLikeStore } from '@/zustand/likeStore';
 import usePostStore from '@/zustand/postStore';
 import useAuthStore from '@/zustand/bearsStore';
+import Like from '../../(mypage)/[id]/mypage/_components/Like';
 
 const supabase = createClient();
 
@@ -87,6 +88,13 @@ const NewPostList = () => {
           <li key={`${post.id}-${index}`} className="mb-4 flex rounded-md lg:mb-0 lg:w-[calc(50%-10px)] lg:p-0">
             <Link href={`/detail/${post.id}`} className="flex max-w-[460px]">
               {post.image ? (
+                // <Image
+                //   src={post.image}
+                //   alt={post.title}
+                //   width={120}
+                //   height={140}
+                //   className="mr-2 h-[100px] w-[80px] rounded-lg md:mr-4 md:h-[140px] md:w-[120px]"
+                // />
                 <div className="relative max-h-[100px] min-h-[100px] min-w-[80px] max-w-[80px] web:max-h-[286px] web:max-w-[286px]">
                   <Image
                     className="mr-2 h-[100px] w-[80px] rounded-lg md:mr-4 md:h-[140px] md:w-[120px]"
@@ -97,11 +105,15 @@ const NewPostList = () => {
                   />
                   {
                     <button
-                      onClick={handleLike}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleLike();
+                      }}
                       className="absolute right-1 top-2 rounded-full bg-[rgba(255,255,255,0.10)] p-0.5 backdrop-blur-[10px]"
                     >
+                      {/* <Like postId={post.id} userId={user.id} /> */}
                       {liked ? (
-                        <LikeBtn width={20} height={20} color="#FF7029" fill="#FF7029" />
+                        <LikeBtn width={20} height={20} color="#FF7029" />
                       ) : (
                         <LikeBtn width={20} height={20} color="white" />
                       )}
