@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react';
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
 import usePostStore from '@/zustand/postStore';
 import { formatDateRange } from '@/utils/detail/functions';
 import BackButton from '@/components/common/Button/BackButton';
@@ -13,13 +14,14 @@ import Swal from 'sweetalert2';
 
 const SelectPost = () => {
   const { isWeb, setIsWeb } = useWebStore();
+  const { id: postId } = useParams<{ id: string }>();
   const { post } = usePostStore((state) => ({
     post: state.post
   }));
   const user = useAuthStore((state) => state.user);
 
-  const { liked, fetchLikeStatus, toggleLike } = useLikeStore((state) => ({
-    liked: state.liked,
+  const { isLiked, fetchLikeStatus, toggleLike } = useLikeStore((state) => ({
+    isLiked: state.isLiked,
     fetchLikeStatus: state.fetchLikeStatus,
     toggleLike: state.toggleLike
   }));
@@ -35,7 +37,7 @@ const SelectPost = () => {
       toggleLike(post.id, user.id);
       const primaryColor = '#B95FAB'; // primary-300 색상의 HEX 코드
 
-      if (liked) {
+      if (isLiked(postId)) {
         Swal.fire({
           title: 'You have removed this post from your favorites!',
           icon: 'info',
@@ -77,21 +79,21 @@ const SelectPost = () => {
   if (!post) return <div className="flex items-center justify-center">Loading...</div>;
 
   return (
-    <div className="web:mt-10 web:justify-between mt-2 flex flex-col items-center gap-2">
+    <div className="mt-2 flex flex-col items-center gap-2 web:mt-10 web:justify-between">
       <div className="mb-4 flex w-full items-center justify-between py-4">
         <BackButton className="web:hidden" />
-        <h2 className="mobile:flex-grow web:text-left web:text-3xl text-center text-lg font-semibold">Pay</h2>
+        <h2 className="text-center text-lg font-semibold mobile:flex-grow web:text-left web:text-3xl">Pay</h2>
         <div className="w-8"></div>
       </div>
       <div className="flex w-full">
         <div className="flex flex-1">
-          <div className="web:h-[140px] web:w-[120px] relative mr-4 h-20 w-20 flex-shrink-0">
+          <div className="relative mr-4 h-20 w-20 flex-shrink-0 web:h-[140px] web:w-[120px]">
             <Image src={post.image} alt={post.title} fill style={{ objectFit: 'cover' }} className="rounded-lg" />
             <button
               onClick={handleLike}
-              className="web:p-2 absolute right-2 top-2 rounded-full bg-[rgba(255,255,255,0.10)] p-0.5 backdrop-blur-[10px]"
+              className="absolute right-2 top-2 rounded-full bg-[rgba(255,255,255,0.10)] p-0.5 backdrop-blur-[10px] web:p-2"
             >
-              {liked ? (
+              {isLiked(postId) ? (
                 <LikeBtn width={isWeb ? 24 : 20} height={isWeb ? 24 : 20} color="#FF7029" fill="#FF7029" />
               ) : (
                 <LikeBtn width={isWeb ? 24 : 20} height={isWeb ? 24 : 20} color="white" />
@@ -99,22 +101,22 @@ const SelectPost = () => {
             </button>
           </div>
 
-          <div className="web:gap-2 web:mb-[137px] flex flex-col gap-1">
-            <h4 className="web:text-lg web:font-semibold web:line-clamp-2 line-clamp-1 text-sm font-semibold">
+          <div className="flex flex-col gap-1 web:mb-[137px] web:gap-2">
+            <h4 className="line-clamp-1 text-sm font-semibold web:line-clamp-2 web:text-lg web:font-semibold">
               {post.title}
             </h4>
-            <p className="web:text-base text-sm font-normal text-grayscale-500">
+            <p className="text-sm font-normal text-grayscale-500 web:text-base">
               {formatDateRange(post.startDate, post.endDate)}
             </p>
-            <div className="web:text-base flex items-center text-xs">
-              <span className="web:font-semibold font-semibold text-primary-300">{formatPrice(post.price)}</span>
+            <div className="flex items-center text-xs web:text-base">
+              <span className="font-semibold text-primary-300 web:font-semibold">{formatPrice(post.price)}</span>
               <span className="font-medium text-grayscale-700">/Person</span>
             </div>
           </div>
         </div>
-        <div className="web:block mx-6 hidden"></div>
+        <div className="mx-6 hidden web:block"></div>
         {/* 모바일에서 숨기고, 웹에서만 보이는 Cancellation Policy */}
-        <div className="web:block hidden flex-1">
+        <div className="hidden flex-1 web:block">
           <h3 className="mb-6 text-xl font-medium text-text-color">Cancellation Policy</h3>
           <p className="text-base font-normal text-grayscale-500">
             Before you book, make sure you&apos;re comfortable with
