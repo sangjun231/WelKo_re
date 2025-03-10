@@ -22,8 +22,8 @@ const Likes = ({ isWeb }: WebProps) => {
   const { post } = usePostStore((state) => ({
     post: state.post
   }));
-  const { liked, fetchLikeStatus, toggleLike } = useLikeStore((state) => ({
-    liked: state.liked,
+  const { isLiked, fetchLikeStatus, toggleLike } = useLikeStore((state) => ({
+    isLiked: state.isLiked,
     fetchLikeStatus: state.fetchLikeStatus,
     toggleLike: state.toggleLike
   }));
@@ -45,7 +45,7 @@ const Likes = ({ isWeb }: WebProps) => {
 
     const primaryColor = '#B95FAB'; // primary-300 색상의 HEX 코드
 
-    if (liked) {
+    if (isLiked(postId)) {
       Swal.fire({
         title: 'You have removed this post from your favorites!',
         icon: 'info',
@@ -98,7 +98,7 @@ const Likes = ({ isWeb }: WebProps) => {
           )}
         <div>
           <button onClick={handleLike} className="icon-button" aria-label="Like Post">
-            {liked ? (
+            {isLiked(postId) ? (
               <LikeBtn width={isWeb ? 32 : 24} height={isWeb ? 32 : 24} color="#141414" fill="#141414" />
             ) : (
               <LikeBtn width={isWeb ? 32 : 24} height={isWeb ? 32 : 24} />

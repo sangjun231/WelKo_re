@@ -26,8 +26,8 @@ export default function PaymentHistory() {
   }));
   const [paymentData, setPaymentData] = useState<any>(null);
   const [pending, setPending] = useState(true);
-  const { liked, fetchLikeStatus, toggleLike } = useLikeStore((state) => ({
-    liked: state.liked,
+  const { isLiked, fetchLikeStatus, toggleLike } = useLikeStore((state) => ({
+    isLiked: state.isLiked,
     fetchLikeStatus: state.fetchLikeStatus,
     toggleLike: state.toggleLike
   }));
