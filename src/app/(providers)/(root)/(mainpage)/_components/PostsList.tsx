@@ -5,9 +5,7 @@ import Image from 'next/image';
 import LikeBtn from '/public/icons/tabler-icon-post-heart.svg';
 import { createClient } from '@/utils/supabase/client';
 import { useLikeStore } from '@/zustand/likeStore';
-import usePostStore from '@/zustand/postStore';
 import useAuthStore from '@/zustand/bearsStore';
-import Like from '../../(mypage)/[id]/mypage/_components/Like';
 
 const supabase = createClient();
 
@@ -41,19 +39,17 @@ const NewPostList = () => {
   // };
 
   const user = useAuthStore((state) => state.user);
-  const { fetchPost, post } = usePostStore((state) => ({
-    fetchPost: state.fetchPost,
-    post: state.post
-  }));
-  const { liked, fetchLikeStatus, toggleLike } = useLikeStore((state) => ({
-    liked: state.liked,
+  const { isLiked, fetchLikeStatus, toggleLike } = useLikeStore((state) => ({
+    isLiked: state.isLiked,
     fetchLikeStatus: state.fetchLikeStatus,
     toggleLike: state.toggleLike
   }));
 
-  const handleLike = () => {
-    if (post?.id && user?.id) {
-      toggleLike(post.id, user.id);
+  const handleLike = (e: React.MouseEvent, postId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (user?.id) {
+      toggleLike(postId, user.id);
     }
   };
 
@@ -80,74 +76,55 @@ const NewPostList = () => {
     fetchPopularPosts();
   }, []);
 
+  useEffect(() => {
+    if (user?.id && posts.length > 0) {
+      posts.forEach((post) => {
+        fetchLikeStatus(post.id, user.id);
+      });
+    }
+  }, [posts, user?.id, fetchLikeStatus]);
+
   return (
     <div className="mt-[40px] md:mt-[160px]">
       <h2 className="text-xl font-bold md:mb-10 md:text-4xl">New Tour</h2>
       <ul className="mt-5 lg:flex lg:flex-wrap lg:gap-5">
         {posts.map((post, index) => (
           <li key={`${post.id}-${index}`} className="mb-4 flex rounded-md lg:mb-0 lg:w-[calc(50%-10px)] lg:p-0">
-            <Link href={`/detail/${post.id}`} className="flex max-w-[460px]">
-              {post.image ? (
-                // <Image
-                //   src={post.image}
-                //   alt={post.title}
-                //   width={120}
-                //   height={140}
-                //   className="mr-2 h-[100px] w-[80px] rounded-lg md:mr-4 md:h-[140px] md:w-[120px]"
-                // />
-                <div className="relative max-h-[100px] min-h-[100px] min-w-[80px] max-w-[80px] web:max-h-[286px] web:max-w-[286px]">
+            <div className="relative flex max-w-[460px]">
+              <Link href={`/detail/${post.id}`} className="block">
+                <div className="relative h-[100px] w-[80px] web:h-[140px] web:w-[120px]">
                   <Image
-                    className="mr-2 h-[100px] w-[80px] rounded-lg md:mr-4 md:h-[140px] md:w-[120px]"
-                    src={post.image}
+                    className="rounded-lg"
+                    src={post.image || '/icons/upload.png'}
                     alt={post.title}
-                    width={80}
-                    height={100}
+                    fill
+                    style={{ objectFit: 'cover' }}
                   />
-                  {
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleLike();
-                      }}
-                      className="absolute right-1 top-2 rounded-full bg-[rgba(255,255,255,0.10)] p-0.5 backdrop-blur-[10px]"
-                    >
-                      {/* <Like postId={post.id} userId={user.id} /> */}
-                      {liked ? (
-                        <LikeBtn width={20} height={20} color="#FF7029" />
-                      ) : (
-                        <LikeBtn width={20} height={20} color="white" />
-                      )}
-                    </button>
-                  }
+                  <button
+                    onClick={(e) => handleLike(e, post.id)}
+                    className="z-1 absolute right-[4px] top-[8px] rounded-[24px] bg-[rgba(255,255,255,0.10)] p-0.5 backdrop-blur-[10px] web:right-[8px] web:top-[8px]"
+                  >
+                    <LikeBtn
+                      className="h-[24px] w-[24px] web:h-[36px] web:w-[36px] web:p-[6px]"
+                      color={isLiked(post.id) ? '#FF7029' : 'white'}
+                      fill={isLiked(post.id) ? '#FF7029' : 'none'}
+                    />
+                  </button>
                 </div>
-              ) : (
-                <div className="mr-2 flex h-24 w-24 items-center justify-center bg-gray-200">No Image</div>
-              )}
-              <div className="flex flex-col">
-                <div>
-                  <h3 className="line-clamp-1 text-sm font-semibold md:line-clamp-2 md:text-[21px] md:leading-7">
-                    {post.title}
-                  </h3>
-                  <p className="mt-1 tracking-[-0.1em] text-gray-500 md:mt-2 md:text-lg">
-                    {post.startDate && post.endDate
-                      ? `${new Intl.DateTimeFormat('ko', {
-                          year: '2-digit',
-                          month: 'numeric',
-                          day: 'numeric'
-                        }).format(new Date(post.startDate))} ~ ${new Intl.DateTimeFormat('ko', {
-                          year: '2-digit',
-                          month: 'numeric',
-                          day: 'numeric'
-                        }).format(new Date(post.endDate))}`
-                      : 'No dates available'}
-                  </p>
+              </Link>
+              <Link href={`/detail/${post.id}`} className="ml-2 flex flex-col md:ml-4">
+                <h3 className="line-clamp-1 text-sm font-semibold web:text-base">{post.title}</h3>
+                <p className="mt-1 text-sm text-gray-500">
+                  {post.startDate && post.endDate
+                    ? `${new Date(post.startDate).toLocaleDateString()} ~ ${new Date(post.endDate).toLocaleDateString()}`
+                    : 'No dates available'}
+                </p>
+                <div className="mt-auto flex text-sm">
+                  <span className="font-bold text-primary-300">{formatPrice(post.price)}</span>
+                  <span className="ml-1 font-medium text-grayscale-700">/Person</span>
                 </div>
-                <div className="mt-1 flex text-sm md:mt-2 md:text-lg">
-                  <div className="font-bold text-[#B95FAB]">{formatPrice(post.price)}</div>
-                  <div className="font-medium">/Person</div>
-                </div>
-              </div>
-            </Link>
+              </Link>
+            </div>
           </li>
         ))}
       </ul>
