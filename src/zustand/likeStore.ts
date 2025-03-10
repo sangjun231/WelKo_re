@@ -2,20 +2,30 @@ import { create } from 'zustand';
 import axios from 'axios';
 
 interface LikeState {
-  liked: boolean;
+  likedPosts: { [key: string]: boolean };
   fetchLikeStatus: (postId: string, userId: string) => Promise<void>;
   toggleLike: (postId: string, userId: string) => Promise<void>;
+  isLiked: (postId: string) => boolean;
 }
 
-export const useLikeStore = create<LikeState>((set) => ({
-  liked: false,
+export const useLikeStore = create<LikeState>((set, get) => ({
+  likedPosts: {},
+
+  isLiked: (postId: string) => {
+    return get().likedPosts[postId] || false;
+  },
 
   fetchLikeStatus: async (postId: string, userId: string) => {
     try {
       const response = await axios.get(`/api/detail/likes/${postId}`, {
         headers: { 'user-id': userId }
       });
-      set({ liked: response.data.exists });
+      set((state) => ({
+        likedPosts: {
+          ...state.likedPosts,
+          [postId]: response.data.exists
+        }
+      }));
     } catch (error) {
       console.error('Error fetching like status:', error);
     }
@@ -23,18 +33,31 @@ export const useLikeStore = create<LikeState>((set) => ({
 
   toggleLike: async (postId: string, userId: string) => {
     try {
-      const { liked } = useLikeStore.getState();
+      const currentLikeStatus = get().likedPosts[postId];
 
-      if (liked) {
+      // Optimistic update
+      set((state) => ({
+        likedPosts: {
+          ...state.likedPosts,
+          [postId]: !currentLikeStatus
+        }
+      }));
+
+      if (currentLikeStatus) {
         await axios.delete(`/api/detail/likes/${postId}`, {
           data: { userId }
         });
-        set({ liked: false });
       } else {
         await axios.post(`/api/detail/likes/${postId}`, { userId });
-        set({ liked: true });
       }
     } catch (error) {
+      // Revert on error
+      set((state) => ({
+        likedPosts: {
+          ...state.likedPosts,
+          [postId]: !state.likedPosts[postId]
+        }
+      }));
       console.error('Error toggling like:', error);
     }
   }
