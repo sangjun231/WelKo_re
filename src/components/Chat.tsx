@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { fetchMessages, sendMessage } from '../services/chatService';
+import { fetchMessages, sendMessage, chatService } from '@/services/chatService';
 import Image from 'next/image';
 import { format } from 'date-fns';
+import React from 'react';
 
 type User = {
   id: string;
@@ -30,13 +31,12 @@ type ChatProps = {
 const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState<string>('');
+  const messagesContainerRef = React.useRef<HTMLDivElement>(null);
 
   const handleSend = async () => {
     if (newMessage.trim()) {
       await sendMessage(senderId, receiverId, newMessage, postId);
       setNewMessage('');
-      const fetchedMessages = await fetchMessages(senderId, receiverId, postId);
-      setMessages(fetchedMessages);
     }
   };
 
@@ -52,18 +52,44 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
     {} as Record<string, Message[]>
   );
 
-  useEffect(() => {
-    const loadMessages = async () => {
-      const fetchedMessages = await fetchMessages(senderId, receiverId, postId);
-      setMessages(fetchedMessages);
-    };
+  const scrollToBottom = () => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
+  };
+  
+// 초기 메시지 로드 및 실시간 구독 설정
+useEffect(() => {
+  const loadMessages = async () => {
+    const fetchedMessages = await fetchMessages(senderId, receiverId, postId);
+    setMessages(fetchedMessages);
+    setTimeout(scrollToBottom, 100);
+  };
 
-    loadMessages();
-  }, [senderId, receiverId, postId]);
+  loadMessages();
+
+  // 실시간 구독 설정
+  const unsubscribe = chatService.subscribeToRoom(postId, senderId, {
+    onMessage: async (message) => {
+      // 새 메시지가 도착하면 전체 메시지 다시 로드
+      const updatedMessages = await fetchMessages(senderId, receiverId, postId);
+      setMessages(updatedMessages);
+      setTimeout(scrollToBottom, 100);
+    },
+    onError: (error) => {
+      console.error('채팅 구독 에러:', error);
+    }
+  });
+
+  // 컴포넌트 언마운트 시 구독 해제
+  return () => {
+    unsubscribe();
+  };
+}, [senderId, receiverId, postId]);
 
   return (
     <div className="flex h-screen flex-col">
-      <div className="overflow-y-auto pb-[180px]">
+      <div className="overflow-y-auto pb-[180px]" ref={messagesContainerRef}>
         {Object.entries(groupedMessages).map(([date, msgs]) => (
           <div key={date}>
             <p className="mt-[8px] text-center text-[10px] text-grayscale-500">{date}</p>
@@ -115,6 +141,12 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
           placeholder="Placeholder text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              handleSend();
+            }
+          }}
         />
         <button
           className="ml-[12px] flex h-[48px] w-[48px] items-center justify-center rounded-full bg-primary-300"
