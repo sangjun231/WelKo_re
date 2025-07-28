@@ -38,3 +38,4 @@ src/app/api/mypage/\[id]/profile/post/route.ts
 
 # 문제가 되는 파일
 src/types/\bchat.ts
+src/types/?chat.ts
