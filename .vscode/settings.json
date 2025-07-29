@@ -1,0 +1,14 @@
+{
+  "playwright.env": {
+    "NODE_ENV": "test"
+  },
+  "playwright.testExplorer": {
+    "enabled": true
+  },
+  "playwright.report": {
+    "open": true
+  },
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
