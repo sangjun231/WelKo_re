@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Home from './../../app/(providers)/(root)/(mainpage)/page';
+import Home from '@/app/(providers)/(root)/(mainpage)/page';
 
 // Next.js App Router 모킹
 jest.mock('next/navigation', () => ({
@@ -80,6 +80,22 @@ jest.mock('@/utils/supabase/client', () => ({
           }))
         })),
         range: jest.fn(() => ({
+          then: jest.fn((callback) => {
+            // 현실적인 데이터 생성
+            const mockPosts = Array.from({ length: 20 }, (_, i) => ({
+              id: i + 1,
+              title: `테스트 게시글 ${i + 1}`,
+              content: `이것은 테스트 게시글 ${i + 1}의 내용입니다. 실제 데이터와 유사한 크기로 만들기 위해 충분한 텍스트를 포함합니다.`,
+              image_url: `https://picsum.photos/400/300?random=${i}`,
+              created_at: new Date().toISOString(),
+              user_id: `user-${i}`,
+              likes_count: Math.floor(Math.random() * 100),
+              views_count: Math.floor(Math.random() * 1000)
+            }));
+            return Promise.resolve({ data: mockPosts, error: null }).then(callback);
+          })
+        })),
+        in: jest.fn(() => ({
           then: jest.fn((callback) => {
             // 현실적인 데이터 생성
             const mockPosts = Array.from({ length: 20 }, (_, i) => ({
