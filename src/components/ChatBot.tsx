@@ -79,10 +79,9 @@ const ChatBot = () => {
 
   return (
     <>
-      {/* 챗봇 버튼 */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-primary-500 hover:bg-primary-600 fixed bottom-4 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-colors"
+        className="bg-primary-500 hover:bg-primary-600 fixed bottom-4 right-16 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-colors"
       >
         <Image
           src="/icons/tabler-icon-location-filled.svg"
@@ -93,10 +92,8 @@ const ChatBot = () => {
         />
       </button>
 
-      {/* 챗봇 창 */}
       {isOpen && (
-        <div className="fixed bottom-20 right-4 z-40 h-96 w-80 rounded-lg border bg-white shadow-xl">
-          {/* 헤더 */}
+        <div className="fixed bottom-20 right-16 z-40 h-96 w-80 rounded-lg border bg-white shadow-xl">
           <div className="flex items-center justify-between rounded-t-lg border-b bg-primary-50 p-4">
             <div className="flex items-center gap-2">
               <div className="bg-primary-500 flex h-8 w-8 items-center justify-center rounded-full">
@@ -121,7 +118,6 @@ const ChatBot = () => {
             </button>
           </div>
 
-          {/* 메시지 영역 */}
           <div className="h-80 flex-1 overflow-y-auto p-4">
             <div className="space-y-4">
               {messages.map((message, index) => (
@@ -156,7 +152,6 @@ const ChatBot = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* 입력 영역 */}
           <form onSubmit={handleSubmit} className="border-t p-4">
             <div className="flex gap-2">
               <input
