@@ -7,15 +7,22 @@ const createJestConfig = nextJest({
 
 // Jest에 전달할 사용자 정의 설정
 const customJestConfig = {
+  // 테스트 환경 설정
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  // DOM 환경 제공
   testEnvironment: 'jest-environment-jsdom',
+  // 모듈 경로 매핑
   moduleNameMapper: {
+    // 절대 경로
     '^@/(.*)$': '<rootDir>/src/$1',
+    // CSS 모킹
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    // 이미지 모킹
     '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.js'
   },
   testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/', '<rootDir>/tests/e2e/'],
   collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}', '!src/**/*.d.ts', '!src/**/*.stories.{js,jsx,ts,tsx}'],
+  // 커버리지 기준
   coverageThreshold: {
     global: {
       branches: 70,

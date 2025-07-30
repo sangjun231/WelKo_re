@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 
-// Mock Next.js router
+// Next.js 라우터 모킹
 jest.mock('next/router', () => ({
   useRouter() {
     return {
@@ -24,7 +24,7 @@ jest.mock('next/router', () => ({
   }
 }));
 
-// Mock Next.js Image component
+// Next.js Image 컴포넌트 모킹
 jest.mock('next/image', () => ({
   __esModule: true,
   default: (props) => {
@@ -33,12 +33,12 @@ jest.mock('next/image', () => ({
   }
 }));
 
-// Mock environment variables
+// 환경 변수 모킹
 process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co';
 process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-key';
 process.env.OPENAI_API_KEY = 'test-openai-key';
 
-// Mock window.matchMedia
+// 브라우저 API 모킹
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: jest.fn().mockImplementation((query) => ({
