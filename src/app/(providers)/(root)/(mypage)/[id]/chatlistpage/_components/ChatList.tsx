@@ -38,11 +38,7 @@ const ChatList = ({ userId }: ChatListProps) => {
   const [newMessages, setNewMessages] = useState<{ [key: string]: boolean }>({});
 
   // 채팅 데이터 쿼리
-  const {
-    data: chatData = [],
-    error: chatError,
-    isLoading
-  } = useQuery<Message[]>({
+  const { data: chatData = [], error: chatError, isLoading } = useQuery<Message[]>({
     queryKey: ['chatList', userId],
     queryFn: async () => {
       try {
@@ -60,8 +56,8 @@ const ChatList = ({ userId }: ChatListProps) => {
   // chatData를 기반으로 groupedChats 계산
   const groupedChats = useMemo(() => {
     // 메시지들을 시간순으로 정렬
-    const sortedMessages = [...(chatData as Message[])].sort(
-      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    const sortedMessages = [...(chatData as Message[])].sort((a, b) => 
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     );
 
     return sortedMessages.reduce((acc: { [key: string]: Chat }, message: Message) => {
@@ -74,8 +70,8 @@ const ChatList = ({ userId }: ChatListProps) => {
           messages: []
         };
       }
-      acc[chatId].messages = [...acc[chatId].messages, message].sort(
-        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      acc[chatId].messages = [...acc[chatId].messages, message].sort((a, b) => 
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
       return acc;
     }, {});
@@ -131,7 +127,7 @@ const ChatList = ({ userId }: ChatListProps) => {
           try {
             // 새 메시지가 현재 사용자가 보낸 것이 아닐 때만 알림 상태 업데이트
             if (message.sender_id !== userId && !message.is_checked) {
-              setNewMessages((prev) => ({
+              setNewMessages(prev => ({
                 ...prev,
                 [chatId]: false
               }));
@@ -140,7 +136,7 @@ const ChatList = ({ userId }: ChatListProps) => {
             // 채팅 목록 데이터 업데이트
             queryClient.setQueryData(['chatList', userId], (oldData: Message[] | undefined) => {
               if (!oldData) return [message];
-              const existingIndex = oldData.findIndex((msg) => msg.id === message.id);
+              const existingIndex = oldData.findIndex(msg => msg.id === message.id);
               if (existingIndex !== -1) {
                 const newData = [...oldData];
                 newData[existingIndex] = message;
@@ -159,7 +155,7 @@ const ChatList = ({ userId }: ChatListProps) => {
 
     // 컴포넌트 언마운트 시 모든 구독 해제
     return () => {
-      unsubscribeCallbacks.forEach((unsubscribe) => unsubscribe());
+      unsubscribeCallbacks.forEach(unsubscribe => unsubscribe());
     };
   }, [userId, queryClient, groupedChats]);
 
@@ -173,7 +169,7 @@ const ChatList = ({ userId }: ChatListProps) => {
       await chatService.markMessagesAsRead(chat.messages, userId);
 
       // 새 메시지 알림 상태 즉시 업데이트
-      setNewMessages((prev) => ({
+      setNewMessages(prev => ({
         ...prev,
         [chatId]: true
       }));
@@ -226,7 +222,11 @@ const ChatList = ({ userId }: ChatListProps) => {
         if (!postDetails || !senderDetails) return null;
 
         return (
-          <div key={chatId} className="mb-[32px]" onClick={() => handleChatClick(chat)}>
+          <div
+            key={chatId}
+            className="mb-[32px]"
+            onClick={() => handleChatClick(chat)}
+          >
             <div className="flex">
               <Image
                 className="rounded-[8px]"

@@ -28,7 +28,7 @@ type ChatProps = {
   postId: string;
 };
 
-const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
+const Chat = ({ senderId, receiverId, postId }: ChatProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState<string>('');
   const messagesContainerRef = React.useRef<HTMLDivElement>(null);
@@ -57,35 +57,35 @@ const Chat: React.FC<ChatProps> = ({ senderId, receiverId, postId }) => {
       messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
     }
   };
-  
-// 초기 메시지 로드 및 실시간 구독 설정
-useEffect(() => {
-  const loadMessages = async () => {
-    const fetchedMessages = await fetchMessages(senderId, receiverId, postId);
-    setMessages(fetchedMessages);
-    setTimeout(scrollToBottom, 100);
-  };
 
-  loadMessages();
-
-  // 실시간 구독 설정
-  const unsubscribe = chatService.subscribeToRoom(postId, senderId, {
-    onMessage: async (message) => {
-      // 새 메시지가 도착하면 전체 메시지 다시 로드
-      const updatedMessages = await fetchMessages(senderId, receiverId, postId);
-      setMessages(updatedMessages);
+  // 초기 메시지 로드 및 실시간 구독 설정
+  useEffect(() => {
+    const loadMessages = async () => {
+      const fetchedMessages = await fetchMessages(senderId, receiverId, postId);
+      setMessages(fetchedMessages);
       setTimeout(scrollToBottom, 100);
-    },
-    onError: (error) => {
-      console.error('채팅 구독 에러:', error);
-    }
-  });
+    };
 
-  // 컴포넌트 언마운트 시 구독 해제
-  return () => {
-    unsubscribe();
-  };
-}, [senderId, receiverId, postId]);
+    loadMessages();
+
+    // 실시간 구독 설정
+    const unsubscribe = chatService.subscribeToRoom(postId, senderId, {
+      onMessage: async (message) => {
+        // 새 메시지가 도착하면 전체 메시지 다시 로드
+        const updatedMessages = await fetchMessages(senderId, receiverId, postId);
+        setMessages(updatedMessages);
+        setTimeout(scrollToBottom, 100);
+      },
+      onError: (error) => {
+        console.error('채팅 구독 에러:', error);
+      }
+    });
+
+    // 컴포넌트 언마운트 시 구독 해제
+    return () => {
+      unsubscribe();
+    };
+  }, [senderId, receiverId, postId]);
 
   return (
     <div className="flex h-screen flex-col">

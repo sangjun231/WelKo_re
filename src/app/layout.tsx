@@ -4,6 +4,7 @@ import './globals.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthSubscriber } from '@/components/common/AuthSubscriber';
+import ChatBot from '@/components/ChatBot';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -29,6 +30,7 @@ export default function HTMLLayout({
       <body className={montserrat.className}>
         {children}
         <ToastContainer />
+        <ChatBot />
       </body>
     </html>
   );
