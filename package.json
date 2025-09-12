@@ -24,6 +24,7 @@
     "test:all": "yarn test && yarn test:e2e && yarn cypress:run"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@portone/browser-sdk": "^0.0.8",
     "@supabase/ssr": "^0.4.0",
     "@supabase/supabase-js": "^2.44.4",
