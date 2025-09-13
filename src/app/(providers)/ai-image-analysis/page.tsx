@@ -1,19 +1,26 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import GeminiImageAnalyzer from '@/components/GeminiImageAnalyzer';
-import { ImageAnalysisResult } from '@/services/geminiService';
+import { ImageAnalysisResult, ImageGenerationResult } from '@/services/geminiService';
 
 export default function AIImageAnalysisPage() {
   const [analysisHistory, setAnalysisHistory] = useState<ImageAnalysisResult[]>([]);
-  const [currentMode, setCurrentMode] = useState<'general' | 'tourist'>('general');
+  const [generatedImages, setGeneratedImages] = useState<ImageGenerationResult[]>([]);
+  const [currentMode, setCurrentMode] = useState<'general' | 'tourist' | 'portrait'>('general');
 
   const handleAnalysisComplete = (result: ImageAnalysisResult) => {
     setAnalysisHistory((prev) => [result, ...prev]);
   };
 
+  const handleImageGenerated = (result: ImageGenerationResult) => {
+    setGeneratedImages((prev) => [result, ...prev]);
+  };
+
   const clearHistory = () => {
     setAnalysisHistory([]);
+    setGeneratedImages([]);
   };
 
   return (
@@ -46,13 +53,27 @@ export default function AIImageAnalysisPage() {
             >
               관광지 분석
             </button>
+            <button
+              onClick={() => setCurrentMode('portrait')}
+              className={`rounded-lg px-6 py-2 font-medium transition-colors ${
+                currentMode === 'portrait'
+                  ? 'bg-blue-600 text-white'
+                  : 'border border-gray-300 bg-white text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              포트레이트 편집
+            </button>
           </div>
         </div>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           {/* 분석기 */}
           <div>
-            <GeminiImageAnalyzer mode={currentMode} onAnalysisComplete={handleAnalysisComplete} />
+            <GeminiImageAnalyzer
+              mode={currentMode}
+              onAnalysisComplete={handleAnalysisComplete}
+              onImageGenerated={handleImageGenerated}
+            />
           </div>
 
           {/* 분석 히스토리 */}
@@ -67,7 +88,7 @@ export default function AIImageAnalysisPage() {
                 )}
               </div>
 
-              {analysisHistory.length === 0 ? (
+              {analysisHistory.length === 0 && generatedImages.length === 0 ? (
                 <div className="py-8 text-center text-gray-500">
                   <svg
                     className="mx-auto mb-4 h-16 w-16 text-gray-300"
@@ -88,7 +109,7 @@ export default function AIImageAnalysisPage() {
               ) : (
                 <div className="max-h-96 space-y-4 overflow-y-auto">
                   {analysisHistory.map((result, index) => (
-                    <div key={index} className="rounded-lg border border-gray-200 p-4">
+                    <div key={`analysis-${index}`} className="rounded-lg border border-gray-200 p-4">
                       <div className="mb-2 flex items-start justify-between">
                         <h3 className="font-medium text-gray-800">분석 #{analysisHistory.length - index}</h3>
                         <span className="text-xs text-gray-500">신뢰도 {(result.confidence * 100).toFixed(0)}%</span>
@@ -112,6 +133,49 @@ export default function AIImageAnalysisPage() {
                       )}
                     </div>
                   ))}
+
+                  {/* 생성된 이미지 히스토리 */}
+                  {generatedImages.map((result, index) => (
+                    <div key={`generated-${index}`} className="rounded-lg border border-green-200 bg-green-50 p-4">
+                      <div className="mb-2 flex items-start justify-between">
+                        <h3 className="font-medium text-green-800">변환 #{generatedImages.length - index}</h3>
+                        {result.usage && (
+                          <span className="text-xs text-green-600">${result.usage.estimatedCost.toFixed(4)}</span>
+                        )}
+                      </div>
+
+                      <p className="mb-3 line-clamp-2 text-sm text-green-700">{result.description}</p>
+
+                      {result.dimensions && (
+                        <p className="mb-2 text-xs text-green-600">
+                          해상도: {result.dimensions.width} × {result.dimensions.height}px
+                        </p>
+                      )}
+
+                      <div className="mb-3 rounded-lg border bg-white p-2">
+                        <Image
+                          src={`data:image/png;base64,${result.generatedImage}`}
+                          alt="Generated"
+                          width={64}
+                          height={64}
+                          className="h-16 w-16 rounded object-cover"
+                        />
+                      </div>
+
+                      <div className="flex justify-between">
+                        <span className="text-xs text-green-600">
+                          {result.usage ? `${result.usage.inputTokens} 토큰` : '토큰 정보 없음'}
+                        </span>
+                        <a
+                          href={`data:image/png;base64,${result.generatedImage}`}
+                          download={`generated-${index + 1}.png`}
+                          className="text-xs text-green-600 hover:text-green-800"
+                        >
+                          다운로드
+                        </a>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
@@ -119,7 +183,7 @@ export default function AIImageAnalysisPage() {
         </div>
 
         {/* 기능 소개 */}
-        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-lg bg-white p-6 text-center shadow-lg">
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
               <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -165,6 +229,21 @@ export default function AIImageAnalysisPage() {
           <div className="rounded-lg bg-white p-6 text-center shadow-lg">
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-purple-100">
               <svg className="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+            </div>
+            <h3 className="mb-2 text-lg font-semibold">포트레이트 편집</h3>
+            <p className="text-sm text-gray-600">태그 클릭으로 간편한 배경 변경과 이미지 변환</p>
+          </div>
+
+          <div className="rounded-lg bg-white p-6 text-center shadow-lg">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-orange-100">
+              <svg className="h-6 w-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
